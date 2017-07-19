@@ -6,8 +6,9 @@ pragma solidity ^0.4.11;
 contract PublicOrderTracker {
 
 	struct Order {
+    address customer;     // The address of the customer who made the purchase
+    address merchant;     // The address of the merchant who owns the product
     uint256 productID;      // The DIN of the ordered product
-    address customerID;     // The address of the customer who made the purchase
     OrderStatus status;     // The current status of the order
   }
 
@@ -30,44 +31,49 @@ contract PublicOrderTracker {
   // OrderID => Order
   mapping (uint256 => Order) orders;
 
+  uint public index = 0;
+
   function addOrder(address customer, address merchant, uint256 productID) {
-  	// TODO: Do some magic
+      index++;
+      customerOrderIDs[customer].push(productID);
+      merchantOrderIDs[merchant].push(productID);
+      orders[index] = Order(customer, merchant, productID, OrderStatus.PendingShippingInfo);
   }
 
-  /**
-  *   Get customer order IDs.
-  *   @param customer The address of the customer.
-  *   @param page The page of results. (e.g., 0 will give the first 10 results).
-  */
-  function getCustomerOrders(address customer, uint256 page) constant returns (uint256[10]) {
-      return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-  }
+  // /**
+  // *   Get customer order IDs.
+  // *   @param customer The address of the customer.
+  // *   @param page The page of results. (e.g., 0 will give the first 10 results).
+  // */
+  // function getCustomerOrders(address customer, uint256 page) constant returns (uint8[10]) {
+  //     return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  // }
 
-  /**
-  *   Get customer orders IDs based on order status.
-  *   @param customer The address of the customer.
-  *   @param page The page of results. (e.g., 0 will give the first 10 results).
-  */
-  function getCustomerOrders(address customer, uint256 page, uint256 status) constant returns (uint256[10]) {
-      return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-  }
+  // /**
+  // *   Get customer orders IDs based on order status.
+  // *   @param customer The address of the customer.
+  // *   @param page The page of results. (e.g., 0 will give the first 10 results).
+  // */
+  // function getCustomerOrders(address customer, uint256 page, uint256 status) constant returns (uint8[10]) {
+  //     return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  // }
 
-  /**
-  *   Get merchant order IDs.
-  *   @param customer The address of the customer.
-  *   @param page The page of results. (e.g., 0 will give the first 10 results).
-  */
-  function getMerchantOrders(address merchant, uint256 page) constant returns (uint256[10]) {
-      return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-  }
+  // /**
+  // *   Get merchant order IDs.
+  // *   @param merchant The address of the merchant.
+  // *   @param page The page of results. (e.g., 0 will give the first 10 results).
+  // */
+  // function getMerchantOrders(address merchant, uint256 page) constant returns (uint8[10]) {
+  //     return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  // }
 
-  /**
-  *   Get merchant order IDs.
-  *   @param customer The address of the customer.
-  *   @param page The page of results. (e.g., 0 will give the first 10 results).
-  */
-  function getMerchantOrders(address merchant, uint256 page, uint256 status) constant returns (uint256[10]) {
-      return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-  }
+  // /**
+  // *   Get merchant order IDs.
+  // *   @param merchant The address of the merchant.
+  // *   @param page The page of results. (e.g., 0 will give the first 10 results).
+  // */
+  // function getMerchantOrders(address merchant, uint256 page, uint256 status) constant returns (uint8[10]) {
+  //     return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  // }
 
 }

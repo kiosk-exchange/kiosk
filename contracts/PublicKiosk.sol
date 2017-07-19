@@ -26,7 +26,7 @@ contract PublicKiosk {
         uint256 EAN;            // 0859553005297
     }
 
-    // The address of the DIN registry where all Product IDs are registered.
+    // The address of DIN registry where all product IDs are stored.
     DINRegistry public dinRegistry;
 
     // A public order tracker where customers and merchants can track and update their orders.
@@ -101,7 +101,7 @@ contract PublicKiosk {
      * Constructor.
      * @param dinRegistryAddr The address of the DIN registry contract.
      */
-    function PublicKiosk(DINRegistry dinRegistryAddr, OrderTracker orderTrackerAddr) {
+    function PublicKiosk(DINRegistry dinRegistryAddr, PublicOrderTracker orderTrackerAddr) {
         dinRegistry = dinRegistryAddr;
         orderTracker = orderTrackerAddr;
     }

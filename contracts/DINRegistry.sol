@@ -7,7 +7,7 @@ contract DINRegistry {
 
     struct Record {
         address owner; // Address that registers the DIN
-        address resolver; // Address of the resolver contract
+        address resolver; // Address of the resolver contract. Resolvers store product information and process orders.
     }
 
     // DIN => Record
@@ -37,7 +37,7 @@ contract DINRegistry {
      * Constructs a new DIN registry.
      * @param genesis The start index for DIN numbering.
      */
-    function DINRegistry(uint genesis) {
+    function ProductRegistry(uint genesis) {
         index = genesis;
     }
 
