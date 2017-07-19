@@ -1,5 +1,5 @@
 var DINRegistry = artifacts.require("./DINRegistry.sol");
-var PublicProductResolver = artifacts.require("./PublicProductResolver.sol");
+var PublicMarket = artifacts.require("./PublicMarket.sol");
 
 contract('DINRegistry', function(accounts) {
 
@@ -11,7 +11,7 @@ contract('DINRegistry', function(accounts) {
 	    registry = instance;
 	  }).then(function() {
 
-	  	contract('PublicProductResolver', function(accounts) {
+	  	contract('PublicMarket', function(accounts) {
 
     		return PublicProductResolver.deployed().then(function(instance) {
 	    		resolver = instance;
