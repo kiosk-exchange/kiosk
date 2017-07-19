@@ -1,0 +1,174 @@
+{
+  "contract_name": "DINRegistry",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "DIN",
+          "type": "uint256"
+        }
+      ],
+      "name": "resolver",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "registerNewDINFor",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "index",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "DIN",
+          "type": "uint256"
+        },
+        {
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "setOwner",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "DIN",
+          "type": "uint256"
+        }
+      ],
+      "name": "owner",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "registerNewDIN",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "DIN",
+          "type": "uint256"
+        },
+        {
+          "name": "resolver",
+          "type": "address"
+        }
+      ],
+      "name": "setResolver",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "genesis",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "DIN",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "NewRegistration",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "DIN",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "NewOwner",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "DIN",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "name": "resolver",
+          "type": "address"
+        }
+      ],
+      "name": "NewResolver",
+      "type": "event"
+    }
+  ],
+  "unlinked_binary": "0x6060604052341561000c57fe5b60405160208061038a83398101604052515b60018190555b505b610355806100356000396000f300606060405236156100675763ffffffff60e060020a600035041663108eaa4e8114610069578063168a6e07146100985780632986c0e5146100b65780637fd39247146100d8578063a123c33e146100f9578063b133774714610128578063bc7b6d621461013a575bfe5b341561007157fe5b61007c60043561015b565b60408051600160a060020a039092168252519081900360200190f35b34156100a057fe5b6100b4600160a060020a036004351661017c565b005b34156100be57fe5b6100c6610189565b60408051918252519081900360200190f35b34156100e057fe5b6100b4600435600160a060020a036024351661018f565b005b341561010157fe5b61007c600435610215565b60408051600160a060020a039092168252519081900360200190f35b341561013057fe5b6100b4610233565b005b341561014257fe5b6100b4600435600160a060020a036024351661023f565b005b600081815260208190526040902060010154600160a060020a03165b919050565b610185816102c8565b5b50565b60015481565b600082815260208190526040902054829033600160a060020a039081169116146101b95760006000fd5b6000838152602081905260408082208054600160a060020a031916600160a060020a0386169081179091559051909185917f4c5d8ccfd4f32dad0c449108334c94e0bada87b1453ad71e79e233545f4c48a69190a35b5b505050565b600081815260208190526040902054600160a060020a03165b919050565b61023c336102c8565b5b565b600082815260208190526040902054829033600160a060020a039081169116146102695760006000fd5b6000838152602081905260408082206001018054600160a060020a031916600160a060020a0386169081179091559051909185917fcbae0978f0621ebb4707a96540f8d3a937104526ceef2cdf1cf07b25c5e48cd49190a35b5b505050565b6001805481018082556000908152602081905260408082208054600160a060020a031916600160a060020a0386169081179091559254905190917fef8ea3d0ef6bf7f673a09aa675838d76573d86e5a9fc235846ac3f54195d721791a35b505600a165627a7a723058201a394e00cf133727d96ebb5deee4dd22b8886e716323232338b686181382eddd0029",
+  "networks": {},
+  "schema_version": "0.0.5",
+  "updated_at": 1500413251306
+}
