@@ -22,7 +22,6 @@ contract('DINRegistry', function(accounts) {
     }).then(function() {
       return registry.index();
     }).then(function(index) {
-      console.log(index);
       newIndex = index;
 
       return registry.owner(newIndex);
