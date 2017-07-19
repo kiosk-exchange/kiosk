@@ -37,7 +37,7 @@ contract DINRegistry {
      * Constructs a new DIN registry.
      * @param genesis The start index for DIN numbering.
      */
-    function ProductRegistry(uint genesis) {
+    function DINRegistry(uint genesis) {
         index = genesis;
     }
 

@@ -1,5 +1,5 @@
 var DINRegistry = artifacts.require("./DINRegistry.sol");
-var PublicProductResolver = artifacts.require("./PublicKiosk.sol");
+var PublicKiosk = artifacts.require("./PublicKiosk.sol");
 
 module.exports = function(deployer) {
 	// Initialize the DIN Registry contract with a genesis number.
