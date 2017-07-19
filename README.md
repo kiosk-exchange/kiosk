@@ -12,7 +12,7 @@ Then, add your product to a resolver contract. Resolver contracts are responsibl
 
 ` // TODO `
 
-Kiosk has a public resolver contract that anyone can use called PublicKiosk.
+Kiosk has a public resolver contract that anyone can use called KioskResolver.
 
 You can also use another resolver contract or create your own. Developers can earn tokens by creating public resolver contracts with innovative features like coupons, loyalty programs, inventory management, insurance, and more.
 
