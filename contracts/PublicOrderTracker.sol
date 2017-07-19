@@ -5,9 +5,9 @@ pragma solidity ^0.4.11;
 */
 contract PublicOrderTracker {
 
-	struct Order {
-    address customer;     // The address of the customer who made the purchase
-    address merchant;     // The address of the merchant who owns the product
+  struct Order {
+    address customer;       // The address of the customer who made the purchase
+    address merchant;       // The address of the merchant who owns the product
     uint256 productID;      // The DIN of the ordered product
     OrderStatus status;     // The current status of the order
   }

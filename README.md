@@ -1,2 +1,3 @@
-# kiosk
-Ethereum e-commerce platform
+# Kiosk
+
+Kiosk is an e-commerce platform built on Ethereum.
