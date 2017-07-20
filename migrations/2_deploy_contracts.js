@@ -4,15 +4,32 @@ var KioskOrderTracker = artifacts.require("./KioskOrderTracker.sol");
 
 module.exports = function(deployer) {
 
-	// Initialize the DIN Registry contract with a genesis number.
-	deployer.deploy(DINRegistry, 10000000).then(function() {
+	const genesis = 10000000
 
-		return deployer.deploy(KioskOrderTracker).then(function() {
-
+	// Initialize the DIN Registry contract with a genesis number of 1000-0000.
+	deployer.deploy(DINRegistry, genesis).then(() => {
+		return deployer.deploy(KioskOrderTracker).then(() => {
 			// Deploy the Kiosk Resolver with a reference to the DIN Registry and Order Tracker.
-			return deployer.deploy(KioskResolver, DINRegistry.address, KioskOrderTracker.address);
+			return deployer.deploy(KioskResolver, DINRegistry.address, KioskOrderTracker.address).then(() => {
 
+				return DINRegistry.deployed().then((registry) => {
+					// Register DIN 1000-0001.
+					return registry.registerNewDIN().then(() => {
+
+						return KioskResolver.deployed().then((resolver) => {
+
+							const productID = genesis + 1
+
+							return resolver.setName(productID, "Blue T-Shirt").then(() => {
+								return resolver.setPrice(productID, 10000000000000).then(() => {
+									return resolver.setImageURL(productID, "https://vangogh.teespring.com/v3/image/CNR5jCc39PoWcclKu2kJxvzdvRk/480/560.jpg");
+
+								});
+							});
+						});
+					});
+				});
+			});
 		});
 	});
-
 };

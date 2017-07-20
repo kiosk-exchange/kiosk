@@ -13,6 +13,18 @@ contract('KioskResolver', function(accounts) {
 		});
 	});
 
+	it("should have a product name Blue T-Shirt", function() {
+
+		return KioskResolver.deployed().then(function(instance) {
+
+			return instance.name(10000001).then(function(name) {
+
+				assert.equal(name, "Blue T-Shirt", "The DIN should have a name set from the migration");
+
+			});
+		});
+	});
+
 	it("should let the owner of a DIN set product details", function() {
 		var registry;
 		var resolver;

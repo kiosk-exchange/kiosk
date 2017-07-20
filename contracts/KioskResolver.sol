@@ -112,7 +112,6 @@ contract KioskResolver {
     *  @param productID The DIN or the product to buy.
     */
     function buy(uint256 productID) payable only_correct_price(productID) {
-        // Get the merchant who is selling the product
         address merchant = dinRegistry.owner(productID);
 
         // Add the order to the order tracker
