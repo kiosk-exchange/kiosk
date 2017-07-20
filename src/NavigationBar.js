@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Grid,  Navbar } from 'react-bootstrap';
+import { Grid,  Navbar, Nav, NavItem } from 'react-bootstrap';
 
 class NavigationBar extends Component {
 
@@ -13,6 +13,9 @@ class NavigationBar extends Component {
             </Navbar.Brand>
             <Navbar.Toggle />
           </Navbar.Header>
+          <Nav pullRight>
+            <NavItem href="/orders">My Orders</NavItem>
+          </Nav>
         </Grid>
       </Navbar>
     )
