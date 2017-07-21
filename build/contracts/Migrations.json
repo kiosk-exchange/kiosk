@@ -82,10 +82,16 @@
     "1500568637199": {
       "events": {},
       "links": {},
-      "address": "0xac2d43b958a4243cf797816db40aba4ddb7e78e1",
-      "updated_at": 1500573131722
+      "address": "0xca02fa2deb131a51100dfaf66646bf30ca1740a7",
+      "updated_at": 1500599449152
+    },
+    "1500600652113": {
+      "events": {},
+      "links": {},
+      "address": "0xb071a4b969654911473ece9f441e20c1ecff7473",
+      "updated_at": 1500600673232
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1500573131722
+  "updated_at": 1500600673232
 }

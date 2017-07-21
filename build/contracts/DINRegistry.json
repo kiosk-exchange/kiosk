@@ -282,10 +282,68 @@
         }
       },
       "links": {},
-      "address": "0xb18a5dbcbe24351c0f235a5bceab3baea1c5aca1",
-      "updated_at": 1500573131714
+      "address": "0x2457ccc6b15f372f77aa54ef2ad07b839c3bae21",
+      "updated_at": 1500599449145
+    },
+    "1500600652113": {
+      "events": {
+        "0xef8ea3d0ef6bf7f673a09aa675838d76573d86e5a9fc235846ac3f54195d7217": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "name": "owner",
+              "type": "address"
+            }
+          ],
+          "name": "NewRegistration",
+          "type": "event"
+        },
+        "0x4c5d8ccfd4f32dad0c449108334c94e0bada87b1453ad71e79e233545f4c48a6": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "name": "owner",
+              "type": "address"
+            }
+          ],
+          "name": "NewOwner",
+          "type": "event"
+        },
+        "0xcbae0978f0621ebb4707a96540f8d3a937104526ceef2cdf1cf07b25c5e48cd4": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "name": "resolver",
+              "type": "address"
+            }
+          ],
+          "name": "NewResolver",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0xb5a91469a0abc9471441f976311fbf88aba03d01",
+      "updated_at": 1500600673224
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1500573131714
+  "updated_at": 1500600673224
 }

@@ -19,9 +19,10 @@ module.exports = function(deployer) {
 						return KioskResolver.deployed().then((resolver) => {
 
 							const productID = genesis + 1
+							const price = 20000000000000000
 
 							return resolver.setName(productID, "Blue T-Shirt").then(() => {
-								return resolver.setPrice(productID, 10000000000000).then(() => {
+								return resolver.setPrice(productID, price).then(() => {
 									return resolver.setImageURL(productID, "https://vangogh.teespring.com/v3/image/CNR5jCc39PoWcclKu2kJxvzdvRk/480/560.jpg");
 
 								});

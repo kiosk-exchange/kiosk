@@ -4,6 +4,9 @@ import NavigationBar from './NavigationBar'
 import Product from './Product'
 
 import getWeb3 from './utils/getWeb3'
+import { default as TruffleContract } from 'truffle-contract'
+
+import registryABI from '../build/contracts/DINRegistry.json'
 import resolverABI from '../build/contracts/KioskResolver.json'
 
 import './Home.css'
@@ -18,6 +21,7 @@ class Home extends Component {
 
     this.state = {
       web3: null,
+      owner: null,
       name: null,
       imageURL: null,
       price: null,
@@ -38,17 +42,31 @@ class Home extends Component {
         web3: results.web3
       })
 
-      // Instantiate the resolver contract once web3 provided.
+      // Initialize the registry and resolver contracts once web3 provided.
+      this.initializeRegistry()
       this.initializeResolver()
 
     })
 
   }
 
-  initializeResolver() {
-    const contract = require('truffle-contract')
+  initializeRegistry() {
+    const registryContract = TruffleContract(registryABI)
+    registryContract.setProvider(this.state.web3.currentProvider)
 
-    const resolverContract = contract(resolverABI)
+    registryContract.deployed().then((registry) => {
+
+      registry.owner(productID).then((owner) => {
+        console.log("Owner: " + owner)
+
+        this.setState({ "owner" : owner })
+      })
+
+    })
+  }
+
+  initializeResolver() {
+    const resolverContract = TruffleContract(resolverABI)
     resolverContract.setProvider(this.state.web3.currentProvider)
 
     resolverContract.deployed().then((resolver) => {
@@ -85,7 +103,7 @@ class Home extends Component {
       // Hardcoded for now
       var transaction = {
         from: web3.eth.coinbase,
-        to: "0x308Dd21BDf208C5352ab1088cC544FF8b44f299a",
+        to: this.state.owner,
         value: this.state.price
       }
 
