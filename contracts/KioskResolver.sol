@@ -2,6 +2,7 @@ pragma solidity ^0.4.11;
 
 import './DINRegistry.sol';
 import './KioskOrderTracker.sol';
+import './PriceCalculator.sol';
 
 /**
 *  This is the default Kiosk implementation of a resolver contract.
@@ -10,33 +11,41 @@ contract KioskResolver {
 
     struct Product {
         // Required
-        string name;            // Tile Slim White - Tile Trackers & Locators
-        uint256 price;          // 10000000000000000 (denominated in Wei)
+        PriceCalculator priceCalculator;    // Address of the contract that calculates this product's price
+        string name;                        // Tile Slim White - Tile Trackers & Locators
 
         // Optional    
-        string description;     // Slim White. The thinnest Bluetooth tracker that finds everyday items in seconds.
-        string imageURL;        // https://static-www.thetileapp.com/images/slim_pdp_hero2.jpg
-        string retailURL;       // https://www.thetileapp.com/en-us/store/tiles/slim
-        string category;        // Cell Phone Accessories
-        string brand;           // Tile
-        string manufacturer;    // Tile
-        string color;           // White
-        string model;           // EC-04001
-        uint256 UPC;            // 859553005297
-        uint256 EAN;            // 0859553005297
+        string description;                 // Slim White. The thinnest Bluetooth tracker that finds everyday items in seconds.
+        string imageURL;                    // https://static-www.thetileapp.com/images/slim_pdp_hero2.jpg
+        string retailURL;                   // https://www.thetileapp.com/en-us/store/tiles/slim
+        string category;                    // Cell Phone Accessories
+        string brand;                       // Tile
+        string manufacturer;                // Tile
+        string color;                       // White
+        string model;                       // EC-04001
+        uint256 UPC;                        // 859553005297
+        uint256 EAN;                        // 0859553005297
+    }
+
+    struct Order {
+        address buyer;
+        address seller;
+        uint256 productID;
     }
 
     // The address of DIN registry where all product IDs are stored.
     DINRegistry public dinRegistry;
 
-    // A public order tracker where customers and merchants can track and update their orders.
-    KioskOrderTracker public orderTracker;
-
     // Product ID (DIN) => Product
     mapping (uint256 => Product) products;
 
-    // Merchant (DIN owner) => Pending ether (denominated in Wei) from orders.
-    mapping (address => uint) pendingWithdrawals;
+    // Seller (DIN owner) => Revenue from sales
+    mapping (address => uint256) pendingWithdrawals;
+
+    uint256 public orderIndex = 0;
+
+    // Order ID => Order
+    mapping (uint256 => Order) orders;
 
     // Events
     event NameChanged(uint256 indexed productID, string name);
@@ -50,7 +59,7 @@ contract KioskResolver {
     event UPCChanged(uint256 indexed productID, uint256 UPC);
     event EANChanged(uint256 indexed productID, uint256 EAN);
     event DescriptionChanged(uint indexed productID, string description);
-    event PriceChanged(uint256 indexed productID, uint256 price);
+    event PriceCalculatorChanged(uint256 indexed productID, address PriceCalculator);
 
     // Interfaces
     bytes4 constant NAME_INTERFACE_ID = 0x00ad800c; // bytes4(sha3("name(uint256)"))
@@ -94,7 +103,7 @@ contract KioskResolver {
 
     // A product can only be purchased if the amount sent matches the price
     modifier only_correct_price(uint256 productID) {
-        if (products[productID].price != msg.value) throw;
+        if (price(productID) != msg.value) throw;
         _;
     }
 
@@ -102,9 +111,8 @@ contract KioskResolver {
      * Constructor.
      * @param dinRegistryAddr The address of the DIN registry contract.
      */
-    function KioskResolver(DINRegistry dinRegistryAddr, KioskOrderTracker orderTrackerAddr) {
+    function KioskResolver(DINRegistry dinRegistryAddr) {
         dinRegistry = dinRegistryAddr;
-        orderTracker = orderTrackerAddr;
     }
 
     /**
@@ -112,17 +120,21 @@ contract KioskResolver {
     *  @param productID The DIN or the product to buy.
     */
     function buy(uint256 productID) payable only_correct_price(productID) {
-        address merchant = dinRegistry.owner(productID);
+        address seller = dinRegistry.owner(productID);
 
         // Add the order to the order tracker
-        orderTracker.addOrder(msg.sender, merchant, productID);
+        orderIndex++;
+        orders[orderIndex] = Order(msg.sender, seller, productID);
 
-        // Debit the merchant's account with the customer's payment
-        pendingWithdrawals[merchant] += msg.value;
+        // Debit the seller's account with the customer's payment
+        pendingWithdrawals[seller] += msg.value;
     }
 
+    /**
+    *   Withdraw proceeds of sales.
+    */
     function withdraw() {
-        uint amount = pendingWithdrawals[msg.sender];
+        uint256 amount = pendingWithdrawals[msg.sender];
 
         // Zero the pending refund before to prevent re-entrancy attacks
         pendingWithdrawals[msg.sender] = 0;
@@ -130,8 +142,18 @@ contract KioskResolver {
     }
 
     /**
-    *   Product getters and setters
+    *   The price of the product, including all tax, shipping costs, and discounts.
     */
+    function price(uint256 productID) constant returns (uint256) {
+        PriceCalculator calculator = products[productID].priceCalculator;
+        uint256 price = calculator.price(productID, msg.sender);
+        return price;
+    }
+
+    function setPriceCalculator(uint256 productID, PriceCalculator calculator) only_owner(productID) {
+        products[productID].priceCalculator = calculator;
+        PriceCalculatorChanged(productID, calculator);
+    }
 
     // Name
     function name(uint256 productID) constant returns (string) {
@@ -241,16 +263,6 @@ contract KioskResolver {
     function setDescription(uint256 productID, string description) only_owner(productID) {
         products[productID].description = description;
         DescriptionChanged(productID, description);
-    }
-
-    // Price
-    function price(uint256 productID) constant returns (uint256) {
-        return products[productID].price;
-    }
-
-    function setPrice(uint256 productID, uint256 price) only_owner(productID) {
-        products[productID].price = price;
-        PriceChanged(productID, price);
     }
 
     // This contract does not accept ether directly. Use the "buy" function to buy a product.
