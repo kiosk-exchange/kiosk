@@ -4,7 +4,7 @@ Kiosk is an e-commerce platform built on Ethereum.
 
 ## Quick Start
 
-The easiest way to get started is to test locally with [TestRPC](https://github.com/ethereumjs/testrpc)
+Get started by testing locally with [TestRPC](https://github.com/ethereumjs/testrpc).
 
 ```
 $ testrpc
