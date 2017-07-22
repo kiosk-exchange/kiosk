@@ -1,19 +1,20 @@
 var DINRegistry = artifacts.require("./DINRegistry.sol");
 var KioskResolver = artifacts.require("./KioskResolver.sol");
+var PriceCalculator = artifacts.require("./PriceCalculator.sol");
 
 contract('KioskResolver', function(accounts) {
 
-	it("should have a DIN registry address", function() {
-		return KioskResolver.deployed().then(function(instance) {
+	it("should have a DIN registry address", () => {
+		return KioskResolver.deployed().then((instance) => {
 			return instance.dinRegistry();
 		}).then(function(dinRegistry) {
-			return DINRegistry.deployed().then(function(instance) {
+			return DINRegistry.deployed().then((instance) => {
 				assert.equal(dinRegistry, instance.address, "The DIN address is not equal to the deployed DIN registry.");
 			});
 		});
 	});
 
-	it("should have a product name Blue T-Shirt", function() {
+	it("should have a product name Blue T-Shirt", () => {
 
 		return KioskResolver.deployed().then(function(instance) {
 
@@ -25,31 +26,37 @@ contract('KioskResolver', function(accounts) {
 		});
 	});
 
-	it("should let the owner of a DIN set product details", function() {
+	it("should let the owner of a DIN set product details", () => {
 		var registry;
 		var resolver;
 		var expectedPrice = web3.toWei(1, 'ether');
 
-		return KioskResolver.deployed().then(function(instance) {
+		return KioskResolver.deployed().then((instance) => {
 			resolver = instance;
 
-			return DINRegistry.deployed().then(function(instance) {
+			return DINRegistry.deployed().then((instance) => {
 				registry = instance;
 				return registry.registerNewDIN();
 
-			}).then(function() {
+			}).then(() => {
 				return resolver.setName(10000001, "Test");
-			}).then(function() {
+			}).then(() => {
 				return resolver.name(10000001);
-			}).then(function(name) {
+			}).then((name) => {
 				assert.equal(name, "Test", "The name was not set correctly");
-
-			}).then(function() {
-				return resolver.setPrice(10000001, expectedPrice);
-			}).then(function() {
+			}).then(() => {
 				return resolver.price(10000001);
-			}).then(function(price) {
-				assert.equal(price, expectedPrice, "The price was not set correctly");
+			}).then((price) => {
+				assert.equal(price.toNumber(), expectedPrice, "The price was not set correctly");
+			});
+		});
+	});
+
+	it("should get the correct price from the calculator", () => {
+		return PriceCalculator.deployed().then((instance) => {
+			return instance.price()
+		.then((price) => {
+			assert.equal(price.toNumber(), 600000000000000000, "The price was not set correctly")
 			});
 		});
 	});
