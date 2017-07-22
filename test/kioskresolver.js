@@ -29,7 +29,7 @@ contract('KioskResolver', function(accounts) {
 	it("should let the owner of a DIN set product details", () => {
 		var registry;
 		var resolver;
-		var expectedPrice = web3.toWei(1, 'ether');
+		var expectedPrice = web3.toWei(0.25, 'ether');
 
 		return KioskResolver.deployed().then((instance) => {
 			resolver = instance;
@@ -48,15 +48,6 @@ contract('KioskResolver', function(accounts) {
 				return resolver.price(10000001);
 			}).then((price) => {
 				assert.equal(price.toNumber(), expectedPrice, "The price was not set correctly");
-			});
-		});
-	});
-
-	it("should get the correct price from the calculator", () => {
-		return PriceCalculator.deployed().then((instance) => {
-			return instance.price()
-		.then((price) => {
-			assert.equal(price.toNumber(), 600000000000000000, "The price was not set correctly")
 			});
 		});
 	});

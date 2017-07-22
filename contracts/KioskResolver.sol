@@ -5,7 +5,7 @@ import './PriceResolver.sol';
 import './InventoryResolver.sol';
 
 /**
-*  This is the default Kiosk implementation of a resolver contract.
+*  This is the default Kiosk implementation of a resolver contract for products.
 */
 contract KioskResolver {
 
@@ -45,9 +45,9 @@ contract KioskResolver {
     uint256 public orderIndex = 0;
 
     // Order ID => Order
-    mapping (uint256 => Order) orders;
+    mapping (uint256 => Order) public orders;
 
-    mapping (address => uint256) pendingWithdrawals;
+    mapping (address => uint256) public pendingWithdrawals;
 
     // Events
     event PriceResolverChanged(uint256 indexed productID, address PriceResolver);
