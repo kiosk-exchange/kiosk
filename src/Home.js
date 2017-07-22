@@ -25,8 +25,7 @@ class Home extends Component {
       name: null,
       imageURL: null,
       price: null,
-      formattedPrice: null,
-      tokens: 5
+      formattedPrice: null
     }
 
     this.buyHandler = this.buyHandler.bind(this)
