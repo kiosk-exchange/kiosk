@@ -12,7 +12,10 @@ contract KioskResolver {
     struct Product {
         // Order Logic
         PriceResolver priceResolver;            // Returns the price of a given product. Required.
+        bool hasPriceResolver;
+
         InventoryResolver inventoryResolver;    // Returns whether a product is in stock. If not set, default is true.
+        bool hasInventoryResolver;
 
         // Product Info (Optional)
         string name;                            // Tile Slim White - Tile Trackers & Locators
@@ -135,7 +138,7 @@ contract KioskResolver {
 
     /**
     *  Buy a product.
-    *  @param productID The DIN or the product to buy.
+    *  @param productID The DIN of the product to buy.
     */
     function buy(uint256 productID) payable only_correct_price(productID) only_in_stock(productID) {
         address seller = dinRegistry.owner(productID);
@@ -156,24 +159,33 @@ contract KioskResolver {
         msg.sender.transfer(amount);
     }
 
+    function inventoryResolver(uint256 productID) constant returns (address) {
+        return products[productID].inventoryResolver;
+    }
+
     /**
     *   The price of the product, including all tax, shipping costs, and discounts.
     */
     function price(uint256 productID) constant returns (uint256) {
         // Only return a price if the price calculator is set
-        if (products[productID].priceResolver.initialized() == 1) {
+        if (products[productID].hasPriceResolver == true) {
             return products[productID].priceResolver.price(productID, msg.sender);
         }
         return 0;
     }
 
+    function priceResolver(uint256 productID) constant returns (address) {
+        return products[productID].priceResolver;
+    }
+
     function setPriceResolver(uint256 productID, PriceResolver resolver) only_owner(productID) {
         products[productID].priceResolver = resolver;
+        products[productID].hasPriceResolver = true;
         PriceResolverChanged(productID, resolver);
     }
 
     function inStock(uint256 productID) constant returns (bool) {
-        if (products[productID].inventoryResolver.initialized() == 1) {
+        if (products[productID].hasInventoryResolver == true) {
             return products[productID].inventoryResolver.inStock(productID);
         }
         // If inventory resolver is not set, default is true
@@ -182,6 +194,7 @@ contract KioskResolver {
 
     function setInventoryResolver(uint256 productID, InventoryResolver resolver) only_owner(productID) {
         products[productID].inventoryResolver = resolver;
+        products[productID].hasInventoryResolver = true;
         InventoryResolverChanged(productID, resolver);
     }
 

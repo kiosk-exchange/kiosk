@@ -21,9 +21,9 @@ module.exports = function(deployer) {
 			return KioskResolver.deployed()
 		}).then((resolver) => {
 				const productID = genesis + 1
-				return resolver.setName(productID, "Blue T-Shirt").then(() => {
-					return resolver.setImageURL(productID, "https://vangogh.teespring.com/v3/image/CNR5jCc39PoWcclKu2kJxvzdvRk/480/560.jpg").then(() => {
-						return resolver.setPriceResolver(productID, PriceResolver.address);
+				return resolver.setPriceResolver(productID, PriceResolver.address).then(() => {
+					return resolver.setName(productID, "Blue T-Shirt").then(() => {
+						return resolver.setImageURL(productID, "https://vangogh.teespring.com/v3/image/CNR5jCc39PoWcclKu2kJxvzdvRk/480/560.jpg");
 			});
 		});
 	});
