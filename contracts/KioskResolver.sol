@@ -135,7 +135,7 @@ contract KioskResolver {
 
     /**
     *  Buy a product.
-    *  @param productID The DIN or the product to buy.
+    *  @param productID The DIN of the product to buy.
     */
     function buy(uint256 productID) payable only_correct_price(productID) only_in_stock(productID) {
         address seller = dinRegistry.owner(productID);

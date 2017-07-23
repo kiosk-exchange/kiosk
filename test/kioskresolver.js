@@ -4,6 +4,8 @@ var PriceCalculator = artifacts.require("./PriceCalculator.sol");
 
 contract('KioskResolver', function(accounts) {
 
+	var resolver;
+
 	it("should have a DIN registry address", () => {
 		return KioskResolver.deployed().then((instance) => {
 			return instance.dinRegistry();
@@ -51,6 +53,10 @@ contract('KioskResolver', function(accounts) {
 			});
 		});
 	});
+
+	it("should let a buyer order a product", () => {
+
+	}
 
 	// Should not let a non-owner change product details
 	// Should let any user buy a product
