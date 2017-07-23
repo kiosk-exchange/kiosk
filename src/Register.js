@@ -17,7 +17,9 @@ class Register extends Component {
       web3: null,
       kioskContract: null,
       dinContract: null,
-      priceContract: null
+      priceContract: null,
+      productNameInput: null,
+      productImageURLInput: null
     }
   }
 
@@ -56,24 +58,15 @@ class Register extends Component {
     e.preventDefault()
 
     var event = this.state.dinContract.NewRegistration({owner: this.state.web3.eth.accounts[0]})
-
     event.watch((function(error, result) {
       if (!error) {
-        const din = result["args"]["DIN"]["c"][0]
-        console.log(din)
-
-        // this.state.kioskContract.name({from: this.state.web3.eth.accounts[0]}, din, function(name) {
-        //   console.log(name)
-        // })
-
-        // this.state.kioskContract.setName({from: this.state.web3.eth.accounts[0]}, din, "Name", function(error, result) {
-        //   console.log(error)
-        //   console.log(result)
-        // })
-
-        // this.state.kioskContract.setPriceResolver({from: this.state.web3.eth.accounts[0]}, din, this.state.priceContract.address, function(error, result) {
-        //   console.log(result)
-        // })
+        const din = parseInt(result["args"]["DIN"]["c"][0])
+        console.log(`Created DIN ${din}`)
+        this.state.kioskContract.setName(din, this.state.productNameInput.value, {from: this.state.web3.eth.accounts[0]}, () => {
+          this.state.kioskContract.setImageURL(din, this.state.productImageURLInput.value,  {from: this.state.web3.eth.accounts[0]}, () => {
+            this.state.kioskContract.setPriceResolver(din, this.state.priceContract.address, {from: this.state.web3.eth.accounts[0]})
+          })
+        })
       } else {
         //TODO: Throw error
       }
@@ -92,15 +85,11 @@ class Register extends Component {
         <form onSubmit={this.registerProduct}>
           <label>
             Name:
-            <input type="text" ref='name' />
+            <input type="text" ref={name => this.state.productNameInput = name} />
           </label>
           <label>
             Image Url:
-            <input type="text" ref='imageurl' />
-          </label>
-          <label>
-            Price:
-            <input type="text" ref='price' />
+            <input type="text" ref={url => this.state.productImageURLInput = url} />
           </label>
           <input type="submit" value="Submit" />
         </form>
