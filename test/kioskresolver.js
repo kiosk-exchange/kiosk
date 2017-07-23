@@ -6,6 +6,7 @@ contract('KioskResolver', function(accounts) {
 
 	var productID = 10000001
 	var account1 = accounts[0]
+	var price = web3.toWei(0.25, 'ether')
 
 	it("should have a DIN registry address", () => {
 		return KioskResolver.deployed().then((instance) => {
@@ -67,6 +68,20 @@ contract('KioskResolver', function(accounts) {
 			assert.equal(price.toNumber(), expectedPrice, "The price was not set correctly")
 		})
 	})
+
+	it("should allow you to buy a product for the correct price", () => {
+		return KioskResolver.deployed().then((instance) => {
+			return instance.buy(productID, {from: account1, value: price})
+		})
+	})
+
+	// TODO: Test for throw (http://truffleframework.com/tutorials/testing-for-throws-in-solidity-tests)
+	it("should not allow you to buy a product for an incorrect price", () => {
+			return KioskResolver.deployed().then((instance) => {
+				return instance.buy(productID, {from: account1, value: 0})
+		})
+	})
+
 })
 
 
