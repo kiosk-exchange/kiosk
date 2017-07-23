@@ -37,14 +37,5 @@ contract TestDINRegistry {
     Assert.equal(owner, account1, "Registering a new DIN should set its owner correctly");
   }
 
-  function testTransferOwnership() {
-    uint DIN = testRegister();
-
-    registry.setOwner(DIN, account2);
-    address owner = registry.owner(DIN);
-    
-    Assert.equal(owner, account2, "DIN owner should be able to transfer ownership");
-  }
-
 
 }
