@@ -47,29 +47,27 @@ contract('KioskResolver', function(accounts) {
 	it("should have a price resolver for the product", () => {
 		var priceResolver;
 		return KioskResolver.deployed().then((instance) => {
-			return instance.priceResolver(productID)
-			}).then((priceResolver) => {
+			return instance.priceResolver(productID).then((priceResolver) => {
 				priceResolver = priceResolver
-				return PriceResolver.deployed()
-			}).then((instance) => {
-				assert.equal(priceResolver, instance.address, "The price resolver is not correct")
+				return PriceResolver.deployed().then((instance) => {
+					assert.equal(priceResolver, instance.address, "The price resolver is not correct")
+				})
+			})
 		})
 	})
 
+	it("should have a price for the product", () => {
+		var resolver
+		var expectedPrice = web3.toWei(0.25, 'ether')
+
+		return KioskResolver.deployed().then((instance) => {
+			resolver = instance
+			return resolver.price(productID)
+		}).then((price) => {
+			assert.equal(price.toNumber(), expectedPrice, "The price was not set correctly")
+		})
+	})
 })
-
-	// it("should have a price for the product", () => {
-	// 	var resolver
-	// 	var expectedPrice = web3.toWei(0.25, 'ether')
-
-	// 	return KioskResolver.deployed().then((instance) => {
-	// 		resolver = instance
-	// 		return resolver.price(productID)
-	// 	}).then((price) => {
-	// 		assert.equal(price.toNumber(), expectedPrice, "The price was not set correctly")
-	// 	})
-	// })
-
 
 
 	// Should not let a non-owner change product details
