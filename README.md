@@ -22,3 +22,7 @@ Finally, start the React project and open http://localhost:3000/ to see the app.
 ```
 $ yarn start
 ```
+## Testing
+```
+truffle test
+```
