@@ -23,7 +23,6 @@ contract('DINRegistry', function(accounts) {
       return registry.index();
     }).then(function(index) {
       newIndex = index;
-
       return registry.owner(newIndex);
     }).then(function(owner) {
       assert.equal(newIndex, 10000002, "The new index was not 10000002");

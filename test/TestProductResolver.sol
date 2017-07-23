@@ -25,12 +25,12 @@ contract TestProductResolver {
     registry.registerNewDINFor(account1);
   }
 
-  function testSetPriceResolver() {
-  	productResolver.setPriceResolver(DIN, priceResolver);
-  	uint price = productResolver.price(DIN);
-  	uint expected = 0.25 ether;
+  // function testSetPriceResolver() {
+  // 	productResolver.setPriceResolver(DIN, priceResolver);
+  // 	uint price = productResolver.price(DIN);
+  // 	uint expected = 0.25 ether;
 
-  	Assert.equal(price, expected, "It should set the price resolver, which has a price of 0.25 ether for every product");
-  }
+  // 	Assert.equal(price, expected, "It should set the price resolver, which has a price of 0.25 ether for every product");
+  // }
 
 }

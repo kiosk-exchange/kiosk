@@ -12,7 +12,10 @@ contract KioskResolver {
     struct Product {
         // Order Logic
         PriceResolver priceResolver;            // Returns the price of a given product. Required.
+        bool hasPriceResolver;
+
         InventoryResolver inventoryResolver;    // Returns whether a product is in stock. If not set, default is true.
+        bool hasInventoryResolver;
 
         // Product Info (Optional)
         string name;                            // Tile Slim White - Tile Trackers & Locators
@@ -161,7 +164,7 @@ contract KioskResolver {
     */
     function price(uint256 productID) constant returns (uint256) {
         // Only return a price if the price calculator is set
-        if (products[productID].priceResolver.initialized() == 1) {
+        if (products[productID].hasPriceResolver == true) {
             return products[productID].priceResolver.price(productID, msg.sender);
         }
         return 0;
@@ -173,7 +176,7 @@ contract KioskResolver {
     }
 
     function inStock(uint256 productID) constant returns (bool) {
-        if (products[productID].inventoryResolver.initialized() == 1) {
+        if (products[productID].hasInventoryResolver == true) {
             return products[productID].inventoryResolver.inStock(productID);
         }
         // If inventory resolver is not set, default is true
