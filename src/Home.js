@@ -45,6 +45,7 @@ class Home extends Component {
       this.initializeRegistry()
       this.initializeResolver()
 
+
     })
 
   }
@@ -121,9 +122,9 @@ class Home extends Component {
         </div>
 
         <div>
-          <Product 
-            className="product" 
-            imageURL={this.state.imageURL} 
+          <Product
+            className="product"
+            imageURL={this.state.imageURL}
             name={this.state.name}
             price={this.state.formattedPrice}
             buyHandler={this.buyHandler}

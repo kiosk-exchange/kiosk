@@ -9,10 +9,13 @@ class NavigationBar extends Component {
         <Grid>
           <Navbar.Header>
             <Navbar.Brand>
-              <a href="/">kiosk</a>
+              <a href="/">Kiosk</a>
             </Navbar.Brand>
             <Navbar.Toggle />
           </Navbar.Header>
+          <Nav>
+            <NavItem href="/register">Register</NavItem>
+          </Nav>
           <Nav pullRight>
             <NavItem href="/orders">My Orders</NavItem>
           </Nav>
