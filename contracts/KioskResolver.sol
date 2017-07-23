@@ -159,6 +159,10 @@ contract KioskResolver {
         msg.sender.transfer(amount);
     }
 
+    function inventoryResolver(uint256 productID) constant returns (address) {
+        return products[productID].inventoryResolver;
+    }
+
     /**
     *   The price of the product, including all tax, shipping costs, and discounts.
     */
@@ -170,8 +174,13 @@ contract KioskResolver {
         return 0;
     }
 
+    function priceResolver(uint256 productID) constant returns (address) {
+        return products[productID].priceResolver;
+    }
+
     function setPriceResolver(uint256 productID, PriceResolver resolver) only_owner(productID) {
         products[productID].priceResolver = resolver;
+        products[productID].hasPriceResolver = true;
         PriceResolverChanged(productID, resolver);
     }
 
@@ -185,6 +194,7 @@ contract KioskResolver {
 
     function setInventoryResolver(uint256 productID, InventoryResolver resolver) only_owner(productID) {
         products[productID].inventoryResolver = resolver;
+        products[productID].hasInventoryResolver = true;
         InventoryResolverChanged(productID, resolver);
     }
 

@@ -1,10 +1,11 @@
-var DINRegistry = artifacts.require("./DINRegistry.sol");
-var KioskResolver = artifacts.require("./KioskResolver.sol");
-var PriceCalculator = artifacts.require("./PriceCalculator.sol");
+var DINRegistry = artifacts.require('./DINRegistry.sol');
+var KioskResolver = artifacts.require('./KioskResolver.sol');
+var PriceResolver = artifacts.require('./PriceResolver.sol');
 
 contract('KioskResolver', function(accounts) {
 
-	var account1 = accounts[0];
+	var productID = 10000001
+	var account1 = accounts[0]
 
 	it("should have a DIN registry address", () => {
 		return KioskResolver.deployed().then((instance) => {
@@ -18,22 +19,16 @@ contract('KioskResolver', function(accounts) {
 
 	it("should have a product name Blue T-Shirt", () => {
 		return KioskResolver.deployed().then(function(instance) {
-			return instance.name(10000001).then(function(name) {
-				assert.equal(name, "Blue T-Shirt", "The DIN should have a name set from the migration");
+			return instance.name(productID).then(function(name) {
+				assert.equal(name, "Blue T-Shirt", "The DIN should have a name set from the migration")
 			})
 		})
 	})
 
-	// it("should have a price resolver for the first product", () => {
-	// 	return KioskResolver.deployed().then(function(instance) {
-	// 		return instance.
-	// 	}
-	// }
-
 	it("should let the owner of a DIN set product details", () => {
-		var registry;
-		var resolver;
-		var expectedPrice = web3.toWei(0.25, 'ether');
+		var registry
+		var resolver
+		var expectedPrice = web3.toWei(0.25, 'ether')
 
 		return KioskResolver.deployed().then((instance) => {
 			resolver = instance
@@ -43,23 +38,28 @@ contract('KioskResolver', function(accounts) {
 				return registry.registerNewDIN()
 
 			}).then(() => {
-				return resolver.setName(10000001, "Test")
+				return resolver.setName(productID, "Test")
 			}).then(() => {
-				return resolver.name(10000001)
+				return resolver.name(productID)
 			}).then((name) => {
-				assert.equal(name, "Test", "The name was not set correctly");
+				assert.equal(name, "Test", "The name was not set correctly")
 			}).then(() => {
-				return resolver.price(10000001)
+				return resolver.price(productID)
 			}).then((price) => {
-				assert.equal(price.toNumber(), expectedPrice, "The price was not set correctly");
+				assert.equal(price.toNumber(), expectedPrice, "The price was not set correctly")
 			})
 		})
 	})
 
-	it("should let a buyer buy a product", () => {
+	it("should have a price resolver for the product", () => {
+		var priceResolver;
 		return KioskResolver.deployed().then((instance) => {
-			resolver = instance
-			return resolver.buy(10000001)
+				return instance.priceResolver(productID)
+			}).then((priceResolver) => {
+				priceResolver = priceResolver
+				return PriceResolver.deployed().then((instance) => {
+					assert.equal(priceResolver, instance.address, "The price resolver is not correct")
+			})
 		})
 	})
 
@@ -68,7 +68,7 @@ contract('KioskResolver', function(accounts) {
 	// Should not accept ether
 
 
-});
+})
 
 
 
