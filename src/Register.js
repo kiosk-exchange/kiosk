@@ -1,24 +1,23 @@
 import React, { Component } from 'react'
 
 import NavigationBar from './NavigationBar'
-import Product from './Product'
 import getWeb3 from './utils/getWeb3'
 import kioskABI from '../build/contracts/KioskResolver.json'
 import dinABI from '../build/contracts/DINRegistry.json'
-
-
-// Hardcoded to first registered product
-var productID = 10000001;
+import priceABI from '../build/contracts/PriceResolver.json'
+const contract = require('truffle-contract')
+// import Product from './Product'
 
 class Register extends Component {
   constructor(props) {
     super(props)
 
     this.registerProduct = this.registerProduct.bind(this);
-
     this.state = {
+      web3: null,
       kioskContract: null,
-      dinContract: null
+      dinContract: null,
+      priceContract: null
     }
   }
 
@@ -34,23 +33,54 @@ class Register extends Component {
   }
 
   initializeResolvers() {
-    const contract = require('truffle-contract')
-
     const kioskContract = contract(kioskABI)
     kioskContract.setProvider(this.state.web3.currentProvider)
-    this.setState({
-      kioskContract: kioskContract
+    kioskContract.deployed().then((instance) => {
+      this.setState({ kioskContract: instance.contract })
     })
 
     const dinContract = contract(dinABI)
     dinContract.setProvider(this.state.web3.currentProvider)
-    this.setState({
-      dinContract: dinContract
+    dinContract.deployed().then((instance) => {
+      this.setState({ dinContract: instance.contract })
+    })
+
+    const priceResolverContract = contract(priceABI)
+    priceResolverContract.setProvider(this.state.web3.currentProvider)
+    priceResolverContract.deployed().then((instance) => {
+      this.setState({ priceContract: instance.contract })
     })
   }
 
   registerProduct(e) {
+    e.preventDefault()
 
+    var event = this.state.dinContract.NewRegistration({owner: this.state.web3.eth.accounts[0]})
+
+    event.watch((function(error, result) {
+      if (!error) {
+        const din = result["args"]["DIN"]["c"][0]
+        console.log(din)
+
+        // this.state.kioskContract.name({from: this.state.web3.eth.accounts[0]}, din, function(name) {
+        //   console.log(name)
+        // })
+
+        // this.state.kioskContract.setName({from: this.state.web3.eth.accounts[0]}, din, "Name", function(error, result) {
+        //   console.log(error)
+        //   console.log(result)
+        // })
+
+        // this.state.kioskContract.setPriceResolver({from: this.state.web3.eth.accounts[0]}, din, this.state.priceContract.address, function(error, result) {
+        //   console.log(result)
+        // })
+      } else {
+        //TODO: Throw error
+      }
+      event = null
+    }).bind(this))
+
+    this.state.dinContract.registerNewDIN({from: this.state.web3.eth.accounts[0]}, () => {})
   }
 
   render() {
@@ -80,10 +110,3 @@ class Register extends Component {
 }
 
 export default Register;
-
-// return resolver.setName(productID, "Blue T-Shirt").then(() => {
-//   return resolver.setPrice(productID, 10000000000000).then(() => {
-//     return resolver.setImageURL(productID, "https://vangogh.teespring.com/v3/image/CNR5jCc39PoWcclKu2kJxvzdvRk/480/560.jpg");
-//
-//   });
-// });
