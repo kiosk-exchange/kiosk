@@ -10,13 +10,14 @@ contract DINRegistrar {
 	// The latest DIN registered. This increments before a new DIN is registered.
     uint public index;
 
-    DINRegistry registry;
+    DINRegistry public registry;
 
     /**
      * Constructor
      */
-    function DINRegistrar(DINRegistry registry) {
-        registry = registry;
+    function DINRegistrar(DINRegistry _registry) {
+        registry = _registry;
+        index = _registry.genesis();
     }
 
     // Logged when a new DIN is registered.

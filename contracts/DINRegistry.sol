@@ -41,7 +41,8 @@ contract DINRegistry {
     }
 
     modifier only_unregistered(uint DIN) {
-        if (records[DIN].owner > 0 || DIN < genesis) throw;
+        require (records[DIN].owner == 0x0);
+        require (DIN > genesis);
         _;
     }
 
@@ -61,7 +62,7 @@ contract DINRegistry {
      * @param DIN The DIN to register.
      * @param owner The account that will own the registered DIN.
      */
-    function register(uint DIN, address owner) only_registrar() only_unregistered(DIN) {
+    function register(uint DIN, address owner) only_registrar only_unregistered(DIN) {
         records[DIN].owner = owner;
         NewOwner(DIN, owner);
     }

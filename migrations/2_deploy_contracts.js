@@ -7,6 +7,10 @@ var DemoToken = artifacts.require('./DemoToken.sol');
 module.exports = function(deployer) {
 
 	const genesis = 10000000
+	const DIN = 10000001
+	var registry;
+	var registrar;
+	var product;
 
 	// Deploy DINRegistry
 	deployer.deploy(DINRegistry, genesis).then(() => {
@@ -17,10 +21,32 @@ module.exports = function(deployer) {
 		return deployer.deploy(PublicProduct, DINRegistry.address)
 	}).then(() => {
 		return DINRegistry.deployed()
-	}).then((registry) => {
+	}).then((instance) => {
+		registry = instance
 		return registry.setRegistrar(DINRegistrar.address)
 	}).then(() => {
-		return deployer.deploy(DemoToken)
+		return DINRegistrar.deployed()
+	}).then((instance) => {
+		registrar = instance
+		return registrar.registerNewDIN(); // Register 10000001
 	})
+	// }).then(() => {
+	// 	return registry.owner(DIN);
+	// }).then((owner) => {
+	// 	console.log(owner);
+	// })
+
+	// 	return deployer.deploy(DemoToken, DIN) // Deploy token "product"
+	// }).then(() => {
+	// 	return PublicProduct.deployed()
+	// }).then((instance) => {
+	// 	product = instance;
+	// 	return product.setName(DIN, "DemoToken").then(() => {
+	// 	// return product.setPriceResolver(DIN, DemoToken.address).then(() => {
+	// 		// return product.setInventoryResolver(DIN, DemoToken.address).then(() => {
+	// 			// return product.setBuyHandler(DIN, DemoToken.address)
+	// 		// })
+	// 	})
+	// })
 
 };

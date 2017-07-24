@@ -11,35 +11,39 @@ pragma solidity ^0.4.11;
 */
 contract DemoToken is StandardToken, PriceResolver, InventoryResolver, BuyHandler {
 
-	uint256 productID;
+	uint256 DIN;
 	uint256 totalSupply;
 	Product product; // TODO: Determine from DIN.
 
 	uint256 public allocated; // Amount of tokens purchased.
 
-	modifier only_product() {
+	// Modifiers
+	modifier only_product {
     if (product != msg.sender) throw;
     _;
   }
 
-	// Price Resolver
-	function price(uint256 _productID, address buyer) constant returns (uint256 totalPrice) {
-		if (productID != _productID) throw;
+  modifier only_DIN(uint256 _DIN) {
+  	require (DIN == _DIN);
+  	_;
+  }
 
+  function DemoToken(uint256 _DIN) {
+  	DIN = _DIN;
+  }
+
+	// Price Resolver
+	function price(uint256 _productID, address buyer) only_DIN(_productID) constant returns (uint256 totalPrice) {
 		return 0.001 ether;
 	}
 
 	// Inventory Resolver
-	function inventory(uint256 _productID) constant returns (uint256) {
-		if (productID != _productID) throw;
-
+	function inventory(uint256 _productID) only_DIN(_productID) constant returns (uint256) {
 		return totalSupply - allocated;
 	}
 
-	// // Buy Handler
-	function handleOrder(uint256 _productID, uint256 quantity, address buyer) only_product() {
-		if (productID != _productID) throw;
-
+	// Buy Handler
+	function handleOrder(uint256 _productID, uint256 quantity, address buyer) only_DIN(_productID) only_product {
 		allocated += quantity;
 		balances[buyer] += quantity;
 	}
