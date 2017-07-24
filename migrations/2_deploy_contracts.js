@@ -29,24 +29,17 @@ module.exports = function(deployer) {
 	}).then((instance) => {
 		registrar = instance
 		return registrar.registerNewDIN(); // Register 10000001
+	}).then(() => {
+		return deployer.deploy(DemoToken, DIN) // Deploy token "product"
+	}).then(() => {
+		return PublicProduct.deployed()
+	}).then((instance) => {
+		product = instance;
+		return product.setPriceResolver(DIN, DemoToken.address).then(() => {
+			return product.setInventoryResolver(DIN, DemoToken.address).then(() => {
+				// return product.setBuyHandler(DIN, DemoToken.address)
+			})
+		})
 	})
-	// }).then(() => {
-	// 	return registry.owner(DIN);
-	// }).then((owner) => {
-	// 	console.log(owner);
-	// })
-
-	// 	return deployer.deploy(DemoToken, DIN) // Deploy token "product"
-	// }).then(() => {
-	// 	return PublicProduct.deployed()
-	// }).then((instance) => {
-	// 	product = instance;
-	// 	return product.setName(DIN, "DemoToken").then(() => {
-	// 	// return product.setPriceResolver(DIN, DemoToken.address).then(() => {
-	// 		// return product.setInventoryResolver(DIN, DemoToken.address).then(() => {
-	// 			// return product.setBuyHandler(DIN, DemoToken.address)
-	// 		// })
-	// 	})
-	// })
 
 };
