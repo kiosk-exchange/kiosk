@@ -119,5 +119,4 @@ contract DINRegistry {
         NewRegistrar(registrar);
      }
 
-
 }

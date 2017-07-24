@@ -5,35 +5,35 @@ pragma solidity ^0.4.11;
 */
 contract DINRegistrar {
 
-	  // // The latest DIN registered. This increments before a new DIN is registered.
-   //  uint public index;
+	  // The latest DIN registered. This increments before a new DIN is registered.
+    uint public index;
 
-   //  // Logged when a new DIN is registered.
-   //  event NewRegistration(uint indexed DIN, address indexed owner);
+    // Logged when a new DIN is registered.
+    event NewRegistration(uint indexed DIN, address indexed owner);
 
-   //  /**
-   //   * Registers a new DIN for the specified address.
-   //   * @param owner The owner of the new DIN.
-   //   */
-   //  function registerNewDINFor(address owner) {
-   //      register(owner);
-   //  }
+    /**
+     * Registers a new DIN for the specified address.
+     * @param owner The owner of the new DIN.
+     */
+    function registerNewDINFor(address owner) {
+        register(owner);
+    }
 
-   //  *
-   //   * Registers a new DIN to the address that calls this function.
-     
-   //  function registerNewDIN() {
-   //      register(msg.sender);
-   //  }
+    /**
+     * Registers a new DIN to the address that calls this function.
+     */
+    function registerNewDIN() {
+        register(msg.sender);
+    }
 
-   //      // Helper function
-   //  function register(address owner) private {
-   //      // Increment the DIN index
-   //      index++;
-   //      // Register the DIN to the address that calls this function
-   //      records[index].owner = owner;
-   //      NewRegistration(index, owner);
-   //  }
+        // Helper function
+    function register(address owner) private {
+        // Increment the DIN index
+        index++;
+        // Register the DIN to the address that calls this function
+        records[index].owner = owner;
+        NewRegistration(index, owner);
+    }
 
 
 }
