@@ -6,8 +6,8 @@ pragma solidity ^0.4.11;
 contract DINRegistry {
 
     struct Record {
-        address owner; // Address that registers the DIN
-        address resolver; // Address of the resolver contract. Resolvers store product information and process orders.
+        address owner; // Address that owns the DIN
+        address product; // Address of the product associated with the DIN
     }
 
     // DIN => Record
@@ -22,8 +22,8 @@ contract DINRegistry {
     // Logged when the owner of a DIN transfers ownership to a new account.
     event NewOwner(uint indexed DIN, address indexed owner);
 
-    // Logged when the resolver for a DIN changes.
-    event NewResolver(uint indexed DIN, address indexed resolver);
+    // Logged when the product for a DIN changes.
+    event NewProduct(uint indexed DIN, address indexed product);
 
     /**
     * Only the owner of the specified DIN may call functions with this modifier
@@ -49,10 +49,10 @@ contract DINRegistry {
     }
 
     /**
-     * Returns the address of the resolver for the specified DIN.
+     * Returns the address of the product for the specified DIN.
      */
-    function resolver(uint DIN) constant returns (address) {
-        return records[DIN].resolver;
+    function product(uint DIN) constant returns (address) {
+        return records[DIN].product;
     }
 
     /**
@@ -81,13 +81,13 @@ contract DINRegistry {
     }
 
     /**
-     * Sets the resolver address for the specified DIN.
+     * Sets the product for the specified DIN.
      * @param DIN The DIN to update.
-     * @param resolver The address of the resolver.
+     * @param product The address of the product.
      */
-    function setResolver(uint DIN, address resolver) only_owner(DIN) {
-        records[DIN].resolver = resolver;
-        NewResolver(DIN, resolver);
+    function setProduct(uint DIN, address product) only_owner(DIN) {
+        records[DIN].product = product;
+        NewProduct(DIN, product);
     }
 
     // Helper function

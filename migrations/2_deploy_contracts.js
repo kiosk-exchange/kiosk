@@ -1,5 +1,5 @@
 var DINRegistry = artifacts.require("./DINRegistry.sol");
-var KioskResolver = artifacts.require("./KioskResolver.sol");
+var PublicProduct = artifacts.require("./PublicProduct.sol");
 var PriceResolver = artifacts.require("./PriceResolver.sol");
 
 module.exports = function(deployer) {
@@ -9,7 +9,7 @@ module.exports = function(deployer) {
 	// Initialize the DIN Registry contract with a genesis number of 1000-0000.
 	deployer.deploy(DINRegistry, genesis).then(() => {
 			// Deploy the Kiosk Resolver with a reference to the DIN Registry
-			return deployer.deploy(KioskResolver, DINRegistry.address)
+			return deployer.deploy(PublicProduct, DINRegistry.address)
 		}).then(() => {
 			return DINRegistry.deployed()
 		}).then((registry) => {
@@ -18,7 +18,7 @@ module.exports = function(deployer) {
 		}).then(() => {
 			return deployer.deploy(PriceResolver)
 		}).then(() => {
-			return KioskResolver.deployed()
+			return PublicProduct.deployed()
 		}).then((resolver) => {
 				const productID = genesis + 1
 				return resolver.setPriceResolver(productID, PriceResolver.address).then(() => {
