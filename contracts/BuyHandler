@@ -1,0 +1,9 @@
+pragma solidity ^0.4.11;
+
+/**
+*  This is an example of a price resolver contract.
+*/
+
+contract BuyHandler {
+	
+}
