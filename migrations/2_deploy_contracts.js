@@ -2,6 +2,7 @@ var DINRegistry = artifacts.require('./DINRegistry.sol');
 var DINRegistrar = artifacts.require('./DINRegistrar.sol');
 var PublicProduct = artifacts.require('./PublicProduct.sol');
 var PriceResolver = artifacts.require('./PriceResolver.sol');
+var DemoToken = artifacts.require('./DemoToken.sol');
 
 module.exports = function(deployer) {
 
@@ -17,7 +18,9 @@ module.exports = function(deployer) {
 	}).then(() => {
 		return DINRegistry.deployed()
 	}).then((registry) => {
-		registry.setRegistrar(DINRegistrar.address)
+		return registry.setRegistrar(DINRegistrar.address)
+	}).then(() => {
+		return deployer.deploy(DemoToken)
 	})
 
 };
