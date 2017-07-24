@@ -86,7 +86,6 @@ contract PublicProduct is Product {
     bytes4 constant EAN_INTERFACE_ID = 0x9b2e8e30;
     bytes4 constant DESCRIPTION_INTERFACE_ID = 0x2c5f13e0;
 
-    // Only the product owner may change product information.
     modifier only_owner(uint256 productID) {
         if (dinRegistry.owner(productID) != msg.sender) throw;
         _;
@@ -97,13 +96,11 @@ contract PublicProduct is Product {
         _;
     }
 
-    // A product can only be purchased if the amount sent matches the price.
     modifier only_correct_price(uint256 productID, uint256 quantity) {
-        if (price(productID, quantity) != msg.value) throw;
+        if (price(productID) * quantity != msg.value) throw;
         _;
     }
 
-    // A product can only be purchased if it is in stock.
     modifier only_in_stock(uint256 productID, uint256 quantity) {
         if (inStock(productID, quantity) != true) throw;
         _;
@@ -127,7 +124,7 @@ contract PublicProduct is Product {
     * @param interfaceID The ID of the interface to check for.
     * @return True if the contract implements the requested interface.
     */
-    function supportsInterface(bytes4 interfaceID) returns (bool) {
+    function supportsInterface(bytes4 interfaceID) constant returns (bool) {
         return interfaceID == NAME_INTERFACE_ID ||
                interfaceID == RETAIL_URL_INTERFACE_ID ||
                interfaceID == IMAGE_URL_INTERFACE_ID ||
@@ -191,17 +188,13 @@ contract PublicProduct is Product {
     *   =========================
     */
 
-    function inventoryResolver(uint256 productID) constant returns (address) {
-        return products[productID].inventoryResolver;
-    }
-
     /**
     *   The price of the product, including all tax, shipping costs, and discounts.
     */
-    function price(uint256 productID, uint256 quantity) constant returns (uint256) {
-        // Only return a price if the price calculator is set.
+    function price(uint256 productID) constant returns (uint256) {
+        // Only return a price if the price resolver is set.
         if (products[productID].hasPriceResolver == true) {
-            return products[productID].priceResolver.price(productID, quantity, msg.sender);
+            return products[productID].priceResolver.price(productID, msg.sender);
         }
         return 0;
     }
@@ -222,6 +215,10 @@ contract PublicProduct is Product {
         }
         // If inventory resolver is not set, default is true
         return true;
+    }
+
+    function inventoryResolver(uint256 productID) constant returns (address) {
+        return products[productID].inventoryResolver;
     }
 
     function setInventoryResolver(uint256 productID, InventoryResolver resolver) only_owner(productID) {
