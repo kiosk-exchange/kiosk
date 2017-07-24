@@ -3,6 +3,7 @@ pragma solidity ^0.4.11;
 import './DINRegistry.sol';
 import './PriceResolver.sol';
 import './InventoryResolver.sol';
+import './BuyHandler.sol';
 
 /**
 *  This is the default Kiosk implementation of a public Product contract.
@@ -96,19 +97,14 @@ contract PublicProduct {
     }
 
     // A product can only be purchased if the amount sent matches the price.
-    modifier only_correct_price(uint256 productID) {
-        if (price(productID) != msg.value) throw;
-        _;
-    }
-
-    modifier only_correct_bulk_price(uint256 productID, uint256 quantity) {
+    modifier only_correct_price(uint256 productID, uint256 quantity) {
         if (price(productID, quantity) != msg.value) throw;
         _;
     }
 
     // A product can only be purchased if it is in stock.
     modifier only_in_stock(uint256 productID, uint256 quantity) {
-        if (inStock(productID) != true) throw;
+        if (inStock(productID, quantity) != true) throw;
         _;
     }
 
@@ -151,51 +147,30 @@ contract PublicProduct {
     *   =========================
     */
 
-    /**
-    *  Buy a product.
-    *  @param productID The DIN of the product to buy.
-    */
-    function buy(uint256 productID) 
-        payable
-        only_correct_price(productID) 
-        only_in_stock(productID, 1) 
-    {
-        addOrder(productID, 1);
-    }
 
     /**
-    *   Buy a quantity of a product.
-    *   @param productID The DIN of the product to buy.
-    *   @param quantity The quantity to buy
-    */
-    function buy(uint256 productID, uint256 quantity) 
-        payable 
-        only_correct_bulk_price(productID, quantity) 
-        only_in_stock(productID, quantity)
-    {
+     * Buy a quantity of a product.
+     * @param productID The DIN of the product to buy.
+     * @param quantity The quantity to buy.
+     */   
+    function buy(uint256 productID, uint256 quantity) payable only_correct_price(productID, quantity) only_in_stock(productID, quantity) {
         addOrder(productID, quantity);
     }
 
     function addOrder(uint256 productID, uint256 quantity) private {
         address seller = dinRegistry.owner(productID);
 
-        // Increment the order index for a new order
+        // Increment the order index for a new order.
         orderIndex++;
 
-        // Add the order to the order tracker
-        orders[orderIndex] = Order(
-            msg.sender, 
-            seller, 
-            productID, 
-            msg.value, 
-            block.timestamp
-        );
+        // Add the order to the order tracker.
+        orders[orderIndex] = Order(msg.sender, seller, productID, msg.value, block.timestamp);
 
-        pendingWithdrawals[msg.sender] += msg.value;
+        pendingWithdrawals[productID] += msg.value;
 
-        // Call the seller's buy handler
+        // Call the seller's buy handler.
         if (products[productID].hasBuyHandler == true) {
-            products[productID].buyHander.handleOrder(productID, quantity, msg.sender);
+            products[productID].buyHandler.handleOrder(productID, quantity, msg.sender);
         }
     }
 
@@ -204,7 +179,7 @@ contract PublicProduct {
     */
     function withdraw(uint256 productID) only_owner(productID) {
         uint256 amount = pendingWithdrawals[productID];
-        // Zero the pending refund before to prevent re-entrancy attacks
+        // Zero the pending refund before to prevent re-entrancy attacks.
         pendingWithdrawals[productID] = 0;
         msg.sender.transfer(amount);
     }
@@ -222,10 +197,10 @@ contract PublicProduct {
     /**
     *   The price of the product, including all tax, shipping costs, and discounts.
     */
-    function price(uint256 productID) constant returns (uint256) {
-        // Only return a price if the price calculator is set
+    function price(uint256 productID, uint256 quantity) constant returns (uint256) {
+        // Only return a price if the price calculator is set.
         if (products[productID].hasPriceResolver == true) {
-            return products[productID].priceResolver.price(productID, msg.sender);
+            return products[productID].priceResolver.price(productID, quantity, msg.sender);
         }
         return 0;
     }
@@ -240,9 +215,9 @@ contract PublicProduct {
         PriceResolverChanged(productID, resolver);
     }
 
-    function inStock(uint256 productID) constant returns (bool) {
+    function inStock(uint256 productID, uint256 quantity) constant returns (bool) {
         if (products[productID].hasInventoryResolver == true) {
-            return products[productID].inventoryResolver.inStock(productID);
+            return products[productID].inventoryResolver.inventory(productID) > quantity;
         }
         // If inventory resolver is not set, default is true
         return true;

@@ -1,35 +1,47 @@
 pragma solidity ^0.4.11;
 
+import './DINRegistrar.sol';
+
 /**
 *  This contract is the Decentralized Identification Number (DIN) registry.
 */
 contract DINRegistry {
 
     struct Record {
-        address owner; // Address that owns the DIN
-        address product; // Address of the product associated with the DIN
+        address owner; // Address that owns the DIN.
+        address product; // Address of the product associated with the DIN.
     }
 
     // DIN => Record
     mapping (uint => Record) records;
 
-    // The latest DIN registered. This increments before a new DIN is registered.
-    uint public index;
+    // The address of the registrar contract to register new DINs.
+    address public registrar;
 
-    // Logged when a new DIN is registered.
-    event NewRegistration(uint indexed DIN, address indexed owner);
+    // The first DIN registered. Lower bounds for DINs.
+    uint public genesis;
 
     // Logged when the owner of a DIN transfers ownership to a new account.
     event NewOwner(uint indexed DIN, address indexed owner);
 
-    // Logged when the product for a DIN changes.
+    // Logged when the product associated with a DIN changes.
     event NewProduct(uint indexed DIN, address indexed product);
 
-    /**
-    * Only the owner of the specified DIN may call functions with this modifier
-    */
+    // Logged when the address of the registrar contract changes.
+    event NewRegistrar(address registrar);
+
     modifier only_owner(uint DIN) {
         if (records[DIN].owner != msg.sender) throw;
+        _;
+    }
+
+    modifier only_registrar() {
+        if (registrar != msg.sender) throw;
+        _;
+    }
+
+    modifier only_unregistered(uint DIN) {
+        if (records[DIN].owner > 0 || DIN < genesis) throw;
         _;
     }
 
@@ -38,7 +50,30 @@ contract DINRegistry {
      * @param genesis The start index for DIN numbering.
      */
     function DINRegistry(uint genesis) {
-        index = genesis;
+        // Register the genesis DIN to Kiosk.
+        records[genesis].owner = msg.sender;
+        genesis = genesis;
+    }
+
+    /**
+     * Register a new DIN.
+     * @param DIN The DIN to register.
+     * @param owner The account that will own the registered DIN.
+     */
+    function register(uint DIN, address owner) only_registrar() only_unregistered(DIN) {
+        records[DIN].owner = owner;
+        NewOwner(DIN, owner);
+    }
+
+    /**
+     * Register multiple new DINs.
+     * @param DINs The DINs to register.
+     * @param owner The account that will own the registered DINs.
+     */
+    function register(uint[] DINs, address owner) only_registrar() {
+        for (uint i = 0; i < DINs.length; i++) {
+            register(i, owner);
+        }
     }
 
     /**
@@ -49,25 +84,10 @@ contract DINRegistry {
     }
 
     /**
-     * Returns the address of the product for the specified DIN.
-     */
+    * Returns the address of the product for the specified DIN.
+    */
     function product(uint DIN) constant returns (address) {
         return records[DIN].product;
-    }
-
-    /**
-     * Registers a new DIN for the specified address.
-     * @param owner The owner of the new DIN.
-     */
-    function registerNewDINFor(address owner) {
-        register(owner);
-    }
-
-    /**
-     * Registers a new DIN to the address that calls this function.
-     */
-    function registerNewDIN() {
-        register(msg.sender);
     }
 
     /**
@@ -90,12 +110,14 @@ contract DINRegistry {
         NewProduct(DIN, product);
     }
 
-    // Helper function
-    function register(address owner) private {
-        // Increment the DIN index
-        index++;
-        // Register the DIN to the address that calls this function
-        records[index].owner = owner;
-        NewRegistration(index, owner);
-    }
+    /**
+     * Sets the registrar for the DIN Registry.
+     * @param registrar The address of the new registrar.
+     */
+     function setRegistrar(address registrar) only_owner(genesis) {
+        registrar = registrar;
+        NewRegistrar(registrar);
+     }
+
+
 }

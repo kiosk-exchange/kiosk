@@ -1,12 +1,8 @@
 pragma solidity ^0.4.11;
 
 /**
-*  This is an example of a price resolver contract.
+*  This is the interface for a price resolver.
 */
 contract PriceResolver {
-
-	function price(uint256 productID, address buyer) constant returns (uint256 price) {
-		return 0.25 ether;
-	}
-
+	function price(uint256 productID, uint256 quantity, address buyer) constant returns (uint256 totalPrice);
 }
