@@ -1,30 +1,23 @@
-var DINRegistry = artifacts.require("./DINRegistry.sol");
-var PublicProduct = artifacts.require("./PublicProduct.sol");
-var PriceResolver = artifacts.require("./PriceResolver.sol");
+var DINRegistry = artifacts.require('./DINRegistry.sol');
+var DINRegistrar = artifacts.require('./DINRegistrar.sol');
+var PublicProduct = artifacts.require('./PublicProduct.sol');
+var PriceResolver = artifacts.require('./PriceResolver.sol');
 
 module.exports = function(deployer) {
 
 	const genesis = 10000000
 
-	// Initialize the DIN Registry contract with a genesis number of 1000-0000.
+	// Deploy DINRegistry
 	deployer.deploy(DINRegistry, genesis).then(() => {
-			// Deploy the Kiosk Resolver with a reference to the DIN Registry
-			return deployer.deploy(PublicProduct, DINRegistry.address)
-		}).then(() => {
-			return DINRegistry.deployed()
-		}).then((registry) => {
-			// Register DIN 1000-0001.
-			return registry.registerNewDIN()
-		}).then(() => {
-			return deployer.deploy(PriceResolver)
-		}).then(() => {
-			return PublicProduct.deployed()
-		}).then((resolver) => {
-				const productID = genesis + 1
-				return resolver.setPriceResolver(productID, PriceResolver.address).then(() => {
-					return resolver.setName(productID, "Blue T-Shirt").then(() => {
-						return resolver.setImageURL(productID, "https://vangogh.teespring.com/v3/image/CNR5jCc39PoWcclKu2kJxvzdvRk/480/560.jpg");
-			});
-		});
-	});
+		// Deploy DINRegistrar
+		return deployer.deploy(DINRegistrar, DINRegistry.address)
+	}).then(() => {
+		// Deploy PublicProduct
+		return deployer.deploy(PublicProduct, DINRegistry.address)
+	}).then(() => {
+		return DINRegistry.deployed()
+	}).then((registry) => {
+		registry.setRegistrar(DINRegistrar.address)
+	})
+
 };

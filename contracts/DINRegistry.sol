@@ -35,7 +35,7 @@ contract DINRegistry {
         _;
     }
 
-    modifier only_registrar() {
+    modifier only_registrar {
         if (registrar != msg.sender) throw;
         _;
     }
@@ -47,12 +47,13 @@ contract DINRegistry {
 
     /**
      * Constructs a new DIN registry.
-     * @param genesis The start index for DIN numbering.
+     * @param _genesis The start index for DIN numbering.
      */
-    function DINRegistry(uint genesis) {
+    function DINRegistry(uint _genesis) {
+        genesis = _genesis;
+
         // Register the genesis DIN to Kiosk.
         records[genesis].owner = msg.sender;
-        genesis = genesis;
     }
 
     /**
@@ -70,7 +71,7 @@ contract DINRegistry {
      * @param DINs The DINs to register.
      * @param owner The account that will own the registered DINs.
      */
-    function register(uint[] DINs, address owner) only_registrar() {
+    function register(uint[] DINs, address owner) only_registrar {
         for (uint i = 0; i < DINs.length; i++) {
             register(i, owner);
         }
@@ -112,11 +113,11 @@ contract DINRegistry {
 
     /**
      * Sets the registrar for the DIN Registry.
-     * @param registrar The address of the new registrar.
+     * @param _registrar The address of the new registrar.
      */
-     function setRegistrar(address registrar) only_owner(genesis) {
-        registrar = registrar;
+    function setRegistrar(address _registrar) only_owner(genesis) {
+        registrar = _registrar;
         NewRegistrar(registrar);
-     }
+    }
 
 }

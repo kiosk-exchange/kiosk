@@ -7,10 +7,17 @@ import './DINRegistry.sol';
 */
 contract DINRegistrar {
 
-	  // The latest DIN registered. This increments before a new DIN is registered.
+	// The latest DIN registered. This increments before a new DIN is registered.
     uint public index;
 
-    DINRegistry dinRegistry;
+    DINRegistry registry;
+
+    /**
+     * Constructor
+     */
+    function DINRegistrar(DINRegistry registry) {
+        registry = registry;
+    }
 
     // Logged when a new DIN is registered.
     event NewRegistration(uint indexed DIN, address indexed owner);
@@ -30,12 +37,12 @@ contract DINRegistrar {
         register(msg.sender);
     }
 
-        // Helper function
+    // Helper function
     function register(address owner) private {
         // Increment the DIN index
         index++;
         // Register the DIN to the address that calls this function
-        dinRegistry.register(index, owner);
+        registry.register(index, owner);
         NewRegistration(index, owner);
     }
 

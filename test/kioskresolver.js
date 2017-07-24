@@ -1,15 +1,15 @@
 var DINRegistry = artifacts.require('./DINRegistry.sol');
-var KioskResolver = artifacts.require('./KioskResolver.sol');
+var PublicProduct = artifacts.require('./PublicProduct.sol');
 var PriceResolver = artifacts.require('./PriceResolver.sol');
 
-contract('KioskResolver', function(accounts) {
+contract('PublicProduct', function(accounts) {
 
 	var productID = 10000001
 	var account1 = accounts[0]
 	var price = web3.toWei(0.25, 'ether')
 
 	it("should have a DIN registry address", () => {
-		return KioskResolver.deployed().then((instance) => {
+		return PublicProduct.deployed().then((instance) => {
 			return instance.dinRegistry()
 		}).then(function(dinRegistry) {
 			return DINRegistry.deployed().then((instance) => {
@@ -19,7 +19,7 @@ contract('KioskResolver', function(accounts) {
 	})
 
 	it("should have a product name Blue T-Shirt", () => {
-		return KioskResolver.deployed().then(function(instance) {
+		return PublicProduct.deployed().then(function(instance) {
 			return instance.name(productID).then(function(name) {
 				assert.equal(name, "Blue T-Shirt", "The DIN should have a name set from the migration")
 			})
@@ -30,7 +30,7 @@ contract('KioskResolver', function(accounts) {
 		var registry
 		var resolver
 
-		return KioskResolver.deployed().then((instance) => {
+		return PublicProduct.deployed().then((instance) => {
 			resolver = instance
 			return DINRegistry.deployed().then((instance) => {
 				registry = instance
@@ -47,7 +47,7 @@ contract('KioskResolver', function(accounts) {
 
 	it("should have a price resolver for the product", () => {
 		var priceResolver;
-		return KioskResolver.deployed().then((instance) => {
+		return PublicProduct.deployed().then((instance) => {
 			return instance.priceResolver(productID).then((priceResolver) => {
 				priceResolver = priceResolver
 				return PriceResolver.deployed().then((instance) => {
@@ -61,7 +61,7 @@ contract('KioskResolver', function(accounts) {
 		var resolver
 		var expectedPrice = web3.toWei(0.25, 'ether')
 
-		return KioskResolver.deployed().then((instance) => {
+		return PublicProduct.deployed().then((instance) => {
 			resolver = instance
 			return resolver.price(productID)
 		}).then((price) => {
@@ -70,7 +70,7 @@ contract('KioskResolver', function(accounts) {
 	})
 
 	it("should allow you to buy a product for the correct price", () => {
-		return KioskResolver.deployed().then((instance) => {
+		return PublicProduct.deployed().then((instance) => {
 			return instance.buy(productID, {from: account1, value: price})
 		})
 	})
