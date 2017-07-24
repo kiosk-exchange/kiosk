@@ -4,11 +4,12 @@ import './DINRegistry.sol';
 import './PriceResolver.sol';
 import './InventoryResolver.sol';
 import './BuyHandler.sol';
+import './Product.sol';
 
 /**
 *  This is the default Kiosk implementation of a public Product contract.
 */
-contract PublicProduct {
+contract PublicProduct is Product {
 
     struct Product {
         PriceResolver priceResolver;            // Returns the price of a given product. Required.

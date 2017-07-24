@@ -1,5 +1,7 @@
 pragma solidity ^0.4.11;
 
+import './DINRegistry.sol';
+
 /**
 *  This is the registrar contract for the DINRegistry. DINs are distributed sequentially for now.
 */
@@ -7,6 +9,8 @@ contract DINRegistrar {
 
 	  // The latest DIN registered. This increments before a new DIN is registered.
     uint public index;
+
+    DINRegistry dinRegistry;
 
     // Logged when a new DIN is registered.
     event NewRegistration(uint indexed DIN, address indexed owner);
@@ -31,7 +35,7 @@ contract DINRegistrar {
         // Increment the DIN index
         index++;
         // Register the DIN to the address that calls this function
-        records[index].owner = owner;
+        dinRegistry.register(index, owner);
         NewRegistration(index, owner);
     }
 

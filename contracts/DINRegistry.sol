@@ -13,7 +13,7 @@ contract DINRegistry {
     }
 
     // DIN => Record
-    mapping (uint => Record) records;
+    mapping (uint => Record) public records;
 
     // The address of the registrar contract to register new DINs.
     address public registrar;
