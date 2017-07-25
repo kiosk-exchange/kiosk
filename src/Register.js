@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import NavigationBar from './NavigationBar'
+import NavigationBar from './Components/NavigationBar'
 import getWeb3 from './utils/getWeb3'
 import kioskABI from '../build/contracts/KioskResolver.json'
 import dinABI from '../build/contracts/DINRegistry.json'
