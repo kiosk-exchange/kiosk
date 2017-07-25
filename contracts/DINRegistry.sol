@@ -20,7 +20,7 @@ contract DINRegistry {
     event NewRegistration(uint indexed DIN, address indexed owner);
 
     // Logged when the owner of a DIN transfers ownership to a new account.
-    event NewOwner(uint indexed DIN, address indexed owner, address index oldOwner);
+    event NewOwner(uint indexed DIN, address indexed owner, address indexed oldOwner);
 
     // Logged when the resolver for a DIN changes.
     event NewResolver(uint indexed DIN, address indexed resolver);
