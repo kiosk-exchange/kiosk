@@ -5,7 +5,7 @@ var DemoToken = artifacts.require('./DemoToken');
 contract('DemoToken', function(accounts) {
 
 	var DIN = 10000001
-	var expectedPrice = web3.toWei(1, 'ether')
+	var expectedPrice = web3.toWei(.001, 'ether')
 	var orderIndex = 0
 	var account1 = accounts[0]
 
@@ -73,7 +73,7 @@ contract('DemoToken', function(accounts) {
 		})
 	})
 
-	it("should increment the order index after a purchase", () => {
+	it("should increment the public product order index after a purchase", () => {
 		var product
 		var index
 
@@ -82,7 +82,6 @@ contract('DemoToken', function(accounts) {
 			return product.orderIndex()
 		}).then((orderIndex) => {
 			index = orderIndex.toNumber()
-			console.log(index)
 			return product.buy(DIN, 1, { value: expectedPrice })
 		}).then(() => {
 			return product.orderIndex()
@@ -111,5 +110,24 @@ contract('DemoToken', function(accounts) {
 		})
 	})
 
+	it("should update the token inventory after a purchase", () => {
+		var token
+		var initialSold
+		var quantity = 10
+
+		return DemoToken.deployed().then((instance) => {
+			token = instance
+			return token.sold()
+		}).then((sold) => {
+			initialSold = sold.toNumber()
+			return PublicProduct.deployed().then((instance) => {
+				return instance.buy(DIN, quantity, { value: expectedPrice * quantity })
+			}).then(() => {
+				return token.sold()
+			}).then((sold) => {
+				assert.equal(sold.toNumber(), initialSold + quantity, "The sold amount is incorrect")
+			})
+		})
+	})
 
 })

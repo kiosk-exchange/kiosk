@@ -15,7 +15,7 @@ contract DemoToken is StandardToken, PriceResolver, InventoryResolver, BuyHandle
 	uint256 public DIN;
 	Product public product;
 
-	uint256 public sold; // Amount of tokens already sold.
+	uint256 public sold = 0; // Amount of tokens already sold.
 
 	string public name = "DemoToken"; 
 	string public symbol = "DEMO";
@@ -36,7 +36,7 @@ contract DemoToken is StandardToken, PriceResolver, InventoryResolver, BuyHandle
 
 	// Price Resolver
 	function price(uint256 productID, address buyer) only_product(productID) constant returns (uint256 totalPrice) {
-		return 1 ether;
+		return .001 ether;
 	}
 
 	// Inventory Resolver
