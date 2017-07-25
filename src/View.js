@@ -3,20 +3,19 @@ import React, { Component } from 'react'
 import NavigationBar from './Components/NavigationBar'
 import ProductView from './Components/ProductView'
 
-// Hardcoded to first registered product
-var productID = 10000001;
+class View extends Component {
 
-class Home extends Component {
   render() {
+    console.log(this.props.match.din)
     return (
       <div className="Home">
         <div>
           <NavigationBar className="navigation-bar" />
         </div>
-        <ProductView din={productID}/>
+        <ProductView din={parseInt(this.props.match.params.din)}/>
       </div>
     );
   }
 }
 
-export default Home;
+export default View;
