@@ -1,6 +1,6 @@
-pragma solidity ^0.4.11;
-
 import './DINRegistrar.sol';
+
+pragma solidity ^0.4.11;
 
 /**
 *  This contract is the Decentralized Identification Number (DIN) registry.

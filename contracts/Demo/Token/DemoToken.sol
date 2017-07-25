@@ -36,7 +36,7 @@ contract DemoToken is StandardToken, PriceResolver, InventoryResolver, BuyHandle
 
 	// Price Resolver
 	function price(uint256 productID, address buyer) only_product(productID) constant returns (uint256 totalPrice) {
-		return 0.001 ether;
+		return 1 ether;
 	}
 
 	// Inventory Resolver

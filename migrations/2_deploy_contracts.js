@@ -39,11 +39,11 @@ module.exports = function(deployer) {
 		return PublicProduct.deployed()
 	}).then((instance) => {
 		product = instance;
-		return product.setPriceResolver(DIN, DemoToken.address).then(() => {
-			return product.setInventoryResolver(DIN, DemoToken.address).then(() => {
-				// return product.setBuyHandler(DIN, DemoToken.address)
-			})
-		})
+		return product.setBuyHandler(DIN, DemoToken.address)
+	}).then(() => {
+		return product.setPriceResolver(DIN, DemoToken.address)
+	}).then(() => {
+		return product.setInventoryResolver(DIN, DemoToken.address)
 	})
 
 };
