@@ -211,7 +211,7 @@ contract PublicProduct is Product {
 
     function inStock(uint256 productID, uint256 quantity) constant returns (bool) {
         if (products[productID].hasInventoryResolver == true) {
-            return products[productID].inventoryResolver.inventory(productID) > quantity;
+            return products[productID].inventoryResolver.inventory(productID) >= quantity;
         }
         // If inventory resolver is not set, default is true
         return true;

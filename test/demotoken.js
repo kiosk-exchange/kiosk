@@ -110,7 +110,7 @@ contract('DemoToken', function(accounts) {
 		})
 	})
 
-	it("should update the token inventory after a purchase", () => {
+	it("should update the token sold amount after a purchase", () => {
 		var token
 		var initialSold
 		var quantity = 10
@@ -127,6 +127,50 @@ contract('DemoToken', function(accounts) {
 			}).then((sold) => {
 				assert.equal(sold.toNumber(), initialSold + quantity, "The sold amount is incorrect")
 			})
+		})
+	})
+
+	it("should have the correct inventory", () => {
+		var token
+		var product
+
+		var totalSupply
+		var sold
+
+		return DemoToken.deployed().then((instance) => {
+			token = instance
+			return token.totalSupply()
+		}).then((supply) => {
+			totalSupply = supply.toNumber()
+			return token.sold()
+		}).then((tokensSold) => {
+			sold = tokensSold.toNumber()
+			return PublicProduct.deployed().then((instance) => {
+				product = instance
+				return product.inStock(DIN, totalSupply - sold)
+			}).then((inStock) => {
+				assert.equal(inStock, true, "The inventory is incorrect")
+				return product.inStock(DIN, totalSupply - sold + 1)
+			}).then((inStock) => {
+				assert.equal(inStock, false, "The inventory is incorrect")
+			})
+		})
+	})
+
+	it("should not let outside addresses call its resolver methods", () => {
+		var token
+
+		return DemoToken.deployed().then((instance) => {
+			token = instance
+			return token.price(DIN, account1)
+		}).then().catch((error) => {
+			assert.isDefined(error, "There was no error")
+			return token.inventory(DIN)
+		}).then().catch((error) => {
+			assert.isDefined(error, "There was no error")
+			return token.handleOrder(DIN, 1, account1)
+		}).then().catch((error) => {
+			assert.isDefined(error, "There was no error")
 		})
 	})
 
