@@ -1,30 +1,45 @@
-var DINRegistry = artifacts.require("./DINRegistry.sol");
-var KioskResolver = artifacts.require("./KioskResolver.sol");
-var PriceResolver = artifacts.require("./PriceResolver.sol");
+var DINRegistry = artifacts.require('./DINRegistry.sol');
+var DINRegistrar = artifacts.require('./DINRegistrar.sol');
+var PublicProduct = artifacts.require('./PublicProduct.sol');
+var PriceResolver = artifacts.require('./PriceResolver.sol');
+var DemoToken = artifacts.require('./DemoToken.sol');
 
 module.exports = function(deployer) {
 
 	const genesis = 10000000
+	const DIN = 10000001
+	var registry;
+	var registrar;
+	var product;
 
-	// Initialize the DIN Registry contract with a genesis number of 1000-0000.
+	// Deploy DINRegistry
 	deployer.deploy(DINRegistry, genesis).then(() => {
-			// Deploy the Kiosk Resolver with a reference to the DIN Registry
-			return deployer.deploy(KioskResolver, DINRegistry.address)
-		}).then(() => {
-			return DINRegistry.deployed()
-		}).then((registry) => {
-			// Register DIN 1000-0001.
-			return registry.registerNewDIN()
-		}).then(() => {
-			return deployer.deploy(PriceResolver)
-		}).then(() => {
-			return KioskResolver.deployed()
-		}).then((resolver) => {
-				const productID = genesis + 1
-				return resolver.setPriceResolver(productID, PriceResolver.address).then(() => {
-					return resolver.setName(productID, "Blue T-Shirt").then(() => {
-						return resolver.setImageURL(productID, "https://vangogh.teespring.com/v3/image/CNR5jCc39PoWcclKu2kJxvzdvRk/480/560.jpg");
-			});
-		});
-	});
+		// Deploy DINRegistrar
+		return deployer.deploy(DINRegistrar, DINRegistry.address)
+	}).then(() => {
+		// Deploy PublicProduct
+		return deployer.deploy(PublicProduct, DINRegistry.address)
+	}).then(() => {
+		return DINRegistry.deployed()
+	}).then((instance) => {
+		registry = instance
+		return registry.setRegistrar(DINRegistrar.address)
+	}).then(() => {
+		return DINRegistrar.deployed()
+	}).then((instance) => {
+		registrar = instance
+		return registrar.registerNewDIN(); // Register 10000001
+	}).then(() => {
+		return deployer.deploy(DemoToken, DIN) // Deploy token "product"
+	}).then(() => {
+		return PublicProduct.deployed()
+	}).then((instance) => {
+		product = instance;
+		return product.setPriceResolver(DIN, DemoToken.address).then(() => {
+			return product.setInventoryResolver(DIN, DemoToken.address).then(() => {
+				// return product.setBuyHandler(DIN, DemoToken.address)
+			})
+		})
+	})
+
 };

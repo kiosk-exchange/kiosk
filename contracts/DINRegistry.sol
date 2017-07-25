@@ -1,44 +1,81 @@
 pragma solidity ^0.4.11;
 
+import './DINRegistrar.sol';
+
 /**
 *  This contract is the Decentralized Identification Number (DIN) registry.
 */
 contract DINRegistry {
 
     struct Record {
-        address owner; // Address that registers the DIN
-        address resolver; // Address of the resolver contract. Resolvers store product information and process orders.
+        address owner; // Address that owns the DIN.
+        address product; // Address of the product associated with the DIN.
     }
 
     // DIN => Record
     mapping (uint => Record) records;
 
-    // The latest DIN registered. This increments before a new DIN is registered.
-    uint public index;
+    // The address of the registrar contract to register new DINs.
+    address public registrar;
 
-    // Logged when a new DIN is registered.
-    event NewRegistration(uint indexed DIN, address indexed owner);
+    // The first DIN registered. Lower bounds for DINs.
+    uint public genesis;
 
     // Logged when the owner of a DIN transfers ownership to a new account.
     event NewOwner(uint indexed DIN, address indexed owner);
 
-    // Logged when the resolver for a DIN changes.
-    event NewResolver(uint indexed DIN, address indexed resolver);
+    // Logged when the product associated with a DIN changes.
+    event NewProduct(uint indexed DIN, address indexed product);
 
-    /**
-    * Only the owner of the specified DIN may call functions with this modifier
-    */
+    // Logged when the address of the registrar contract changes.
+    event NewRegistrar(address registrar);
+
     modifier only_owner(uint DIN) {
         if (records[DIN].owner != msg.sender) throw;
         _;
     }
 
+    modifier only_registrar {
+        if (registrar != msg.sender) throw;
+        _;
+    }
+
+    modifier only_unregistered(uint DIN) {
+        require (records[DIN].owner == 0x0);
+        require (DIN > genesis);
+        _;
+    }
+
     /**
      * Constructs a new DIN registry.
-     * @param genesis The start index for DIN numbering.
+     * @param _genesis The start index for DIN numbering.
      */
-    function DINRegistry(uint genesis) {
-        index = genesis;
+    function DINRegistry(uint _genesis) {
+        genesis = _genesis;
+
+        // Register the genesis DIN to Kiosk.
+        records[genesis].owner = msg.sender;
+    }
+
+    /**
+     * Register a new DIN.
+     * @param DIN The DIN to register.
+     * @param owner The account that will own the registered DIN.
+     */
+    function register(uint DIN, address owner) only_registrar only_unregistered(DIN) {
+        records[DIN].owner = owner;
+        NewOwner(DIN, owner);
+    }
+
+    /**
+     * Register multiple new DINs.
+     * @param DINs The DINs to register.
+     * @param owner The account that will own the registered DINs.
+     */
+    function register(uint[] DINs, address owner) only_registrar {
+        for (uint i = 0; i < DINs.length; i++) {
+            register(i, owner);
+        }
     }
 
     /**
@@ -49,25 +86,10 @@ contract DINRegistry {
     }
 
     /**
-     * Returns the address of the resolver for the specified DIN.
-     */
-    function resolver(uint DIN) constant returns (address) {
-        return records[DIN].resolver;
-    }
-
-    /**
-     * Registers a new DIN for the specified address.
-     * @param owner The owner of the new DIN.
-     */
-    function registerNewDINFor(address owner) {
-        register(owner);
-    }
-
-    /**
-     * Registers a new DIN to the address that calls this function.
-     */
-    function registerNewDIN() {
-        register(msg.sender);
+    * Returns the address of the product for the specified DIN.
+    */
+    function product(uint DIN) constant returns (address) {
+        return records[DIN].product;
     }
 
     /**
@@ -81,21 +103,22 @@ contract DINRegistry {
     }
 
     /**
-     * Sets the resolver address for the specified DIN.
+     * Sets the product for the specified DIN.
      * @param DIN The DIN to update.
-     * @param resolver The address of the resolver.
+     * @param product The address of the product.
      */
-    function setResolver(uint DIN, address resolver) only_owner(DIN) {
-        records[DIN].resolver = resolver;
-        NewResolver(DIN, resolver);
+    function setProduct(uint DIN, address product) only_owner(DIN) {
+        records[DIN].product = product;
+        NewProduct(DIN, product);
     }
 
-    // Helper function
-    function register(address owner) private {
-        // Increment the DIN index
-        index++;
-        // Register the DIN to the address that calls this function
-        records[index].owner = owner;
-        NewRegistration(index, owner);
+    /**
+     * Sets the registrar for the DIN Registry.
+     * @param _registrar The address of the new registrar.
+     */
+    function setRegistrar(address _registrar) only_owner(genesis) {
+        registrar = _registrar;
+        NewRegistrar(registrar);
     }
+
 }

@@ -3,21 +3,24 @@ pragma solidity ^0.4.11;
 import './DINRegistry.sol';
 import './PriceResolver.sol';
 import './InventoryResolver.sol';
+import './BuyHandler.sol';
+import './Product.sol';
 
 /**
-*  This is the default Kiosk implementation of a resolver contract for products.
+*  This is the default Kiosk implementation of a public Product contract.
 */
-contract KioskResolver {
+contract PublicProduct is Product {
 
     struct Product {
-        // Order Logic
         PriceResolver priceResolver;            // Returns the price of a given product. Required.
-        bool hasPriceResolver;
+        bool hasPriceResolver;                  // Returns true if price resolver is set.
 
-        InventoryResolver inventoryResolver;    // Returns whether a product is in stock. If not set, default is true.
-        bool hasInventoryResolver;
+        InventoryResolver inventoryResolver;    // Returns whether a product is in stock (optional). If not set, default is true.
+        bool hasInventoryResolver;              // Returns true if inventory resolver is set.
 
-        // Product Info (Optional)
+        BuyHandler buyHandler;                  // Gives the seller an opportunity to handle orders in a separate contract (optional).
+        bool hasBuyHandler;                     // Returns true if buy handler is set.
+
         string name;                            // Tile Slim White - Tile Trackers & Locators
         string description;                     // Slim White. The thinnest Bluetooth tracker that finds everyday items in seconds.
         string imageURL;                        // https://static-www.thetileapp.com/images/slim_pdp_hero2.jpg
@@ -50,11 +53,13 @@ contract KioskResolver {
     // Order ID => Order
     mapping (uint256 => Order) public orders;
 
-    mapping (address => uint256) public pendingWithdrawals;
+    // Product ID (DIN) => Pending revenue
+    mapping (uint256 => uint256) public pendingWithdrawals;
 
     // Events
     event PriceResolverChanged(uint256 indexed productID, address PriceResolver);
     event InventoryResolverChanged(uint256 indexed productID, address InventoryResolver);
+    event BuyHandlerChanged(uint256 indexed productID, address BuyHandler);
 
     event NameChanged(uint256 indexed productID, string name);
     event RetailURLChanged(uint256 indexed productID, string retailURL);
@@ -81,7 +86,6 @@ contract KioskResolver {
     bytes4 constant EAN_INTERFACE_ID = 0x9b2e8e30;
     bytes4 constant DESCRIPTION_INTERFACE_ID = 0x2c5f13e0;
 
-    // Only the product owner may change product information.
     modifier only_owner(uint256 productID) {
         if (dinRegistry.owner(productID) != msg.sender) throw;
         _;
@@ -92,15 +96,13 @@ contract KioskResolver {
         _;
     }
 
-    // A product can only be purchased if the amount sent matches the price.
-    modifier only_correct_price(uint256 productID) {
-        if (price(productID) != msg.value) throw;
+    modifier only_correct_price(uint256 productID, uint256 quantity) {
+        if (price(productID) * quantity != msg.value) throw;
         _;
     }
 
-    // A product can only be purchased if it is in stock.
-    modifier only_in_stock(uint256 productID) {
-        if (inStock(productID) != true) throw;
+    modifier only_in_stock(uint256 productID, uint256 quantity) {
+        if (inStock(productID, quantity) != true) throw;
         _;
     }
 
@@ -108,7 +110,7 @@ contract KioskResolver {
      * Constructor.
      * @param dinRegistryAddr The address of the DIN registry contract.
      */
-    function KioskResolver(DINRegistry dinRegistryAddr) {
+    function PublicProduct(DINRegistry dinRegistryAddr) {
         dinRegistry = dinRegistryAddr;
     }
 
@@ -122,7 +124,7 @@ contract KioskResolver {
     * @param interfaceID The ID of the interface to check for.
     * @return True if the contract implements the requested interface.
     */
-    function supportsInterface(bytes4 interfaceID) returns (bool) {
+    function supportsInterface(bytes4 interfaceID) constant returns (bool) {
         return interfaceID == NAME_INTERFACE_ID ||
                interfaceID == RETAIL_URL_INTERFACE_ID ||
                interfaceID == IMAGE_URL_INTERFACE_ID ||
@@ -136,38 +138,61 @@ contract KioskResolver {
                interfaceID == DESCRIPTION_INTERFACE_ID;
     }
 
+
     /**
-    *  Buy a product.
-    *  @param productID The DIN of the product to buy.
+    *   =========================
+    *            Orders          
+    *   =========================
     */
-    function buy(uint256 productID) payable only_correct_price(productID) only_in_stock(productID) {
+
+
+    /**
+     * Buy a quantity of a product.
+     * @param productID The DIN of the product to buy.
+     * @param quantity The quantity to buy.
+     */   
+    function buy(uint256 productID, uint256 quantity) payable only_correct_price(productID, quantity) only_in_stock(productID, quantity) {
+        addOrder(productID, quantity);
+    }
+
+    function addOrder(uint256 productID, uint256 quantity) private {
         address seller = dinRegistry.owner(productID);
 
-        // Add the order to the order tracker
+        // Increment the order index for a new order.
         orderIndex++;
+
+        // Add the order to the order tracker.
         orders[orderIndex] = Order(msg.sender, seller, productID, msg.value, block.timestamp);
-        pendingWithdrawals[msg.sender] += msg.value;
+
+        pendingWithdrawals[productID] += msg.value;
+
+        // Call the seller's buy handler.
+        if (products[productID].hasBuyHandler == true) {
+            products[productID].buyHandler.handleOrder(productID, quantity, msg.sender);
+        }
     }
 
     /**
     *   Withdraw proceeds of sales.
     */
-    function withdraw() {
-        uint256 amount = pendingWithdrawals[msg.sender];
-        // Zero the pending refund before to prevent re-entrancy attacks
-        pendingWithdrawals[msg.sender] = 0;
+    function withdraw(uint256 productID) only_owner(productID) {
+        uint256 amount = pendingWithdrawals[productID];
+        // Zero the pending refund before to prevent re-entrancy attacks.
+        pendingWithdrawals[productID] = 0;
         msg.sender.transfer(amount);
     }
 
-    function inventoryResolver(uint256 productID) constant returns (address) {
-        return products[productID].inventoryResolver;
-    }
+    /**
+    *   =========================
+    *      Product Information 
+    *   =========================
+    */
 
     /**
     *   The price of the product, including all tax, shipping costs, and discounts.
     */
     function price(uint256 productID) constant returns (uint256) {
-        // Only return a price if the price calculator is set
+        // Only return a price if the price resolver is set.
         if (products[productID].hasPriceResolver == true) {
             return products[productID].priceResolver.price(productID, msg.sender);
         }
@@ -184,12 +209,16 @@ contract KioskResolver {
         PriceResolverChanged(productID, resolver);
     }
 
-    function inStock(uint256 productID) constant returns (bool) {
+    function inStock(uint256 productID, uint256 quantity) constant returns (bool) {
         if (products[productID].hasInventoryResolver == true) {
-            return products[productID].inventoryResolver.inStock(productID);
+            return products[productID].inventoryResolver.inventory(productID) > quantity;
         }
         // If inventory resolver is not set, default is true
         return true;
+    }
+
+    function inventoryResolver(uint256 productID) constant returns (address) {
+        return products[productID].inventoryResolver;
     }
 
     function setInventoryResolver(uint256 productID, InventoryResolver resolver) only_owner(productID) {
