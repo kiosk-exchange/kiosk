@@ -22,7 +22,7 @@ contract DINRegistry {
     uint public genesis;
 
     // Logged when the owner of a DIN transfers ownership to a new account.
-    event NewOwner(uint indexed DIN, address indexed owner, address indexed oldOwner);
+    event NewOwner(uint indexed DIN, address indexed newOwner, address indexed oldOwner);
 
     // Logged when the product associated with a DIN changes.
     event NewProduct(uint indexed DIN, address indexed product);
@@ -64,7 +64,7 @@ contract DINRegistry {
      */
     function register(uint DIN, address owner) only_registrar only_unregistered(DIN) {
         records[DIN].owner = owner;
-        NewOwner(DIN, owner);
+        NewOwner(DIN, owner, msg.sender);
     }
 
     /**

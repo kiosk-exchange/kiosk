@@ -22,6 +22,7 @@ module.exports = function(deployer) {
 	}).then(() => {
 		return DINRegistry.deployed()
 	}).then((instance) => {
+		// Set the registrar on the DINRegistry
 		registry = instance
 		return registry.setRegistrar(DINRegistrar.address)
 	}).then(() => {
@@ -30,7 +31,10 @@ module.exports = function(deployer) {
 		registrar = instance
 		return registrar.registerNewDIN(); // Register 10000001
 	}).then(() => {
-		return deployer.deploy(DemoToken, DIN) // Deploy token "product"
+		// Set the PublicProduct as the product for the first registered DIN
+		return registry.setProduct(DIN, PublicProduct.address)
+	}).then(() => {
+		return deployer.deploy(DemoToken, DIN, PublicProduct.address) // Deploy token "product"
 	}).then(() => {
 		return PublicProduct.deployed()
 	}).then((instance) => {

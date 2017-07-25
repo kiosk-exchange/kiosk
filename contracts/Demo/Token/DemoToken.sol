@@ -45,8 +45,8 @@ contract DemoToken is StandardToken, PriceResolver, InventoryResolver, BuyHandle
 	}
 
 	// Buy Handler
-	function handleOrder(uint256 productID, uint256 quantity, address buyer) only_product(productID) only_product {
-		allocated = allocated.add(quantity);
+	function handleOrder(uint256 productID, uint256 quantity, address buyer) only_product(productID) {
+		sold = sold.add(quantity);
 		balances[buyer] = balances[buyer].add(quantity);
 	}
 
