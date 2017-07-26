@@ -1,22 +1,32 @@
 import React, { Component } from 'react'
-
-import NavigationBar from './Components/NavigationBar'
-import ProductView from './Components/ProductView'
-
-// Hardcoded to first registered product
-var productID = 10000001;
+import SearchBar from './Components/SearchBar'
 
 class Home extends Component {
+
+  constructor(props) {
+    super(props)
+
+    this.handleSearch = this.handleSearch.bind(this)
+  }
+
+  handleSearch(query) {
+    var din = "/DIN/" + query
+    this.props.history.push(din)
+  }
+
   render() {
     return (
-      <div className="Home">
-        <div>
-          <NavigationBar className="navigation-bar" />
+      <div>
+      	<div className="welcome-header">
+      		<h1>Welcome to Kiosk</h1>
+      	</div>
+        <div className="search-bar">
+          <SearchBar action={this.handleSearch}/>
         </div>
-        <ProductView din={productID}/>
       </div>
     );
   }
+
 }
 
 export default Home;

@@ -1,25 +1,25 @@
 import React, { Component } from 'react'
-import { Grid,  Navbar, Nav, NavItem } from 'react-bootstrap';
+import { Navbar, Nav, NavItem } from 'react-bootstrap';
 
 class NavigationBar extends Component {
 
   render() {
     return (
       <Navbar>
-        <Grid>
-          <Navbar.Header>
-            <Navbar.Brand>
-              <a href="/">Kiosk</a>
-            </Navbar.Brand>
-            <Navbar.Toggle />
-          </Navbar.Header>
-          <Nav>
-            <NavItem href="/register">Register</NavItem>
+        <Navbar.Header>
+          <Navbar.Brand>
+            <a href="/">Kiosk</a>
+          </Navbar.Brand>
+          <Navbar.Toggle />
+        </Navbar.Header>
+        <Navbar.Collapse>
+          <Nav pullRight>
+            <NavItem href="/orders">Orders</NavItem>
           </Nav>
           <Nav pullRight>
-            <NavItem href="/orders">My Orders</NavItem>
+            <NavItem href="/products">Products</NavItem>
           </Nav>
-        </Grid>
+        </Navbar.Collapse>
       </Navbar>
     )
   }

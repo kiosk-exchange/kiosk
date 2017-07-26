@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
-
-import NavigationBar from './Components/NavigationBar'
+import { FormGroup, ControlLabel, FormControl } from 'react-bootstrap'
 
 import getWeb3 from './utils/getWeb3'
 import publicProductABI from '../build/contracts/PublicProduct.json'
@@ -9,7 +8,16 @@ import demoPriceResolverABI from '../build/contracts/DemoPriceResolver.json'
 
 const contract = require('truffle-contract')
 
-class Register extends Component {
+function FieldGroup({ id, type, label, placeholder, ...props }) {
+  return (
+    <FormGroup controlId={id}>
+      <ControlLabel>{label}</ControlLabel>
+      <FormControl {...props} />
+    </FormGroup>
+  );
+}
+
+class NewProduct extends Component {
 
   constructor(props) {
     super(props)
@@ -98,25 +106,36 @@ class Register extends Component {
   render() {
     return (
       <div>
-        <div>
-          <NavigationBar className="navigation-bar" />
+
+        <div className="new-product-form">
+
+          <h1>Add Product</h1>
+
+          <form onSubmit={this.handleSubmit}>
+            <FieldGroup
+              id="formControlsName"
+              type="text"
+              label="Product Name"
+              value={this.state.name}
+              onChange={this.handleNameChange}
+            />
+            <FieldGroup
+              id="formControlsImageURL"
+              type="text"
+              label="Image URL"
+              value={this.state.imageURL}
+              onChange={this.handleImageURLChange}
+            />
+            <button className="btn-submit-register" type="submit"> 
+              Add Product
+            </button>
+          </form>
+
         </div>
-        <form onSubmit={this.handleSubmit}>
-          <label>
-            Name:
-            <input type="text" value={this.state.name} onChange={this.handleNameChange} />
-          </label>
-          <br />
-          <label>
-            Image Url:
-            <input type="text" value={this.state.imageURL} onChange={this.handleImageURLChange} />
-          </label>
-          <br />
-          <input type="submit" value="Submit" />
-        </form>
+
       </div>
     );
   }
 }
 
-export default Register;
+export default NewProduct;

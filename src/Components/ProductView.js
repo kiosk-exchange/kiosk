@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import Product from '../Product'
+import { Grid, Row, Col } from 'react-bootstrap';
 
 import getWeb3 from '../utils/getWeb3'
 import { default as TruffleContract } from 'truffle-contract'
@@ -89,9 +89,6 @@ class ProductView extends Component {
   buyHandler() {
     var account1 = this.state.web3.eth.accounts[0]
 
-    console.log(this.props.din)
-    console.log(this.state.price)
-
     this.state.publicProduct.buy(this.props.din, 1, {from: account1, value: this.state.price, gas: 4700000}, (error, result) => {
       if (!error) {
         console.log(result)
@@ -103,18 +100,38 @@ class ProductView extends Component {
 
   render() {
     return (
-      <div>
-        <Product
-          className="product"
-          imageURL={this.state.imageURL}
-          name={this.state.name}
-          price={this.state.formattedPrice}
-          buyHandler={this.buyHandler}
-        >
-        </Product>
+      <div className="container-product">
+
+        <Grid>
+
+          <Row className="show-grid">
+
+              <Col xs={10} xsOffset={1} sm={8} smOffset={2} md={6} mdOffset={0}>
+                <div className="column-product-image">
+                    <img src={this.state.imageURL} role="presentation"></img>
+                </div>
+              </Col>
+
+            <div className="column-product-info">
+              <Col xs={10} xsOffset={1} sm={8} smOffset={2} md={6} mdOffset={0}>
+                <div className="container-product-info">
+                  <h1>{this.state.name}</h1>
+                  <h2>{this.state.formattedPrice}</h2>
+                  <br />
+                  <button onClick={this.buyHandler}>Buy Now</button>
+                </div>
+              </Col>
+            </div>
+
+          </Row>
+
+        </Grid>
+
       </div>
     );
   }
 }
 
 export default ProductView;
+
+
