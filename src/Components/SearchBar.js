@@ -11,17 +11,15 @@ class SearchBar extends Component {
     };
 
     this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
   }
 
   handleChange(event) {
     this.setState({value: event.target.value});
   }
 
-  handleSubmit(event) {
-    console.log("1111")
-    this.props.history.push('/blah')
-    event.preventDefault();
+  handleSearch() {
+    this.props.action(this.state.value)
   }
 
   render() {
@@ -36,7 +34,7 @@ class SearchBar extends Component {
               onChange={this.handleChange}
             />
             <InputGroup.Button>
-              <button onClick={this.handleSubmit}>Search</button>
+              <button onClick={this.handleSearch}>Search</button>
             </InputGroup.Button>
           </InputGroup>
         </FormGroup>
