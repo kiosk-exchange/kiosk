@@ -5,7 +5,6 @@ import Orders from './Orders'
 import Register from './Register'
 import View from './View'
 
-
 class App extends Component {
 
   render() {
@@ -15,7 +14,7 @@ class App extends Component {
           <Route exact path='/' component={Home}/>
           <Route path='/orders' component={Orders}/>
           <Route path='/register' component={Register}/>
-          <Route path='/view/:din' component={View}/>
+          <Route path='/:din' component={View}/>
         </Switch>
       </div>
     );

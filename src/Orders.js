@@ -6,8 +6,6 @@ import getWeb3 from './utils/getWeb3'
 import publicProductABI from '../build/contracts/PublicProduct.json'
 const contract = require('truffle-contract')
 
-import './Orders.css'
-
 class Orders extends Component {
 
   constructor(props) {

@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { FormGroup, ControlLabel, FormControl } from 'react-bootstrap'
 
 import NavigationBar from './Components/NavigationBar'
 
@@ -8,6 +9,15 @@ import dinRegistrarABI from '../build/contracts/DINRegistrar.json'
 import demoPriceResolverABI from '../build/contracts/DemoPriceResolver.json'
 
 const contract = require('truffle-contract')
+
+function FieldGroup({ id, type, label, placeholder, ...props }) {
+  return (
+    <FormGroup controlId={id}>
+      <ControlLabel>{label}</ControlLabel>
+      <FormControl {...props} />
+    </FormGroup>
+  );
+}
 
 class Register extends Component {
 
@@ -101,19 +111,29 @@ class Register extends Component {
         <div>
           <NavigationBar className="navigation-bar" />
         </div>
-        <form onSubmit={this.handleSubmit}>
-          <label>
-            Name:
-            <input type="text" value={this.state.name} onChange={this.handleNameChange} />
-          </label>
-          <br />
-          <label>
-            Image Url:
-            <input type="text" value={this.state.imageURL} onChange={this.handleImageURLChange} />
-          </label>
-          <br />
-          <input type="submit" value="Submit" />
-        </form>
+
+        <div className="form-register">
+          <form onSubmit={this.handleSubmit}>
+            <FieldGroup
+              id="formControlsName"
+              type="text"
+              label="Product Name"
+              value={this.state.name}
+              onChange={this.handleNameChange}
+            />
+            <FieldGroup
+              id="formControlsImageURL"
+              type="text"
+              label="Image URL"
+              value={this.state.imageURL}
+              onChange={this.handleImageURLChange}
+            />
+            <button className="btn-submit-register" type="submit"> 
+              Add Product
+            </button>
+          </form>
+        </div>
+        
       </div>
     );
   }
