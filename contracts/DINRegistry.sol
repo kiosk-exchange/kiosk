@@ -36,7 +36,7 @@ contract DINRegistry {
     }
 
     modifier only_registrar {
-        require(registrar != msg.sender);
+        require(registrar == msg.sender);
         _;
     }
 
