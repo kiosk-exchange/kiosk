@@ -18,7 +18,7 @@ contract DINRegistry {
     // The address of the registrar contract to register new DINs.
     address public registrar;
 
-    // The first DIN registered. Lower bounds for DINs.
+    // The first DIN registered. Lower bound for DINs.
     uint public genesis;
 
     // Logged when the owner of a DIN transfers ownership to a new account.
@@ -31,12 +31,12 @@ contract DINRegistry {
     event NewRegistrar(address registrar);
 
     modifier only_owner(uint DIN) {
-        if (records[DIN].owner != msg.sender) throw;
+        require(records[DIN].owner == msg.sender);
         _;
     }
 
     modifier only_registrar {
-        if (registrar != msg.sender) throw;
+        require(registrar == msg.sender);
         _;
     }
 
@@ -62,7 +62,7 @@ contract DINRegistry {
      * @param DIN The DIN to register.
      * @param owner The account that will own the registered DIN.
      */
-    function register(uint DIN, address owner) only_registrar only_unregistered(DIN) {
+    function registerDIN(uint DIN, address owner) only_registrar only_unregistered(DIN) {
         records[DIN].owner = owner;
         NewOwner(DIN, owner, msg.sender);
     }
@@ -72,9 +72,9 @@ contract DINRegistry {
      * @param DINs The DINs to register.
      * @param owner The account that will own the registered DINs.
      */
-    function register(uint[] DINs, address owner) only_registrar {
+    function registerDINs(uint[] DINs, address owner) only_registrar {
         for (uint i = 0; i < DINs.length; i++) {
-            register(i, owner);
+            registerDIN(i, owner);
         }
     }
 

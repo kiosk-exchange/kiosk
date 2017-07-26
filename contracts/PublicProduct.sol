@@ -57,6 +57,8 @@ contract PublicProduct is Product {
     mapping (uint256 => uint256) public pendingWithdrawals;
 
     // Events
+    event NewOrder(address indexed buyer, address indexed seller, uint256 indexed DIN, uint256 amountPaid, uint256 timestamp);
+
     event PriceResolverChanged(uint256 indexed productID, address PriceResolver);
     event InventoryResolverChanged(uint256 indexed productID, address InventoryResolver);
     event BuyHandlerChanged(uint256 indexed productID, address BuyHandler);
@@ -170,6 +172,8 @@ contract PublicProduct is Product {
         if (products[productID].hasBuyHandler == true) {
             products[productID].buyHandler.handleOrder(productID, quantity, msg.sender);
         }
+
+        NewOrder(msg.sender, seller, productID, msg.value, block.timestamp);
     }
 
     /**

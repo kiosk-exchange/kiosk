@@ -43,7 +43,7 @@ contract DINRegistrar {
         // Increment the DIN index
         index++;
         // Register the DIN to the address that calls this function
-        registry.register(index, owner);
+        registry.registerDIN(index, owner);
         NewRegistration(index, owner);
     }
 

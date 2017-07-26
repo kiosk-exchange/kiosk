@@ -1,26 +1,31 @@
 import React, { Component } from 'react'
 
 import NavigationBar from './Components/NavigationBar'
+
 import getWeb3 from './utils/getWeb3'
-import kioskABI from '../build/contracts/KioskResolver.json'
-import dinABI from '../build/contracts/DINRegistry.json'
-import priceABI from '../build/contracts/PriceResolver.json'
+import publicProductABI from '../build/contracts/PublicProduct.json'
+import dinRegistrarABI from '../build/contracts/DINRegistrar.json'
+import demoPriceResolverABI from '../build/contracts/DemoPriceResolver.json'
+
 const contract = require('truffle-contract')
-// import Product from './Product'
 
 class Register extends Component {
+
   constructor(props) {
     super(props)
 
-    this.registerProduct = this.registerProduct.bind(this);
     this.state = {
       web3: null,
-      kioskContract: null,
-      dinContract: null,
-      priceContract: null,
-      productNameInput: null,
-      productImageURLInput: null
+      publicProductContract: null,
+      dinRegistrarContract: null,
+      demoPriceResolverContract: null,
+      name: "",
+      imageURL: ""
     }
+
+    this.handleNameChange = this.handleNameChange.bind(this);
+    this.handleImageURLChange = this.handleImageURLChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentWillMount() {
@@ -29,51 +34,65 @@ class Register extends Component {
         web3: results.web3
       })
 
-      // Instantiate the resolver contract once web3 provided.
-      this.initializeResolvers()
+      this.initializeContracts()
     })
   }
 
-  initializeResolvers() {
-    const kioskContract = contract(kioskABI)
-    kioskContract.setProvider(this.state.web3.currentProvider)
-    kioskContract.deployed().then((instance) => {
-      this.setState({ kioskContract: instance.contract })
+  initializeContracts() {
+
+    const publicProductContract = contract(publicProductABI)
+    publicProductContract.setProvider(this.state.web3.currentProvider)
+    publicProductContract.deployed().then((instance) => {
+      this.setState({ publicProductContract: instance.contract })
     })
 
-    const dinContract = contract(dinABI)
-    dinContract.setProvider(this.state.web3.currentProvider)
-    dinContract.deployed().then((instance) => {
-      this.setState({ dinContract: instance.contract })
+    const dinRegistrarContract = contract(dinRegistrarABI)
+    dinRegistrarContract.setProvider(this.state.web3.currentProvider)
+    dinRegistrarContract.deployed().then((instance) => {
+      this.setState({ dinRegistrarContract: instance.contract })
     })
 
-    const priceResolverContract = contract(priceABI)
-    priceResolverContract.setProvider(this.state.web3.currentProvider)
-    priceResolverContract.deployed().then((instance) => {
-      this.setState({ priceContract: instance.contract })
+    const demoPriceResolverContract = contract(demoPriceResolverABI)
+    demoPriceResolverContract.setProvider(this.state.web3.currentProvider)
+    demoPriceResolverContract.deployed().then((instance) => {
+      this.setState({ demoPriceResolverContract: instance.contract })
     })
+
   }
 
-  registerProduct(e) {
-    e.preventDefault()
+  // Update state when name label changes
+  handleNameChange(event) {
+    this.setState({ name: event.target.value })
+  }
 
-    var event = this.state.dinContract.NewRegistration({owner: this.state.web3.eth.accounts[0]})
-    event.watch((function(error, result) {
+  // Update state when image URL label changes
+  handleImageURLChange(event) {
+    this.setState({ imageURL: event.target.value })
+  }
+
+  handleSubmit(event) {
+    event.preventDefault()
+
+    var account1 = this.state.web3.eth.accounts[0]
+
+    var registerEvent = this.state.dinRegistrarContract.NewRegistration({owner: account1})
+    registerEvent.watch((error, result) => {
       if (!error) {
-        const din = parseInt(result["args"]["DIN"]["c"][0])
-        console.log(`Created DIN ${din}`)
-        this.state.kioskContract.setName(din, this.state.productNameInput.value, {from: this.state.web3.eth.accounts[0]}, () => {
-          this.state.kioskContract.setImageURL(din, this.state.productImageURLInput.value,  {from: this.state.web3.eth.accounts[0]}, () => {
-            this.state.kioskContract.setPriceResolver(din, this.state.priceContract.address, {from: this.state.web3.eth.accounts[0]})
+        const DIN = parseInt(result["args"]["DIN"]["c"][0], 10)
+        console.log(`Created DIN ${DIN}`)
+        this.state.publicProductContract.setName(DIN, this.state.name, {from: account1}, () => {
+          // Extra gas needed to set long URLs
+          this.state.publicProductContract.setImageURL(DIN, this.state.imageURL,  {from: account1, gas: 4700000 }, () => {
+            this.state.publicProductContract.setPriceResolver(DIN, this.state.demoPriceResolverContract.address, {from: account1 })
           })
         })
       } else {
-        //TODO: Throw error
+        console.log(error)
       }
-      event = null
-    }).bind(this))
+      registerEvent = null
+    })
 
-    this.state.dinContract.registerNewDIN({from: this.state.web3.eth.accounts[0]}, () => {})
+    this.state.dinRegistrarContract.registerNewDIN({from: account1}, () => {})
   }
 
   render() {
@@ -82,15 +101,17 @@ class Register extends Component {
         <div>
           <NavigationBar className="navigation-bar" />
         </div>
-        <form onSubmit={this.registerProduct}>
+        <form onSubmit={this.handleSubmit}>
           <label>
             Name:
-            <input type="text" ref={name => this.state.productNameInput = name} />
+            <input type="text" value={this.state.name} onChange={this.handleNameChange} />
           </label>
+          <br />
           <label>
             Image Url:
-            <input type="text" ref={url => this.state.productImageURLInput = url} />
+            <input type="text" value={this.state.imageURL} onChange={this.handleImageURLChange} />
           </label>
+          <br />
           <input type="submit" value="Submit" />
         </form>
       </div>

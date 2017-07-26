@@ -1,9 +1,59 @@
 import React, { Component } from 'react'
 import { Table } from 'react-bootstrap'
 
+import getWeb3 from './utils/getWeb3'
+
+import publicProductABI from '../build/contracts/PublicProduct.json'
+const contract = require('truffle-contract')
+
 import './Orders.css'
 
 class Orders extends Component {
+
+  constructor(props) {
+    super(props)
+
+    this.state = {
+    web3: null,
+    publicProduct: null
+    }
+  }
+
+  componentWillMount() {
+    getWeb3.then(results => {
+      this.setState({
+      web3: results.web3,
+    })
+
+      this.initializePublicProduct()
+    })
+  }
+
+  initializePublicProduct() {
+    const publicProduct = contract(publicProductABI)
+    publicProduct.setProvider(this.state.web3.currentProvider)
+    publicProduct.deployed().then((instance) => {
+      this.setState({ publicProduct: instance.contract }, () => {
+        this.getOrders()
+      })
+    })
+  }
+
+  getOrders() {
+    var buyer = this.state.web3.eth.coinbase
+    // Add order event listener
+    var newOrderEventAll = this.state.publicProduct.NewOrder({buyer: buyer}, {fromBlock: 0, toBlock: 'latest'})
+    newOrderEventAll.watch((error, result) => {
+      console.log("YES")
+      if (!error) {
+      // Add to UI
+        console.log(result)
+      } else {
+        console.log(error)
+      }
+    })
+  }
+
 
 	render() {
 		return (
