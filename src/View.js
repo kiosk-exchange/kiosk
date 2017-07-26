@@ -12,7 +12,7 @@ class View extends Component {
         <div>
           <NavigationBar className="navigation-bar" />
         </div>
-        <ProductView din={parseInt(this.props.match.params.din)}/>
+        <ProductView din={parseInt(this.props.match.params.din, 10)}/>
       </div>
     );
   }

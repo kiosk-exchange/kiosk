@@ -6,7 +6,7 @@ import getWeb3 from '../utils/getWeb3'
 import { default as TruffleContract } from 'truffle-contract'
 
 import registryABI from '../../build/contracts/DINRegistry.json'
-import resolverABI from '../../build/contracts/KioskResolver.json'
+import productABI from '../../build/contracts/PublicProduct.json'
 
 class ProductView extends Component {
   constructor(props) {
@@ -55,7 +55,7 @@ class ProductView extends Component {
   }
 
   initializeResolver() {
-    const resolverContract = TruffleContract(resolverABI)
+    const resolverContract = TruffleContract(productABI)
     resolverContract.setProvider(this.state.web3.currentProvider)
 
     resolverContract.deployed().then((resolver) => {

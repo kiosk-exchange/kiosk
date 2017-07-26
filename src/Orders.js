@@ -34,8 +34,21 @@ class Orders extends Component {
   	const publicProduct = contract(publicProductABI)
     publicProduct.setProvider(this.state.web3.currentProvider)
     publicProduct.deployed().then((instance) => {
-    	console.log(instance)
+
       this.setState({ publicProduct: instance.contract })
+
+      // var buyer = this.state.web3.eth.coinbase
+
+      // Add order event listener
+      var newOrderEventAll = instance.contract.NewOrder({fromBlock: 0, toBlock: 'latest'});
+			newOrderEventAll.watch((error, result) => {
+	  		if (!error) {
+	  			// Add to UI
+	  			console.log(result)
+	  		} else {
+	  			console.log(error)
+	  		}
+			})
     })
   }
 
