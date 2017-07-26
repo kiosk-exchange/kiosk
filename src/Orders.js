@@ -20,7 +20,7 @@ class Orders extends Component {
 
 	}
 
-	 componentWillMount() {
+	componentWillMount() {
     getWeb3.then(results => {
       this.setState({
         web3: results.web3,
