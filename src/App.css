@@ -1,5 +1,5 @@
 button {
-	background-color: #2A9D8F;
+  background-color: #2A9D8F;
   border: none;
   border-radius: 4px;
   color: white;
@@ -18,66 +18,66 @@ button {
 }
 
 .search-bar input {
-	padding: 20px 10px;
-	font-size: 16px;
+  padding: 20px 10px;
+  font-size: 16px;
 }
 
 .search-bar button {
-	border-top-left-radius: 0px;
-	border-bottom-left-radius: 0px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
 }
 
 /* Home */
 .welcome-header {
-	text-align: center;
+  text-align: center;
 }
 
-.welcome-header h1 {
-	margin: 100px 0px 50px 0px;
+.welcome-header h1 { 
+  margin: 100px 0px 50px 0px;
 }
 
 /* Product View */
 .container-product {
-	padding: 20px;
+  padding: 20px;
 }
 
 .column-product-image {
-	padding: 20px;
+  padding: 20px;
 }
 
 .column-product-image img {
-	width: 100%;
+  width: 100%;
 }
 
 .column-product-info {
-	padding: 0px 20px;
+  padding: 0px 20px;
 }
 
 /* Products */
 .add-product-button {
-	float: right;
+  float: right;
 }
 
 /* New Product */
 .new-product-form {
-	margin: auto;
-	max-width: 500px;
+  margin: auto;
+  max-width: 500px;
 }
 
 .new-product-form form {
-	padding-top: 20px;
+  padding-top: 20px;
 }
 
 .btn-submit-register {
-	width: 100%;
+  width: 100%;
 }
 
 /* Table Header */ 
 .container-products-header,
 .container-orders-header,
 .new-product-form h1 {
-	border-bottom: 1px solid #D3D3D3;
-	padding: 20px 0px;
+  border-bottom: 1px solid #D3D3D3;
+  padding: 20px 0px;
 }
 
 .container-products-header h1,

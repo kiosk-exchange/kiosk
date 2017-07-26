@@ -12,8 +12,8 @@ class Orders extends Component {
     super(props)
 
     this.state = {
-    web3: null,
-    publicProduct: null
+      web3: null,
+      publicProduct: null
     }
   }
 
@@ -55,35 +55,35 @@ class Orders extends Component {
 
 	render() {
 		return (
-			<div>
+      <div>
 
         <div className="container-orders-table">
-        
+
           <div className="container-orders-header">
-  				  <h1>Orders</h1>
+            <h1>Orders</h1>
           </div>
 
           <div className="orders-table">
-    				<Table striped bordered condensed hover>
-    					<tr>
-    						<th>Transaction ID</th>
-    						<th>Product</th>
-    						<th>Date</th>
-    					</tr>
+            <Table striped bordered condensed hover>
+              <tr>
+                <th>Transaction ID</th>
+                <th>Product</th>
+                <th>Date</th>
+              </tr>
 
-    					<tbody>
-    						<tr>
-    							<td>1</td>
-    							<td>Blue T-Shirt</td>
-    							<td>July 21, 2017</td>
-    						</tr>
-    					</tbody>
-    				</Table>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>Blue T-Shirt</td>
+                  <td>July 21, 2017</td>
+                </tr>
+              </tbody>
+            </Table>
           </div>
 
         </div>
 
-			</div>
+      </div>
       
 		);
   }
