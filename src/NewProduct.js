@@ -106,8 +106,10 @@ class NewProduct extends Component {
   render() {
     return (
       <div>
-      
-        <div className="form-register">
+
+        <div className="new-product-form">
+
+          <h1>Add Product</h1>
 
           <form onSubmit={this.handleSubmit}>
             <FieldGroup

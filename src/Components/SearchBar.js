@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FormGroup, InputGroup, FormControl, Button } from 'react-bootstrap';
+import { FormGroup, InputGroup, FormControl } from 'react-bootstrap';
 
 class SearchBar extends Component {
 
@@ -7,11 +7,21 @@ class SearchBar extends Component {
     super(props);
 
     this.state = {
-      value: '',
+      value: "",
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleChange(event) {
+    this.setState({value: event.target.value});
+  }
+
+  handleSubmit(event) {
+    console.log("1111")
+    this.props.history.push('/blah')
+    event.preventDefault();
   }
 
   render() {
@@ -26,28 +36,12 @@ class SearchBar extends Component {
               onChange={this.handleChange}
             />
             <InputGroup.Button>
-              <button>Search</button>
+              <button onClick={this.handleSubmit}>Search</button>
             </InputGroup.Button>
           </InputGroup>
         </FormGroup>
       </div>
     )
-  }
-
-  handleChange(event) {
-    this.setState({value: event.target.value});
-  }
-
-  handleSubmit(event) {
-    // this.state.contract.get(this.state.value, function(error, result) { 
-    //   if (result) {
-    //     this.setState({
-    //       fullName: result[0],
-    //       email: result[2]
-    //     });
-    //   }
-    // });
-    event.preventDefault();
   }
 
 }

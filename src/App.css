@@ -1,8 +1,3 @@
-form {
-	margin: auto;
-	max-width: 500px;
-}
-
 button {
 	background-color: #2A9D8F;
   border: none;
@@ -64,8 +59,13 @@ button {
 }
 
 /* New Product */
-.form-register {
-	margin: 20px;
+.new-product-form {
+	margin: auto;
+	max-width: 500px;
+}
+
+.new-product-form form {
+	padding-top: 20px;
 }
 
 .btn-submit-register {
@@ -74,7 +74,8 @@ button {
 
 /* Table Header */ 
 .container-products-header,
-.container-orders-header {
+.container-orders-header,
+.new-product-form h1 {
 	border-bottom: 1px solid #D3D3D3;
 	padding: 20px 0px;
 }
