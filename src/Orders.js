@@ -40,10 +40,9 @@ class Orders extends Component {
   }
 
   getOrders() {
-  	// var buyer = this.state.web3.eth.coinbase
-    console.log("2 " + this.state.publicProduct)
+    var buyer = this.state.web3.eth.coinbase
     // Add order event listener
-    var newOrderEventAll = this.state.publicProduct.NewOrder({fromBlock: 0, toBlock: 'latest'})
+    var newOrderEventAll = this.state.publicProduct.NewOrder({buyer: buyer}, {fromBlock: 0, toBlock: 'latest'})
     newOrderEventAll.watch((error, result) => {
       console.log("YES")
       if (!error) {
