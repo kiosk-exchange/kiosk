@@ -48,11 +48,11 @@ class Orders extends Component {
       console.log("YES")
       if (!error) {
       // Add to UI
-  			console.log(result)
-  		} else {
-  			console.log(error)
-  		}
-		})
+        console.log(result)
+      } else {
+        console.log(error)
+      }
+    })
   }
 
 
