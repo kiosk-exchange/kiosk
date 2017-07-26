@@ -10,44 +10,44 @@ import './Orders.css'
 
 class Orders extends Component {
 
-	constructor(props) {
-		super(props)
+  constructor(props) {
+    super(props)
 
-		this.state = {
-		web3: null,
-		publicProduct: null
-		}
-	}
+    this.state = {
+    web3: null,
+    publicProduct: null
+    }
+  }
 
-	componentWillMount() {
-		getWeb3.then(results => {
-			this.setState({
-			web3: results.web3,
-		})
+  componentWillMount() {
+    getWeb3.then(results => {
+      this.setState({
+      web3: results.web3,
+    })
 
-			this.initializePublicProduct()
-		})
-	}
+      this.initializePublicProduct()
+    })
+  }
 
   initializePublicProduct() {
-  	const publicProduct = contract(publicProductABI)
+    const publicProduct = contract(publicProductABI)
     publicProduct.setProvider(this.state.web3.currentProvider)
     publicProduct.deployed().then((instance) => {
       this.setState({ publicProduct: instance.contract }, () => {
-      	this.getOrders()
+        this.getOrders()
       })
     })
   }
 
   getOrders() {
   	// var buyer = this.state.web3.eth.coinbase
-  	console.log("2 " + this.state.publicProduct)
-  	// Add order event listener
+    console.log("2 " + this.state.publicProduct)
+    // Add order event listener
     var newOrderEventAll = this.state.publicProduct.NewOrder({fromBlock: 0, toBlock: 'latest'})
-		newOrderEventAll.watch((error, result) => {
-			console.log("YES")
-  		if (!error) {
-  			// Add to UI
+    newOrderEventAll.watch((error, result) => {
+      console.log("YES")
+      if (!error) {
+      // Add to UI
   			console.log(result)
   		} else {
   			console.log(error)
