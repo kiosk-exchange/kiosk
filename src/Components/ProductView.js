@@ -6,7 +6,7 @@ import getWeb3 from '../utils/getWeb3'
 import { default as TruffleContract } from 'truffle-contract'
 
 import registryABI from '../../build/contracts/DINRegistry.json'
-import productABI from '../../build/contracts/PublicProduct.json'
+import publicProductABI from '../../build/contracts/PublicProduct.json'
 
 class ProductView extends Component {
   constructor(props) {
@@ -14,6 +14,7 @@ class ProductView extends Component {
 
     this.state = {
       web3: null,
+      publicProduct: null,
       owner: null,
       name: null,
       imageURL: null,
@@ -55,49 +56,49 @@ class ProductView extends Component {
   }
 
   initializeResolver() {
-    const resolverContract = TruffleContract(productABI)
-    resolverContract.setProvider(this.state.web3.currentProvider)
+    const publicProductContract = TruffleContract(publicProductABI)
+    publicProductContract.setProvider(this.state.web3.currentProvider)
+    publicProductContract.deployed().then((instance) => {
 
-    resolverContract.deployed().then((resolver) => {
+      this.setState({ publicProduct: instance.contract })
 
-      resolver.imageURL(this.props.din).then((imageURL) => {
+      instance.imageURL(this.props.din).then((imageURL) => {
         console.log("Image: " + imageURL)
 
         this.setState({ imageURL: imageURL })
       })
 
-      resolver.name(this.props.din).then((name) => {
+      instance.name(this.props.din).then((name) => {
         console.log("Name: " + name)
 
         this.setState({ name: name })
       })
 
-      resolver.price(this.props.din).then((price) => {
+      instance.price(this.props.din).then((price) => {
         console.log("Price: " + price + " wei")
 
-        this.setState({ price: price })
+        this.setState({ price: price.toNumber() })
 
         let formattedPrice = this.state.web3.fromWei(price, 'ether') + " ether"
         this.setState({ formattedPrice: formattedPrice })
       })
+
     })
   }
 
   buyHandler() {
-    if (this.state.price > 0) {
-      var web3 = this.state.web3
+    var account1 = this.state.web3.eth.accounts[0]
 
-      // Hardcoded for now
-      var transaction = {
-        from: web3.eth.coinbase,
-        to: this.state.owner,
-        value: this.state.price
-      }
+    console.log(this.props.din)
+    console.log(this.state.price)
 
-      web3.eth.sendTransaction(transaction, (error, result) => {
+    this.state.publicProduct.buy(this.props.din, 1, {from: account1, value: this.state.price, gas: 4700000}, (error, result) => {
+      if (!error) {
         console.log(result)
-      });
-    }
+      } else {
+        console.log(error)
+      }
+    })
   }
 
   render() {

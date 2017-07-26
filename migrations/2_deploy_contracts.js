@@ -1,8 +1,8 @@
 var DINRegistry = artifacts.require('./DINRegistry.sol');
 var DINRegistrar = artifacts.require('./DINRegistrar.sol');
 var PublicProduct = artifacts.require('./PublicProduct.sol');
-var PriceResolver = artifacts.require('./PriceResolver.sol');
 var DemoToken = artifacts.require('./DemoToken.sol');
+var DemoPriceResolver = artifacts.require('./DemoPriceResolver.sol');
 
 module.exports = function(deployer) {
 
@@ -44,6 +44,9 @@ module.exports = function(deployer) {
 		return product.setPriceResolver(DIN, DemoToken.address)
 	}).then(() => {
 		return product.setInventoryResolver(DIN, DemoToken.address)
+	}).then(() => {
+		return deployer.deploy(DemoPriceResolver)
 	})
+
 
 };

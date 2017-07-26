@@ -5,6 +5,7 @@ import NavigationBar from './Components/NavigationBar'
 import getWeb3 from './utils/getWeb3'
 import publicProductABI from '../build/contracts/PublicProduct.json'
 import dinRegistrarABI from '../build/contracts/DINRegistrar.json'
+import demoPriceResolverABI from '../build/contracts/DemoPriceResolver.json'
 
 const contract = require('truffle-contract')
 
@@ -17,6 +18,7 @@ class Register extends Component {
       web3: null,
       publicProductContract: null,
       dinRegistrarContract: null,
+      demoPriceResolverContract: null,
       name: "",
       imageURL: ""
     }
@@ -24,7 +26,6 @@ class Register extends Component {
     this.handleNameChange = this.handleNameChange.bind(this);
     this.handleImageURLChange = this.handleImageURLChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    // this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentWillMount() {
@@ -51,6 +52,12 @@ class Register extends Component {
       this.setState({ dinRegistrarContract: instance.contract })
     })
 
+    const demoPriceResolverContract = contract(demoPriceResolverABI)
+    demoPriceResolverContract.setProvider(this.state.web3.currentProvider)
+    demoPriceResolverContract.deployed().then((instance) => {
+      this.setState({ demoPriceResolverContract: instance.contract })
+    })
+
   }
 
   // Update state when name label changes
@@ -71,11 +78,12 @@ class Register extends Component {
     var registerEvent = this.state.dinRegistrarContract.NewRegistration({owner: account1})
     registerEvent.watch((error, result) => {
       if (!error) {
-        const din = parseInt(result["args"]["DIN"]["c"][0], 10)
-        console.log(`Created DIN ${din}`)
-        this.state.publicProductContract.setName(din, this.state.name, {from: account1}, () => {
-          this.state.publicProductContract.setImageURL(din, this.state.imageURL,  {from: account1, gas: 4700000 }, (error, result) => {
-            console.log(error)
+        const DIN = parseInt(result["args"]["DIN"]["c"][0], 10)
+        console.log(`Created DIN ${DIN}`)
+        this.state.publicProductContract.setName(DIN, this.state.name, {from: account1}, () => {
+          // Extra gas needed to set long URLs
+          this.state.publicProductContract.setImageURL(DIN, this.state.imageURL,  {from: account1, gas: 4700000 }, () => {
+            this.state.publicProductContract.setPriceResolver(DIN, this.state.demoPriceResolverContract.address, {from: account1 })
           })
         })
       } else {
