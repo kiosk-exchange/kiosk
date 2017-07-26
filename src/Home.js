@@ -1,10 +1,4 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
-
-import ProductView from './Components/ProductView'
-
-// Hardcoded to first registered product
-var productID = 10000001;
 
 class Home extends Component {
 
@@ -28,7 +22,7 @@ class Home extends Component {
     	</div>
     );
   }
-  
+
 }
 
 export default Home;

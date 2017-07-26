@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Table } from 'react-bootstrap'
-import { BrowserRouter } from 'react-router-dom'
 
 import getWeb3 from './utils/getWeb3'
 
