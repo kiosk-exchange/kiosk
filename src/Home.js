@@ -16,9 +16,6 @@ class Home extends Component {
     return (
     	<div className="welcome-header">
     		<h1>Welcome to Kiosk</h1>
-    		<button onClick={this.handleClick}>
-    			Get started
-    		</button>
     	</div>
     );
   }

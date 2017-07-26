@@ -25,6 +25,22 @@ button {
 	margin: 100px 0px 50px 0px;
 }
 
+/* Product View */
+.container-product {
+	padding: 20px;
+}
+
+.column-product-image {
+	padding: 20px;
+}
+
+.column-product-image img {
+	width: 100%;
+}
+
+.column-product-info {
+	padding: 0px 20px;
+}
 
 /* Products */
 .add-product-button {
@@ -39,7 +55,6 @@ button {
 .btn-submit-register {
 	width: 100%;
 }
-
 
 /* Table Header */ 
 .container-products-header,

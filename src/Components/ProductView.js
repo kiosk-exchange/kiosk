@@ -89,9 +89,6 @@ class ProductView extends Component {
   buyHandler() {
     var account1 = this.state.web3.eth.accounts[0]
 
-    console.log(this.props.din)
-    console.log(this.state.price)
-
     this.state.publicProduct.buy(this.props.din, 1, {from: account1, value: this.state.price, gas: 4700000}, (error, result) => {
       if (!error) {
         console.log(result)
@@ -103,26 +100,38 @@ class ProductView extends Component {
 
   render() {
     return (
-      <div className="product-container">
-        <Grid className="product-Image">
-          <Row>
+      <div className="container-product">
 
-            <Col xs={12} sm={6} md={4}>
-              <img src={this.props.imageURL} role="presentation"></img>
-            </Col>
-            <Col xs={12} sm={6} md={4}/>
+        <Grid>
 
-            <Col xs={12} sm={6} md={4}>
-              <h1>{this.props.name}</h1>
-              <h1>{this.props.price}</h1>
-              <Button bsStyle="success" bsSize="large" onClick={this.props.buyHandler}>Buy Now</Button>
-            </Col>
+          <Row className="show-grid">
+
+              <Col xs={10} xsOffset={1} sm={8} smOffset={2} md={6} mdOffset={0}>
+                <div className="column-product-image">
+                    <img src={this.state.imageURL} role="presentation"></img>
+                </div>
+              </Col>
+
+            <div className="column-product-info">
+              <Col xs={10} xsOffset={1} sm={8} smOffset={2} md={6} mdOffset={0}>
+                <div className="container-product-info">
+                  <h1>{this.state.name}</h1>
+                  <h2>{this.state.formattedPrice}</h2>
+                  <br />
+                  <button onClick={this.buyHandler}>Buy Now</button>
+                </div>
+              </Col>
+            </div>
 
           </Row>
+
         </Grid>
+
       </div>
     );
   }
 }
 
 export default ProductView;
+
+
