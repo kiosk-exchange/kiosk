@@ -1,10 +1,10 @@
-pragma solidity ^0.4.11;
-
 import './DINRegistry.sol';
 import './PriceResolver.sol';
 import './InventoryResolver.sol';
 import './BuyHandler.sol';
 import './Product.sol';
+
+pragma solidity ^0.4.11;
 
 /**
 *  This is the default Kiosk implementation of a public Product contract.
@@ -211,7 +211,7 @@ contract PublicProduct is Product {
 
     function inStock(uint256 productID, uint256 quantity) constant returns (bool) {
         if (products[productID].hasInventoryResolver == true) {
-            return products[productID].inventoryResolver.inventory(productID) > quantity;
+            return products[productID].inventoryResolver.inventory(productID) >= quantity;
         }
         // If inventory resolver is not set, default is true
         return true;
@@ -225,6 +225,16 @@ contract PublicProduct is Product {
         products[productID].inventoryResolver = resolver;
         products[productID].hasInventoryResolver = true;
         InventoryResolverChanged(productID, resolver);
+    }
+
+    function buyHandler(uint256 productID) constant returns (address) {
+        return products[productID].buyHandler;
+    }
+
+    function setBuyHandler(uint256 productID, BuyHandler handler) only_owner(productID) {
+        products[productID].buyHandler = handler;
+        products[productID].hasBuyHandler = true;
+        BuyHandlerChanged(productID, handler);
     }
 
     // Name
