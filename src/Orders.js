@@ -14,21 +14,20 @@ class Orders extends Component {
 		super(props)
 
 		this.state = {
-			web3: null,
-			publicProduct: null
+		web3: null,
+		publicProduct: null
 		}
-
 	}
 
 	componentWillMount() {
-    getWeb3.then(results => {
-      this.setState({
-        web3: results.web3,
-      })
+		getWeb3.then(results => {
+			this.setState({
+			web3: results.web3,
+		})
 
-      this.initializePublicProduct()
-    })
-  }
+			this.initializePublicProduct()
+		})
+	}
 
   initializePublicProduct() {
   	const publicProduct = contract(publicProductABI)
