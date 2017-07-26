@@ -3,20 +3,63 @@ form {
 	max-width: 500px;
 }
 
+button {
+	background-color: #2A9D8F;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  padding: 10px 32px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  margin: auto;
+  cursor: pointer;
+}
+
+/* Home */
+.welcome-header {
+	text-align: center;
+}
+
+.welcome-header h1 {
+	margin: 100px 0px 50px 0px;
+}
+
+
+/* Products */
+.add-product-button {
+	float: right;
+}
+
+/* New Product */
 .form-register {
 	margin: 20px;
 }
 
 .btn-submit-register {
-    background-color: #335C81;
-    border: none;
-    border-radius: 4px;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    font-size: 16px;
-    margin: auto;
-    cursor: pointer;
-    width: 100%;
-  }
+	width: 100%;
+}
+
+
+/* Table Header */ 
+.container-products-header,
+.container-orders-header {
+	border-bottom: 1px solid #D3D3D3;
+	padding: 20px 0px;
+}
+
+.container-products-header h1,
+.container-orders-header h1 {
+  display: inline;
+}
+
+/* Table */
+.container-orders-table, 
+.container-products-table {
+  padding: 20px 50px;
+}
+
+.orders-table, 
+.products-table {
+  padding-top: 40px;
+}

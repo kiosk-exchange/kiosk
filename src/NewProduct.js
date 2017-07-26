@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import { FormGroup, ControlLabel, FormControl } from 'react-bootstrap'
 
-import NavigationBar from './Components/NavigationBar'
-
 import getWeb3 from './utils/getWeb3'
 import publicProductABI from '../build/contracts/PublicProduct.json'
 import dinRegistrarABI from '../build/contracts/DINRegistrar.json'
@@ -19,7 +17,7 @@ function FieldGroup({ id, type, label, placeholder, ...props }) {
   );
 }
 
-class Register extends Component {
+class NewProduct extends Component {
 
   constructor(props) {
     super(props)
@@ -108,11 +106,9 @@ class Register extends Component {
   render() {
     return (
       <div>
-        <div>
-          <NavigationBar className="navigation-bar" />
-        </div>
-
+      
         <div className="form-register">
+
           <form onSubmit={this.handleSubmit}>
             <FieldGroup
               id="formControlsName"
@@ -132,11 +128,12 @@ class Register extends Component {
               Add Product
             </button>
           </form>
+
         </div>
-        
+
       </div>
     );
   }
 }
 
-export default Register;
+export default NewProduct;

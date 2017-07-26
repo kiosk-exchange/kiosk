@@ -56,25 +56,35 @@ class Orders extends Component {
 	render() {
 		return (
 			<div>
-				<h1>Orders</h1>
-				<Table striped bordered condensed hover>
 
-					<tr>
-						<th>Transaction ID</th>
-						<th>Product</th>
-						<th>Date</th>
-					</tr>
+        <div className="container-orders-table">
+        
+          <div className="container-orders-header">
+  				  <h1>Orders</h1>
+          </div>
 
-					<tbody>
-						<tr>
-							<td>1</td>
-							<td>Blue T-Shirt</td>
-							<td>July 21, 2017</td>
-						</tr>
-					</tbody>
+          <div className="orders-table">
+    				<Table striped bordered condensed hover>
+    					<tr>
+    						<th>Transaction ID</th>
+    						<th>Product</th>
+    						<th>Date</th>
+    					</tr>
 
-				</Table>
+    					<tbody>
+    						<tr>
+    							<td>1</td>
+    							<td>Blue T-Shirt</td>
+    							<td>July 21, 2017</td>
+    						</tr>
+    					</tbody>
+    				</Table>
+          </div>
+
+        </div>
+
 			</div>
+      
 		);
   }
 
