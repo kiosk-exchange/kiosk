@@ -16,6 +16,22 @@ button {
   cursor: pointer;
 }
 
+.search-bar {
+  width: 80%;
+  margin: auto;
+  max-width: 600px;
+}
+
+.search-bar input {
+	padding: 20px 10px;
+	font-size: 16px;
+}
+
+.search-bar button {
+	border-top-left-radius: 0px;
+	border-bottom-left-radius: 0px;
+}
+
 /* Home */
 .welcome-header {
 	text-align: center;

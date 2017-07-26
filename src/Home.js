@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import SearchBar from './Components/SearchBar'
 
 class Home extends Component {
 
@@ -14,9 +15,12 @@ class Home extends Component {
 
   render() {
     return (
-    	<div className="welcome-header">
-    		<h1>Welcome to Kiosk</h1>
-    	</div>
+      <div>
+      	<div className="welcome-header">
+      		<h1>Welcome to Kiosk</h1>
+      	</div>
+        <SearchBar />
+      </div>
     );
   }
 
