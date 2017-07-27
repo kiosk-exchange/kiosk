@@ -49,6 +49,8 @@ class Orders extends Component {
       } else {
         console.log(error)
       }
+
+      newOrderEventAll = null
     })
   }
 

@@ -5,6 +5,7 @@ import { Link } from 'react-router'
 import getWeb3 from './utils/getWeb3'
 
 import registrarABI from '../build/contracts/DINRegistrar.json'
+import publicProductABI from '../build/contracts/PublicProduct.json'
 const contract = require('truffle-contract')
 
 class Products extends Component {
@@ -15,7 +16,7 @@ class Products extends Component {
     this.state = {
       web3: null,
       registrar: null,
-      DINs: []
+      products: []
     }
 
     this.handleAddProduct = this.handleAddProduct.bind(this)
@@ -27,16 +28,25 @@ class Products extends Component {
       web3: results.web3,
     })
 
-      this.initializeRegistrar()
-
+      this.initializeContracts()
     })
   }
 
-  initializeRegistrar() {
+  initializeContracts() {
     const registrar = contract(registrarABI)
     registrar.setProvider(this.state.web3.currentProvider)
     registrar.deployed().then((instance) => {
-      this.setState({ registrar: instance.contract }, () => {
+      return this.setState({ registrar: instance.contract }, () => {
+        this.initializePublicProduct()
+      })
+    })
+  }
+
+  initializePublicProduct() {
+    const publicProduct = contract(publicProductABI)
+    publicProduct.setProvider(this.state.web3.currentProvider)
+    publicProduct.deployed().then((instance) => {
+      this.setState({ publicProduct: instance.contract }, () => {
         this.getProducts()
       })
     })
@@ -48,8 +58,7 @@ class Products extends Component {
 
   getProducts() {
     var owner = this.state.web3.eth.coinbase
-
-    var DINs = []
+    var products = []
 
     // Add registration event listener
     var newRegistrationAll = this.state.registrar.NewRegistration({owner: owner}, {fromBlock: 0, toBlock: 'latest'})
@@ -58,13 +67,23 @@ class Products extends Component {
 
         // Add DINs to array
         const DIN = parseInt(result["args"]["DIN"]["c"][0], 10)
-        DINs.push(DIN)
+        const name = this.state.publicProduct.name(DIN)
+        const imageURL = this.state.publicProduct.imageURL(DIN)
 
-        this.setState({ DINs: DINs })
+        products.push(
+          {
+            DIN: DIN,
+            name: name,
+            imageURL: imageURL
+          }
+        )
 
+        this.setState({ products: products })
       } else {
         console.log(error)
       }
+
+      newRegistrationAll = null
     })
   }
 
@@ -91,15 +110,17 @@ class Products extends Component {
                   <th>Edit</th>
                 </tr>
 
-                {this.state.DINs.map((DIN, index) => (
+                {this.state.products.map((product, index) => (
                     <tr key={index}>
                       <td>
-                        <a href={"/DIN/" + DIN}>{DIN}</a>
+                        <a href={"/DIN/" + product.DIN}>{product.DIN}</a>
                       </td>
-                      <td>Blue T-Shirt</td>
-                      <td>blah</td>
+                      <td>{product.name}</td>
                       <td>
-                        <a href={"/product/" + DIN}>Edit</a>
+                        <a href={product.imageURL}>{product.imageURL}</a>
+                      </td>
+                      <td>
+                        <a href={"/product/" + product.DIN}>Edit</a>
                       </td>
                     </tr>
                   )

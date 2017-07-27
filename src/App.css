@@ -11,6 +11,17 @@ button {
   cursor: pointer;
 }
 
+td {
+  max-width: 50px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+a {
+	text-decoration: underline;
+}
+
 .search-bar {
   width: 80%;
   margin: auto;
