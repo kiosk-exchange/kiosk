@@ -92,6 +92,7 @@ class NewProduct extends Component {
           // Extra gas needed to set long URLs
           this.state.publicProductContract.setImageURL(DIN, this.state.imageURL,  {from: account1, gas: 4700000 }, () => {
             this.state.publicProductContract.setPriceResolver(DIN, this.state.demoPriceResolverContract.address, {from: account1 })
+            this.props.history.push(`/DIN/${DIN}`)
           })
         })
       } else {
@@ -126,7 +127,7 @@ class NewProduct extends Component {
               value={this.state.imageURL}
               onChange={this.handleImageURLChange}
             />
-            <button className="btn-submit-register" type="submit"> 
+            <button className="btn-submit-register" type="submit">
               Add Product
             </button>
           </form>
