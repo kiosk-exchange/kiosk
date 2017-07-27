@@ -3,6 +3,9 @@ import { Table } from 'react-bootstrap'
 
 import getWeb3 from './utils/getWeb3'
 
+import registrarABI from '../build/contracts/DINRegistrar.json'
+const contract = require('truffle-contract')
+
 class Products extends Component {
 
   constructor(props) {
@@ -10,7 +13,8 @@ class Products extends Component {
 
     this.state = {
       web3: null,
-      publicProduct: null
+      registrar: null,
+      DINs: []
     }
 
     this.handleAddProduct = this.handleAddProduct.bind(this)
@@ -22,11 +26,45 @@ class Products extends Component {
       web3: results.web3,
     })
 
+      this.initializeRegistrar()
+
+    })
+  }
+
+  initializeRegistrar() {
+    const registrar = contract(registrarABI)
+    registrar.setProvider(this.state.web3.currentProvider)
+    registrar.deployed().then((instance) => {
+      this.setState({ registrar: instance.contract }, () => {
+        this.getProducts()
+      })
     })
   }
 
   handleAddProduct(event) {
     this.props.history.push('/products/new')
+  }
+
+  getProducts() {
+    var owner = this.state.web3.eth.coinbase
+
+    var DINs = []
+
+    // Add registration event listener
+    var newRegistrationAll = this.state.registrar.NewRegistration({owner: owner}, {fromBlock: 0, toBlock: 'latest'})
+    newRegistrationAll.watch((error, result) => {
+      if (!error) {
+
+        // Add DINs to array
+        const DIN = parseInt(result["args"]["DIN"]["c"][0], 10)
+        DINs.push(DIN)
+
+        this.setState({ DINs: DINs })
+
+      } else {
+        console.log(error)
+      }
+    })
   }
 
   render() {
@@ -51,11 +89,15 @@ class Products extends Component {
                   <th>Image</th>
                 </tr>
 
-                <tr>
-                  <td>1000-0001</td>
-                  <td>Blue T-Shirt</td>
-                  <td>blah</td>
-                </tr>
+                {this.state.DINs.map((DIN, index) => (
+                    <tr key={index}>
+                      <td>{DIN}</td>
+                      <td>Blue T-Shirt</td>
+                      <td>blah</td>
+                    </tr>
+                  )
+                )}
+
               </tbody>
             </Table>
           </div>
