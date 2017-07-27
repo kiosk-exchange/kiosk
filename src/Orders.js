@@ -13,7 +13,8 @@ class Orders extends Component {
 
     this.state = {
       web3: null,
-      publicProduct: null
+      publicProduct: null,
+      orders: []
     }
   }
 
@@ -37,15 +38,46 @@ class Orders extends Component {
     })
   }
 
+  date(timestamp) {
+    var date = new Date(timestamp*1000)
+
+    var month = date.getUTCMonth() + 1 //months from 1-12
+    var day = date.getUTCDate()
+    var year = date.getUTCFullYear()
+
+    var formattedDate = month + "/" + day + "/" + year
+    return formattedDate
+  }
+
   getOrders() {
-    var buyer = this.state.web3.eth.coinbase
+    var seller = this.state.web3.eth.coinbase
+    var orders = []
     // Add order event listener
-    var newOrderEventAll = this.state.publicProduct.NewOrder({buyer: buyer}, {fromBlock: 0, toBlock: 'latest'})
+    var newOrderEventAll = this.state.publicProduct.NewOrder({seller: seller}, {fromBlock: 0, toBlock: 'latest'})
     newOrderEventAll.watch((error, result) => {
-      console.log("YES")
       if (!error) {
-      // Add to UI
-        console.log(result)
+
+        const orderID = result["args"]["orderID"]["c"][0]
+        const DIN = result["args"]["DIN"]["c"][0]
+        const buyer = result["args"]["buyer"]
+
+        const amountPaid = parseInt(result["args"]["amountPaid"], 10)
+        const etherPaid = this.state.web3.fromWei(amountPaid, 'ether')
+
+        const timestamp = parseInt(result["args"]["timestamp"], 10)
+        const date = this.date(timestamp)
+
+        orders.push(
+          {
+            orderID: orderID,
+            DIN: DIN,
+            buyer: buyer,
+            amountPaid: etherPaid,
+            date: date
+          }
+        )
+
+        this.setState({ orders: orders })
       } else {
         console.log(error)
       }
@@ -67,18 +99,24 @@ class Orders extends Component {
 
           <div className="orders-table">
             <Table striped bordered condensed hover>
-              <tr>
-                <th>Transaction ID</th>
-                <th>Product</th>
-                <th>Date</th>
-              </tr>
-
               <tbody>
                 <tr>
-                  <td>1</td>
-                  <td>Blue T-Shirt</td>
-                  <td>July 21, 2017</td>
+                  <th>Order ID</th>
+                  <th>DIN</th>
+                  <th>Buyer</th>
+                  <th>Paid</th>
+                  <th>Date</th>
                 </tr>
+                {this.state.orders.map((order, index) => (
+                    <tr key={index}>
+                      <td>{order.orderID}</td>
+                      <td>{order.DIN}</td>
+                      <td>{order.buyer}</td>
+                      <td>{order.amountPaid}</td>
+                      <td>{order.date}</td>
+                    </tr>
+                  )
+                )}
               </tbody>
             </Table>
           </div>
@@ -86,7 +124,7 @@ class Orders extends Component {
         </div>
 
       </div>
-      
+
 		);
   }
 

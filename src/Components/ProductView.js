@@ -106,14 +106,14 @@ class ProductView extends Component {
 
           <Row className="show-grid">
 
-              <Col xs={10} xsOffset={1} sm={8} smOffset={2} md={6} mdOffset={0}>
+              <Col xs={8} xsOffset={2} sm={6} smOffset={0} md={6} mdOffset={0}>
                 <div className="column-product-image">
                     <img src={this.state.imageURL} role="presentation"></img>
                 </div>
               </Col>
 
             <div className="column-product-info">
-              <Col xs={10} xsOffset={1} sm={8} smOffset={2} md={6} mdOffset={0}>
+              <Col xs={8} xsOffset={2} sm={6} smOffset={0} md={6} mdOffset={0}>
                 <div className="container-product-info">
                   <h1>{this.state.name}</h1>
                   <h2>{this.state.formattedPrice}</h2>
