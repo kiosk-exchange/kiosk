@@ -57,11 +57,14 @@ class Orders extends Component {
     newOrderEventAll.watch((error, result) => {
       if (!error) {
 
-        const orderID = parseInt(result["args"]["orderID"]["c"][0], 10)
-        const DIN = parseInt(result["args"]["DIN"]["c"][0], 10)
+        const orderID = result["args"]["orderID"]["c"][0]
+        const DIN = result["args"]["DIN"]["c"][0]
         const buyer = result["args"]["buyer"]
-        const amountPaid = parseInt(result["args"]["amountPaid"]["c"][0], 10)
-        const timestamp = parseInt(result["args"]["timestamp"]["c"][0], 10)
+        const amountPaid = parseInt(result["args"]["amountPaid"], 10)
+
+        const etherPaid = this.state.web3.fromWei(amountPaid, 'ether')
+
+        const timestamp = parseInt(result["args"]["timestamp"], 10)
 
         const date = this.date(timestamp)
 
@@ -70,7 +73,7 @@ class Orders extends Component {
             orderID: orderID,
             DIN: DIN,
             buyer: buyer,
-            amountPaid: amountPaid,
+            amountPaid: etherPaid,
             date: date
           }
         )
