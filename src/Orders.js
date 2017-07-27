@@ -60,12 +60,11 @@ class Orders extends Component {
         const orderID = result["args"]["orderID"]["c"][0]
         const DIN = result["args"]["DIN"]["c"][0]
         const buyer = result["args"]["buyer"]
+
         const amountPaid = parseInt(result["args"]["amountPaid"], 10)
-
         const etherPaid = this.state.web3.fromWei(amountPaid, 'ether')
-
+        
         const timestamp = parseInt(result["args"]["timestamp"], 10)
-
         const date = this.date(timestamp)
 
         orders.push(
@@ -79,9 +78,6 @@ class Orders extends Component {
         )
 
         this.setState({ orders: orders })
-
-        // console.log(DIN)
-        // console.log(result)
       } else {
         console.log(error)
       }
