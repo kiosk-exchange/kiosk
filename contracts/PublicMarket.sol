@@ -2,14 +2,14 @@ import './DINRegistry.sol';
 import './PriceResolver.sol';
 import './InventoryResolver.sol';
 import './BuyHandler.sol';
-import './Product.sol';
+import './Market.sol';
 
 pragma solidity ^0.4.11;
 
 /**
-*  This is the default Kiosk implementation of a public Product contract.
+*  This is the default Kiosk implementation of a public Market contract.
 */
-contract PublicProduct is Product {
+contract PublicMarket is Market {
 
     struct Product {
         PriceResolver priceResolver;            // Returns the price of a given product. Required.
@@ -112,7 +112,7 @@ contract PublicProduct is Product {
      * Constructor.
      * @param dinRegistryAddr The address of the DIN registry contract.
      */
-    function PublicProduct(DINRegistry dinRegistryAddr) {
+    function PublicMarket(DINRegistry dinRegistryAddr) {
         dinRegistry = dinRegistryAddr;
     }
 

@@ -4,7 +4,7 @@ import { Table } from 'react-bootstrap'
 import getWeb3 from './utils/getWeb3'
 
 import registrarABI from '../build/contracts/DINRegistrar.json'
-import publicProductABI from '../build/contracts/PublicProduct.json'
+import publicMarketABI from '../build/contracts/PublicMarket.json'
 const contract = require('truffle-contract')
 
 class Products extends Component {
@@ -15,6 +15,7 @@ class Products extends Component {
     this.state = {
       web3: null,
       registrar: null,
+      publicMarket: null,
       products: []
     }
 
@@ -42,10 +43,10 @@ class Products extends Component {
   }
 
   initializePublicProduct() {
-    const publicProduct = contract(publicProductABI)
-    publicProduct.setProvider(this.state.web3.currentProvider)
-    publicProduct.deployed().then((instance) => {
-      this.setState({ publicProduct: instance.contract }, () => {
+    const publicMarket = contract(publicMarketABI)
+    publicMarket.setProvider(this.state.web3.currentProvider)
+    publicMarket.deployed().then((instance) => {
+      this.setState({ publicMarket: instance.contract }, () => {
         this.getProducts()
       })
     })
@@ -66,8 +67,8 @@ class Products extends Component {
 
         // Add DINs to array
         const DIN = parseInt(result["args"]["DIN"]["c"][0], 10)
-        const name = this.state.publicProduct.name(DIN)
-        const imageURL = this.state.publicProduct.imageURL(DIN)
+        const name = this.state.publicMarket.name(DIN)
+        const imageURL = this.state.publicMarket.imageURL(DIN)
 
         products.push(
           {

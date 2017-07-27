@@ -1,6 +1,6 @@
 var DINRegistry = artifacts.require('./DINRegistry.sol');
 var DINRegistrar = artifacts.require('./DINRegistrar.sol');
-var PublicProduct = artifacts.require('./PublicProduct.sol');
+var PublicMarket = artifacts.require('./PublicMarket.sol');
 var DemoToken = artifacts.require('./DemoToken.sol');
 var DemoPriceResolver = artifacts.require('./DemoPriceResolver.sol');
 
@@ -10,15 +10,15 @@ module.exports = function(deployer) {
 	const DIN = 10000001
 	var registry;
 	var registrar;
-	var product;
+	var market;
 
 	// Deploy DINRegistry
 	deployer.deploy(DINRegistry, genesis).then(() => {
 		// Deploy DINRegistrar
 		return deployer.deploy(DINRegistrar, DINRegistry.address)
 	}).then(() => {
-		// Deploy PublicProduct
-		return deployer.deploy(PublicProduct, DINRegistry.address)
+		// Deploy PublicMarket
+		return deployer.deploy(PublicMarket, DINRegistry.address)
 	}).then(() => {
 		return DINRegistry.deployed()
 	}).then((instance) => {
@@ -31,19 +31,19 @@ module.exports = function(deployer) {
 		registrar = instance
 		return registrar.registerNewDIN(); // Register 10000001
 	}).then(() => {
-		// Set the PublicProduct as the product for the first registered DIN
-		return registry.setProduct(DIN, PublicProduct.address)
+		// Set the PublicMarket as the market for the first registered DIN
+		return registry.setProduct(DIN, PublicMarket.address)
 	}).then(() => {
-		return deployer.deploy(DemoToken, DIN, PublicProduct.address) // Deploy token "product"
+		return deployer.deploy(DemoToken, DIN, PublicMarket.address) // Deploy token "product"
 	}).then(() => {
-		return PublicProduct.deployed()
+		return PublicMarket.deployed()
 	}).then((instance) => {
-		product = instance;
-		return product.setBuyHandler(DIN, DemoToken.address)
+		market = instance;
+		return market.setBuyHandler(DIN, DemoToken.address)
 	}).then(() => {
-		return product.setPriceResolver(DIN, DemoToken.address)
+		return market.setPriceResolver(DIN, DemoToken.address)
 	}).then(() => {
-		return product.setInventoryResolver(DIN, DemoToken.address)
+		return market.setInventoryResolver(DIN, DemoToken.address)
 	}).then(() => {
 		return deployer.deploy(DemoPriceResolver)
 	})

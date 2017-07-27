@@ -3,7 +3,7 @@ import { Table } from 'react-bootstrap'
 
 import getWeb3 from './utils/getWeb3'
 
-import publicProductABI from '../build/contracts/PublicProduct.json'
+import publicMarketABI from '../build/contracts/PublicMarket.json'
 const contract = require('truffle-contract')
 
 class Orders extends Component {
@@ -13,7 +13,7 @@ class Orders extends Component {
 
     this.state = {
       web3: null,
-      publicProduct: null,
+      publicMarket: null,
       orders: []
     }
   }
@@ -24,15 +24,15 @@ class Orders extends Component {
       web3: results.web3,
     })
 
-      this.initializePublicProduct()
+      this.initializePublicMarket()
     })
   }
 
-  initializePublicProduct() {
-    const publicProduct = contract(publicProductABI)
-    publicProduct.setProvider(this.state.web3.currentProvider)
-    publicProduct.deployed().then((instance) => {
-      this.setState({ publicProduct: instance.contract }, () => {
+  initializePublicMarket() {
+    const publicMarket = contract(publicMarketABI)
+    publicMarket.setProvider(this.state.web3.currentProvider)
+    publicMarket.deployed().then((instance) => {
+      this.setState({ publicMarket: instance.contract }, () => {
         this.getOrders()
       })
     })
@@ -53,9 +53,11 @@ class Orders extends Component {
     var seller = this.state.web3.eth.coinbase
     var orders = []
     // Add order event listener
-    var newOrderEventAll = this.state.publicProduct.NewOrder({seller: seller}, {fromBlock: 0, toBlock: 'latest'})
+    var newOrderEventAll = this.state.publicMarket.NewOrder({seller: seller}, {fromBlock: 0, toBlock: 'latest'})
     newOrderEventAll.watch((error, result) => {
       if (!error) {
+
+        console.log(result)
 
         const orderID = result["args"]["orderID"]["c"][0]
         const DIN = result["args"]["DIN"]["c"][0]
