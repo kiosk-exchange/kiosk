@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Table } from 'react-bootstrap'
+import { Link } from 'react-router'
 
 import getWeb3 from './utils/getWeb3'
 
@@ -87,13 +88,19 @@ class Products extends Component {
                   <th>DIN</th>
                   <th>Name</th>
                   <th>Image</th>
+                  <th>Edit</th>
                 </tr>
 
                 {this.state.DINs.map((DIN, index) => (
                     <tr key={index}>
-                      <td>{DIN}</td>
+                      <td>
+                        <a href={"/DIN/" + DIN}>{DIN}</a>
+                      </td>
                       <td>Blue T-Shirt</td>
                       <td>blah</td>
+                      <td>
+                        <a href={"/product/" + DIN}>Edit</a>
+                      </td>
                     </tr>
                   )
                 )}
