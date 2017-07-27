@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Table } from 'react-bootstrap'
-import { Link } from 'react-router'
 
 import getWeb3 from './utils/getWeb3'
 

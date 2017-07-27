@@ -57,7 +57,7 @@ contract PublicProduct is Product {
     mapping (uint256 => uint256) public pendingWithdrawals;
 
     // Events
-    event NewOrder(address indexed buyer, address indexed seller, uint256 indexed DIN, uint256 amountPaid, uint256 timestamp);
+    event NewOrder(uint orderID, address indexed buyer, address indexed seller, uint256 indexed DIN, uint256 amountPaid, uint256 timestamp);
 
     event PriceResolverChanged(uint256 indexed productID, address PriceResolver);
     event InventoryResolverChanged(uint256 indexed productID, address InventoryResolver);
@@ -173,7 +173,7 @@ contract PublicProduct is Product {
             products[productID].buyHandler.handleOrder(productID, quantity, msg.sender);
         }
 
-        NewOrder(msg.sender, seller, productID, msg.value, block.timestamp);
+        NewOrder(orderIndex, msg.sender, seller, productID, msg.value, block.timestamp);
     }
 
     /**
