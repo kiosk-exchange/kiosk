@@ -23,7 +23,7 @@ class Products extends Component {
     })
 
     })
-  } 
+  }
 
   handleAddProduct(event) {
     this.props.history.push('/products/new')
@@ -44,17 +44,17 @@ class Products extends Component {
 
           <div className="products-table">
             <Table striped bordered condensed hover>
-            <tr>
-              <th>DIN</th>
-              <th>Name</th>
-              <th>Image</th>
-            </tr>
-
               <tbody>
                 <tr>
-                	<td>1000-0001</td>
-                	<td>Blue T-Shirt</td>
-                	<td>blah</td>
+                  <th>DIN</th>
+                  <th>Name</th>
+                  <th>Image</th>
+                </tr>
+
+                <tr>
+                  <td>1000-0001</td>
+                  <td>Blue T-Shirt</td>
+                  <td>blah</td>
                 </tr>
               </tbody>
             </Table>
@@ -63,7 +63,7 @@ class Products extends Component {
         </div>
 
       </div>
-      
+
 		);
   }
 
