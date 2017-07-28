@@ -1,4 +1,5 @@
 import './ProductInfo.sol';
+import './DINRegistry.sol';
 
 pragma solidity ^0.4.11;
 
@@ -8,7 +9,6 @@ pragma solidity ^0.4.11;
 contract PublicProductInfo is ProductInfo {
 
 	struct ProductInfo {
-        string name;                            // Tile Slim White - Tile Trackers & Locators
         string description;                     // Slim White. The thinnest Bluetooth tracker that finds everyday items in seconds.
         string imageURL;                        // https://static-www.thetileapp.com/images/slim_pdp_hero2.jpg
         string retailURL;                       // https://www.thetileapp.com/en-us/store/tiles/slim
@@ -20,6 +20,25 @@ contract PublicProductInfo is ProductInfo {
         uint256 UPC;                            // 859553005297
         uint256 EAN;                            // 0859553005297
 	}
+
+    // The address of DIN registry where all product IDs are stored.
+    DINRegistry public dinRegistry;
+
+    // Product ID (DIN) => ProductInfo
+    mapping (uint256 => ProductInfo) products;
+
+    // Interfaces
+    bytes4 constant NAME_INTERFACE_ID = 0x00ad800c; // bytes4(sha3("name(uint256)"))
+    bytes4 constant RETAIL_URL_INTERFACE_ID = 0x90af830d;
+    bytes4 constant IMAGE_URL_INTERFACE_ID = 0x4f5cad01;
+    bytes4 constant CATEGORY_INTERFACE_ID = 0x253eca1f;
+    bytes4 constant BRAND_INTERFACE_ID = 0xbedf7e19;
+    bytes4 constant MANUFACTURER_INTERFACE_ID = 0xa43271b9;
+    bytes4 constant COLOR_INTERFACE_ID = 0xd4e28c9c;
+    bytes4 constant MODEL_INTERFACE_ID = 0x4c5770d9;
+    bytes4 constant UPC_INTERFACE_ID = 0x2266a58e;
+    bytes4 constant EAN_INTERFACE_ID = 0x9b2e8e30;
+    bytes4 constant DESCRIPTION_INTERFACE_ID = 0x2c5f13e0;
 
     // Events
 	event RetailURLChanged(uint256 indexed productID, string retailURL);
@@ -33,19 +52,45 @@ contract PublicProductInfo is ProductInfo {
     event EANChanged(uint256 indexed productID, uint256 EAN);
     event DescriptionChanged(uint indexed productID, string description);
 
+    /**
+    * Returns true if the resolver implements the interface specified by the provided hash.
+    * @param interfaceID The ID of the interface to check for.
+    * @return True if the contract implements the requested interface.
+    */
+    function supportsInterface(bytes4 interfaceID) constant returns (bool) {
+        return interfaceID == NAME_INTERFACE_ID ||
+               interfaceID == RETAIL_URL_INTERFACE_ID ||
+               interfaceID == IMAGE_URL_INTERFACE_ID ||
+               interfaceID == CATEGORY_INTERFACE_ID ||
+               interfaceID == BRAND_INTERFACE_ID ||
+               interfaceID == MANUFACTURER_INTERFACE_ID ||
+               interfaceID == COLOR_INTERFACE_ID ||
+               interfaceID == MODEL_INTERFACE_ID ||
+               interfaceID == UPC_INTERFACE_ID ||
+               interfaceID == EAN_INTERFACE_ID ||
+               interfaceID == DESCRIPTION_INTERFACE_ID;
+    }
+
     modifier only_owner(uint256 DIN) {
         require (dinRegistry.owner(DIN) == msg.sender);
         _;
     }
 
-	// Name
-    function name(uint256 productID) constant returns (string) {
-        return products[productID].name;
+    /**
+     * Constructor.
+     * @param dinRegistryAddr The address of the DIN registry contract.
+     */
+    function PublicProductInfo(DINRegistry dinRegistryAddr) {
+        dinRegistry = dinRegistryAddr;
     }
 
-    function setName(uint256 productID, string name) only_owner(productID) {
-        products[productID].name = name;
-        NameChanged(productID, name);
+    // Name
+    function name(uint256 DIN) constant returns (uint256) {
+        return products[DIN].name;
+    }
+
+    function setName(uint256 DIN, string name) only_owner(DIN) {
+        products[DIN].name = name
     }
 
     // RetailURL
@@ -75,7 +120,6 @@ contract PublicProductInfo is ProductInfo {
 
     function setCategory(uint256 productID, string category) only_owner(productID) {
         products[productID].category = category;
-        NameChanged(productID, category);
     }
 
     // Brand
