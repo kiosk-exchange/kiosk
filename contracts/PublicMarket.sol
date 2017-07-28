@@ -33,7 +33,7 @@ contract PublicMarket is Market {
     // The address of DIN registry where all product IDs are stored.
     DINRegistry public dinRegistry;
 
-    // Product ID (DIN) => Product
+    // DIN => Product
     mapping (uint256 => Product) products;
 
     uint256 public orderIndex = 0;
@@ -41,7 +41,7 @@ contract PublicMarket is Market {
     // Order ID => Order
     mapping (uint256 => Order) public orders;
 
-    // Product ID (DIN) => Pending revenue
+    // DIN => Pending revenue
     mapping (uint256 => uint256) public pendingWithdrawals;
 
     // Events
@@ -134,10 +134,7 @@ contract PublicMarket is Market {
      * @param DIN The DIN of the product to buy.
      * @param quantity The quantity to buy.
      */   
-    function buy(
-        uint256 DIN, 
-        uint256 quantity
-    ) 
+    function buy(uint256 DIN, uint256 quantity) 
         payable
         only_valid_product(DIN)
         only_correct_price(DIN, quantity) 
@@ -148,7 +145,7 @@ contract PublicMarket is Market {
         // Increment the order index for a new order.
         orderIndex++;
 
-        // Add the order to the order tracker.
+        // Add the order to the orders mapping.
         orders[orderIndex] = Order(
             msg.sender, 
             seller, 
@@ -171,11 +168,7 @@ contract PublicMarket is Market {
         pendingWithdrawals[DIN] += msg.value;
 
         // Call the seller's buy handler.
-        products[DIN].buyHandler.handleOrder(
-            DIN, 
-            quantity,
-            msg.sender
-        );
+        products[DIN].buyHandler.handleOrder(DIN, quantity, msg.sender);
     }
 
     /**
