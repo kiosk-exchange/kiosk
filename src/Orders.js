@@ -65,7 +65,7 @@ class Orders extends Component {
 
         const amountPaid = parseInt(result["args"]["amountPaid"], 10)
         const etherPaid = this.state.web3.fromWei(amountPaid, 'ether')
-        
+
         const timestamp = parseInt(result["args"]["timestamp"], 10)
         const date = this.date(timestamp)
 
@@ -102,7 +102,6 @@ class Orders extends Component {
           <div className="orders-table">
             <Table striped bordered condensed hover>
               <tbody>
-
                 <tr>
                   <th>Order ID</th>
                   <th>DIN</th>
@@ -110,7 +109,6 @@ class Orders extends Component {
                   <th>Paid</th>
                   <th>Date</th>
                 </tr>
-
                 {this.state.orders.map((order, index) => (
                     <tr key={index}>
                       <td>{order.orderID}</td>
@@ -121,7 +119,6 @@ class Orders extends Component {
                     </tr>
                   )
                 )}
-
               </tbody>
             </Table>
           </div>
@@ -129,7 +126,7 @@ class Orders extends Component {
         </div>
 
       </div>
-      
+
 		);
   }
 
