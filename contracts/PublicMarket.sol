@@ -13,7 +13,6 @@ pragma solidity ^0.4.11;
 contract PublicMarket is Market {
 
     struct Product {
-        string name;
         ProductInfo info;                       // Returns info about a given product.
         PriceResolver priceResolver;            // Returns the price of a given product.
         InventoryResolver inventoryResolver;    // Returns whether a product is in stock.
@@ -48,7 +47,6 @@ contract PublicMarket is Market {
     uint256 public kioskDIN;
 
     // Events
-    event NameChanged(uint256 indexed DIN, string name);
     event PriceResolverChanged(uint256 indexed DIN, address PriceResolver);
     event InventoryResolverChanged(uint256 indexed DIN, address InventoryResolver);
     event BuyHandlerChanged(uint256 indexed DIN, address BuyHandler);
@@ -67,7 +65,7 @@ contract PublicMarket is Market {
         _;
     }
 
-    modifier only_seller(uint256 DIN) {
+    modifier only_seller(uint256 orderID) {
         require(orders[orderID].seller == msg.sender);
         _;
     }
@@ -94,7 +92,6 @@ contract PublicMarket is Market {
      */
     function PublicMarket(DINRegistry dinRegistryAddr) {
         dinRegistry = dinRegistryAddr;
-        genesis = dinRegistryAddr.genesis();
     }
 
     // This contract does not accept ether directly. Use the "buy" function to buy a product.
@@ -110,19 +107,17 @@ contract PublicMarket is Market {
 
     function addProduct(
         uint256 DIN,
-        string name, 
         ProductInfo info, 
-        PriceResolver price, 
-        InventoryResolver inventory, 
+        PriceResolver priceResolver, 
+        InventoryResolver inventoryResolver, 
         BuyHandler buyHandler
     ) {
-        products[DIN].name = name;
         products[DIN].info = info;
-        products[DIN].price = price;
-        products[DIN].inventory = inventory;
+        products[DIN].priceResolver = priceResolver;
+        products[DIN].inventoryResolver = inventoryResolver;
         products[DIN].buyHandler = buyHandler;
 
-        products[DIN].isValid = true
+        products[DIN].isValid = true;
     }
 
     /**
@@ -191,11 +186,11 @@ contract PublicMarket is Market {
         msg.sender.transfer(amount);
     }
 
-    /**
-    *   =========================
-    *      Product Information 
-    *   =========================
-    */
+
+    //   =========================
+    //      Product Information 
+    //   =========================
+    
 
     // Price
     function price(uint256 DIN) constant returns (uint256) {
