@@ -6,6 +6,7 @@ import getWeb3 from './utils/getWeb3'
 import registrarABI from '../build/contracts/DINRegistrar.json'
 import publicMarketABI from '../build/contracts/PublicMarket.json'
 import productInfoABI from '../build/contracts/ProductInfo.json'
+import priceResolverABI from '../build/contracts/PriceResolver.json'
 
 const contract = require('truffle-contract')
 
@@ -67,35 +68,42 @@ class Products extends Component {
   }
 
   getProducts() {
-    var owner = this.state.web3.eth.coinbase
     var products = []
 
     // Add registration event listener
     var newRegistrationAll = this.state.registrar.NewRegistration({}, {fromBlock: 0, toBlock: 'latest'})
     newRegistrationAll.watch((error, result) => {
+
       if (!error) {
 
-        // Add DINs to array
         const DIN = parseInt(result["args"]["DIN"]["c"][0], 10)
-        const infoAddr = this.state.publicMarket.info(DIN)
-        console.log(infoAddr)
-        const infoContract = this.state.web3.eth.contract(productInfoABI.abi).at(infoAddr)
 
-        const name = infoContract.name(DIN, (error, name) => {
+        // Get the product info contract for the DIN
+        const productInfoAddr = this.state.publicMarket.info(DIN)
+        const productInfo = this.state.web3.eth.contract(productInfoABI.abi).at(productInfoAddr)
+
+        // Get the price resolver for the DIN
+        const priceResolverAddr = this.state.publicMarket.priceResolver(DIN)
+        const priceResolver = this.state.web3.eth.contract(priceResolverABI.abi).at(priceResolverAddr)
+
+        var productName
+
+        productInfo.name(DIN, (error, name) => {
+
           if (!error) {
+            productName = name
 
-          products.push(
-            {
-              DIN: DIN,
-              name: name,
-              imageURL: ""
-            }
-          )
+            priceResolver.price(DIN, (error, price) => {
+              if (!error) {
 
-          this.setState({ products: products })
+                products.push({DIN: DIN, name: productName, price: price.toNumber() })
 
+                this.setState({ products: products })
+             }
+           })
           }
         })
+
       } else {
         console.log(error)
       }
@@ -123,7 +131,7 @@ class Products extends Component {
                 <tr>
                   <th>DIN</th>
                   <th>Name</th>
-                  <th>Image</th>
+                  <th>Price</th>
                   <th>Edit</th>
                 </tr>
 
@@ -133,9 +141,7 @@ class Products extends Component {
                         <a href={"/DIN/" + product.DIN}>{product.DIN}</a>
                       </td>
                       <td>{product.name}</td>
-                      <td>
-                        <a href={product.imageURL}>{product.imageURL}</a>
-                      </td>
+                      <td>{(this.state.web3.fromWei(product.price, 'ether'))}</td>
                       <td>
                         <a href={"/product/" + product.DIN}>Edit</a>
                       </td>

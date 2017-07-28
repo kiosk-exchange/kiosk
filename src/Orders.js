@@ -50,7 +50,6 @@ class Orders extends Component {
   }
 
   getOrders() {
-    var seller = this.state.web3.eth.coinbase
     var orders = []
     // Add order event listener
     var newOrderEventAll = this.state.publicMarket.NewOrder({}, {fromBlock: 0, toBlock: 'latest'})

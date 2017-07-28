@@ -4,7 +4,7 @@ import { FormGroup, ControlLabel, FormControl } from 'react-bootstrap'
 import getWeb3 from './utils/getWeb3'
 import publicMarketABI from '../build/contracts/PublicMarket.json'
 import dinRegistrarABI from '../build/contracts/DINRegistrar.json'
-import demoPriceResolverABI from '../build/contracts/DemoPriceResolver.json'
+import demoStoreABI from '../build/contracts/DemoStore.json'
 
 const contract = require('truffle-contract')
 
@@ -26,13 +26,13 @@ class NewProduct extends Component {
       web3: null,
       publicMarket: null,
       dinRegistrarContract: null,
-      demoPriceResolverContract: null,
+      demoStore: null,
       name: "",
-      imageURL: ""
+      price: ""
     }
 
     this.handleNameChange = this.handleNameChange.bind(this);
-    this.handleImageURLChange = this.handleImageURLChange.bind(this);
+    this.handlePriceChange = this.handlePriceChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -60,12 +60,11 @@ class NewProduct extends Component {
       this.setState({ dinRegistrarContract: instance.contract })
     })
 
-    const demoPriceResolverContract = contract(demoPriceResolverABI)
-    demoPriceResolverContract.setProvider(this.state.web3.currentProvider)
-    demoPriceResolverContract.deployed().then((instance) => {
-      this.setState({ demoPriceResolverContract: instance.contract })
+    const demoStore = contract(demoStoreABI)
+    demoStore.setProvider(this.state.web3.currentProvider)
+    demoStore.deployed().then((instance) => {
+      this.setState({ demoStore: instance.contract })
     })
-
   }
 
   // Update state when name label changes
@@ -74,41 +73,27 @@ class NewProduct extends Component {
   }
 
   // Update state when image URL label changes
-  handleImageURLChange(event) {
-    this.setState({ imageURL: event.target.value })
+  handlePriceChange(event) {
+    this.setState({ price: event.target.value })
   }
 
   handleSubmit(event) {
     event.preventDefault()
 
-    var account1 = this.state.web3.eth.accounts[0]
+    const account1 = this.state.web3.eth.accounts[0]
+    const price = this.state.web3.toWei(this.state.price, 'ether')
 
-    var registerEvent = this.state.dinRegistrarContract.NewRegistration({owner: account1})
-    registerEvent.watch((error, result) => {
-      if (!error) {
-        const DIN = parseInt(result["args"]["DIN"]["c"][0], 10)
-        console.log(`Created DIN ${DIN}`)
-
-        this.state.publicMarket.addProduct(
-          DIN,
-          this.state.name,
-          
-        )
-
-        this.state.publicMarket.setName(DIN, this.state.name, {from: account1}, () => {
-          // Extra gas needed to set long URLs
-          this.state.publicMarket.setImageURL(DIN, this.state.imageURL,  {from: account1, gas: 4700000 }, () => {
-            this.state.publicMarket.setPriceResolver(DIN, this.state.demoPriceResolverContract.address, {from: account1 })
-            this.props.history.push(`/DIN/${DIN}`)
-          })
-        })
-      } else {
-        console.log(error)
-      }
-      registerEvent = null
+    this.state.demoStore.addProduct(
+      this.state.name, 
+      price, 
+      {
+        from: account1, 
+        gas: 4700000
+      }, 
+      (error, result) => 
+    {
+      this.props.history.push('/products')
     })
-
-    this.state.dinRegistrarContract.registerNewDIN({from: account1}, () => {})
   }
 
   render() {
@@ -128,11 +113,11 @@ class NewProduct extends Component {
               onChange={this.handleNameChange}
             />
             <FieldGroup
-              id="formControlsImageURL"
+              id="formControlsPrice"
               type="text"
-              label="Image URL"
-              value={this.state.imageURL}
-              onChange={this.handleImageURLChange}
+              label="Price (ETH)"
+              value={this.state.price}
+              onChange={this.handlePriceChange}
             />
             <button className="btn-submit-register" type="submit">
               Add Product
