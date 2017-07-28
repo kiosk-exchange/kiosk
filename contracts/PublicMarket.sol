@@ -13,17 +13,19 @@ pragma solidity ^0.4.11;
 contract PublicMarket is Market {
 
     struct Product {
-        ProductInfo info;                       // Returns info about a given product.
+        string name;                            // The name of the product.
+        ProductInfo info;                       // Returns details about a given product.
         PriceResolver priceResolver;            // Returns the price of a given product.
         InventoryResolver inventoryResolver;    // Returns whether a product is in stock.
-        BuyHandler buyHandler;                  // Returns the contract that handles orders.
-        bool isValid;                           // True if all properties are set.
+        BuyHandler buyHandler;                  // Returns the address of the contract that handles orders.
+        bool isValid;                           // True if all above properties are set.
     }
 
     struct Order {
         address buyer;
         address seller;
         uint256 DIN;
+        string name;
         uint256 amountPaid;
         uint256 timestamp;
     }
@@ -51,7 +53,8 @@ contract PublicMarket is Market {
         uint orderID, 
         address indexed buyer, 
         address indexed seller, 
-        uint256 indexed DIN, 
+        uint256 indexed DIN,
+        string name,
         uint256 amountPaid, 
         uint256 timestamp
     );
@@ -66,6 +69,7 @@ contract PublicMarket is Market {
         _;
     }
 
+    // For simplicity, this market contract does not allow for dynamic pricing based on quantity
     modifier only_correct_price(uint256 DIN, uint256 quantity) {
         require(price(DIN) * quantity == msg.value);
         _;
@@ -102,6 +106,7 @@ contract PublicMarket is Market {
 
     function addProduct(
         uint256 DIN,
+        string name,
         ProductInfo info, 
         PriceResolver priceResolver, 
         InventoryResolver inventoryResolver, 
@@ -109,6 +114,7 @@ contract PublicMarket is Market {
     ) 
         only_owner(DIN)
     {
+        products[DIN].name = name;
         products[DIN].info = info;
         products[DIN].priceResolver = priceResolver;
         products[DIN].inventoryResolver = inventoryResolver;
@@ -132,11 +138,12 @@ contract PublicMarket is Market {
         uint256 DIN, 
         uint256 quantity
     ) 
-        payable 
+        payable
+        only_valid_product(DIN)
         only_correct_price(DIN, quantity) 
         only_in_stock(DIN, quantity) 
     {
-    	  address seller = dinRegistry.owner(DIN);
+    	address seller = dinRegistry.owner(DIN);
 
         // Increment the order index for a new order.
         orderIndex++;
@@ -146,6 +153,7 @@ contract PublicMarket is Market {
             msg.sender, 
             seller, 
             DIN, 
+            products[DIN].name,
             msg.value, 
             block.timestamp
         );
@@ -154,7 +162,8 @@ contract PublicMarket is Market {
             orderIndex, 
             msg.sender, 
             seller, 
-            DIN, 
+            DIN,
+            products[DIN].name, 
             msg.value, 
             block.timestamp
         );
@@ -222,6 +231,11 @@ contract PublicMarket is Market {
     function setBuyHandler(uint256 DIN, BuyHandler handler) only_owner(DIN) {
         products[DIN].buyHandler = handler;
         BuyHandlerChanged(DIN, handler);
+    }
+
+    // Valid
+    function isValid(uint256 DIN) constant returns (bool) {
+        return products[DIN].isValid;
     }
 
 }

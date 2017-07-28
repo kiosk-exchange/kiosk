@@ -40,7 +40,7 @@ module.exports = function(deployer) {
 		market = instance;
 		var token = DemoToken.address
 		// Add the token as a product on the PublicMarket. Its product info, inventory, price, and buy handler are all in the token contract.
-		market.addProduct(DIN, token, token, token, token)
+		market.addProduct(DIN, "DemoToken", token, token, token, token)
 	})
 
 };
