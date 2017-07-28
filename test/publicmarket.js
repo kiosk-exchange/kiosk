@@ -19,26 +19,6 @@ contract('PublicMarket', function(accounts) {
 		})
 	})
 
-	it("should let the owner of a DIN set product details", () => {
-		var product
-
-		return DINRegistrar.deployed().then((instance) => {
-			return instance.registerNewDIN()
-		}).then(() => {
-			return PublicMarket.deployed()
-		}).then((instance) => {
-			product = instance
-			return product.setName(productID, "Test")
-		}).then(() => {
-			return product.name(productID)
-		}).then((name) => {
-			assert.equal(name, "Test", "The name was not set correctly")
-		})
-
-		// Add all product info
-
-	})
-
 	// it("should have a price resolver for the product", () => {
 	// 	var priceResolver;
 	// 	return PublicProduct.deployed().then((instance) => {

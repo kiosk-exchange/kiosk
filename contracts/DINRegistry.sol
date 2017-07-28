@@ -107,7 +107,7 @@ contract DINRegistry {
      * @param DIN The DIN to update.
      * @param market The address of the market.
      */
-    function setProduct(uint DIN, address market) only_owner(DIN) {
+    function setMarket(uint DIN, address market) only_owner(DIN) {
         records[DIN].market = market;
         NewMarket(DIN, market);
     }

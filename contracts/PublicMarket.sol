@@ -42,10 +42,6 @@ contract PublicMarket is Market {
     // Product ID (DIN) => Pending revenue
     mapping (uint256 => uint256) public pendingWithdrawals;
 
-    // Kiosk fee, per successful transaction
-    uint256 public fee = .001 ether;
-    uint256 public kioskDIN;
-
     // Events
     event PriceResolverChanged(uint256 indexed DIN, address PriceResolver);
     event InventoryResolverChanged(uint256 indexed DIN, address InventoryResolver);
@@ -72,7 +68,6 @@ contract PublicMarket is Market {
 
     modifier only_correct_price(uint256 DIN, uint256 quantity) {
         require(price(DIN) * quantity == msg.value);
-        require(msg.value > fee);
         _;
     }
 
@@ -111,7 +106,9 @@ contract PublicMarket is Market {
         PriceResolver priceResolver, 
         InventoryResolver inventoryResolver, 
         BuyHandler buyHandler
-    ) {
+    ) 
+        only_owner(DIN)
+    {
         products[DIN].info = info;
         products[DIN].priceResolver = priceResolver;
         products[DIN].inventoryResolver = inventoryResolver;
@@ -162,8 +159,7 @@ contract PublicMarket is Market {
             block.timestamp
         );
 
-        pendingWithdrawals[DIN] += msg.value - fee;
-        pendingWithdrawals[kioskDIN] += fee;
+        pendingWithdrawals[DIN] += msg.value;
 
         // Call the seller's buy handler.
         products[DIN].buyHandler.handleOrder(

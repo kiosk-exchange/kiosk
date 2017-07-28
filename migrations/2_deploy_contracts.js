@@ -2,15 +2,14 @@ var DINRegistry = artifacts.require('./DINRegistry.sol');
 var DINRegistrar = artifacts.require('./DINRegistrar.sol');
 var PublicMarket = artifacts.require('./PublicMarket.sol');
 var DemoToken = artifacts.require('./DemoToken.sol');
-var DemoPriceResolver = artifacts.require('./DemoPriceResolver.sol');
 
 module.exports = function(deployer) {
 
 	const genesis = 10000000
 	const DIN = 10000001
-	var registry;
-	var registrar;
-	var market;
+	var registry
+	var registrar
+	var market
 
 	// Deploy DINRegistry
 	deployer.deploy(DINRegistry, genesis).then(() => {
@@ -32,21 +31,16 @@ module.exports = function(deployer) {
 		return registrar.registerNewDIN(); // Register 10000001
 	}).then(() => {
 		// Set the PublicMarket as the market for the first registered DIN
-		return registry.setProduct(DIN, PublicMarket.address)
+		return registry.setMarket(DIN, PublicMarket.address)
 	}).then(() => {
 		return deployer.deploy(DemoToken, DIN, PublicMarket.address) // Deploy token "product"
 	}).then(() => {
 		return PublicMarket.deployed()
 	}).then((instance) => {
 		market = instance;
-		return market.setBuyHandler(DIN, DemoToken.address)
-	}).then(() => {
-		return market.setPriceResolver(DIN, DemoToken.address)
-	}).then(() => {
-		return market.setInventoryResolver(DIN, DemoToken.address)
-	}).then(() => {
-		return deployer.deploy(DemoPriceResolver)
+		var token = DemoToken.address
+		// Add the token as a product on the PublicMarket. Its product info, inventory, price, and buy handler are all in the token contract.
+		market.addProduct(DIN, token, token, token, token)
 	})
-
 
 };

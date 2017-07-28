@@ -149,10 +149,10 @@ contract('DemoToken', function(accounts) {
 				market = instance
 				return market.inStock(DIN, totalSupply - sold)
 			}).then((inStock) => {
-				assert.equal(inStock, true, "The inventory is incorrect")
+				assert.equal(inStock, true, "The inventory is incorrect (too low)")
 				return market.inStock(DIN, totalSupply - sold + 1)
 			}).then((inStock) => {
-				assert.equal(inStock, false, "The inventory is incorrect")
+				assert.equal(inStock, false, "The inventory is incorrect (too high)")
 			})
 		})
 	})
