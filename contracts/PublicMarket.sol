@@ -43,6 +43,7 @@ contract PublicMarket is Market {
     mapping (uint256 => uint256) public pendingWithdrawals;
 
     // Events
+    event ProductInfoChanged(uint256 indexed DIN, address ProductInfo);
     event PriceResolverChanged(uint256 indexed DIN, address PriceResolver);
     event InventoryResolverChanged(uint256 indexed DIN, address InventoryResolver);
     event BuyHandlerChanged(uint256 indexed DIN, address BuyHandler);
@@ -186,6 +187,11 @@ contract PublicMarket is Market {
     // Info
     function info(uint256 DIN) constant returns (address) {
         return products[DIN].info;
+    }
+
+    function setInfo(uint256 DIN, ProductInfo info) only_owner(DIN) {
+        products[DIN].info = info;
+        ProductInfoChanged(DIN, info);
     }
 
     // Price

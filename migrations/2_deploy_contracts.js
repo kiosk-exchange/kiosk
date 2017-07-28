@@ -49,7 +49,15 @@ module.exports = function(deployer) {
 		return DemoStore.deployed()
 	}).then((instance) => {
 		store = instance;
-		store.addProduct("Demo", 5000000000000000000);
+
+		const names = ["iPhone", "iPad", "Apple Watch"]
+		const prices = [0.5 * 10**18, 1 * 10**18, 2*10**18]
+
+		return store.addProduct(names[0], prices[0]).then(() => {
+			return store.addProduct(names[1], prices[1]).then(() => {
+				return store.addProduct(names[2], prices[2])
+			})
+		})
 	})
 
 };

@@ -53,7 +53,7 @@ class Orders extends Component {
     var seller = this.state.web3.eth.coinbase
     var orders = []
     // Add order event listener
-    var newOrderEventAll = this.state.publicMarket.NewOrder({seller: seller}, {fromBlock: 0, toBlock: 'latest'})
+    var newOrderEventAll = this.state.publicMarket.NewOrder({}, {fromBlock: 0, toBlock: 'latest'})
     newOrderEventAll.watch((error, result) => {
       if (!error) {
 

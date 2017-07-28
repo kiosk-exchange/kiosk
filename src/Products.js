@@ -5,6 +5,8 @@ import getWeb3 from './utils/getWeb3'
 
 import registrarABI from '../build/contracts/DINRegistrar.json'
 import publicMarketABI from '../build/contracts/PublicMarket.json'
+import productInfoABI from '../build/contracts/ProductInfo.json'
+
 const contract = require('truffle-contract')
 
 class Products extends Component {
@@ -37,18 +39,26 @@ class Products extends Component {
     registrar.setProvider(this.state.web3.currentProvider)
     registrar.deployed().then((instance) => {
       return this.setState({ registrar: instance.contract }, () => {
-        this.initializePublicProduct()
+        this.initializePublicProductAndGetProducts()
       })
     })
   }
 
-  initializePublicProduct() {
+  initializePublicProductAndGetProducts() {
     const publicMarket = contract(publicMarketABI)
     publicMarket.setProvider(this.state.web3.currentProvider)
     publicMarket.deployed().then((instance) => {
       this.setState({ publicMarket: instance.contract }, () => {
         this.getProducts()
       })
+    })
+  }
+
+  initializeProductInfo() {
+    const productInfo = contract(productInfoABI)
+    productInfo.setProvider(this.state.web3.currentProvider)
+    productInfo.deployed().then((instance) => {
+      this.setState({ productInfo: instance.contract })
     })
   }
 
@@ -67,18 +77,25 @@ class Products extends Component {
 
         // Add DINs to array
         const DIN = parseInt(result["args"]["DIN"]["c"][0], 10)
-        const name = this.state.publicMarket.info(DIN)
-        const imageURL = this.state.publicMarket.info(DIN) 
+        const infoAddr = this.state.publicMarket.info(DIN)
+        console.log(infoAddr)
+        const infoContract = this.state.web3.eth.contract(productInfoABI.abi).at(infoAddr)
 
-        products.push(
-          {
-            DIN: DIN,
-            name: name,
-            imageURL: imageURL
+        const name = infoContract.name(DIN, (error, name) => {
+          if (!error) {
+
+          products.push(
+            {
+              DIN: DIN,
+              name: name,
+              imageURL: ""
+            }
+          )
+
+          this.setState({ products: products })
+
           }
-        )
-
-        this.setState({ products: products })
+        })
       } else {
         console.log(error)
       }
