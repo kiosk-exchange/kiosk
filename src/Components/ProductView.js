@@ -62,17 +62,17 @@ class ProductView extends Component {
 
       this.setState({ publicMarket: instance.contract })
 
-      instance.imageURL(this.props.din).then((imageURL) => {
-        console.log("Image: " + imageURL)
+      // instance.imageURL(this.props.din).then((imageURL) => {
+      //   console.log("Image: " + imageURL)
 
-        this.setState({ imageURL: imageURL })
-      })
+      //   this.setState({ imageURL: imageURL })
+      // })
 
-      instance.name(this.props.din).then((name) => {
-        console.log("Name: " + name)
+      // instance.name(this.props.din).then((name) => {
+      //   console.log("Name: " + name)
 
-        this.setState({ name: name })
-      })
+      //   this.setState({ name: name })
+      // })
 
       instance.price(this.props.din).then((price) => {
         console.log("Price: " + price + " wei")

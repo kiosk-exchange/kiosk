@@ -88,6 +88,13 @@ class NewProduct extends Component {
       if (!error) {
         const DIN = parseInt(result["args"]["DIN"]["c"][0], 10)
         console.log(`Created DIN ${DIN}`)
+
+        this.state.publicMarket.addProduct(
+          DIN,
+          this.state.name,
+          
+        )
+
         this.state.publicMarket.setName(DIN, this.state.name, {from: account1}, () => {
           // Extra gas needed to set long URLs
           this.state.publicMarket.setImageURL(DIN, this.state.imageURL,  {from: account1, gas: 4700000 }, () => {

@@ -13,7 +13,6 @@ pragma solidity ^0.4.11;
 contract PublicMarket is Market {
 
     struct Product {
-        string name;                            // The name of the product.
         ProductInfo info;                       // Returns details about a given product.
         PriceResolver priceResolver;            // Returns the price of a given product.
         InventoryResolver inventoryResolver;    // Returns whether a product is in stock.
@@ -25,7 +24,6 @@ contract PublicMarket is Market {
         address buyer;
         address seller;
         uint256 DIN;
-        string name;
         uint256 amountPaid;
         uint256 timestamp;
     }
@@ -54,7 +52,6 @@ contract PublicMarket is Market {
         address indexed buyer, 
         address indexed seller, 
         uint256 indexed DIN,
-        string name,
         uint256 amountPaid, 
         uint256 timestamp
     );
@@ -72,6 +69,7 @@ contract PublicMarket is Market {
     // For simplicity, this market contract does not allow for dynamic pricing based on quantity
     modifier only_correct_price(uint256 DIN, uint256 quantity) {
         require(price(DIN) * quantity == msg.value);
+        require(msg.value > 0); // The price cannot be set to zero.
         _;
     }
 
@@ -106,7 +104,6 @@ contract PublicMarket is Market {
 
     function addProduct(
         uint256 DIN,
-        string name,
         ProductInfo info, 
         PriceResolver priceResolver, 
         InventoryResolver inventoryResolver, 
@@ -114,12 +111,12 @@ contract PublicMarket is Market {
     ) 
         only_owner(DIN)
     {
-        products[DIN].name = name;
         products[DIN].info = info;
         products[DIN].priceResolver = priceResolver;
         products[DIN].inventoryResolver = inventoryResolver;
         products[DIN].buyHandler = buyHandler;
 
+        // Product has been initialized and is now valid.
         products[DIN].isValid = true;
     }
 
@@ -150,7 +147,6 @@ contract PublicMarket is Market {
             msg.sender, 
             seller, 
             DIN, 
-            products[DIN].name,
             msg.value, 
             block.timestamp
         );
@@ -160,7 +156,6 @@ contract PublicMarket is Market {
             msg.sender, 
             seller, 
             DIN,
-            products[DIN].name, 
             msg.value, 
             block.timestamp
         );
@@ -186,7 +181,12 @@ contract PublicMarket is Market {
     *   =========================
     *      Product Information          
     *   =========================
-    */  
+    */ 
+
+    // Info
+    function info(uint256 DIN) constant returns (address) {
+        return products[DIN].info;
+    }
 
     // Price
     function price(uint256 DIN) constant returns (uint256) {

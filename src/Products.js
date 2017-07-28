@@ -61,14 +61,14 @@ class Products extends Component {
     var products = []
 
     // Add registration event listener
-    var newRegistrationAll = this.state.registrar.NewRegistration({owner: owner}, {fromBlock: 0, toBlock: 'latest'})
+    var newRegistrationAll = this.state.registrar.NewRegistration({}, {fromBlock: 0, toBlock: 'latest'})
     newRegistrationAll.watch((error, result) => {
       if (!error) {
 
         // Add DINs to array
         const DIN = parseInt(result["args"]["DIN"]["c"][0], 10)
-        const name = this.state.publicMarket.name(DIN)
-        const imageURL = this.state.publicMarket.imageURL(DIN)
+        const name = this.state.publicMarket.info(DIN)
+        const imageURL = this.state.publicMarket.info(DIN) 
 
         products.push(
           {
