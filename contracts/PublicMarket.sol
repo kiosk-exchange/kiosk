@@ -173,8 +173,6 @@ contract PublicMarket is Market {
         );
     }
 
-
-
     /**
     *   Withdraw proceeds of sales.
     */
@@ -186,11 +184,11 @@ contract PublicMarket is Market {
         msg.sender.transfer(amount);
     }
 
-
-    //   =========================
-    //      Product Information 
-    //   =========================
-    
+    /**
+    *   =========================
+    *      Product Information          
+    *   =========================
+    */  
 
     // Price
     function price(uint256 DIN) constant returns (uint256) {
