@@ -27,15 +27,17 @@ contract DINRegistrar {
      * Registers a new DIN for the specified address.
      * @param owner The owner of the new DIN.
      */
-    function registerNewDINFor(address owner) {
+    function registerNewDINFor(address owner) returns (uint256) {
         register(owner);
+        return index;
     }
 
     /**
      * Registers a new DIN to the address that calls this function.
      */
-    function registerNewDIN() {
+    function registerNewDIN() returns (uint256) {
         register(msg.sender);
+        return index;
     }
 
     // Helper function

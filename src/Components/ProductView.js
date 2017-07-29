@@ -6,7 +6,7 @@ import getWeb3 from '../utils/getWeb3'
 import { default as TruffleContract } from 'truffle-contract'
 
 import registryABI from '../../build/contracts/DINRegistry.json'
-import publicProductABI from '../../build/contracts/PublicProduct.json'
+import publicMarketABI from '../../build/contracts/PublicMarket.json'
 
 class ProductView extends Component {
   constructor(props) {
@@ -14,7 +14,7 @@ class ProductView extends Component {
 
     this.state = {
       web3: null,
-      publicProduct: null,
+      publicMarket: null,
       owner: null,
       name: null,
       imageURL: null,
@@ -56,23 +56,23 @@ class ProductView extends Component {
   }
 
   initializeResolver() {
-    const publicProductContract = TruffleContract(publicProductABI)
-    publicProductContract.setProvider(this.state.web3.currentProvider)
-    publicProductContract.deployed().then((instance) => {
+    const publicMarket = TruffleContract(publicMarketABI)
+    publicMarket.setProvider(this.state.web3.currentProvider)
+    publicMarket.deployed().then((instance) => {
 
-      this.setState({ publicProduct: instance.contract })
+      this.setState({ publicMarket: instance.contract })
 
-      instance.imageURL(this.props.din).then((imageURL) => {
-        console.log("Image: " + imageURL)
+      // instance.imageURL(this.props.din).then((imageURL) => {
+      //   console.log("Image: " + imageURL)
 
-        this.setState({ imageURL: imageURL })
-      })
+      //   this.setState({ imageURL: imageURL })
+      // })
 
-      instance.name(this.props.din).then((name) => {
-        console.log("Name: " + name)
+      // instance.name(this.props.din).then((name) => {
+      //   console.log("Name: " + name)
 
-        this.setState({ name: name })
-      })
+      //   this.setState({ name: name })
+      // })
 
       instance.price(this.props.din).then((price) => {
         console.log("Price: " + price + " wei")
@@ -89,7 +89,7 @@ class ProductView extends Component {
   buyHandler() {
     var account1 = this.state.web3.eth.accounts[0]
 
-    this.state.publicProduct.buy(this.props.din, 1, {from: account1, value: this.state.price, gas: 4700000}, (error, result) => {
+    this.state.publicMarket.buy(this.props.din, 1, {from: account1, value: this.state.price, gas: 4700000}, (error, result) => {
       if (!error) {
         console.log(result)
       } else {

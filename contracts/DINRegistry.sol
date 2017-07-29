@@ -9,7 +9,7 @@ contract DINRegistry {
 
     struct Record {
         address owner; // Address that owns the DIN.
-        address product; // Address of the product associated with the DIN.
+        address market; // Address of the market associated with the DIN.
     }
 
     // DIN => Record
@@ -24,8 +24,8 @@ contract DINRegistry {
     // Logged when the owner of a DIN transfers ownership to a new account.
     event NewOwner(uint indexed DIN, address indexed newOwner, address indexed oldOwner);
 
-    // Logged when the product associated with a DIN changes.
-    event NewProduct(uint indexed DIN, address indexed product);
+    // Logged when the market associated with a DIN changes.
+    event NewMarket(uint indexed DIN, address indexed market);
 
     // Logged when the address of the registrar contract changes.
     event NewRegistrar(address registrar);
@@ -86,10 +86,10 @@ contract DINRegistry {
     }
 
     /**
-    * Returns the address of the product for the specified DIN.
+    * Returns the address of the market for the specified DIN.
     */
-    function product(uint DIN) constant returns (address) {
-        return records[DIN].product;
+    function market(uint DIN) constant returns (address) {
+        return records[DIN].market;
     }
 
     /**
@@ -103,13 +103,13 @@ contract DINRegistry {
     }
 
     /**
-     * Sets the product for the specified DIN.
+     * Sets the market for the specified DIN.
      * @param DIN The DIN to update.
-     * @param product The address of the product.
+     * @param market The address of the market.
      */
-    function setProduct(uint DIN, address product) only_owner(DIN) {
-        records[DIN].product = product;
-        NewProduct(DIN, product);
+    function setMarket(uint DIN, address market) only_owner(DIN) {
+        records[DIN].market = market;
+        NewMarket(DIN, market);
     }
 
     /**

@@ -4,5 +4,5 @@ pragma solidity ^0.4.11;
 *  This is the interface for an inventory resolver.
 */
 contract InventoryResolver {
-	function inventory(uint256 productID) constant returns (uint256);
+	function inStock(uint256 DIN, uint256 quantity) constant returns (bool);
 }

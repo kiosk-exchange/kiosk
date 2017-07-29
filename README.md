@@ -10,7 +10,7 @@ Get started by testing locally with [TestRPC](https://github.com/ethereumjs/test
 $ testrpc
 ```
 
-Compile and deploy the Solidity contracts using [Truffle](http://truffleframework.com/). This will also register a new Decentralized Identification Number (DIN) for the first testrpc account and add a demo product to the deployed `PublicProduct.sol`.
+Compile and deploy the Solidity contracts using [Truffle](http://truffleframework.com/). This will also register a new Decentralized Identification Number (DIN) for the first testrpc account and add a demo product to the deployed `PublicMarket.sol`.
 
 ```
 $ truffle compile

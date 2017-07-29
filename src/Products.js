@@ -4,7 +4,10 @@ import { Table } from 'react-bootstrap'
 import getWeb3 from './utils/getWeb3'
 
 import registrarABI from '../build/contracts/DINRegistrar.json'
-import publicProductABI from '../build/contracts/PublicProduct.json'
+import publicMarketABI from '../build/contracts/PublicMarket.json'
+import productInfoABI from '../build/contracts/ProductInfo.json'
+import priceResolverABI from '../build/contracts/PriceResolver.json'
+
 const contract = require('truffle-contract')
 
 class Products extends Component {
@@ -15,6 +18,7 @@ class Products extends Component {
     this.state = {
       web3: null,
       registrar: null,
+      publicMarket: null,
       products: []
     }
 
@@ -36,18 +40,26 @@ class Products extends Component {
     registrar.setProvider(this.state.web3.currentProvider)
     registrar.deployed().then((instance) => {
       return this.setState({ registrar: instance.contract }, () => {
-        this.initializePublicProduct()
+        this.initializePublicProductAndGetProducts()
       })
     })
   }
 
-  initializePublicProduct() {
-    const publicProduct = contract(publicProductABI)
-    publicProduct.setProvider(this.state.web3.currentProvider)
-    publicProduct.deployed().then((instance) => {
-      this.setState({ publicProduct: instance.contract }, () => {
+  initializePublicProductAndGetProducts() {
+    const publicMarket = contract(publicMarketABI)
+    publicMarket.setProvider(this.state.web3.currentProvider)
+    publicMarket.deployed().then((instance) => {
+      this.setState({ publicMarket: instance.contract }, () => {
         this.getProducts()
       })
+    })
+  }
+
+  initializeProductInfo() {
+    const productInfo = contract(productInfoABI)
+    productInfo.setProvider(this.state.web3.currentProvider)
+    productInfo.deployed().then((instance) => {
+      this.setState({ productInfo: instance.contract })
     })
   }
 
@@ -56,28 +68,42 @@ class Products extends Component {
   }
 
   getProducts() {
-    var owner = this.state.web3.eth.coinbase
     var products = []
 
     // Add registration event listener
-    var newRegistrationAll = this.state.registrar.NewRegistration({owner: owner}, {fromBlock: 0, toBlock: 'latest'})
+    var newRegistrationAll = this.state.registrar.NewRegistration({}, {fromBlock: 0, toBlock: 'latest'})
     newRegistrationAll.watch((error, result) => {
+
       if (!error) {
 
-        // Add DINs to array
         const DIN = parseInt(result["args"]["DIN"]["c"][0], 10)
-        const name = this.state.publicProduct.name(DIN)
-        const imageURL = this.state.publicProduct.imageURL(DIN)
 
-        products.push(
-          {
-            DIN: DIN,
-            name: name,
-            imageURL: imageURL
+        // Get the product info contract for the DIN
+        const productInfoAddr = this.state.publicMarket.info(DIN)
+        const productInfo = this.state.web3.eth.contract(productInfoABI.abi).at(productInfoAddr)
+
+        // Get the price resolver for the DIN
+        const priceResolverAddr = this.state.publicMarket.priceResolver(DIN)
+        const priceResolver = this.state.web3.eth.contract(priceResolverABI.abi).at(priceResolverAddr)
+
+        var productName
+
+        productInfo.name(DIN, (error, name) => {
+
+          if (!error) {
+            productName = name
+
+            priceResolver.price(DIN, (error, price) => {
+              if (!error) {
+
+                products.push({DIN: DIN, name: productName, price: price.toNumber() })
+
+                this.setState({ products: products })
+             }
+           })
           }
-        )
+        })
 
-        this.setState({ products: products })
       } else {
         console.log(error)
       }
@@ -105,7 +131,7 @@ class Products extends Component {
                 <tr>
                   <th>DIN</th>
                   <th>Name</th>
-                  <th>Image</th>
+                  <th>Price</th>
                   <th>Edit</th>
                 </tr>
 
@@ -115,9 +141,7 @@ class Products extends Component {
                         <a href={"/DIN/" + product.DIN}>{product.DIN}</a>
                       </td>
                       <td>{product.name}</td>
-                      <td>
-                        <a href={product.imageURL}>{product.imageURL}</a>
-                      </td>
+                      <td>{(this.state.web3.fromWei(product.price, 'ether'))}</td>
                       <td>
                         <a href={"/product/" + product.DIN}>Edit</a>
                       </td>

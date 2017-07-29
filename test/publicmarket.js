@@ -1,42 +1,22 @@
 var DINRegistry = artifacts.require('./DINRegistry.sol');
 var DINRegistrar = artifacts.require('./DINRegistrar.sol');
-var PublicProduct = artifacts.require('./PublicProduct.sol');
+var PublicMarket = artifacts.require('./PublicMarket.sol');
 var PriceResolver = artifacts.require('./PriceResolver.sol');
 
-contract('PublicProduct', function(accounts) {
+contract('PublicMarket', function(accounts) {
 
 	var productID = 10000002
 	var account1 = accounts[0]
 	var price = web3.toWei(0.25, 'ether')
 
 	it("should have a DIN registry address", () => {
-		return PublicProduct.deployed().then((instance) => {
+		return PublicMarket.deployed().then((instance) => {
 			return instance.dinRegistry()
 		}).then(function(dinRegistry) {
 			return DINRegistry.deployed().then((instance) => {
 				assert.equal(dinRegistry, instance.address, "The DIN address is not equal to the deployed DIN registry.");
 			})
 		})
-	})
-
-	it("should let the owner of a DIN set product details", () => {
-		var product
-
-		return DINRegistrar.deployed().then((instance) => {
-			return instance.registerNewDIN()
-		}).then(() => {
-			return PublicProduct.deployed()
-		}).then((instance) => {
-			product = instance
-			return product.setName(productID, "Test")
-		}).then(() => {
-			return product.name(productID)
-		}).then((name) => {
-			assert.equal(name, "Test", "The name was not set correctly")
-		})
-
-		// Add all product info
-
 	})
 
 	// it("should have a price resolver for the product", () => {
