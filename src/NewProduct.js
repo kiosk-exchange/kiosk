@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { FormGroup, ControlLabel, FormControl } from 'react-bootstrap'
 
 import getWeb3 from './utils/getWeb3'
-import publicMarketABI from '../build/contracts/PublicMarket.json'
+import getPublicMarketContract from './utils/contracts'
 import dinRegistrarABI from '../build/contracts/DINRegistrar.json'
 import demoStoreABI from '../build/contracts/DemoStore.json'
 
@@ -48,10 +48,10 @@ class NewProduct extends Component {
 
   initializeContracts() {
 
-    const publicMarket = contract(publicMarketABI)
-    publicMarket.setProvider(this.state.web3.currentProvider)
-    publicMarket.deployed().then((instance) => {
-      this.setState({ publicMarket: instance.contract })
+    getPublicMarketContract.then(contract => {
+      this.setState({
+        publicMarket: contract
+      })
     })
 
     const dinRegistrarContract = contract(dinRegistrarABI)
@@ -84,13 +84,13 @@ class NewProduct extends Component {
     const price = this.state.web3.toWei(this.state.price, 'ether')
 
     this.state.demoStore.addProduct(
-      this.state.name, 
-      price, 
+      this.state.name,
+      price,
       {
-        from: account1, 
+        from: account1,
         gas: 4700000
-      }, 
-      (error, result) => 
+      },
+      (error, result) =>
     {
       this.props.history.push('/products')
     })
