@@ -3,10 +3,8 @@ import React, { Component } from 'react'
 import { Grid, Row, Col } from 'react-bootstrap';
 
 import getWeb3 from '../utils/getWeb3'
-import { default as TruffleContract } from 'truffle-contract'
+import { getPublicMarketContract, getDINRegistryContract } from '../utils/contracts'
 
-import registryABI from '../../build/contracts/DINRegistry.json'
-import publicMarketABI from '../../build/contracts/PublicMarket.json'
 
 class ProductView extends Component {
   constructor(props) {
@@ -41,40 +39,18 @@ class ProductView extends Component {
   }
 
   initializeRegistry() {
-    const registryContract = TruffleContract(registryABI)
-    registryContract.setProvider(this.state.web3.currentProvider)
-
-    registryContract.deployed().then((registry) => {
-
+    getDINRegistryContract.then(registry => {
       registry.owner(this.props.din).then((owner) => {
         console.log("Owner: " + owner)
-
         this.setState({ "owner" : owner })
       })
-
     })
   }
 
   initializeResolver() {
-    const publicMarket = TruffleContract(publicMarketABI)
-    publicMarket.setProvider(this.state.web3.currentProvider)
-    publicMarket.deployed().then((instance) => {
-
-      this.setState({ publicMarket: instance.contract })
-
-      // instance.imageURL(this.props.din).then((imageURL) => {
-      //   console.log("Image: " + imageURL)
-
-      //   this.setState({ imageURL: imageURL })
-      // })
-
-      // instance.name(this.props.din).then((name) => {
-      //   console.log("Name: " + name)
-
-      //   this.setState({ name: name })
-      // })
-
-      instance.price(this.props.din).then((price) => {
+    getPublicMarketContract.then(contract => {
+      this.setState({ publicMarket: contract })
+      contract.price(this.props.din).then((price) => {
         console.log("Price: " + price + " wei")
 
         this.setState({ price: price.toNumber() })
@@ -82,14 +58,13 @@ class ProductView extends Component {
         let formattedPrice = this.state.web3.fromWei(price, 'ether') + " ether"
         this.setState({ formattedPrice: formattedPrice })
       })
-
     })
   }
 
   buyHandler() {
     var account1 = this.state.web3.eth.accounts[0]
 
-    this.state.publicMarket.buy(this.props.din, 1, {from: account1, value: this.state.price, gas: 4700000}, (error, result) => {
+    this.state.publicMarket.contract.buy(this.props.din, 1, {from: account1, value: this.state.price, gas: 4700000}, (error, result) => {
       if (!error) {
         console.log(result)
       } else {
@@ -133,5 +108,3 @@ class ProductView extends Component {
 }
 
 export default ProductView;
-
-

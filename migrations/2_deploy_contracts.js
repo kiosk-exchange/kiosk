@@ -51,7 +51,7 @@ module.exports = function(deployer) {
 		store = instance;
 
 		const names = ["iPhone", "iPad", "Apple Watch"]
-		const prices = [0.5 * 10**18, 1 * 10**18, 2*10**18]
+		const prices = [500000000000000000, 1000000000000000000, 2000000000000000000]
 
 		return store.addProduct(names[0], prices[0]).then(() => {
 			return store.addProduct(names[1], prices[1]).then(() => {

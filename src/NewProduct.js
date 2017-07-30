@@ -1,12 +1,7 @@
 import React, { Component } from 'react'
 import { FormGroup, ControlLabel, FormControl } from 'react-bootstrap'
-
 import getWeb3 from './utils/getWeb3'
-import publicMarketABI from '../build/contracts/PublicMarket.json'
-import dinRegistrarABI from '../build/contracts/DINRegistrar.json'
-import demoStoreABI from '../build/contracts/DemoStore.json'
-
-const contract = require('truffle-contract')
+import { getPublicMarketContract, getDinRegistrarContract, getDemoStoreContract } from './utils/contracts'
 
 function FieldGroup({ id, type, label, placeholder, ...props }) {
   return (
@@ -47,23 +42,23 @@ class NewProduct extends Component {
   }
 
   initializeContracts() {
-
-    const publicMarket = contract(publicMarketABI)
-    publicMarket.setProvider(this.state.web3.currentProvider)
-    publicMarket.deployed().then((instance) => {
-      this.setState({ publicMarket: instance.contract })
+    getPublicMarketContract.then(contract => {
+      this.setState({
+        publicMarket: contract.contract
+      })
     })
 
-    const dinRegistrarContract = contract(dinRegistrarABI)
-    dinRegistrarContract.setProvider(this.state.web3.currentProvider)
-    dinRegistrarContract.deployed().then((instance) => {
-      this.setState({ dinRegistrarContract: instance.contract })
+    getDinRegistrarContract.then(contract => {
+      this.setState({
+        dinRegistrarContract: contract.contract
+      })
     })
 
-    const demoStore = contract(demoStoreABI)
-    demoStore.setProvider(this.state.web3.currentProvider)
-    demoStore.deployed().then((instance) => {
-      this.setState({ demoStore: instance.contract })
+
+    getDemoStoreContract.then(contract => {
+      this.setState({
+        demoStore: contract.contract
+      })
     })
   }
 
@@ -84,13 +79,13 @@ class NewProduct extends Component {
     const price = this.state.web3.toWei(this.state.price, 'ether')
 
     this.state.demoStore.addProduct(
-      this.state.name, 
-      price, 
+      this.state.name,
+      price,
       {
-        from: account1, 
+        from: account1,
         gas: 4700000
-      }, 
-      (error, result) => 
+      },
+      (error, result) =>
     {
       this.props.history.push('/products')
     })
