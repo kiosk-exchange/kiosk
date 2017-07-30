@@ -2,13 +2,9 @@ import React, { Component } from 'react'
 import { Table } from 'react-bootstrap'
 
 import getWeb3 from './utils/getWeb3'
-
-import registrarABI from '../build/contracts/DINRegistrar.json'
-import publicMarketABI from '../build/contracts/PublicMarket.json'
+import { getDinRegistrarContract, getPublicMarketContract, getProductInfoContract, getPriceResolverContract } from './utils/contracts'
 import productInfoABI from '../build/contracts/ProductInfo.json'
 import priceResolverABI from '../build/contracts/PriceResolver.json'
-
-const contract = require('truffle-contract')
 
 class Products extends Component {
 
@@ -36,30 +32,18 @@ class Products extends Component {
   }
 
   initializeContracts() {
-    const registrar = contract(registrarABI)
-    registrar.setProvider(this.state.web3.currentProvider)
-    registrar.deployed().then((instance) => {
-      return this.setState({ registrar: instance.contract }, () => {
-        this.initializePublicProductAndGetProducts()
+    getDinRegistrarContract.then(result => {
+      this.setState({
+        registrar: result.contract
+      }, () => {
+        getPublicMarketContract.then(result => {
+          this.setState({
+            publicMarket: result.contract
+          }, () => {
+            this.getProducts()
+          })
+        })
       })
-    })
-  }
-
-  initializePublicProductAndGetProducts() {
-    const publicMarket = contract(publicMarketABI)
-    publicMarket.setProvider(this.state.web3.currentProvider)
-    publicMarket.deployed().then((instance) => {
-      this.setState({ publicMarket: instance.contract }, () => {
-        this.getProducts()
-      })
-    })
-  }
-
-  initializeProductInfo() {
-    const productInfo = contract(productInfoABI)
-    productInfo.setProvider(this.state.web3.currentProvider)
-    productInfo.deployed().then((instance) => {
-      this.setState({ productInfo: instance.contract })
     })
   }
 

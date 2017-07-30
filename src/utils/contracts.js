@@ -3,9 +3,30 @@ import publicMarketABI from '../../build/contracts/PublicMarket.json'
 import dinRegistrarABI from '../../build/contracts/DINRegistrar.json'
 import demoStoreABI from '../../build/contracts/DemoStore.json'
 import registryABI from '../../build/contracts/DINRegistry.json'
-
+import productInfoABI from '../../build/contracts/ProductInfo.json'
+import priceResolverABI from '../../build/contracts/PriceResolver.json'
 
 const contract = require('truffle-contract')
+
+// let getPriceResolverContract = new Promise(function(resolve, reject) {
+//   getWeb3.then(results => {
+//     const priceResolv = contract(priceResolverABI)
+//     priceResolv.setProvider(results.web3.currentProvider)
+//     priceResolv.deployed().then((instance) => {
+//       resolve(instance)
+//     })
+//   })
+// })
+
+// let getProductInfoContract = new Promise(function(resolve, reject) {
+//   getWeb3.then(results => {
+//     const prodInfo = contract(productInfoABI)
+//     prodInfo.setProvider(results.web3.currentProvider)
+//     prodInfo.deployed().then((instance) => {
+//       resolve(instance)
+//     })
+//   })
+// })
 
 let getDINRegistryContract = new Promise(function(resolve, reject) {
   getWeb3.then(results => {
