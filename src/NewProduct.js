@@ -44,20 +44,20 @@ class NewProduct extends Component {
   initializeContracts() {
     getPublicMarketContract.then(contract => {
       this.setState({
-        publicMarket: contract
+        publicMarket: contract.contract
       })
     })
 
     getDinRegistrarContract.then(contract => {
       this.setState({
-        dinRegistrarContract: contract
+        dinRegistrarContract: contract.contract
       })
     })
 
 
     getDemoStoreContract.then(contract => {
       this.setState({
-        demoStore: contract
+        demoStore: contract.contract
       })
     })
   }
