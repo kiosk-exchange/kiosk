@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import SearchBar from './Components/SearchBar'
+import FeaturedProducts from './Components/FeaturedProducts'
 
 class Home extends Component {
 
@@ -22,6 +23,9 @@ class Home extends Component {
       	</div>
         <div className="search-bar">
           <SearchBar action={this.handleSearch}/>
+        </div>
+        <div>
+          <FeaturedProducts dins={[10000002, 10000003, 10000004]} />
         </div>
       </div>
     );

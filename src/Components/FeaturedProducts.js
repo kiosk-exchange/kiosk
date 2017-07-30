@@ -1,41 +1,70 @@
-import React, { Component } from 'react'
+import React, { Component, Grid, Row, Col, Thumbnail, Button } from 'react'
 
 import getWeb3 from '../utils/getWeb3'
-import { default as TruffleContract } from 'truffle-contract'
-
-import registryABI from '../../build/contracts/DINRegistry.json'
-import publicMarketABI from '../../build/contracts/PublicMarket.json'
+import { getPublicMarketContract } from '../utils/contracts'
 
 class FeaturedProducts extends Component {
+
+  render() {
+    return (
+      <Grid>
+        <Row>
+          {
+            this.props.dins.map(function(din) {
+              return <FeaturedProductsItem din={din} />
+            })
+          }
+        </Row>
+      </Grid>
+    )
+  }
+}
+
+class FeaturedProductsItem extends Component {
   constructor(props) {
     super(props)
-
     this.state = {
-      web3: null
+      web3: null,
+      price: null,
+      formattedPrice: null,
+      name: null
     }
-
-    this.buyHandler = this.buyHandler.bind(this)
   }
 
   componentWillMount() {
-    // Get network provider and web3 instance.
-    // See utils/getWeb3 for more info.
-
     getWeb3.then(results => {
       this.setState({
         web3: results.web3
       })
 
-      // Initialize the registry and resolver contracts once web3 provided.
-      this.initializeRegistry()
       this.initializeResolver()
     })
   }
 
-  render() {
-    return (
+  initializeResolver() {
+    getPublicMarketContract.then(contract => {
+      this.setState({ publicMarket: contract })
+      contract.price(this.props.din).then((price) => {
+        this.setState({ price: price.toNumber() })
+        let formattedPrice = this.state.web3.fromWei(price, 'ether') + " ether"
+        this.setState({ formattedPrice: formattedPrice })
+      })
 
+
+    })
+  }
+
+  render() {
+    <Col xs={6} md={4}>
+      <Thumbnail src="/assets/thumbnaildiv.png" alt="242x200">
+        <h3>Thumbnail label</h3>
+        <p>Description</p>
+        <p><Button bsStyle="primary">Buy</Button></p>
+      </Thumbnail>
+    </Col>
   }
 }
 
-export default ProductView;
+// export { FeaturedProducts, FeaturedProductsItem }
+
+export default FeaturedProducts;
