@@ -112,8 +112,8 @@ class ProductView extends Component {
         <div>
           <Col mdOffset={2} xs={8} md={8}>
             <Alert bsStyle="danger" onDismiss={this.handleAlertDismiss}>
-              <h4>Fuckin' A</h4>
-              <p>This isn't a valid DIN you dip.</p>
+              <h4>There was an error</h4>
+              <p>This isn't a valid DIN</p>
               <p>You may search for another DIN <a href='/'>here</a>, or register a new DIN <a href='/products/new'>here</a>.</p>
             </Alert>
           </Col>
