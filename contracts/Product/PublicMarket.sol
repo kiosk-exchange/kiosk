@@ -75,7 +75,7 @@ contract PublicMarket is Market {
     }
 
     modifier only_in_stock(uint256 DIN, uint256 quantity) {
-        require(inStock(DIN, quantity) == true);
+        require(isAvailableForSale(DIN, quantity) == true);
         _;
     }
 
@@ -209,8 +209,8 @@ contract PublicMarket is Market {
     }
 
     // Inventory
-    function inStock(uint256 DIN, uint256 quantity) constant returns (bool) {
-        return products[DIN].inventoryResolver.inStock(DIN, quantity);
+    function isAvailableForSale(uint256 DIN, uint256 quantity) constant returns (bool) {
+        return products[DIN].inventoryResolver.isAvailableForSale(DIN, quantity);
     }
 
     function inventoryResolver(uint256 DIN) constant returns (address) {

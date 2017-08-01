@@ -1,17 +1,16 @@
 import './StandardToken.sol';
 import './SafeMath.sol';
-import './../../ProductInfo.sol';
-import './../../PriceResolver.sol';
-import './../../InventoryResolver.sol';
-import './../../BuyHandler.sol';
-import './../../Market.sol';
+import '../PriceResolver.sol';
+import '../InventoryResolver.sol';
+import '../BuyHandler.sol';
+import '../Market.sol';
 
 pragma solidity ^0.4.11;
 
 /**
 *  This is an example of a token that is sold as a Product.
 */
-contract DemoToken is StandardToken, ProductInfo, PriceResolver, InventoryResolver, BuyHandler {
+contract DemoToken is StandardToken, PriceResolver, InventoryResolver, BuyHandler {
 
 	uint256 public DIN;
 	Market public market;
@@ -46,7 +45,7 @@ contract DemoToken is StandardToken, ProductInfo, PriceResolver, InventoryResolv
 	}
 
 	// Inventory Resolver
-	function inStock(uint256 DIN, uint256 quantity) only_product(DIN) constant returns (bool) {
+	function isAvailableForSale(uint256 DIN, uint256 quantity) only_product(DIN) constant returns (bool) {
 		return totalSupply >= sold + quantity;
 	}
 

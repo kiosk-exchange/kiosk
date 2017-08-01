@@ -1,9 +1,9 @@
 import './PublicMarket.sol';
 import './ProductInfo.sol';
-import './PriceResolver.sol';
-import './InventoryResolver.sol';
-import './BuyHandler.sol';
-import './DINRegistrar.sol';
+import '../PriceResolver.sol';
+import '../InventoryResolver.sol';
+import '../BuyHandler.sol';
+import '../DINRegistrar.sol';
 
 pragma solidity ^0.4.11;
 
@@ -86,7 +86,7 @@ contract DemoStore is ProductInfo, PriceResolver, InventoryResolver, BuyHandler 
 	}
 
 	// Inventory Resolver
-	function inStock(uint256 DIN, uint256 quantity) constant returns (bool) {
+	function isAvailableForSale(uint256 DIN, uint256 quantity) constant returns (bool) {
 		return true;
 	}
 
