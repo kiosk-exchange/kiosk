@@ -68,8 +68,8 @@ contract PublicMarket is Market {
     }
 
     modifier only_correct_price(uint256 DIN, uint256 quantity) {
-        require(totalPrice(DIN, quantity) == msg.value);
         require(msg.value > 0); // The price cannot be set to zero.
+        require(totalPrice(DIN, quantity) == msg.value);
         _;
     }
 
