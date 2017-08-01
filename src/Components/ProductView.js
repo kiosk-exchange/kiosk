@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import { Grid, Row, Col } from 'react-bootstrap';
+import { Grid, Row, Col, Alert } from 'react-bootstrap';
 
 import getWeb3 from '../utils/getWeb3'
 import { getPublicMarketContract, getDINRegistryContract } from '../utils/contracts'
@@ -17,7 +17,8 @@ class ProductView extends Component {
       name: null,
       imageURL: null,
       price: null,
-      formattedPrice: null
+      formattedPrice: null,
+      validDIN: true
     }
 
     this.buyHandler = this.buyHandler.bind(this)
@@ -34,15 +35,18 @@ class ProductView extends Component {
 
       // Initialize the registry and resolver contracts once web3 provided.
       this.initializeRegistry()
-      this.initializeResolver()
     })
   }
 
   initializeRegistry() {
     getDINRegistryContract.then(registry => {
       registry.owner(this.props.din).then((owner) => {
-        console.log("Owner: " + owner)
-        this.setState({ "owner" : owner })
+        this.setState({ owner: owner })
+        if (owner === "0x0000000000000000000000000000000000000000") {
+          this.setState({ validDIN: false })
+        } else {
+          this.initializeResolver()
+        }
       })
     })
   }
@@ -74,36 +78,48 @@ class ProductView extends Component {
   }
 
   render() {
-    return (
-      <div className="container-product">
+    if (this.state.validDIN) {
+      return (
+        <div className="container-product">
+          <Grid>
 
-        <Grid>
+            <Row className="show-grid">
 
-          <Row className="show-grid">
+                <Col xs={8} xsOffset={2} sm={6} smOffset={0} md={6} mdOffset={0}>
+                  <div className="column-product-image">
+                      <img src={this.state.imageURL} role="presentation"></img>
+                  </div>
+                </Col>
 
-              <Col xs={8} xsOffset={2} sm={6} smOffset={0} md={6} mdOffset={0}>
-                <div className="column-product-image">
-                    <img src={this.state.imageURL} role="presentation"></img>
-                </div>
-              </Col>
+              <div className="column-product-info">
+                <Col xs={8} xsOffset={2} sm={6} smOffset={0} md={6} mdOffset={0}>
+                  <div className="container-product-info">
+                    <h1>{this.state.name}</h1>
+                    <h2>{this.state.formattedPrice}</h2>
+                    <br />
+                    <button onClick={this.buyHandler}>Buy Now</button>
+                  </div>
+                </Col>
+              </div>
 
-            <div className="column-product-info">
-              <Col xs={8} xsOffset={2} sm={6} smOffset={0} md={6} mdOffset={0}>
-                <div className="container-product-info">
-                  <h1>{this.state.name}</h1>
-                  <h2>{this.state.formattedPrice}</h2>
-                  <br />
-                  <button onClick={this.buyHandler}>Buy Now</button>
-                </div>
-              </Col>
-            </div>
+            </Row>
 
-          </Row>
-
-        </Grid>
-
-      </div>
-    );
+          </Grid>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <Col mdOffset={2} xs={8} md={8}>
+            <Alert bsStyle="danger" onDismiss={this.handleAlertDismiss}>
+              <h4>Fuckin' A</h4>
+              <p>This isn't a valid DIN you dip.</p>
+              <p>You may search for another DIN <a href='/'>here</a>, or register a new DIN <a href='/products/new'>here</a>.</p>
+            </Alert>
+          </Col>
+        </div>
+      )
+    }
   }
 }
 
