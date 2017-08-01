@@ -22,6 +22,13 @@ class SearchBar extends Component {
     this.props.action(this.state.value)
   }
 
+  assertNumericOnly(e) {
+    const re = /[0-9A-F:]+/g;
+    if (!re.test(e.key)) {
+      e.preventDefault();
+    }
+  }
+
   render() {
     return (
       <div className="search-bar">
@@ -32,6 +39,7 @@ class SearchBar extends Component {
               value={this.state.value}
               placeholder="Search by DIN..."
               onChange={this.handleChange}
+              onKeyPress={(e) => this.assertNumericOnly(e)}
             />
             <InputGroup.Button>
               <button onClick={this.handleSearch}>Search</button>
