@@ -1,5 +1,5 @@
-import './PublicMarket.sol';
-import './ProductInfo.sol';
+import '../PublicMarket.sol';
+import '../ProductInfo.sol';
 import '../PriceResolver.sol';
 import '../InventoryResolver.sol';
 import '../BuyHandler.sol';
@@ -81,8 +81,8 @@ contract DemoStore is ProductInfo, PriceResolver, InventoryResolver, BuyHandler 
 	}
 
 	// Price Resolver
-	function price(uint256 DIN, address buyer) constant returns (uint256) {
-		return products[DIN].price * (100 - discountPercent) / 100;
+	function totalPrice(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256) {
+		return products[DIN].price * quantity * (100 - discountPercent) / 100;
 	}
 
 	// Inventory Resolver

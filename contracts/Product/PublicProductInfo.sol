@@ -1,5 +1,5 @@
-import './ProductInfo.sol';
-import './DINRegistry.sol';
+import '../ProductInfo.sol';
+import '../DINRegistry.sol';
 
 pragma solidity ^0.4.11;
 
@@ -9,16 +9,16 @@ pragma solidity ^0.4.11;
 contract PublicProductInfo is ProductInfo {
 
 	struct ProductInfo {
-        string description;                     // Slim White. The thinnest Bluetooth tracker that finds everyday items in seconds.
-        string imageURL;                        // https://static-www.thetileapp.com/images/slim_pdp_hero2.jpg
-        string retailURL;                       // https://www.thetileapp.com/en-us/store/tiles/slim
-        string category;                        // Cell Phone Accessories
-        string brand;                           // Tile
-        string manufacturer;                    // Tile
-        string color;                           // White
-        string model;                           // EC-04001
-        uint256 UPC;                            // 859553005297
-        uint256 EAN;                            // 0859553005297
+                string description;                     // Slim White. The thinnest Bluetooth tracker that finds everyday items in seconds.
+                string imageURL;                        // https://static-www.thetileapp.com/images/slim_pdp_hero2.jpg
+                string retailURL;                       // https://www.thetileapp.com/en-us/store/tiles/slim
+                string category;                        // Cell Phone Accessories
+                string brand;                           // Tile
+                string manufacturer;                    // Tile
+                string color;                           // White
+                string model;                           // EC-04001
+                uint256 UPC;                            // 859553005297
+                uint256 EAN;                            // 0859553005297
 	}
 
  //    // The address of DIN registry where all product IDs are stored.

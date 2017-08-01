@@ -1,39 +1,48 @@
-import './ERC20.sol';
+import '../ProductInfo.sol';
+import '../PriceResolver.sol';
+import '../InventoryResolver.sol';
+import '../BuyHandler.sol';
+import './StandardToken.sol';
 import './SafeMath.sol';
 
 pragma solidity ^0.4.11;
 
-contract TokenProduct {
+contract TokenProduct is ProductInfo, PriceResolver, InventoryResolver, BuyHandler {
 	using SafeMath for uint256;
 
-	// How do I keep track of order book?
+	StandardToken public token;
 
-	ERC20 public token;
-
-	// Seller => (Order Quantity => Price Per Token)
-	mapping (address => mapping (uint256 => uint256)) orderBook;
+	struct Ask {
+		uint256 quantity;
+		uint256 price;
+	}
 
 	event Deposit(address seller, uint256 amount, uint256 price);
 	event Withdraw(address seller, uint256 amount);
 
-	function TokenProduct(ERC20 _token) {
+	function TokenProduct(StandardToken _token) {
 		token = _token;
 	}
 
-	function depositTokens(uint256 amount, uint256 price) {
+	function depositTokens(uint256 quantity, uint256 price) {
 		// Depositor must call token.approve(this, amount) before depositing. Otherwise, the transfer will fail.
 		// require (token.transferFrom(msg.sender, this, amount) == true);
 		// tokens[msg.sender] = tokens[msg.sender].add(amount);
 	}
 
-	function withdrawTokens(uint256 amount) {
+	function withdrawTokens(uint256 quantity) {
 		// require (tokens[msg.sender] > amount);
 		// tokens[msg.sender] = tokens[msg.sender].sub(amount);
 		// require (token.transfer(msg.sender, amount) == true);
 	}
 
+	// Price Resolver
+	function price(uint256 DIN) constant returns (uint256) {
+		
+	}
+
 	// Inventory Resolver
-	function inStock(uint256 DIN, uint256 quantity) constant returns (bool) {
+	function isAvailableForSale(uint256 DIN, uint256 quantity) constant returns (bool) {
 		return true;
 	}
 
