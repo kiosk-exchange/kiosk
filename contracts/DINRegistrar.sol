@@ -49,5 +49,4 @@ contract DINRegistrar {
         NewRegistration(index, owner);
     }
 
-
 }

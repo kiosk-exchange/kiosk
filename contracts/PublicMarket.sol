@@ -95,14 +95,6 @@ contract PublicMarket is Market {
         _;
     }
 
-    /**
-     * Constructor.
-     * @param dinRegistryAddr The address of the DIN registry contract.
-     */
-    function PublicMarket(DINRegistry dinRegistryAddr) {
-        dinRegistry = dinRegistryAddr;
-    }
-
     // This contract does not accept ether directly. Use the "buy" function to buy a product.
     function () {
         throw;
@@ -132,11 +124,11 @@ contract PublicMarket is Market {
         products[DIN].isValid = true;
     }
 
-    /**
-    *   =========================
-    *            Orders          
-    *   =========================
-    */
+    // *
+    // *   =========================
+    // *            Orders          
+    // *   =========================
+    
 
     /**
      * Buy a quantity of a product.
@@ -161,7 +153,7 @@ contract PublicMarket is Market {
             DIN, 
             msg.value, 
             block.timestamp,
-            false
+            OrderStatus.Pending
         );
 
         NewOrder(
@@ -177,6 +169,10 @@ contract PublicMarket is Market {
 
         // Call the seller's buy handler.
         products[DIN].buyHandler.handleOrder(DIN, quantity, msg.sender);
+    }
+
+    function isFulfilled(uint256 orderID) constant returns (bool) {
+        return false;
     }
 
     /**
@@ -224,7 +220,7 @@ contract PublicMarket is Market {
         PriceResolverChanged(DIN, resolver);
     }
 
-    // Inventory
+    // // Inventory
     function isAvailableForSale(uint256 DIN, uint256 quantity) constant returns (bool) {
         return products[DIN].inventoryResolver.isAvailableForSale(DIN, quantity);
     }
