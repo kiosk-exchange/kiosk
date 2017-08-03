@@ -4,7 +4,7 @@ import '../DINRegistry.sol';
 
 pragma solidity ^0.4.11;
 
-contract ENSMarket {
+contract ENSMarket is PublicMarket {
 
 	DINRegistry public dinRegistry;
 	AbstractENS public ens;
