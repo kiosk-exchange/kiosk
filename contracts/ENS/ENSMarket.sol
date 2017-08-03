@@ -7,21 +7,22 @@ pragma solidity ^0.4.11;
 
 contract ENSMarket is PublicMarket {
 
-	DINRegistry public dinRegistry;
+	// ENS Registry
 	AbstractENS public ens;
 
-	function ENSMarket(DINRegistry dinRegistryAddr, AbstractENS ensAddr) {
-		dinRegistry = dinRegistryAddr;
+	// Constructor
+	function ENSMarket(DINRegistry dinRegistryAddr, AbstractENS ensAddr)
+		PublicMarket(dinRegistryAddr)
+	{
 		ens = ensAddr;
 	}
 
 	function isFulfilled(uint256 orderID) constant returns (bool) {
 		// Get the ENS node from the order
-		// bytes32 node = ENSNode(orders[orderID].DIN);
+		bytes32 node = ENSNode(orders[orderID].DIN);
 
 		// Check that buyer is the owner
-		// return (ens.owner(node) == orders[orderID].buyer);
-		return false;
+		return (ens.owner(node) == orders[orderID].buyer);
 	}
 
 	function ENSNode(uint256 DIN) constant returns (bytes32) {

@@ -9,6 +9,7 @@ pragma solidity ^0.4.11;
 
 /**
 *  This is the default Kiosk implementation of a public Market contract.
+*  Subclasses must implement "isFulfilled".
 */
 contract PublicMarket is Market {
 
@@ -100,6 +101,11 @@ contract PublicMarket is Market {
         throw;
     }
 
+    // Constructor
+    function PublicMarket(DINRegistry dinRegistryAddr) {
+        dinRegistry = dinRegistryAddr;
+    }
+
     /**
     *   =========================
     *          Add Product          
@@ -167,12 +173,11 @@ contract PublicMarket is Market {
 
         pendingWithdrawals[orderIndex] += msg.value;
 
-        // Call the seller's buy handler.
+        // Call the product's buy handler to fulfill the order.
         products[DIN].buyHandler.handleOrder(DIN, quantity, msg.sender);
-    }
 
-    function isFulfilled(uint256 orderID) constant returns (bool) {
-        return false;
+        // Throw an error if the order is not fulfilled.
+        require (isFulfilled(orderIndex) == true);
     }
 
     /**

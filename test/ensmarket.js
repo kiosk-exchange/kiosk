@@ -28,6 +28,7 @@ contract('ENSProduct', function(accounts) {
 contract('ENSMarket', function(accounts) {
 
 	var account1 = accounts[0];
+	var account2 = accounts[1];
 
 	it("should have a DIN Registry", () => {
 		return ENSMarket.deployed().then((instance) => {
@@ -54,13 +55,46 @@ contract('ENSMarket', function(accounts) {
 	})
 
 	it("should let sellers add a domain", () => {
+		const DIN = 10000001
+		const quantity = 1
+		const price = web3.toWei(2, 'ether')
+		var ens
+
 		return ENSProduct.deployed().then((instance) => {
-			// const price = web3.toWei(1, 'ether')
-			return instance.addENS(10000000000000000000, 0)
-		// }).then(() => {
-		// 	return ENSMarket.totalPrice(10000001, 1)
-		// }).then((price) => {
-		// 	console.log(price.toNumber())
+			// 1) Add the ENS node information and price to the ENSProduct contract
+			return instance.addENS(price, 0)
+		}).then(() => {
+			// 2) Transfer ownership of the ENS node to the ENSProduct contract
+			return ENS.deployed()
+		}).then((instance) => {
+			ens = instance
+			return ens.setOwner(0, ENSProduct.address)
+		}).then(() => {
+			return ens.owner(0)
+		}).then((owner) => {
+			assert.equal(owner, ENSProduct.address, "The ENS node was not transferred to ENSProduct")
+			return ENSMarket.deployed()
+		}).then((instance) => {
+			return instance.totalPrice(DIN, quantity)
+		}).then((domainPrice) => {
+			assert.equal(domainPrice.toNumber(), price, "The price of the ENS node is incorrect")
+		})
+	})
+
+	it("should let buyers buy a domain", () => {
+		const price = web3.toWei(2, 'ether')
+		const DIN = 10000001
+		const quantity = 1
+
+		return ENSMarket.deployed().then((instance) => {
+			// Buy the ENS node
+			return instance.buy(DIN, 1, { from: account2, value: price })
+		}).then(() => {
+			return ENS.deployed()
+		}).then((instance) => {
+			return instance.owner(0)
+		}).then((owner) => {
+			assert.equal(owner, account2, "The ENS node was not transferred to the buyer")
 		})
 	})
 

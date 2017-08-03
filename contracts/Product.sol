@@ -26,6 +26,13 @@ contract Product is ProductInfo, PriceResolver, InventoryResolver, BuyHandler {
 		_;
   }
 
+  // Constructor
+  function Product(DINRegistrar _registrar, PublicMarket _market) {
+  	owner = msg.sender;
+  	registrar = _registrar;
+  	market = _market;
+  }
+
 	function price(uint256 DIN, address buyer) constant returns (uint256);
 
 	function totalPrice(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256) {
