@@ -174,10 +174,13 @@ contract PublicMarket is Market {
         pendingWithdrawals[orderIndex] += msg.value;
 
         // Call the product's buy handler to fulfill the order.
-        products[DIN].buyHandler.handleOrder(DIN, quantity, msg.sender);
+        products[DIN].buyHandler.handleOrder(orderIndex, DIN, quantity, msg.sender);
 
         // Throw an error if the order is not fulfilled.
         require (isFulfilled(orderIndex) == true);
+
+        // Mark the order as fulfilled.
+        orders[orderIndex].status = OrderStatus.Fulfilled;
     }
 
     /**
@@ -189,6 +192,10 @@ contract PublicMarket is Market {
         // Zero the pending refund before to prevent re-entrancy attacks.
         pendingWithdrawals[orderID] = 0;
         msg.sender.transfer(amount);
+    }
+
+    function availableForWithdrawal(uint256 orderID) constant returns (uint256) {
+        return pendingWithdrawals[orderID];
     }
 
     /**
