@@ -3,8 +3,19 @@ var DINRegistrar = artifacts.require('./DINRegistrar.sol')
 var PublicMarket = artifacts.require('./PublicMarket.sol')
 var DemoToken = artifacts.require('./DemoToken.sol')
 var DemoStore = artifacts.require('./DemoStore.sol')
+var ENS = artifacts.require('./ENS/ENS.sol')
+var ENSMarket = artifacts.require('./ENS/ENSMarket.sol')
 
 module.exports = function(deployer) {
+
+	// const genesis = 10000000
+
+	// deployer.deploy(ENS).then(() => {
+	// 	deployer.deploy(DINRegistry, genesis).then(() => {
+	// 		console.log("DINREGISTRYADDRESS: " + DINRegistry.address)
+	// 		deployer.deploy(ENSMarket, DINRegistry.address)
+	// 	})
+	// })
 
 	const genesis = 10000000
 	const DIN = 10000001
@@ -13,27 +24,27 @@ module.exports = function(deployer) {
 	var market
 	var store
 
-	// // Deploy DINRegistry
-	// deployer.deploy(DINRegistry, genesis).then(() => {
-	// 	// Deploy DINRegistrar
-	// 	return deployer.deploy(DINRegistrar, DINRegistry.address)
-	// }).then(() => {
-	// 	// Deploy PublicMarket
-	// 	return deployer.deploy(PublicMarket, DINRegistry.address)
-	// }).then(() => {
-	// 	return DINRegistry.deployed()
-	// }).then((instance) => {
-	// 	// Set the registrar on the DINRegistry
-	// 	registry = instance
-	// 	return registry.setRegistrar(DINRegistrar.address)
-	// }).then(() => {
-	// 	return DINRegistrar.deployed()
-	// }).then((instance) => {
-	// 	registrar = instance
-	// 	return registrar.registerNewDIN(); // Register 10000001
-	// }).then(() => {
-	// 	// Set the PublicMarket as the market for the first registered DIN
-	// 	return registry.setMarket(DIN, PublicMarket.address)
+	// Deploy DINRegistry
+	deployer.deploy(DINRegistry, genesis).then(() => {
+		// Deploy DINRegistrar
+		return deployer.deploy(DINRegistrar, DINRegistry.address)
+	}).then(() => {
+		// Deploy PublicMarket
+		return deployer.deploy(PublicMarket, DINRegistry.address)
+	}).then(() => {
+		return DINRegistry.deployed()
+	}).then((instance) => {
+		// Set the registrar on the DINRegistry
+		registry = instance
+		return registry.setRegistrar(DINRegistrar.address)
+	}).then(() => {
+		return DINRegistrar.deployed()
+	}).then((instance) => {
+		registrar = instance
+		return registrar.registerNewDIN(); // Register 10000001
+	}).then(() => {
+		// Set the PublicMarket as the market for the first registered DIN
+		return registry.setMarket(DIN, PublicMarket.address)
 	// }).then(() => {
 	// 	return deployer.deploy(DemoToken, DIN, PublicMarket.address) // Deploy token "product"
 	// }).then(() => {
@@ -58,6 +69,6 @@ module.exports = function(deployer) {
 	// 			return store.addProduct(names[2], prices[2])
 	// 		})
 	// 	})
-	// })
+	})
 
 }
