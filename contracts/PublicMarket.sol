@@ -13,9 +13,9 @@ pragma solidity ^0.4.11;
 contract PublicMarket is Market {
 
     struct Product {
-        ProductInfo info;                       // Returns details about a given product.
-        PriceResolver priceResolver;            // Returns the price of a given product.
-        InventoryResolver inventoryResolver;    // Returns whether a product is in stock.
+        ProductInfo info;                       // Returns product details.
+        PriceResolver priceResolver;            // Returns product price.
+        InventoryResolver inventoryResolver;    // Returns whether product is in stock.
         BuyHandler buyHandler;                  // Returns the address of the contract that handles orders.
         bool isValid;                           // True if all above properties are set.
     }
@@ -26,6 +26,13 @@ contract PublicMarket is Market {
         uint256 DIN;
         uint256 amountPaid;
         uint256 timestamp;
+        OrderStatus status;
+    }
+
+    enum OrderStatus {
+        Pending,
+        Canceled,
+        Fulfilled
     }
 
     // The address of DIN registry where all product IDs are stored.
@@ -39,7 +46,7 @@ contract PublicMarket is Market {
     // Order ID => Order
     mapping (uint256 => Order) public orders;
 
-    // DIN => Pending revenue
+    // Order ID => Amount paid
     mapping (uint256 => uint256) public pendingWithdrawals;
 
     // Events
@@ -80,6 +87,11 @@ contract PublicMarket is Market {
 
     modifier only_valid_product(uint256 DIN) {
         require(products[DIN].isValid == true);
+        _;
+    }
+
+    modifier only_fulfilled(uint256 orderID) {
+        require (orders[orderID].status == OrderStatus.Fulfilled);
         _;
     }
 
@@ -148,7 +160,8 @@ contract PublicMarket is Market {
             seller, 
             DIN, 
             msg.value, 
-            block.timestamp
+            block.timestamp,
+            false
         );
 
         NewOrder(
@@ -160,7 +173,7 @@ contract PublicMarket is Market {
             block.timestamp
         );
 
-        pendingWithdrawals[DIN] += msg.value;
+        pendingWithdrawals[orderIndex] += msg.value;
 
         // Call the seller's buy handler.
         products[DIN].buyHandler.handleOrder(DIN, quantity, msg.sender);
@@ -169,11 +182,11 @@ contract PublicMarket is Market {
     /**
     *   Withdraw proceeds of sales.
     */
-    function withdraw(uint256 DIN) only_owner(DIN) {
-        uint256 amount = pendingWithdrawals[DIN];
+    function withdraw(uint256 orderID) only_seller(orderID) only_fulfilled(orderID) {
+        uint256 amount = pendingWithdrawals[orderID];
 
         // Zero the pending refund before to prevent re-entrancy attacks.
-        pendingWithdrawals[DIN] = 0;
+        pendingWithdrawals[orderID] = 0;
         msg.sender.transfer(amount);
     }
 
