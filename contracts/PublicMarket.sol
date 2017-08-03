@@ -95,11 +95,6 @@ contract PublicMarket is Market {
         _;
     }
 
-    // Constructor
-    function PublicMarket(DINRegistry dinRegistryAddr) {
-        dinRegistry = dinRegistryAddr;
-    }
-
     // This contract does not accept ether directly. Use the "buy" function to buy a product.
     function () {
         throw;

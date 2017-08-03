@@ -3,19 +3,8 @@ var DINRegistrar = artifacts.require('./DINRegistrar.sol')
 var PublicMarket = artifacts.require('./PublicMarket.sol')
 var DemoToken = artifacts.require('./DemoToken.sol')
 var DemoStore = artifacts.require('./DemoStore.sol')
-var ENS = artifacts.require('./ENS/ENS.sol')
-var ENSMarket = artifacts.require('./ENS/ENSMarket.sol')
 
 module.exports = function(deployer) {
-
-	// const genesis = 10000000
-
-	// deployer.deploy(ENS).then(() => {
-	// 	deployer.deploy(DINRegistry, genesis).then(() => {
-	// 		console.log("DINREGISTRYADDRESS: " + DINRegistry.address)
-	// 		deployer.deploy(ENSMarket, DINRegistry.address)
-	// 	})
-	// })
 
 	const genesis = 10000000
 	const DIN = 10000001
@@ -45,6 +34,7 @@ module.exports = function(deployer) {
 	}).then(() => {
 		// Set the PublicMarket as the market for the first registered DIN
 		return registry.setMarket(DIN, PublicMarket.address)
+
 	// }).then(() => {
 	// 	return deployer.deploy(DemoToken, DIN, PublicMarket.address) // Deploy token "product"
 	// }).then(() => {

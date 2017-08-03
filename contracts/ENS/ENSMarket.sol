@@ -1,6 +1,7 @@
 import './AbstractENS.sol';
 import '../PublicMarket.sol';
 import '../DINRegistry.sol';
+import '../Market.sol';
 
 pragma solidity ^0.4.11;
 
