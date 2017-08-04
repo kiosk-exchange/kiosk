@@ -20,7 +20,7 @@ For developers, Kiosk’s protocol can provide a foundation to quickly build and
 
 ## How It Works
 
-![kiosk protocol](/kioskprotocol.pdf?raw=true)
+![kiosk protocol](/kioskprotocol.jpg?raw=true)
 
 ## Quick Start
 
