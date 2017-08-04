@@ -1,5 +1,4 @@
 import './DINRegistrar.sol';
-import './ProductInfo.sol';
 import './PublicMarket.sol';
 import './PriceResolver.sol';
 import './InventoryResolver.sol';
@@ -10,7 +9,7 @@ pragma solidity ^0.4.11;
 /**
 *  This is the interface for a product.
 */
-contract Product is ProductInfo, PriceResolver, InventoryResolver, BuyHandler {
+contract Product is PriceResolver, InventoryResolver, BuyHandler {
 
 	address public owner;
 	PublicMarket public market;

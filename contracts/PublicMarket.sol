@@ -1,5 +1,4 @@
 import './DINRegistry.sol';
-import './ProductInfo.sol';
 import './PriceResolver.sol';
 import './InventoryResolver.sol';
 import './BuyHandler.sol';
@@ -14,7 +13,6 @@ pragma solidity ^0.4.11;
 contract PublicMarket is Market {
 
     struct Product {
-        ProductInfo info;                       // Returns product details.
         PriceResolver priceResolver;            // Returns product price.
         InventoryResolver inventoryResolver;    // Returns whether product is in stock.
         BuyHandler buyHandler;                  // Returns the address of the contract that handles orders.
@@ -71,7 +69,6 @@ contract PublicMarket is Market {
     }
 
     modifier only_correct_price(uint256 DIN, uint256 quantity) {
-        require(msg.value > 0); // The price cannot be set to zero.
         require(totalPrice(DIN, quantity) == msg.value);
         _;
     }
@@ -109,14 +106,12 @@ contract PublicMarket is Market {
 
     function addProduct(
         uint256 DIN,
-        ProductInfo info, 
         PriceResolver priceResolver, 
         InventoryResolver inventoryResolver, 
         BuyHandler buyHandler
     ) 
         only_owner(DIN)
     {
-        products[DIN].info = info;
         products[DIN].priceResolver = priceResolver;
         products[DIN].inventoryResolver = inventoryResolver;
         products[DIN].buyHandler = buyHandler;
@@ -203,16 +198,6 @@ contract PublicMarket is Market {
     *      Product Information          
     *   =========================
     */ 
-
-    // Info
-    function info(uint256 DIN) constant returns (address) {
-        return products[DIN].info;
-    }
-
-    function setInfo(uint256 DIN, ProductInfo info) only_owner(DIN) {
-        products[DIN].info = info;
-        ProductInfoChanged(DIN, info);
-    }
 
     // Price
     function unitPrice(uint256 DIN) constant returns (uint256) {
