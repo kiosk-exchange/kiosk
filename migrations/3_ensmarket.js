@@ -24,7 +24,7 @@ module.exports = function(deployer) {
 		return deployer.deploy(ENSMarket, DINRegistry.address, ENS.address)
 	}).then(() => {
 		// Deploy ENS Product, which allows sellers to list ENS domains on the market.
-		return deployer.deploy(ENSProduct, DINRegistrar.address, ENSMarket.address, ENS.address)
+		return deployer.deploy(ENSProduct, DINRegistry.address, DINRegistrar.address, ENSMarket.address, ENS.address)
 	})
 
 }

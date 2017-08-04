@@ -13,7 +13,6 @@ pragma solidity ^0.4.11;
 contract Product is ProductInfo, PriceResolver, InventoryResolver, BuyHandler {
 
 	address public owner;
-	DINRegistrar public registrar;
 	PublicMarket public market;
 
 	modifier only_owner() {
@@ -27,9 +26,8 @@ contract Product is ProductInfo, PriceResolver, InventoryResolver, BuyHandler {
   }
 
   // Constructor
-  function Product(DINRegistrar _registrar, PublicMarket _market) {
+  function Product(PublicMarket _market) {
   	owner = msg.sender;
-  	registrar = _registrar;
   	market = _market;
   }
 

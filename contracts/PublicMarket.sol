@@ -70,11 +70,6 @@ contract PublicMarket is Market {
         _;
     }
 
-    modifier only_seller(uint256 orderID) {
-        require(orders[orderID].seller == msg.sender);
-        _;
-    }
-
     modifier only_correct_price(uint256 DIN, uint256 quantity) {
         require(msg.value > 0); // The price cannot be set to zero.
         require(totalPrice(DIN, quantity) == msg.value);
@@ -130,11 +125,11 @@ contract PublicMarket is Market {
         products[DIN].isValid = true;
     }
 
-    // *
-    // *   =========================
-    // *            Orders          
-    // *   =========================
-    
+    /**
+    *   =========================
+    *            Orders         
+    *   =========================
+    */
 
     /**
      * Buy a quantity of a product.
@@ -165,7 +160,7 @@ contract PublicMarket is Market {
         NewOrder(
             orderIndex, 
             msg.sender, 
-            seller, 
+            seller,
             DIN,
             msg.value, 
             block.timestamp
@@ -186,7 +181,7 @@ contract PublicMarket is Market {
     /**
     *   Withdraw proceeds of sales.
     */
-    function withdraw(uint256 orderID) only_seller(orderID) only_fulfilled(orderID) {
+    function withdraw(uint256 orderID) only_owner(orders[orderID].DIN) only_fulfilled(orderID) {
         uint256 amount = pendingWithdrawals[orderID];
 
         // Zero the pending refund before to prevent re-entrancy attacks.
@@ -194,8 +189,13 @@ contract PublicMarket is Market {
         msg.sender.transfer(amount);
     }
 
+    // Helper methods for sellers
     function availableForWithdrawal(uint256 orderID) constant returns (uint256) {
         return pendingWithdrawals[orderID];
+    }
+
+    function DINForOrder(uint256 orderID) constant returns (uint256) {
+        return orders[orderID].DIN;
     }
 
     /**
@@ -232,9 +232,10 @@ contract PublicMarket is Market {
         PriceResolverChanged(DIN, resolver);
     }
 
-    // // Inventory
+    // Inventory
     function isAvailableForSale(uint256 DIN, uint256 quantity) constant returns (bool) {
-        return products[DIN].inventoryResolver.isAvailableForSale(DIN, quantity);
+        return true;
+        // return products[DIN].inventoryResolver.isAvailableForSale(DIN, quantity);
     }
 
     function inventoryResolver(uint256 DIN) constant returns (address) {

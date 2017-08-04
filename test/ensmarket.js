@@ -81,6 +81,29 @@ contract('ENSMarket', function(accounts) {
 		})
 	})
 
+	it("should only allow ENS node products that are owned by their buy handler", () => {
+		const DIN = 10000001
+		var market
+		var ensNode
+		var ensOwner
+
+		return ENSMarket.deployed().then((instance) => {
+			market = instance
+			return market.ENSNode(DIN)
+		}).then((node) => {
+			ensNode = node
+			return ENS.deployed()
+		}).then((instance) => {
+			return instance.owner(ensNode)
+		}).then((owner) => {
+			ensOwner = owner
+			return market.buyHandler(DIN)
+		}).then((buyHandler) => {
+			assert.equal(ensOwner, buyHandler)
+		})
+
+	})
+
 	it("should let buyers buy a domain", () => {
 		const price = web3.toWei(2, 'ether')
 		const DIN = 10000001
@@ -95,6 +118,42 @@ contract('ENSMarket', function(accounts) {
 			return instance.owner(0)
 		}).then((owner) => {
 			assert.equal(owner, account2, "The ENS node was not transferred to the buyer")
+		})
+	})
+
+	it("should have funds in escrow for seller", () => {
+		const expectedProceeds = web3.toWei(2, 'ether')
+		const orderID = 1
+
+		return ENSMarket.deployed().then((instance) => {
+			return instance.availableForWithdrawal(1)
+		}).then((escrow) => {
+			assert.equal(escrow, expectedProceeds, "The escrow from the sale is incorrect")
+		})
+	})
+
+	it("should not let a random account withdraw", () => {
+		const orderID = 1
+
+		return ENSMarket.deployed().then((instance) => {
+			return instance.withdraw(orderID, { from: account2 })
+		}).then().catch((error) => {
+			assert.isDefined(error, "There was no error for withdrawing with a random account")
+		})
+
+	})
+
+	it("should increase the seller's balance after withdrawing", () => {
+		const beginBalance = web3.fromWei(web3.eth.getBalance(account1), 'ether').toNumber()
+		const orderID = 1
+		const expectedProceeds = 2
+		const gasAllowance = 0.1
+
+		return ENSMarket.deployed().then((instance) => {
+			return instance.withdraw(orderID, { from: account1 })
+		}).then(() => {
+			const endBalance = web3.fromWei(web3.eth.getBalance(account1), 'ether').toNumber()
+			assert.isAtLeast(endBalance, beginBalance + expectedProceeds - gasAllowance, "Withdrawing proceeds from sale did not work")
 		})
 	})
 
