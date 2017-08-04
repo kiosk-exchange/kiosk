@@ -18,6 +18,10 @@ Having a standardized approach for building on-chain markets can facilitate trus
 
 For developers, Kiosk’s protocol can provide a foundation to quickly build and launch new markets with a lower probability for error.
 
+## How It Works
+
+![kiosk protocol](/kioskprotocol.svg?raw=true)
+
 ## Quick Start
 
 Get started by testing locally with [TestRPC](https://github.com/ethereumjs/testrpc).
