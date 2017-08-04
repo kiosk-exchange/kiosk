@@ -14,9 +14,9 @@ Kiosk provides a framework for creating decentralized marketplaces. Its smart co
 * A `Product` tells a `Market` its information, price, and availability
 * A seller can withdraw proceeds from an `Order` when the `Market` has marked it as `Fulfilled`
 
-Having a standardized approach for building on-chain markets can facilitate trust for buyers and sellers. With Kiosk, a buyer can figure out how much an item costs and how to buy it just by knowing its identifier.
+Having a standardized approach for building on-chain markets can facilitate trust between buyers and sellers. With Kiosk, a buyer can figure out how much an item costs and how to buy it just by knowing its identifier. Sellers can manage pricing and inventory for multiple products and minimize blockchain transaction costs.
 
-For developers, Kiosk’s protocol can provide a foundation to quickly build and launch new markets with a lower probability of error.
+For developers, Kiosk’s protocol can provide a foundation to quickly build and launch new markets with a lower probability for error.
 
 ## Quick Start
 
