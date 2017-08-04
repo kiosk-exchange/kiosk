@@ -1,5 +1,4 @@
 import './DINRegistry.sol';
-import './ProductInfo.sol';
 import './PriceResolver.sol';
 import './InventoryResolver.sol';
 import './BuyHandler.sol';
@@ -9,13 +8,13 @@ pragma solidity ^0.4.11;
 
 /**
 *  This is the default Kiosk implementation of a public Market contract.
+*  Subclasses must implement "isFulfilled".
 */
 contract PublicMarket is Market {
 
     struct Product {
-        ProductInfo info;                       // Returns details about a given product.
-        PriceResolver priceResolver;            // Returns the price of a given product.
-        InventoryResolver inventoryResolver;    // Returns whether a product is in stock.
+        PriceResolver priceResolver;            // Returns product price.
+        InventoryResolver inventoryResolver;    // Returns whether product is in stock.
         BuyHandler buyHandler;                  // Returns the address of the contract that handles orders.
         bool isValid;                           // True if all above properties are set.
     }
@@ -26,6 +25,13 @@ contract PublicMarket is Market {
         uint256 DIN;
         uint256 amountPaid;
         uint256 timestamp;
+        OrderStatus status;
+    }
+
+    enum OrderStatus {
+        Pending,
+        Canceled,
+        Fulfilled
     }
 
     // The address of DIN registry where all product IDs are stored.
@@ -39,7 +45,7 @@ contract PublicMarket is Market {
     // Order ID => Order
     mapping (uint256 => Order) public orders;
 
-    // DIN => Pending revenue
+    // Order ID => Amount paid
     mapping (uint256 => uint256) public pendingWithdrawals;
 
     // Events
@@ -62,20 +68,13 @@ contract PublicMarket is Market {
         _;
     }
 
-    modifier only_seller(uint256 orderID) {
-        require(orders[orderID].seller == msg.sender);
-        _;
-    }
-
-    // For simplicity, this market contract does not allow for dynamic pricing based on quantity
     modifier only_correct_price(uint256 DIN, uint256 quantity) {
-        require(price(DIN) * quantity == msg.value);
-        require(msg.value > 0); // The price cannot be set to zero.
+        require(totalPrice(DIN, quantity) == msg.value);
         _;
     }
 
     modifier only_in_stock(uint256 DIN, uint256 quantity) {
-        require(inStock(DIN, quantity) == true);
+        require(isAvailableForSale(DIN, quantity) == true);
         _;
     }
 
@@ -84,17 +83,19 @@ contract PublicMarket is Market {
         _;
     }
 
-    /**
-     * Constructor.
-     * @param dinRegistryAddr The address of the DIN registry contract.
-     */
-    function PublicMarket(DINRegistry dinRegistryAddr) {
-        dinRegistry = dinRegistryAddr;
+    modifier only_fulfilled(uint256 orderID) {
+        require (orders[orderID].status == OrderStatus.Fulfilled);
+        _;
     }
 
     // This contract does not accept ether directly. Use the "buy" function to buy a product.
     function () {
         throw;
+    }
+
+    // Constructor
+    function PublicMarket(DINRegistry dinRegistryAddr) {
+        dinRegistry = dinRegistryAddr;
     }
 
     /**
@@ -105,14 +106,12 @@ contract PublicMarket is Market {
 
     function addProduct(
         uint256 DIN,
-        ProductInfo info, 
         PriceResolver priceResolver, 
         InventoryResolver inventoryResolver, 
         BuyHandler buyHandler
     ) 
         only_owner(DIN)
     {
-        products[DIN].info = info;
         products[DIN].priceResolver = priceResolver;
         products[DIN].inventoryResolver = inventoryResolver;
         products[DIN].buyHandler = buyHandler;
@@ -123,7 +122,7 @@ contract PublicMarket is Market {
 
     /**
     *   =========================
-    *            Orders          
+    *            Orders         
     *   =========================
     */
 
@@ -149,33 +148,49 @@ contract PublicMarket is Market {
             seller, 
             DIN, 
             msg.value, 
-            block.timestamp
+            block.timestamp,
+            OrderStatus.Pending
         );
 
         NewOrder(
             orderIndex, 
             msg.sender, 
-            seller, 
+            seller,
             DIN,
             msg.value, 
             block.timestamp
         );
 
-        pendingWithdrawals[DIN] += msg.value;
+        pendingWithdrawals[orderIndex] += msg.value;
 
-        // Call the seller's buy handler.
-        products[DIN].buyHandler.handleOrder(DIN, quantity, msg.sender);
+        // Call the product's buy handler to fulfill the order.
+        products[DIN].buyHandler.handleOrder(orderIndex, DIN, quantity, msg.sender);
+
+        // Throw an error if the order is not fulfilled.
+        require (isFulfilled(orderIndex) == true);
+
+        // Mark the order as fulfilled.
+        orders[orderIndex].status = OrderStatus.Fulfilled;
     }
 
     /**
     *   Withdraw proceeds of sales.
     */
-    function withdraw(uint256 DIN) only_owner(DIN) {
-        uint256 amount = pendingWithdrawals[DIN];
+    function withdraw(uint256 orderID) only_owner(orders[orderID].DIN) only_fulfilled(orderID) {
+        uint256 amount = pendingWithdrawals[orderID];
 
         // Zero the pending refund before to prevent re-entrancy attacks.
-        pendingWithdrawals[DIN] = 0;
+        pendingWithdrawals[orderID] = 0;
         msg.sender.transfer(amount);
+    }
+
+    // Helper methods for sellers
+    function availableForWithdrawal(uint256 orderID) constant returns (uint256) {
+        return pendingWithdrawals[orderID];
+    }
+
+    function DINForOrder(uint256 orderID) constant returns (uint256) {
+        return orders[orderID].DIN;
     }
 
     /**
@@ -184,19 +199,13 @@ contract PublicMarket is Market {
     *   =========================
     */ 
 
-    // Info
-    function info(uint256 DIN) constant returns (address) {
-        return products[DIN].info;
-    }
-
-    function setInfo(uint256 DIN, ProductInfo info) only_owner(DIN) {
-        products[DIN].info = info;
-        ProductInfoChanged(DIN, info);
-    }
-
     // Price
-    function price(uint256 DIN) constant returns (uint256) {
-        return products[DIN].priceResolver.price(DIN, msg.sender);
+    function unitPrice(uint256 DIN) constant returns (uint256) {
+        return totalPrice(DIN, 1);
+    }
+
+    function totalPrice(uint256 DIN, uint256 quantity) constant returns (uint256) {
+        return products[DIN].priceResolver.totalPrice(DIN, quantity, msg.sender);
     }
 
     function priceResolver(uint256 DIN) constant returns (address) {
@@ -209,8 +218,9 @@ contract PublicMarket is Market {
     }
 
     // Inventory
-    function inStock(uint256 DIN, uint256 quantity) constant returns (bool) {
-        return products[DIN].inventoryResolver.inStock(DIN, quantity);
+    function isAvailableForSale(uint256 DIN, uint256 quantity) constant returns (bool) {
+        return true;
+        // return products[DIN].inventoryResolver.isAvailableForSale(DIN, quantity);
     }
 
     function inventoryResolver(uint256 DIN) constant returns (address) {
