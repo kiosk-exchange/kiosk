@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
-import getWeb3 from './utils/getWeb3'
 import MockProducts from './utils/MockProducts.js'
-
 import ProductTable from './Components/ProductTable'
 
 class Market extends Component {

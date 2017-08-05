@@ -1,71 +1,46 @@
-import getWeb3 from '../utils/getWeb3'
 import publicMarketABI from '../../build/contracts/PublicMarket.json'
 import dinRegistrarABI from '../../build/contracts/DINRegistrar.json'
 import demoStoreABI from '../../build/contracts/DemoStore.json'
 import registryABI from '../../build/contracts/DINRegistry.json'
 import productInfoABI from '../../build/contracts/ProductInfo.json'
 import priceResolverABI from '../../build/contracts/PriceResolver.json'
-
+import ensABI from '../../build/contracts/ENS.json'
+import ensMarketABI from '../../build/contracts/ENSMarket.json'
+import ensProductABI from '../../build/contracts/ENSProduct.json'
 const contract = require('truffle-contract')
 
-// let getPriceResolverContract = new Promise(function(resolve, reject) {
-//   getWeb3.then(results => {
-//     const priceResolv = contract(priceResolverABI)
-//     priceResolv.setProvider(results.web3.currentProvider)
-//     priceResolv.deployed().then((instance) => {
-//       resolve(instance)
-//     })
-//   })
-// })
+let dinRegistry = new Promise(function(resolve, reject) {
+  
+}
 
-// let getProductInfoContract = new Promise(function(resolve, reject) {
-//   getWeb3.then(results => {
-//     const prodInfo = contract(productInfoABI)
-//     prodInfo.setProvider(results.web3.currentProvider)
-//     prodInfo.deployed().then((instance) => {
-//       resolve(instance)
-//     })
-//   })
-// })
+function getDINRegistry(web3) {
+  return getContract(web3, registryABI)
+}
 
-let getDINRegistryContract = new Promise(function(resolve, reject) {
-  getWeb3.then(results => {
-    const registry = contract(registryABI)
-    registry.setProvider(results.web3.currentProvider)
-    registry.deployed().then((instance) => {
-      resolve(instance)
-    })
-  })
-})
+function getDINRegistrar(web3) {
+  return getContract(web3, dinRegistrarABI)
+}
 
-let getPublicMarketContract = new Promise(function(resolve, reject) {
-  getWeb3.then(results => {
-    const publicMarket = contract(publicMarketABI)
-    publicMarket.setProvider(results.web3.currentProvider)
-    publicMarket.deployed().then((instance) => {
-      resolve(instance)
-    })
-  })
-})
+function getPublicMarket(web3) {
+  return getContract(web3, publicMarketABI)
+}
 
-let getDinRegistrarContract = new Promise(function(resolve, reject) {
-  getWeb3.then(results => {
-    const dinRegistrar = contract(dinRegistrarABI)
-    dinRegistrar.setProvider(results.web3.currentProvider)
-    dinRegistrar.deployed().then((instance) => {
-      resolve(instance)
-    })
-  })
-})
+function getENS(web3) {
+  return getContract(web3, ensABI)
+}
 
-let getDemoStoreContract = new Promise(function(resolve, reject) {
-  getWeb3.then(results => {
-    const demoStore = contract(demoStoreABI)
-    demoStore.setProvider(results.web3.currentProvider)
-    demoStore.deployed().then((instance) => {
-      resolve(instance)
-    })
-  })
-})
+function getENSMarket(web3) {
+  return getContract(web3, ensMarketABI)
+}
 
-export { getPublicMarketContract, getDinRegistrarContract, getDemoStoreContract, getDINRegistryContract }
+function getENSProduct(web3) {
+  return getContract(web3, ensProductABI)
+}
+
+function getContract(web3, abi) {
+  const aContract = contract(abi)
+  aContract.setProvider(web3.currentProvider)
+  return aContract.deployed()
+}
+
+export { getDINRegistry, getDINRegistrar, getPublicMarket, getENS, getENSMarket, getENSProduct }

@@ -57,7 +57,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	exports.__esModule = true;
-	exports.utils = exports.Well = exports.Tooltip = exports.Thumbnail = exports.Tabs = exports.TabPane = exports.Table = exports.TabContent = exports.TabContainer = exports.Tab = exports.SplitButton = exports.SafeAnchor = exports.Row = exports.ResponsiveEmbed = exports.Radio = exports.ProgressBar = exports.Popover = exports.PanelGroup = exports.Panel = exports.PaginationButton = exports.Pagination = exports.Pager = exports.PageItem = exports.PageHeader = exports.OverlayTrigger = exports.Overlay = exports.NavItem = exports.NavDropdown = exports.NavbarBrand = exports.Navbar = exports.Nav = exports.ModalTitle = exports.ModalHeader = exports.ModalFooter = exports.ModalBody = exports.Modal = exports.MenuItem = exports.Media = exports.ListGroupItem = exports.ListGroup = exports.Label = exports.Jumbotron = exports.InputGroup = exports.Image = exports.HelpBlock = exports.Grid = exports.Glyphicon = exports.FormGroup = exports.FormControl = exports.Form = exports.Fade = exports.DropdownButton = exports.Dropdown = exports.Collapse = exports.Col = exports.ControlLabel = exports.CloseButton = exports.Clearfix = exports.Checkbox = exports.CarouselItem = exports.Carousel = exports.ButtonToolbar = exports.ButtonGroup = exports.Button = exports.BreadcrumbItem = exports.Breadcrumb = exports.Badge = exports.Alert = exports.Accordion = undefined;
+	exports.utils = exports.Well = exports.Tooltip = exports.ToggleButtonGroup = exports.ToggleButton = exports.Thumbnail = exports.Tabs = exports.TabPane = exports.Table = exports.TabContent = exports.TabContainer = exports.Tab = exports.SplitButton = exports.SafeAnchor = exports.Row = exports.ResponsiveEmbed = exports.Radio = exports.ProgressBar = exports.Popover = exports.PanelGroup = exports.Panel = exports.PaginationButton = exports.Pagination = exports.Pager = exports.PageItem = exports.PageHeader = exports.OverlayTrigger = exports.Overlay = exports.NavItem = exports.NavDropdown = exports.NavbarBrand = exports.Navbar = exports.Nav = exports.ModalTitle = exports.ModalHeader = exports.ModalFooter = exports.ModalBody = exports.Modal = exports.MenuItem = exports.Media = exports.ListGroupItem = exports.ListGroup = exports.Label = exports.Jumbotron = exports.InputGroup = exports.Image = exports.HelpBlock = exports.Grid = exports.Glyphicon = exports.FormGroup = exports.FormControl = exports.Form = exports.Fade = exports.DropdownButton = exports.Dropdown = exports.Collapse = exports.Col = exports.ControlLabel = exports.CloseButton = exports.Clearfix = exports.Checkbox = exports.CarouselItem = exports.Carousel = exports.ButtonToolbar = exports.ButtonGroup = exports.Button = exports.BreadcrumbItem = exports.Breadcrumb = exports.Badge = exports.Alert = exports.Accordion = undefined;
 
 	var _Accordion2 = __webpack_require__(1);
 
@@ -323,15 +323,23 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _Thumbnail3 = _interopRequireDefault(_Thumbnail2);
 
-	var _Tooltip2 = __webpack_require__(262);
+	var _ToggleButton2 = __webpack_require__(262);
+
+	var _ToggleButton3 = _interopRequireDefault(_ToggleButton2);
+
+	var _ToggleButtonGroup2 = __webpack_require__(263);
+
+	var _ToggleButtonGroup3 = _interopRequireDefault(_ToggleButtonGroup2);
+
+	var _Tooltip2 = __webpack_require__(264);
 
 	var _Tooltip3 = _interopRequireDefault(_Tooltip2);
 
-	var _Well2 = __webpack_require__(263);
+	var _Well2 = __webpack_require__(265);
 
 	var _Well3 = _interopRequireDefault(_Well2);
 
-	var _utils2 = __webpack_require__(264);
+	var _utils2 = __webpack_require__(266);
 
 	var _utils = _interopRequireWildcard(_utils2);
 
@@ -405,6 +413,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.TabPane = _TabPane3['default'];
 	exports.Tabs = _Tabs3['default'];
 	exports.Thumbnail = _Thumbnail3['default'];
+	exports.ToggleButton = _ToggleButton3['default'];
+	exports.ToggleButtonGroup = _ToggleButtonGroup3['default'];
 	exports.Tooltip = _Tooltip3['default'];
 	exports.Well = _Well3['default'];
 	exports.utils = _utils;
@@ -3804,19 +3814,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _propTypes = __webpack_require__(89);
 
-	var PropTypes = _interopRequireWildcard(_propTypes);
+	var _propTypes2 = _interopRequireDefault(_propTypes);
 
 	var _react = __webpack_require__(85);
 
 	var _react2 = _interopRequireDefault(_react);
 
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 	var propTypes = {
-	  label: PropTypes.string.isRequired,
-	  onClick: PropTypes.func
+	  label: _propTypes2['default'].string.isRequired,
+	  onClick: _propTypes2['default'].func
 	};
 
 	var defaultProps = {
@@ -4719,10 +4727,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _Button = __webpack_require__(116);
-
-	var _Button2 = _interopRequireDefault(_Button);
-
 	var _bootstrapUtils = __webpack_require__(96);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -4755,7 +4759,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return ButtonToolbar;
 	}(_react2['default'].Component);
 
-	exports['default'] = (0, _bootstrapUtils.bsClass)('btn-toolbar', (0, _bootstrapUtils.bsSizes)(_Button2['default'].SIZES, ButtonToolbar));
+	exports['default'] = (0, _bootstrapUtils.bsClass)('btn-toolbar', ButtonToolbar);
 	module.exports = exports['default'];
 
 /***/ }),
@@ -12134,6 +12138,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  backdrop: _propTypes2['default'].oneOf(['static', true, false]),
 
 	  /**
+	   * Add an optional extra class name to .modal-backdrop
+	   * It could end up looking like class="modal-backdrop foo-modal-backdrop in".
+	   */
+	  backdropClassName: _propTypes2['default'].string,
+
+	  /**
 	   * Close the modal when escape key is pressed
 	   */
 	  keyboard: _propTypes2['default'].bool,
@@ -12309,6 +12319,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var _props = this.props,
 	        backdrop = _props.backdrop,
+	        backdropClassName = _props.backdropClassName,
 	        animation = _props.animation,
 	        show = _props.show,
 	        Dialog = _props.dialogComponentClass,
@@ -12317,7 +12328,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        children = _props.children,
 	        onEntering = _props.onEntering,
 	        onExited = _props.onExited,
-	        props = (0, _objectWithoutProperties3['default'])(_props, ['backdrop', 'animation', 'show', 'dialogComponentClass', 'className', 'style', 'children', 'onEntering', 'onExited']);
+	        props = (0, _objectWithoutProperties3['default'])(_props, ['backdrop', 'backdropClassName', 'animation', 'show', 'dialogComponentClass', 'className', 'style', 'children', 'onEntering', 'onExited']);
 
 	    var _splitComponentProps = (0, _splitComponentProps3['default'])(props, _Modal2['default']),
 	        baseModalProps = _splitComponentProps[0],
@@ -12335,7 +12346,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        onEntering: (0, _createChainedFunction2['default'])(onEntering, this.handleEntering),
 	        onExited: (0, _createChainedFunction2['default'])(onExited, this.handleExited),
 	        backdrop: backdrop,
-	        backdropClassName: (0, _classnames2['default'])((0, _bootstrapUtils.prefix)(props, 'backdrop'), inClassName),
+	        backdropClassName: (0, _classnames2['default'])((0, _bootstrapUtils.prefix)(props, 'backdrop'), backdropClassName, inClassName),
 	        containerClassName: (0, _bootstrapUtils.prefix)(props, 'open'),
 	        transition: animation ? _Fade2['default'] : undefined,
 	        dialogTransitionTimeout: Modal.TRANSITION_DURATION,
@@ -20393,6 +20404,311 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	exports.__esModule = true;
 
+	var _extends2 = __webpack_require__(2);
+
+	var _extends3 = _interopRequireDefault(_extends2);
+
+	var _objectWithoutProperties2 = __webpack_require__(87);
+
+	var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
+
+	var _classCallCheck2 = __webpack_require__(40);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(41);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(77);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _propTypes = __webpack_require__(89);
+
+	var _propTypes2 = _interopRequireDefault(_propTypes);
+
+	var _react = __webpack_require__(85);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _Button = __webpack_require__(116);
+
+	var _Button2 = _interopRequireDefault(_Button);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var propTypes = {
+	  /**
+	   * The `<input>` `type`
+	   * @type {[type]}
+	   */
+	  type: _propTypes2['default'].oneOf(['checkbox', 'radio']),
+
+	  /**
+	   * The HTML input name, used to group like checkboxes or radio buttons together
+	   * semantically
+	   */
+	  name: _propTypes2['default'].string,
+
+	  /**
+	   * The checked state of the input, managed by `<ToggleButtonGroup>`` automatically
+	   */
+	  checked: _propTypes2['default'].bool,
+
+	  /**
+	   * [onChange description]
+	   */
+	  onChange: _propTypes2['default'].func,
+	  /**
+	   * The value of the input, and unique identifier in the ToggleButtonGroup
+	   */
+	  value: _propTypes2['default'].any.isRequired
+	};
+
+	var ToggleButton = function (_React$Component) {
+	  (0, _inherits3['default'])(ToggleButton, _React$Component);
+
+	  function ToggleButton() {
+	    (0, _classCallCheck3['default'])(this, ToggleButton);
+	    return (0, _possibleConstructorReturn3['default'])(this, _React$Component.apply(this, arguments));
+	  }
+
+	  ToggleButton.prototype.render = function render() {
+	    var _props = this.props,
+	        children = _props.children,
+	        name = _props.name,
+	        checked = _props.checked,
+	        type = _props.type,
+	        onChange = _props.onChange,
+	        value = _props.value,
+	        props = (0, _objectWithoutProperties3['default'])(_props, ['children', 'name', 'checked', 'type', 'onChange', 'value']);
+
+
+	    return _react2['default'].createElement(
+	      _Button2['default'],
+	      (0, _extends3['default'])({}, props, {
+	        active: !!checked,
+	        componentClass: 'label'
+	      }),
+	      _react2['default'].createElement('input', {
+	        name: name,
+	        type: type,
+	        autoComplete: 'off',
+	        value: value,
+	        checked: !!checked,
+	        onChange: onChange
+	      }),
+	      children
+	    );
+	  };
+
+	  return ToggleButton;
+	}(_react2['default'].Component);
+
+	ToggleButton.propTypes = propTypes;
+
+	exports['default'] = ToggleButton;
+	module.exports = exports['default'];
+
+/***/ }),
+/* 263 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	exports.__esModule = true;
+
+	var _extends2 = __webpack_require__(2);
+
+	var _extends3 = _interopRequireDefault(_extends2);
+
+	var _objectWithoutProperties2 = __webpack_require__(87);
+
+	var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
+
+	var _classCallCheck2 = __webpack_require__(40);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(41);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(77);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _propTypes = __webpack_require__(89);
+
+	var _propTypes2 = _interopRequireDefault(_propTypes);
+
+	var _react = __webpack_require__(85);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _invariant = __webpack_require__(101);
+
+	var _invariant2 = _interopRequireDefault(_invariant);
+
+	var _uncontrollable = __webpack_require__(151);
+
+	var _uncontrollable2 = _interopRequireDefault(_uncontrollable);
+
+	var _createChainedFunction = __webpack_require__(103);
+
+	var _createChainedFunction2 = _interopRequireDefault(_createChainedFunction);
+
+	var _ValidComponentChildren = __webpack_require__(104);
+
+	var _ValidComponentChildren2 = _interopRequireDefault(_ValidComponentChildren);
+
+	var _ButtonGroup = __webpack_require__(117);
+
+	var _ButtonGroup2 = _interopRequireDefault(_ButtonGroup);
+
+	var _ToggleButton = __webpack_require__(262);
+
+	var _ToggleButton2 = _interopRequireDefault(_ToggleButton);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var propTypes = {
+	  /**
+	   * An HTML `<input>` name for each child button.
+	   *
+	   * __Required if `type` is set to `'radio'`__
+	   */
+	  name: _propTypes2['default'].string,
+
+	  /**
+	   * The value, or array of values, of the active (pressed) buttons
+	   *
+	   * @controllable onChange
+	   */
+	  value: _propTypes2['default'].any,
+
+	  /**
+	   * Callback fired when a button is pressed, depending on whether the `type`
+	   * is `'radio'` or `'checkbox'`, `onChange` will be called with the value or
+	   * array of active values
+	   *
+	   * @controllable values
+	   */
+	  onChange: _propTypes2['default'].func,
+
+	  /**
+	   * The input `type` of the rendered buttons, determines the toggle behavior
+	   * of the buttons
+	   */
+	  type: _propTypes2['default'].oneOf(['checkbox', 'radio']).isRequired
+	};
+
+	var defaultProps = {
+	  type: 'radio'
+	};
+
+	var ToggleButtonGroup = function (_React$Component) {
+	  (0, _inherits3['default'])(ToggleButtonGroup, _React$Component);
+
+	  function ToggleButtonGroup() {
+	    (0, _classCallCheck3['default'])(this, ToggleButtonGroup);
+	    return (0, _possibleConstructorReturn3['default'])(this, _React$Component.apply(this, arguments));
+	  }
+
+	  ToggleButtonGroup.prototype.getValues = function getValues() {
+	    var value = this.props.value;
+
+	    return value == null ? [] : [].concat(value);
+	  };
+
+	  ToggleButtonGroup.prototype.handleToggle = function handleToggle(value) {
+	    var _props = this.props,
+	        type = _props.type,
+	        onChange = _props.onChange;
+
+	    var values = this.getValues();
+	    var isActive = values.indexOf(value) !== -1;
+
+	    if (type === 'radio') {
+	      if (!isActive) {
+	        onChange(value);
+	      }
+	      return;
+	    }
+
+	    if (isActive) {
+	      onChange(values.filter(function (n) {
+	        return n !== value;
+	      }));
+	    } else {
+	      onChange([].concat(values, [value]));
+	    }
+	  };
+
+	  ToggleButtonGroup.prototype.render = function render() {
+	    var _this2 = this;
+
+	    var _props2 = this.props,
+	        children = _props2.children,
+	        type = _props2.type,
+	        name = _props2.name,
+	        props = (0, _objectWithoutProperties3['default'])(_props2, ['children', 'type', 'name']);
+
+
+	    var values = this.getValues();
+
+	    !(type !== 'radio' || !!name) ?  true ? (0, _invariant2['default'])(false, 'A `name` is required to group the toggle buttons when the `type` ' + 'is set to "radio"') : (0, _invariant2['default'])(false) : void 0;
+
+	    delete props.onChange;
+	    delete props.value;
+
+	    // the data attribute is required b/c twbs css uses it in the selector
+	    return _react2['default'].createElement(
+	      _ButtonGroup2['default'],
+	      (0, _extends3['default'])({}, props, { 'data-toggle': 'buttons' }),
+	      _ValidComponentChildren2['default'].map(children, function (child) {
+	        var _child$props = child.props,
+	            value = _child$props.value,
+	            onChange = _child$props.onChange;
+
+	        var handler = function handler() {
+	          return _this2.handleToggle(value);
+	        };
+
+	        return _react2['default'].cloneElement(child, {
+	          type: type,
+	          name: child.name || name,
+	          checked: values.indexOf(value) !== -1,
+	          onChange: (0, _createChainedFunction2['default'])(onChange, handler)
+	        });
+	      })
+	    );
+	  };
+
+	  return ToggleButtonGroup;
+	}(_react2['default'].Component);
+
+	ToggleButtonGroup.propTypes = propTypes;
+	ToggleButtonGroup.defaultProps = defaultProps;
+
+	var UncontrolledToggleButtonGroup = (0, _uncontrollable2['default'])(ToggleButtonGroup, {
+	  value: 'onChange'
+	});
+
+	UncontrolledToggleButtonGroup.Button = _ToggleButton2['default'];
+
+	exports['default'] = UncontrolledToggleButtonGroup;
+	module.exports = exports['default'];
+
+/***/ }),
+/* 264 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	exports.__esModule = true;
+
 	var _extends3 = __webpack_require__(2);
 
 	var _extends4 = _interopRequireDefault(_extends3);
@@ -20533,7 +20849,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ }),
-/* 263 */
+/* 265 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20605,7 +20921,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ }),
-/* 264 */
+/* 266 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';

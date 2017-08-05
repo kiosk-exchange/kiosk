@@ -1,16 +1,5 @@
 import React, { Component } from 'react'
-import { FormGroup, ControlLabel, FormControl } from 'react-bootstrap'
-import getWeb3 from './utils/getWeb3'
-import { getPublicMarketContract, getDinRegistrarContract, getDemoStoreContract } from './utils/contracts'
-
-function FieldGroup({ id, type, label, placeholder, ...props }) {
-  return (
-    <FormGroup controlId={id}>
-      <ControlLabel>{label}</ControlLabel>
-      <FormControl {...props} />
-    </FormGroup>
-  );
-}
+import FieldGroup from './Components/FieldGroup'
 
 class NewProduct extends Component {
 
@@ -18,48 +7,13 @@ class NewProduct extends Component {
     super(props)
 
     this.state = {
-      web3: null,
-      publicMarket: null,
-      dinRegistrarContract: null,
-      demoStore: null,
       name: "",
       price: ""
     }
 
-    this.handleNameChange = this.handleNameChange.bind(this);
-    this.handlePriceChange = this.handlePriceChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  componentWillMount() {
-    getWeb3.then(results => {
-      this.setState({
-        web3: results.web3
-      })
-
-      this.initializeContracts()
-    })
-  }
-
-  initializeContracts() {
-    getPublicMarketContract.then(contract => {
-      this.setState({
-        publicMarket: contract.contract
-      })
-    })
-
-    getDinRegistrarContract.then(contract => {
-      this.setState({
-        dinRegistrarContract: contract.contract
-      })
-    })
-
-
-    getDemoStoreContract.then(contract => {
-      this.setState({
-        demoStore: contract.contract
-      })
-    })
+    this.handleNameChange = this.handleNameChange.bind(this)
+    this.handlePriceChange = this.handlePriceChange.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   // Update state when name label changes
@@ -74,31 +28,27 @@ class NewProduct extends Component {
 
   handleSubmit(event) {
     event.preventDefault()
-
-    const account1 = this.state.web3.eth.accounts[0]
-    const price = this.state.web3.toWei(this.state.price, 'ether')
-
-    this.state.demoStore.addProduct(
-      this.state.name,
-      price,
-      {
-        from: account1,
-        gas: 4700000
-      },
-      (error, result) =>
-    {
-      this.props.history.push('/products')
-    })
+    // let ENSProductContract = this.props.web3.eth.contract({endProductABI.abi})
+    // let ENSProduct = ENSProductContract.new(
+    //   // Params
+    //   {
+    //     from: this.props.web3.coinbase,
+    //     gas: 4700000
+    //   }, function(error, result) {
+    //     if (!error) { 
+    //       console.log(result.address) 
+    //     } else {
+    //       console.log(error)
+    //     }
+    //   }
+    // )
   }
 
   render() {
     return (
       <div>
-
         <div className="new-product-form">
-
           <h1>Add Product</h1>
-
           <form onSubmit={this.handleSubmit}>
             <FieldGroup
               id="formControlsName"
@@ -118,9 +68,7 @@ class NewProduct extends Component {
               Add Product
             </button>
           </form>
-
         </div>
-
       </div>
     );
   }

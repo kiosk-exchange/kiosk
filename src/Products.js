@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Table } from 'react-bootstrap'
 
-import getWeb3 from './utils/getWeb3'
 import { getDinRegistrarContract, getPublicMarketContract, getProductInfoContract, getPriceResolverContract } from './utils/contracts'
 import productInfoABI from '../build/contracts/ProductInfo.json'
 import priceResolverABI from '../build/contracts/PriceResolver.json'
@@ -105,7 +104,7 @@ class Products extends Component {
           <div className="container-products-header">
             <h1 className="products-header">Products</h1>
             <button className="add-product-button" onClick={this.handleAddProduct}>
-            Add Product
+              Add Product
             </button>
           </div>
 
