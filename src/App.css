@@ -102,6 +102,18 @@ td a {
   padding: 20px 50px;
 }
 
+.market {
+  padding: 20px 50px;
+}
+
+.market-header {
+  padding-bottom: 20px;
+}
+
+.market-product-table {
+  padding-top: 50px;
+}
+
 .orders-table, 
 .products-table {
   padding-top: 40px;
