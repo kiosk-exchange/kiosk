@@ -19,12 +19,10 @@ class App extends Component {
 
         <div className="App">
           <Switch>
-            <Route exact path='/' 
-              render={
-                // Pass props in render function
-                // https://github.com/ReactTraining/react-router/issues/4105#issuecomment-291834881
-                () => <Market name="ENS"/>
-              }
+            <Route exact path='/' render={(props) => (
+                // https://github.com/ReactTraining/react-router/issues/4627#issuecomment-284133957
+                <Market {...props} name="ENS" addProduct="Add ENS Domain"/>
+              )}
             />
             <Route path='/orders' component={Orders}/>
             <Route exact path='/products' component={Products}/>

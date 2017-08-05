@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import getWeb3 from './utils/getWeb3'
+import MockProducts from './utils/MockProducts.js'
 
 import ProductTable from './Components/ProductTable'
 
@@ -8,23 +9,16 @@ class Market extends Component {
 	constructor(props) {
 		super(props)
 
-		const products = [
-			{
-				'DIN': 1000000001,
-				'name': 'Sample',
-				'price': 0.1
-			},
-			{
-				'DIN': 1000000002,
-				'name': 'Dummy',
-				'price': 1.0
-			}
-		]
-
 		this.state = {
-			products: products
+			// TODO: This should eventually be coming from either DIN Registry (filtered by market) or the market itself
+			products: MockProducts
 		}
 
+		this.handleAddProduct = this.handleAddProduct.bind(this)
+	}
+
+	handleAddProduct(event) {
+		this.props.history.push('/products/new')
 	}
 
 	render() {
@@ -33,7 +27,7 @@ class Market extends Component {
 			  <div className="container-products-header">
           <h1 className="products-header">{this.props.name}</h1>
           <button className="add-product-button" onClick={this.handleAddProduct}>
-            Add ENS Domain
+            {this.props.addProduct}
           </button>
         </div>
         <div className="market-product-table">
