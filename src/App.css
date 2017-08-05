@@ -1,5 +1,5 @@
 button {
-  background-color: #2A9D8F;
+  background-color: #00B0FF;
   border: none;
   border-radius: 4px;
   color: white;
@@ -100,6 +100,18 @@ td a {
 .container-orders-table, 
 .container-products-table {
   padding: 20px 50px;
+}
+
+.market {
+  padding: 20px 50px;
+}
+
+.market-header {
+  padding-bottom: 20px;
+}
+
+.market-product-table {
+  padding-top: 50px;
 }
 
 .orders-table, 

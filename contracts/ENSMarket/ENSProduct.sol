@@ -2,7 +2,7 @@ import '../Product.sol';
 import '../DINRegistry.sol';
 import '../DINRegistrar.sol';
 import './ENSMarket.sol';
-import './ENS.sol';
+import './ENS/ENS.sol';
 
 pragma solidity ^0.4.11;
 
@@ -32,7 +32,9 @@ contract ENSProduct is Product {
 		DINRegistry _registry,
 		DINRegistrar _registrar, 
 		ENSMarket _market,
-		ENS _ens
+		ENS _ens,
+		uint256 price,
+		bytes32 node
 	)
 		// Initialize superclass.
 		Product(
@@ -43,12 +45,10 @@ contract ENSProduct is Product {
 		registry = _registry;
 		registrar = _registrar;
 		ens = _ens;
+		addENS(price, node);
 	}
 
-	function addENS(uint256 price, bytes32 node) only_owner {
-		// Only allow one ENS node to be added.
-		require(added == false);
-
+	function addENS(uint256 price, bytes32 node) private {
 		// Store the details of the ENS node.
 		ensNode.price = price;
 		ensNode.node = node;
@@ -62,8 +62,6 @@ contract ENSProduct is Product {
 
 		// Transfer ownership of the DIN so that the seller can withdraw proceeds.
 		registry.setOwner(DIN, owner);
-
-		added == true;
 	}
 
 	function name(uint256 DIN) constant returns (string) {
@@ -95,7 +93,7 @@ contract ENSProduct is Product {
 			return false;
 		}
 
-		return added;
+		return true;
 	}
 
 	function handleOrder(uint256 orderID, uint256 DIN, uint256 quantity, address buyer) {

@@ -1,4 +1,4 @@
-import './AbstractENS.sol';
+import './ENS/AbstractENS.sol';
 import '../PublicMarket.sol';
 import '../DINRegistry.sol';
 import '../Market.sol';

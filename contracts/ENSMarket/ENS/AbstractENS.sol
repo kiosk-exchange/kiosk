@@ -1,5 +1,3 @@
-// https://github.com/ethereum/ens/blob/master/contracts/AbstractENS.sol
-
 pragma solidity ^0.4.0;
 
 contract AbstractENS {

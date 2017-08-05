@@ -959,6 +959,12 @@ babel-preset-es2015@^6.24.0, babel-preset-es2015@^6.3.13:
     babel-plugin-transform-es2015-unicode-regex "^6.24.1"
     babel-plugin-transform-regenerator "^6.24.1"
 
+babel-preset-es2016@^6.24.1:
+  version "6.24.1"
+  resolved "https://registry.yarnpkg.com/babel-preset-es2016/-/babel-preset-es2016-6.24.1.tgz#f900bf93e2ebc0d276df9b8ab59724ebfd959f8b"
+  dependencies:
+    babel-plugin-transform-exponentiation-operator "^6.24.1"
+
 babel-preset-jest@^17.0.2:
   version "17.0.2"
   resolved "https://registry.yarnpkg.com/babel-preset-jest/-/babel-preset-jest-17.0.2.tgz#141e935debe164aaa0364c220d31ccb2176493b2"
@@ -2524,6 +2530,13 @@ etag@~1.8.0:
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/etag/-/etag-1.8.0.tgz#6f631aef336d6c46362b51764044ce216be3c051"
 
+eth-ens-namehash@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/eth-ens-namehash/-/eth-ens-namehash-2.0.0.tgz#9661517bfc138726592fa0f160b606ecd5874ef2"
+  dependencies:
+    idna-uts46 "^1.0.1"
+    js-sha3 "^0.5.7"
+
 ether-pudding@^3.0.0, ether-pudding@^3.1.2, ether-pudding@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/ether-pudding/-/ether-pudding-3.2.0.tgz#d1f9dc04e0522530d8f771a1024fe5ec17d8c50d"
@@ -3366,6 +3379,12 @@ icss-replace-symbols@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/icss-replace-symbols/-/icss-replace-symbols-1.1.0.tgz#06ea6f83679a7749e386cfe1fe812ae5db223ded"
 
+idna-uts46@^1.0.1:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/idna-uts46/-/idna-uts46-1.1.0.tgz#be098b2b7c1cabfbef87a8b80f626fac37366aea"
+  dependencies:
+    punycode "^2.1.0"
+
 ieee754@^1.1.4:
   version "1.1.8"
   resolved "https://registry.yarnpkg.com/ieee754/-/ieee754-1.1.8.tgz#be33d40ac10ef1926701f6f08a2d86fbfd1ad3e4"
@@ -3953,6 +3972,10 @@ js-sha3@0.5.5:
 js-sha3@^0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/js-sha3/-/js-sha3-0.3.1.tgz#86122802142f0828502a0d1dee1d95e253bb0243"
+
+js-sha3@^0.5.7:
+  version "0.5.7"
+  resolved "https://registry.yarnpkg.com/js-sha3/-/js-sha3-0.5.7.tgz#0d4ffd8002d5333aabaf4a23eed2f6374c9f28e7"
 
 js-tokens@^3.0.0:
   version "3.0.2"
@@ -5480,6 +5503,10 @@ punycode@1.3.2:
 punycode@^1.2.4, punycode@^1.3.2, punycode@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-1.4.1.tgz#c0d5a63b2718800ad8e1eb0fa5269c84dd41845e"
+
+punycode@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.1.0.tgz#5f863edc89b96db09074bad7947bf09056ca4e7d"
 
 q@^1.1.2:
   version "1.5.0"
