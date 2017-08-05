@@ -21,13 +21,7 @@ class Products extends Component {
   }
 
   componentWillMount() {
-    getWeb3.then(results => {
-      this.setState({
-      web3: results.web3,
-    })
-
-      this.initializeContracts()
-    })
+    this.initializeContracts()
   }
 
   initializeContracts() {

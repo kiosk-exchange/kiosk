@@ -9,10 +9,6 @@ import ensMarketABI from '../../build/contracts/ENSMarket.json'
 import ensProductABI from '../../build/contracts/ENSProduct.json'
 const contract = require('truffle-contract')
 
-let dinRegistry = new Promise(function(resolve, reject) {
-  
-}
-
 function getDINRegistry(web3) {
   return getContract(web3, registryABI)
 }

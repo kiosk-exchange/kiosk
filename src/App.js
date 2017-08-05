@@ -24,25 +24,14 @@ class App extends Component {
   }
 
   componentWillMount() {
-    console.log("1")
     getWeb3.then(results => {
-      console.log("2")
       this.setState({ web3: results.web3 }, () => {
-        console.log("3")
         this.getContracts()
       })
     })
   }
 
   getContracts() {
-    console.log("4")
-    getDINRegistry(this.state.web3, (instance) => {
-      console.log("5")
-    }) 
-
-      // console.log(this.state.web3)
-      // console.log(instance)
-    // this.setState({ DINRegistry: instance })
   }
 
   render() {
