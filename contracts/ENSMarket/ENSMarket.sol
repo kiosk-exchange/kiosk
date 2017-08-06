@@ -45,6 +45,4 @@ contract ENSMarket is PublicMarket {
 		nodes[DIN] = node;
 	}
 
-	// function buy(uint256 DIN, uint256 quantity) payable {}
-
 }

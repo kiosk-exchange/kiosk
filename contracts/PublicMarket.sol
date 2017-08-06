@@ -168,7 +168,7 @@ contract PublicMarket is Market {
         products[DIN].buyHandler.handleOrder(orderIndex, DIN, quantity, msg.sender);
 
         // Throw an error if the order is not fulfilled.
-        // require (isFulfilled(orderIndex) == true);
+        require (isFulfilled(orderIndex) == true);
 
         // Mark the order as fulfilled.
         orders[orderIndex].status = OrderStatus.Fulfilled;
