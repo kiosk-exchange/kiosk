@@ -1,7 +1,12 @@
 import React, { Component } from 'react'
 import { Table } from 'react-bootstrap'
+import TableRowButton from './TableRowButton'
 
 class ProductTable extends Component {
+
+	handleBuy(index) {
+		console.log(index)
+	}
 
 	render() {
 		return (
@@ -24,7 +29,7 @@ class ProductTable extends Component {
 									<td>{product.node}</td>
 									<td>{product.price}</td>
 									<td>
-										<button>Buy</button>
+										<TableRowButton title={"Buy Now"} index={index} handleBuy={this.props.handleBuy} />
 									</td>
 								</tr>
 							)

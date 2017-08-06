@@ -15,10 +15,12 @@ class Market extends Component {
 			web3: null,
 			DINRegistry: null,
 			DINRegistrar: null,
+			market: null,
 			products: []
 		}
 
 		this.handleAddProduct = this.handleAddProduct.bind(this)
+		this.handleBuy = this.handleBuy.bind(this)
 	}
 
 	componentWillMount() {
@@ -36,6 +38,22 @@ class Market extends Component {
 		this.props.history.push('/products/new')
 	}
 
+	handleBuy(index) {
+		const product = this.state.products[index]
+		// console.log(product)
+
+		console.log(this.state.market.totalPrice(product.DIN, 1).toNumber())
+		console.log(this.state.web3.eth.coinbase)
+
+		this.state.market.buy(10000001, { from: this.state.web3.eth.coinbase, value: product.price, gas: 4700000 }, (error, result) => {
+			if (!error) {
+				console.log(result)
+			} else {
+				console.log(error)
+			}
+		})
+	}
+
 	getProducts(web3) {
 		getDINRegistrar(web3).then((registrar) => {
 			this.setState({ DINRegistrar: registrar })
@@ -45,8 +63,9 @@ class Market extends Component {
 					product.market = market
 
 					const publicMarket = this.state.web3.eth.contract(PublicMarketJSON.abi).at(market)
+					this.setState({ market: publicMarket })
 					const price = publicMarket.totalPrice(product.DIN, 1).toNumber()
-					product.price = web3.fromWei(price, 'ether')
+					product.price = price
 
 					const ensMarket = this.state.web3.eth.contract(ENSMarketJSON.abi).at(market)
 					const node = ensMarket.ENSNode(product.DIN)
@@ -69,7 +88,7 @@ class Market extends Component {
           </button>
         </div>
         <div className="market-product-table">
-					<ProductTable products={this.state.products}/>
+					<ProductTable products={this.state.products} handleBuy={this.handleBuy}/>
 				</div>
 			</div>
 		)
