@@ -7,6 +7,7 @@ import MockProducts from './utils/MockProducts.js'
 import ProductTable from './Components/ProductTable'
 
 import PublicMarketJSON from './../build/contracts/PublicMarket.json'
+import ENSMarketJSON from './../build/contracts/ENSMarket.json'
 
 class Market extends Component {
 
@@ -47,9 +48,12 @@ class Market extends Component {
 					product.market = market
 
 					const publicMarket = this.state.web3.eth.contract(PublicMarketJSON.abi).at(market)
-					console.log(publicMarket)
 					const price = publicMarket.totalPrice(product.DIN, 1).toNumber()
 					product.price = web3.fromWei(price, 'ether')
+
+					const ensMarket = this.state.web3.eth.contract(ENSMarketJSON.abi).at(market)
+					const node = ensMarket.ENSNode(product.DIN)
+					product.node = node
 
 					return product
 				})
