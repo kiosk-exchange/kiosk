@@ -59,14 +59,8 @@ contract('ENSMarket', function(accounts) {
 		const quantity = 1
 		const price = web3.toWei(2, 'ether')
 		var ens
-
-		return ENSProduct.deployed().then((instance) => {
-			// 1) Add the ENS node information and price to the ENSProduct contract
-			return instance.addENS(price, 0)
-		}).then(() => {
-			// 2) Transfer ownership of the ENS node to the ENSProduct contract
-			return ENS.deployed()
-		}).then((instance) => {
+			// Transfer ownership of the ENS node to the ENSProduct contract
+		ENS.deployed().then((instance) => {
 			ens = instance
 			return ens.setOwner(0, ENSProduct.address)
 		}).then(() => {
@@ -108,14 +102,20 @@ contract('ENSMarket', function(accounts) {
 		const price = web3.toWei(2, 'ether')
 		const DIN = 10000001
 		const quantity = 1
+		var node
+		var market
 
 		return ENSMarket.deployed().then((instance) => {
 			// Buy the ENS node
-			return instance.buy(DIN, 1, { from: account2, value: price })
+			market = instance
+			return market.ENSNode(DIN)
+		}).then((ensNode) => {
+			node = ensNode
+			return ENS.at(ENS.address).owner(node)
+		}).then((owner) => {
+			return market.buy(DIN, 1, {value: price, from: account2})
 		}).then(() => {
-			return ENS.deployed()
-		}).then((instance) => {
-			return instance.owner(0)
+			return ENS.at(ENS.address).owner(node)
 		}).then((owner) => {
 			assert.equal(owner, account2, "The ENS node was not transferred to the buyer")
 		})

@@ -8,7 +8,6 @@ const FIFSRegistrar = artifacts.require('.ENSMarket/ENS/FIFSRegistrar.sol')
 const namehash = require('../node_modules/eth-ens-namehash')
 
 // https://github.com/ethereum/ens/blob/master/migrations/2_deploy_contracts.js
-
 /**
  * Calculate root node hashes given the top level domain(tld)
  *
@@ -21,51 +20,50 @@ function getRootNodeFromTLD(tld) {
   };
 }
 
-/**
- * Deploy the ENS and FIFSRegistrar
- *
- * @param {Object} deployer truffle deployer helper
- * @param {string} tld tld which the FIFS registrar takes charge of
- */
-function deployFIFSRegistrar(deployer, tld) {
-  var rootNode = getRootNodeFromTLD(tld);
-
-  // Deploy the ENS first
-  deployer.deploy(ENS)
-    .then(() => {
-      // Deploy the FIFSRegistrar and bind it with ENS
-      return deployer.deploy(FIFSRegistrar, ENS.address, rootNode.namehash);
-    })
-    .then(function() {
-      // Transfer the owner of the `rootNode` to the FIFSRegistrar
-      ENS.at(ENS.address).setSubnodeOwner('0x0', rootNode.sha3, FIFSRegistrar.address);
-    });
-}
-
-
 module.exports = function(deployer) {
 
 	const genesis = 10000000
 	const tld = 'eth'
+	const subnodeSHA3 = web3.sha3('example')
+	const subnodeNameHash = namehash('example.eth')
+	const rootNode = getRootNodeFromTLD(tld)
+	const price = web3.toWei(2, 'ether')
 
-	// Use FIFS Registrar for simplicity in testing
-	deployFIFSRegistrar(deployer, tld)
-
-	// Deploy a new DIN Registry
-	deployer.deploy(DINRegistry, genesis).then(() => {
-		// Deploy a new DIN Registrar. The registrar will register new DINs in the registry.
+  // Deploy the ENS
+	deployer.deploy(ENS).then(() => {
+		// Deploy the FIFSRegistrar and bind it with ENS
+  	return deployer.deploy(FIFSRegistrar, ENS.address, rootNode.namehash)
+  }).then(() => {
+  	// Transfer the owner of the `rootNode` to the FIFSRegistrar
+    return ENS.at(ENS.address).setSubnodeOwner('0x0', rootNode.sha3, FIFSRegistrar.address)
+  }).then(() => {
+  	// Register "example.eth" to a test account
+  	return FIFSRegistrar.at(FIFSRegistrar.address).register(subnodeSHA3, "0xff93a94c342668b281d3cd7d7a301c4c699eaac0")
+  }).then(() => {
+		// Deploy the DIN Registry
+		return deployer.deploy(DINRegistry, genesis)
+	}).then(() => {
+		// Deploy the DIN Registrar and bind it with the DIN Registry
 		return deployer.deploy(DINRegistrar, DINRegistry.address)
 	}).then(() => {
-		return DINRegistry.deployed()
-	}).then((instance) => {
 		// Set the DIN registry's registrar to the deployed registrar
-		instance.setRegistrar(DINRegistrar.address)
+		return DINRegistry.at(DINRegistry.address).setRegistrar(DINRegistrar.address)
 	}).then(() => {
-		// Deploy ENS Market, where ENS domains can be bought and sold.
+		// Deploy ENS Market, where ENS domains can be bought and sold
 		return deployer.deploy(ENSMarket, DINRegistry.address, ENS.address)
-	// }).then(() => {
-		// Deploy ENS Product, which allows sellers to list ENS domains on the market.
-		// return deployer.deploy(ENSProduct, DINRegistry.address, DINRegistrar.address, ENSMarket.address, ENS.address)
+	}).then(() => {
+		// Sell "example.eth" on ENSMarket
+		return deployer.deploy(
+			ENSProduct, 
+			DINRegistry.address, 
+			DINRegistrar.address, 
+			ENSMarket.address, 
+			ENS.address, 
+			price, 
+			subnodeNameHash
+		)
+	}).then(() => {
+		return ENS.at(ENS.address).setOwner(subnodeNameHash, ENSProduct.address)
 	})
 
 }

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Table } from 'react-bootstrap'
+import TableRowButton from './TableRowButton'
 
 class ProductTable extends Component {
 
@@ -10,7 +11,8 @@ class ProductTable extends Component {
 					<tbody>
 						<tr>
 							<th>DIN</th>
-							<th>Name</th>
+							<th>Market</th>
+							<th>Node</th>
 							<th>Price</th>
 							<th>Buy</th>
 						</tr>
@@ -19,9 +21,12 @@ class ProductTable extends Component {
 									<td>
 										<a href={"/DIN/" + product.DIN}>{product.DIN}</a>
 									</td>
-									<td>{product.name}</td>
+									<td>{product.market}</td>
+									<td>{product.node}</td>
 									<td>{product.price}</td>
-									<td>Buy</td>
+									<td>
+										<TableRowButton title={"Buy Now"} index={index} handleBuy={this.props.handleBuy} />
+									</td>
 								</tr>
 							)
 						)}

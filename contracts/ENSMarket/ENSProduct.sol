@@ -61,6 +61,7 @@ contract ENSProduct is Product {
 		ensMarket.addProduct(DIN, this, this, this);
 
 		// Transfer ownership of the DIN so that the seller can withdraw proceeds.
+		registry.setMarket(DIN, ensMarket);
 		registry.setOwner(DIN, owner);
 	}
 
@@ -103,7 +104,7 @@ contract ENSProduct is Product {
 
 		// Give ownership of the node to the buyer.
 		// Make sure to set the owner of the node to this contract first.
-		ens.setOwner(0, buyer);
+		ens.setOwner(node(DIN), buyer);
 	}
 
 }
