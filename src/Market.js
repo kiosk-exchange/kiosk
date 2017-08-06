@@ -40,12 +40,11 @@ class Market extends Component {
 
 	handleBuy(index) {
 		const product = this.state.products[index]
-		// console.log(product)
 
 		console.log(this.state.market.totalPrice(product.DIN, 1).toNumber())
 		console.log(this.state.web3.eth.coinbase)
 
-		this.state.market.buy(10000001, { from: this.state.web3.eth.coinbase, value: product.price, gas: 4700000 }, (error, result) => {
+		this.state.market.buy(10000001, 1, {from: this.state.web3.eth.coinbase, value: product.price, gas: 4700000}, (error, result) => {
 			if (!error) {
 				console.log(result)
 			} else {
@@ -63,13 +62,13 @@ class Market extends Component {
 					product.market = market
 
 					const publicMarket = this.state.web3.eth.contract(PublicMarketJSON.abi).at(market)
-					this.setState({ market: publicMarket })
 					const price = publicMarket.totalPrice(product.DIN, 1).toNumber()
 					product.price = price
 
 					const ensMarket = this.state.web3.eth.contract(ENSMarketJSON.abi).at(market)
 					const node = ensMarket.ENSNode(product.DIN)
 					product.node = node
+					this.setState({ market: ensMarket })
 
 					return product
 				})
