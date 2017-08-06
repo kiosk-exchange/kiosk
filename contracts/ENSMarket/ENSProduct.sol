@@ -61,6 +61,7 @@ contract ENSProduct is Product {
 		ensMarket.addProduct(DIN, this, this, this);
 
 		// Transfer ownership of the DIN so that the seller can withdraw proceeds.
+		registry.setMarket(DIN, ensMarket);
 		registry.setOwner(DIN, owner);
 	}
 

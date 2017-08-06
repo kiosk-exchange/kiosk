@@ -6,6 +6,8 @@ import getProducts from './utils/getProducts'
 import MockProducts from './utils/MockProducts.js'
 import ProductTable from './Components/ProductTable'
 
+import PublicMarketJSON from './../build/contracts/PublicMarket.json'
+
 class Market extends Component {
 
 	constructor(props) {
@@ -40,7 +42,18 @@ class Market extends Component {
 		getDINRegistrar(web3).then((registrar) => {
 			this.setState({ DINRegistrar: registrar })
 			getProducts(this.state.DINRegistry, registrar).then((products) => {
-				this.setState({ products: products })
+				var newProducts = products.map((product) => {
+					const market = this.state.DINRegistry.market(product.DIN)
+					product.market = market
+
+					const publicMarket = this.state.web3.eth.contract(PublicMarketJSON.abi).at(market)
+					console.log(publicMarket)
+					const price = publicMarket.totalPrice(product.DIN, 1).toNumber()
+					product.price = web3.fromWei(price, 'ether')
+
+					return product
+				})
+				this.setState({ products: newProducts })
 			})
 		})
 	}

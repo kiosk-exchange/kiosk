@@ -26,7 +26,7 @@ module.exports = function(deployer) {
 	const tld = 'eth'
 	const subnode = namehash('example.eth')
 	const rootNode = getRootNodeFromTLD(tld)
-	const price = web3.toWei(1, 'ether')
+	const price = web3.toWei(2, 'ether')
 
   // Deploy the ENS
 	deployer.deploy(ENS).then(() => {

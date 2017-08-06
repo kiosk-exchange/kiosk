@@ -200,10 +200,6 @@ contract PublicMarket is Market {
     */ 
 
     // Price
-    function unitPrice(uint256 DIN) constant returns (uint256) {
-        return totalPrice(DIN, 1);
-    }
-
     function totalPrice(uint256 DIN, uint256 quantity) constant returns (uint256) {
         return products[DIN].priceResolver.totalPrice(DIN, quantity, msg.sender);
     }

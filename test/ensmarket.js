@@ -59,14 +59,8 @@ contract('ENSMarket', function(accounts) {
 		const quantity = 1
 		const price = web3.toWei(2, 'ether')
 		var ens
-
-		return ENSProduct.deployed().then((instance) => {
-			// 1) Add the ENS node information and price to the ENSProduct contract
-			return instance.addENS(price, 0)
-		}).then(() => {
-			// 2) Transfer ownership of the ENS node to the ENSProduct contract
-			return ENS.deployed()
-		}).then((instance) => {
+			// Transfer ownership of the ENS node to the ENSProduct contract
+		ENS.deployed().then((instance) => {
 			ens = instance
 			return ens.setOwner(0, ENSProduct.address)
 		}).then(() => {
