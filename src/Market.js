@@ -1,4 +1,8 @@
 import React, { Component } from 'react'
+import getWeb3 from './utils/getWeb3'
+import { getDINRegistry, getDINRegistrar } from './utils/contracts'
+import getProducts from './utils/getProducts'
+
 import MockProducts from './utils/MockProducts.js'
 import ProductTable from './Components/ProductTable'
 
@@ -8,15 +12,37 @@ class Market extends Component {
 		super(props)
 
 		this.state = {
-			// TODO: This should eventually be coming from either DIN Registry (filtered by market) or the market itself
-			products: MockProducts
+			web3: null,
+			DINRegistry: null,
+			DINRegistrar: null,
+			products: []
 		}
 
 		this.handleAddProduct = this.handleAddProduct.bind(this)
 	}
 
+	componentWillMount() {
+		getWeb3.then((results) => {
+			this.setState({ web3: results.web3 })
+			getDINRegistry(results.web3).then((registry) => {
+					this.setState({ DINRegistry: registry }, () => {
+						this.getProducts(results.web3)
+				})
+			})
+		})
+	}
+
 	handleAddProduct(event) {
 		this.props.history.push('/products/new')
+	}
+
+	getProducts(web3) {
+		getDINRegistrar(web3).then((registrar) => {
+			this.setState({ DINRegistrar: registrar })
+			getProducts(this.state.DINRegistry, registrar).then((products) => {
+				this.setState({ products: products })
+			})
+		})
 	}
 
 	render() {

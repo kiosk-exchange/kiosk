@@ -21,7 +21,9 @@ class ProductTable extends Component {
 									</td>
 									<td>{product.name}</td>
 									<td>{product.price}</td>
-									<td>Buy</td>
+									<td>
+										<button>Buy</button>
+									</td>
 								</tr>
 							)
 						)}
