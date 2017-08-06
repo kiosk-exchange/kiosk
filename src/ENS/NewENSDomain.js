@@ -62,15 +62,16 @@ class NewENSDomain extends Component {
     // console.log(namehash(name))
 
     let ENSProductContract = this.state.web3.eth.contract(ENSProductJSON.abi)
-    let ENSProduct = ENSProductContract.new(
+    ENSProductContract.new(
     	registry.address,
     	registrar.address,
     	ENSMarket.address,
     	ENS.address,
-    	price,
+    	this.state.web3.toWei(price),
     	namehash(name),
       {
         from: this.state.web3.eth.coinbase,
+        data: ENSProductJSON.unlinked_binary,
         gas: 4700000
       }, function(error, result) {
         if (!error) { 
