@@ -63,10 +63,7 @@ module.exports = function(deployer) {
 			subnodeNameHash
 		)
 	}).then(() => {
-		return ENS.at(ENS.address).owner(subnodeNameHash)
-	}).then((owner) => {
-		console.log(owner)
-		console.log(FIFSRegistrar.address)
+		return ENS.at(ENS.address).setOwner(subnodeNameHash, ENSProduct.address)
 	})
 
 }
