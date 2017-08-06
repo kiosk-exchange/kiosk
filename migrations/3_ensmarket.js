@@ -24,7 +24,8 @@ module.exports = function(deployer) {
 
 	const genesis = 10000000
 	const tld = 'eth'
-	const subnode = namehash('example.eth')
+	const subnodeSHA3 = web3.sha3('example')
+	const subnodeNameHash = namehash('example.eth')
 	const rootNode = getRootNodeFromTLD(tld)
 	const price = web3.toWei(2, 'ether')
 
@@ -37,7 +38,7 @@ module.exports = function(deployer) {
     return ENS.at(ENS.address).setSubnodeOwner('0x0', rootNode.sha3, FIFSRegistrar.address)
   }).then(() => {
   	// Register "example.eth" to a test account
-  	return FIFSRegistrar.at(FIFSRegistrar.address).register(subnode, "0x25b7750d66350ceb0c4cdc1096e35fc27b6d41cc")
+  	return FIFSRegistrar.at(FIFSRegistrar.address).register(subnodeSHA3, "0xff93a94c342668b281d3cd7d7a301c4c699eaac0")
   }).then(() => {
 		// Deploy the DIN Registry
 		return deployer.deploy(DINRegistry, genesis)
@@ -45,10 +46,8 @@ module.exports = function(deployer) {
 		// Deploy the DIN Registrar and bind it with the DIN Registry
 		return deployer.deploy(DINRegistrar, DINRegistry.address)
 	}).then(() => {
-		return DINRegistry.deployed()
-	}).then((registry) => {
 		// Set the DIN registry's registrar to the deployed registrar
-		registry.setRegistrar(DINRegistrar.address)
+		return DINRegistry.at(DINRegistry.address).setRegistrar(DINRegistrar.address)
 	}).then(() => {
 		// Deploy ENS Market, where ENS domains can be bought and sold
 		return deployer.deploy(ENSMarket, DINRegistry.address, ENS.address)
@@ -61,8 +60,13 @@ module.exports = function(deployer) {
 			ENSMarket.address, 
 			ENS.address, 
 			price, 
-			subnode
+			subnodeNameHash
 		)
+	}).then(() => {
+		return ENS.at(ENS.address).owner(subnodeNameHash)
+	}).then((owner) => {
+		console.log(owner)
+		console.log(FIFSRegistrar.address)
 	})
 
 }

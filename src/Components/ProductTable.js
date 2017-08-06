@@ -4,10 +4,6 @@ import TableRowButton from './TableRowButton'
 
 class ProductTable extends Component {
 
-	handleBuy(index) {
-		console.log(index)
-	}
-
 	render() {
 		return (
 			<div className="product-table">

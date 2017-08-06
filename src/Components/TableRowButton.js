@@ -8,7 +8,7 @@ class TableRowButton extends Component {
 
 	render() {
 		return (
-			<button onClick={this.handleClick.bind(this)}>Buy Now</button>
+			<button onClick={this.handleClick.bind(this)}>{this.props.title}</button>
 		)
 	}
 

@@ -126,6 +126,7 @@ contract PublicMarket is Market {
     *   =========================
     */
 
+
     /**
      * Buy a quantity of a product.
      * @param DIN The DIN of the product to buy.
@@ -133,9 +134,9 @@ contract PublicMarket is Market {
      */   
     function buy(uint256 DIN, uint256 quantity) 
         payable
-        only_valid_product(DIN)
-        only_correct_price(DIN, quantity) 
-        only_in_stock(DIN, quantity) 
+        // only_valid_product(DIN)
+        // only_correct_price(DIN, quantity) 
+        // only_in_stock(DIN, quantity) 
     {
     	address seller = dinRegistry.owner(DIN);
 
@@ -164,7 +165,7 @@ contract PublicMarket is Market {
         pendingWithdrawals[orderIndex] += msg.value;
 
         // Call the product's buy handler to fulfill the order.
-        products[DIN].buyHandler.handleOrder(orderIndex, DIN, quantity, msg.sender);
+        // products[DIN].buyHandler.handleOrder(orderIndex, DIN, quantity, msg.sender);
 
         // Throw an error if the order is not fulfilled.
         require (isFulfilled(orderIndex) == true);

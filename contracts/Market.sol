@@ -1,7 +1,7 @@
 pragma solidity ^0.4.11;
 
 /**
-*  This is the interface for a market (beta).
+*  This is the interface for a market.
 */
 contract Market {
 	function buy(uint256 DIN, uint256 quantity) payable;
