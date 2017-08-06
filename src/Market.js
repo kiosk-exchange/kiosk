@@ -2,10 +2,7 @@ import React, { Component } from 'react'
 import getWeb3 from './utils/getWeb3'
 import { getDINRegistry, getDINRegistrar } from './utils/contracts'
 import getProducts from './utils/getProducts'
-
-import MockProducts from './utils/MockProducts.js'
 import ProductTable from './Components/ProductTable'
-
 import PublicMarketJSON from './../build/contracts/PublicMarket.json'
 import ENSMarketJSON from './../build/contracts/ENSMarket.json'
 

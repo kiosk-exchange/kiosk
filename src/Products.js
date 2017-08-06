@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Table } from 'react-bootstrap'
 
-import { getDinRegistrarContract, getPublicMarketContract, getProductInfoContract, getPriceResolverContract } from './utils/contracts'
+import { getDinRegistrarContract, getPublicMarketContract } from './utils/contracts'
 import productInfoABI from '../build/contracts/ProductInfo.json'
 import priceResolverABI from '../build/contracts/PriceResolver.json'
 

@@ -1,5 +1,3 @@
-
-
 const getProducts = (DINRegistry, DINRegistrar) => new Promise((resolve, reject) => {
 
   var products = []
@@ -23,12 +21,5 @@ const getProducts = (DINRegistry, DINRegistrar) => new Promise((resolve, reject)
   })
 
 })
-
-function product(DIN, DINRegistry) {
-	DINRegistry.market(DIN).then((market) => {
-
-	})
-}
-
 
 export default getProducts

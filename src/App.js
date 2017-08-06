@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Switch, Route } from 'react-router-dom'
 
 import NavigationBar from './Components/NavigationBar'
-import Home from './Home'
+// import Home from './Home'
 import Market from './Market'
 import Products from './Products'
 import NewProduct from './NewProduct'
