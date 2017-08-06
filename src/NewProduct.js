@@ -27,21 +27,7 @@ class NewProduct extends Component {
   }
 
   handleSubmit(event) {
-    event.preventDefault()
-    // let ENSProductContract = this.props.web3.eth.contract({endProductABI.abi})
-    // let ENSProduct = ENSProductContract.new(
-    //   // Params
-    //   {
-    //     from: this.props.web3.coinbase,
-    //     gas: 4700000
-    //   }, function(error, result) {
-    //     if (!error) { 
-    //       console.log(result.address) 
-    //     } else {
-    //       console.log(error)
-    //     }
-    //   }
-    // )
+    this.props.handleSubmit(event, this.state.name, this.state.price)
   }
 
   render() {

@@ -16,9 +16,9 @@ const getProducts = (DINRegistry, DINRegistrar) => new Promise((resolve, reject)
     }
 
     resolve(products)
-
     newRegistrationAll = null
   })
+
 
 })
 
