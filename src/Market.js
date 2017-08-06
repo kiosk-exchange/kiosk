@@ -35,7 +35,7 @@ class Market extends Component {
 	}
 
 	handleAddProduct(event) {
-		this.props.history.push('/products/new')
+		this.props.history.push('/products/new/ens')
 	}
 
 	handleBuy(index) {
