@@ -61,7 +61,7 @@ module.exports = function(deployer) {
 			ENS.address
 		)
 	}).then(() => {
-
+		return ENSPublicProduct.at(ENSPublicProduct.address).addENSDomain(subnodeNameHash, price)
 	})
 
 }

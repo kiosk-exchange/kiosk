@@ -20,6 +20,6 @@ const getDINRegistrar = (web3) => { return getContract(web3, DINRegistrarJSON) }
 const getPublicMarket = (web3) => { return getContract(web3, PublicMarketJSON) }
 const getENS = (web3) => { return getContract(web3, ENSJSON) }
 const getENSMarket = (web3) => { return getContract(web3, ENSMarketJSON) }
-const getENSProduct = (web3) => { return getContract(web3, ENSPublicProductJSON) }
+const getENSPublicProduct = (web3) => { return getContract(web3, ENSPublicProductJSON) }
 
-export { getDINRegistry, getDINRegistrar, getPublicMarket, getENS, getENSMarket, getENSProduct }
+export { getDINRegistry, getDINRegistrar, getPublicMarket, getENS, getENSMarket, getENSPublicProduct }
