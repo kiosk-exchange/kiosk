@@ -1,4 +1,4 @@
-import './DINRegistrar.sol';
+import './DINRegistry.sol';
 import './PublicMarket.sol';
 import './PriceResolver.sol';
 import './InventoryResolver.sol';
@@ -12,11 +12,13 @@ pragma solidity ^0.4.11;
 contract Product is PriceResolver, InventoryResolver, BuyHandler {
 
 	address public owner;
-	PublicMarket public market;
 
-	modifier only_owner() {
-    require (owner == msg.sender);
-    _;
+	PublicMarket public market;
+	DINRegistry public registry;
+
+  modifier only_owner(uint256 DIN) {
+      require (registry.owner(DIN) == msg.sender);
+      _;
   }
 
   modifier only_market() {
@@ -25,23 +27,16 @@ contract Product is PriceResolver, InventoryResolver, BuyHandler {
   }
 
   // Constructor
-  function Product(PublicMarket _market) {
+  function Product(PublicMarket _market, DINRegistry _registry) {
   	owner = msg.sender;
   	market = _market;
+  	registry = _registry;
   }
 
 	function price(uint256 DIN, address buyer) constant returns (uint256);
 
 	function totalPrice(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256) {
 		return price(DIN, buyer) * quantity;
-	}
-
-	function setOwner(address _owner) only_owner {
-		owner = _owner;
-	}
-
-	function setMarket(PublicMarket _market) only_owner {
-		market = _market;
 	}
 
 }

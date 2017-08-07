@@ -4,7 +4,6 @@ import { Switch, Route } from 'react-router-dom'
 import NavigationBar from './Components/NavigationBar'
 // import Home from './Home'
 import Market from './Market'
-import Products from './Products'
 import NewENSDomain from './ENS/NewENSDomain'
 import NewProduct from './NewProduct'
 import Orders from './Orders'
@@ -27,7 +26,6 @@ class App extends Component {
               )}
             />
             <Route path='/orders' component={Orders}/>
-            <Route exact path='/products' component={Products}/>
             <Route exact path='/products/new' render={(props) => ( <NewProduct {...props} /> )} />
             <Route exact path='/products/new/ens' render={(props) => ( <NewENSDomain {...props} /> )} />
             <Route path='/DIN/:din' component={View}/>
