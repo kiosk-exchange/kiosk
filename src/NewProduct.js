@@ -41,7 +41,7 @@ class NewProduct extends Component {
               <FormControl type="text" placeholder={this.props.namePlaceholder} value={this.state.name} onChange={this.handleNameChange} />
             </FormGroup>
             <FormGroup>
-              <label>Price (in ether)</label>
+              <label>Price (in Ether)</label>
               <FormControl type="text" value={this.state.price} onChange={this.handlePriceChange} />
             </FormGroup>
             <button className="btn-submit-register" type="submit">

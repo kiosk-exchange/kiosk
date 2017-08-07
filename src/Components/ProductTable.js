@@ -14,18 +14,16 @@ class ProductTable extends Component {
 							<th>Name</th>
 							<th>Node</th>
 							<th>Price (in Ether)</th>
-							<th>Buy</th>
+							<th>Status</th>
 						</tr>
 						{this.props.products.map((product, index) => (
 								<tr key={index}>
-									<td>
-										<a href={"/DIN/" + product.DIN}>{product.DIN}</a>
-									</td>
+									<td>{product.DIN}</td>
 									<td>{product.name}</td>
 									<td>{product.node}</td>
-									<td>{product.price}</td>
+									<td>{product.formattedPrice}</td>
 									<td>
-										<TableRowButton title={"Buy Now"} index={index} handleBuy={this.props.handleBuy} />
+										<TableRowButton available={product.available} index={index} handleBuy={this.props.handleBuy} />
 									</td>
 								</tr>
 							)
