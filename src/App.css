@@ -11,6 +11,18 @@ button {
   cursor: pointer;
 }
 
+.table-row-button-true {
+  background-color: #5cb85c;
+  padding: 10px 0px;
+  width: 150px;
+}
+
+.table-row-button-false {
+  background-color: gray;
+  padding: 10px 0px;
+  width: 150px;
+}
+
 td {
   max-width: 50px;
   white-space: nowrap;

@@ -31,7 +31,7 @@ class Market extends Component {
 						// Get the ENSMarket, which is used to filter DINs in the DIN Registry
 						getENSMarket(this.state.web3).then((market) => {
 							this.setState({ market: market }, () => {
-								this.getProducts(this.state.DINRegistry, this.state.market.address)
+								this.getProducts()
 							})
 						})
 					})
@@ -44,14 +44,15 @@ class Market extends Component {
 		this.props.history.push('/products/new/ens')
 	}
 
-	handleBuy(index) {
+	handleBuy(index) {		
 		const product = this.state.products[index]
+		const buyer = this.state.web3.eth.accounts[1]
 
 		this.state.market.buy(
 			product.DIN, 
 			1, // Quantity
 			{
-				from: this.state.web3.eth.coinbase, 
+				from: buyer, 
 				value: product.price, 
 				gas: 4700000
 			}, 
@@ -64,8 +65,8 @@ class Market extends Component {
 		})
 	}
 
-	getProducts(registry, marketAddress) {
-		getProducts(registry, marketAddress).then((products) => {
+	getProducts() {
+		getProducts(this.state.DINRegistry, this.state.market.address).then((products) => {
 
 			// Get product details (name, node, price) from the market
 			var fullProducts = products.map((product) => {
@@ -75,8 +76,9 @@ class Market extends Component {
 				const publicMarket = this.state.web3.eth.contract(PublicMarketJSON.abi).at(market)
 
 				// Get the price from the perspective of the null account. Otherwise, price will show up as zero if the buyer is also the seller.
-				const price = this.state.web3.fromWei(publicMarket.totalPrice(product.DIN, 1, {from: '0x0000000000000000000000000000000000000000'}).toNumber(), 'ether')
+				const price = publicMarket.totalPrice(product.DIN, 1, {from: '0x0000000000000000000000000000000000000000'}).toNumber()
 				product.price = price
+				product.formattedPrice = this.state.web3.fromWei(price, 'ether')
 
 				const ensMarket = this.state.web3.eth.contract(ENSMarketJSON.abi).at(market)
 				this.setState({ market: ensMarket })
@@ -89,9 +91,9 @@ class Market extends Component {
 
 				// If the product is available for sale, show a "Buy Now" button
 				if (this.state.market.isAvailableForSale(product.DIN) === true) {
-					product.status = "Buy Now"
+					product.available = true
 				} else {
-					product.status = "Pending"
+					product.available = false
 				}
 
 				return product
