@@ -1,64 +1,68 @@
-var DINRegistry = artifacts.require('./DINRegistry.sol')
-var DINRegistrar = artifacts.require('./DINRegistrar.sol')
-var PublicMarket = artifacts.require('./PublicMarket.sol')
-var DemoToken = artifacts.require('./DemoToken.sol')
-var DemoStore = artifacts.require('./DemoStore.sol')
+const web3 = new (require('web3'))()
+const DINRegistry = artifacts.require('./DINRegistry.sol')
+const DINRegistrar = artifacts.require('./DINRegistrar.sol')
+const ENSMarket = artifacts.require('./ENSMarket/ENSMarket.sol')
+const ENSPublicProduct = artifacts.require('./ENSMarket/ENSPublicProduct.sol')
+const ENS = artifacts.require('.ENSMarket/ENS/ENS.sol')
+const FIFSRegistrar = artifacts.require('.ENSMarket/ENS/FIFSRegistrar.sol')
+const namehash = require('../node_modules/eth-ens-namehash')
+
+// https://github.com/ethereum/ens/blob/master/migrations/2_deploy_contracts.js
+/**
+ * Calculate root node hashes given the top level domain(tld)
+ *
+ * @param {string} tld plain text tld, for example: 'eth'
+ */
+function getRootNodeFromTLD(tld) {
+  return {
+    namehash: namehash(tld),
+    sha3: web3.sha3(tld)
+  };
+}
 
 module.exports = function(deployer) {
 
 	const genesis = 10000000
-	const DIN = 10000001
-	var registry
-	var registrar
-	var market
-	var store
+	const tld = 'eth'
+	const subnodeName = 'example.eth'
+	const subnodeSHA3 = web3.sha3('example')
+	const subnodeNameHash = namehash(subnodeName)
+	const rootNode = getRootNodeFromTLD(tld)
+	const price = web3.toWei(2, 'ether')
 
-	// Deploy DINRegistry
-	// deployer.deploy(DINRegistry, genesis).then(() => {
-	// 	// Deploy DINRegistrar
-	// 	return deployer.deploy(DINRegistrar, DINRegistry.address)
-	// }).then(() => {
-	// 	// Deploy PublicMarket
-	// 	return deployer.deploy(PublicMarket, DINRegistry.address)
-	// }).then(() => {
-	// 	return DINRegistry.deployed()
-	// }).then((instance) => {
-	// 	// Set the registrar on the DINRegistry
-	// 	registry = instance
-	// 	return registry.setRegistrar(DINRegistrar.address)
-	// }).then(() => {
-	// 	return DINRegistrar.deployed()
-	// }).then((instance) => {
-	// 	registrar = instance
-	// 	return registrar.registerNewDIN(); // Register 10000001
-	// }).then(() => {
-	// 	// Set the PublicMarket as the market for the first registered DIN
-	// 	return registry.setMarket(DIN, PublicMarket.address)
-
-	// }).then(() => {
-	// 	return deployer.deploy(DemoToken, DIN, PublicMarket.address) // Deploy token "product"
-	// }).then(() => {
-	// 	return PublicMarket.deployed()
-	// }).then((instance) => {
-	// 	market = instance;
-	// 	var token = DemoToken.address
-	// 	// Add the token as a product on the PublicMarket. Its product info, inventory, price, and buy handler are all in the token contract.
-	// 	market.addProduct(DIN, token, token, token, token)
-	// }).then(() => {
-	// 	return deployer.deploy(DemoStore, DINRegistrar.address, PublicMarket.address)
-	// }).then(() => {
-	// 	return DemoStore.deployed()
-	// }).then((instance) => {
-	// 	store = instance;
-
-	// 	const names = ["iPhone", "iPad", "Apple Watch"]
-	// 	const prices = [500000000000000000, 1000000000000000000, 2000000000000000000]
-
-	// 	return store.addProduct(names[0], prices[0]).then(() => {
-	// 		return store.addProduct(names[1], prices[1]).then(() => {
-	// 			return store.addProduct(names[2], prices[2])
-	// 		})
-	// 	})
-	// })
+  // Deploy the ENS
+	deployer.deploy(ENS).then(() => {
+		// Deploy the FIFSRegistrar and bind it with ENS
+  	return deployer.deploy(FIFSRegistrar, ENS.address, rootNode.namehash)
+  }).then(() => {
+  	// Transfer the owner of the `rootNode` to the FIFSRegistrar
+    return ENS.at(ENS.address).setSubnodeOwner('0x0', rootNode.sha3, FIFSRegistrar.address)
+  }).then(() => {
+  	// Register "example.eth" to a test account
+  	return FIFSRegistrar.at(FIFSRegistrar.address).register(subnodeSHA3, "0xff93a94c342668b281d3cd7d7a301c4c699eaac0")
+  }).then(() => {
+		// Deploy the DIN Registry
+		return deployer.deploy(DINRegistry, genesis)
+	}).then(() => {
+		// Deploy the DIN Registrar and bind it with the DIN Registry
+		return deployer.deploy(DINRegistrar, DINRegistry.address)
+	}).then(() => {
+		// Set the DIN registry's registrar to the deployed registrar
+		return DINRegistry.at(DINRegistry.address).setRegistrar(DINRegistrar.address)
+	}).then(() => {
+		// Deploy ENS Market, where ENS domains can be bought and sold
+		return deployer.deploy(ENSMarket, DINRegistry.address, ENS.address)
+	}).then(() => {
+		// Sell "example.eth" on ENSMarket
+		return deployer.deploy(
+			ENSPublicProduct, 
+			DINRegistry.address, 
+			DINRegistrar.address, 
+			ENSMarket.address, 
+			ENS.address
+		)
+	}).then(() => {
+		return ENSPublicProduct.at(ENSPublicProduct.address).addENSDomain(subnodeName, subnodeNameHash, price)
+	})
 
 }

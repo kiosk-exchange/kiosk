@@ -11,9 +11,9 @@ class ProductTable extends Component {
 					<tbody>
 						<tr>
 							<th>DIN</th>
-							<th>Market</th>
+							<th>Name</th>
 							<th>Node</th>
-							<th>Price</th>
+							<th>Price (in Ether)</th>
 							<th>Buy</th>
 						</tr>
 						{this.props.products.map((product, index) => (
@@ -21,7 +21,7 @@ class ProductTable extends Component {
 									<td>
 										<a href={"/DIN/" + product.DIN}>{product.DIN}</a>
 									</td>
-									<td>{product.market}</td>
+									<td>{product.name}</td>
 									<td>{product.node}</td>
 									<td>{product.price}</td>
 									<td>

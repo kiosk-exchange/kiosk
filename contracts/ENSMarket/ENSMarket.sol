@@ -10,8 +10,13 @@ contract ENSMarket is PublicMarket {
 	// ENS Registry
 	AbstractENS public ens;
 
+	struct ENSDomain {
+		string name;
+		bytes32 node;
+	}
+
 	// DIN => ENS node
-	mapping(uint256 => bytes32) public nodes;
+	mapping(uint256 => ENSDomain) public domains;
 
 	// Constructor
 	function ENSMarket(DINRegistry dinRegistryAddr, AbstractENS ensAddr)
@@ -22,7 +27,8 @@ contract ENSMarket is PublicMarket {
 
 	function isFulfilled(uint256 orderID) constant returns (bool) {
 		// Get the ENS node from the order
-		bytes32 node = ENSNode(orders[orderID].DIN);
+		uint256 DIN = orders[orderID].DIN;
+		bytes32 node = ENSNode(DIN);
 
 		// Check that buyer is the owner
 		return (ens.owner(node) == orders[orderID].buyer);
@@ -37,12 +43,20 @@ contract ENSMarket is PublicMarket {
 		return PublicMarket.isAvailableForSale(DIN, quantity);
 	}
 
-	function ENSNode(uint256 DIN) constant returns (bytes32) {
-		return nodes[DIN];
+	function name(uint256 DIN) constant returns (string) {
+		return domains[DIN].name;
 	}
 
-	function setENSNode(uint256 DIN, bytes32 node) only_owner(DIN) {
-		nodes[DIN] = node;
+	function setName(uint256 DIN, string name) only_owner(DIN) {
+		domains[DIN].name = name;
+	}
+
+	function ENSNode(uint256 DIN) constant returns (bytes32) {
+		return domains[DIN].node;
+	}
+
+	function setNode(uint256 DIN, bytes32 node) only_owner(DIN) {
+		domains[DIN].node = node;
 	}
 
 }
