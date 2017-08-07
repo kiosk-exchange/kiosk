@@ -13,7 +13,7 @@ class ProductTable extends Component {
 							<th>DIN</th>
 							<th>Name</th>
 							<th>Node</th>
-							<th>Price</th>
+							<th>Price (in Ether)</th>
 							<th>Buy</th>
 						</tr>
 						{this.props.products.map((product, index) => (

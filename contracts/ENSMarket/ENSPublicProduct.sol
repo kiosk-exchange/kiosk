@@ -83,6 +83,10 @@ contract ENSPublicProduct is Product {
 
 	// Quantity is irrelevant here. We're only ever selling one ENS domain at a time
 	function totalPrice(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256) {
+		// Let the buyer buy back his domain (remove it from the market) for free.
+		if (buyer == registry.owner(DIN)) {
+			return 0;
+		}
 		return nodes[DIN].price;
 	}
 
@@ -98,6 +102,8 @@ contract ENSPublicProduct is Product {
 		// Check that correct proceeds from the order are ready for withdrawal.
 		require(market.availableForWithdrawal(orderID) == nodes[DIN].price);
 		require(market.DINForOrder(orderID) == DIN);
+		// The buyer is only getting a single domain.
+		require(quantity == 1);
 
 		// Give ownership of the node to the buyer.
 		// Make sure to set the owner of the node to this contract first.

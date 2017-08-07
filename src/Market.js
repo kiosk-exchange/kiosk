@@ -62,7 +62,8 @@ class Market extends Component {
 					product.market = market
 
 					const publicMarket = this.state.web3.eth.contract(PublicMarketJSON.abi).at(market)
-					const price = publicMarket.totalPrice(product.DIN, 1).toNumber()
+					// Get the price from the perspective of the null account. Otherwise, price will show up as zero for the buyer.
+					const price = this.state.web3.fromWei(publicMarket.totalPrice(product.DIN, 1, {from: '0x0000000000000000000000000000000000000000'}).toNumber(), 'ether')
 					product.price = price
 
 					const ensMarket = this.state.web3.eth.contract(ENSMarketJSON.abi).at(market)
