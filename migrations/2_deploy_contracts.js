@@ -53,7 +53,7 @@ module.exports = function(deployer) {
 		// Deploy ENS Market, where ENS domains can be bought and sold
 		return deployer.deploy(ENSMarket, DINRegistry.address, ENS.address)
 	}).then(() => {
-		// Sell "example.eth" on ENSMarket
+		// List "example.eth" on ENSMarket
 		return deployer.deploy(
 			ENSPublicProduct, 
 			DINRegistry.address, 
@@ -63,6 +63,9 @@ module.exports = function(deployer) {
 		)
 	}).then(() => {
 		return ENSPublicProduct.at(ENSPublicProduct.address).addENSDomain(subnodeName, subnodeNameHash, price)
+	}).then(() => {
+		// Transfer ownership of "example.eth" to the ENSPublicProduct
+		return ENS.at(ENS.address).setOwner(subnodeNameHash, ENSPublicProduct.address)
 	})
 
 }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import getWeb3 from './utils/getWeb3'
-import { getDINRegistry, getDINRegistrar } from './utils/contracts'
+import { getDINRegistry, getENSMarket } from './utils/contracts'
 import getProducts from './utils/getProducts'
 import ProductTable from './Components/ProductTable'
 import PublicMarketJSON from './../build/contracts/PublicMarket.json'
@@ -14,7 +14,6 @@ class Market extends Component {
 		this.state = {
 			web3: null,
 			DINRegistry: null,
-			DINRegistrar: null,
 			market: null,
 			products: []
 		}
@@ -25,10 +24,17 @@ class Market extends Component {
 
 	componentWillMount() {
 		getWeb3.then((results) => {
-			this.setState({ web3: results.web3 })
-			getDINRegistry(results.web3).then((registry) => {
+			this.setState({ web3: results.web3 }, () => {
+				// Get the global DIN registry
+				getDINRegistry(this.state.web3).then((registry) => {
 					this.setState({ DINRegistry: registry }, () => {
-						this.getProducts(results.web3)
+						// Get the ENSMarket, which is used to filter DINs in the DIN Registry
+						getENSMarket(this.state.web3).then((market) => {
+							this.setState({ market: market }, () => {
+								this.getProducts(this.state.DINRegistry, this.state.market.address)
+							})
+						})
+					})
 				})
 			})
 		})
@@ -41,10 +47,15 @@ class Market extends Component {
 	handleBuy(index) {
 		const product = this.state.products[index]
 
-		console.log(this.state.market.totalPrice(product.DIN, 1).toNumber())
-		console.log(this.state.web3.eth.coinbase)
-
-		this.state.market.buy(10000001, 1, {from: this.state.web3.eth.coinbase, value: product.price, gas: 4700000}, (error, result) => {
+		this.state.market.buy(
+			product.DIN, 
+			1, // Quantity
+			{
+				from: this.state.web3.eth.coinbase, 
+				value: product.price, 
+				gas: 4700000
+			}, 
+			(error, result) => {
 			if (!error) {
 				console.log(result)
 			} else {
@@ -53,32 +64,40 @@ class Market extends Component {
 		})
 	}
 
-	getProducts(web3) {
-		getDINRegistrar(web3).then((registrar) => {
-			this.setState({ DINRegistrar: registrar })
-			getProducts(this.state.DINRegistry, registrar).then((products) => {
-				var newProducts = products.map((product) => {
-					const market = this.state.DINRegistry.market(product.DIN)
-					product.market = market
+	getProducts(registry, marketAddress) {
+		getProducts(registry, marketAddress).then((products) => {
 
-					const publicMarket = this.state.web3.eth.contract(PublicMarketJSON.abi).at(market)
-					// Get the price from the perspective of the null account. Otherwise, price will show up as zero for the buyer.
-					const price = this.state.web3.fromWei(publicMarket.totalPrice(product.DIN, 1, {from: '0x0000000000000000000000000000000000000000'}).toNumber(), 'ether')
-					product.price = price
+			// Get product details (name, node, price) from the market
+			var fullProducts = products.map((product) => {
+				const market = this.state.DINRegistry.market(product.DIN)
+				product.market = market
 
-					const ensMarket = this.state.web3.eth.contract(ENSMarketJSON.abi).at(market)
-					this.setState({ market: ensMarket })
+				const publicMarket = this.state.web3.eth.contract(PublicMarketJSON.abi).at(market)
 
-					const node = ensMarket.ENSNode(product.DIN)
-					product.node = node
+				// Get the price from the perspective of the null account. Otherwise, price will show up as zero if the buyer is also the seller.
+				const price = this.state.web3.fromWei(publicMarket.totalPrice(product.DIN, 1, {from: '0x0000000000000000000000000000000000000000'}).toNumber(), 'ether')
+				product.price = price
 
-					const name = ensMarket.name(product.DIN)
-					product.name = name
+				const ensMarket = this.state.web3.eth.contract(ENSMarketJSON.abi).at(market)
+				this.setState({ market: ensMarket })
 
-					return product
-				})
-				this.setState({ products: newProducts })
+				const node = ensMarket.ENSNode(product.DIN)
+				product.node = node
+
+				const name = ensMarket.name(product.DIN)
+				product.name = name
+
+				// If the product is available for sale, show a "Buy Now" button
+				if (this.state.market.isAvailableForSale(product.DIN) === true) {
+					product.status = "Buy Now"
+				} else {
+					product.status = "Pending"
+				}
+
+				return product
 			})
+
+			this.setState({ products: fullProducts })
 		})
 	}
 

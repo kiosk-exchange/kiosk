@@ -216,8 +216,7 @@ contract PublicMarket is Market {
 
     // Inventory
     function isAvailableForSale(uint256 DIN, uint256 quantity) constant returns (bool) {
-        return true;
-        // return products[DIN].inventoryResolver.isAvailableForSale(DIN, quantity);
+        return products[DIN].inventoryResolver.isAvailableForSale(DIN, quantity);
     }
 
     function inventoryResolver(uint256 DIN) constant returns (address) {

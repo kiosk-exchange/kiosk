@@ -1,24 +1,24 @@
-const getProducts = (DINRegistry, DINRegistrar) => new Promise((resolve, reject) => {
+const getProducts = (DINRegistry, marketAddress) => new Promise((resolve, reject) => {
 
   var products = []
 
   // Add registration event listener
-  var newRegistrationAll = DINRegistrar.NewRegistration({}, {fromBlock: 0, toBlock: 'latest'})
-  newRegistrationAll.watch((error, result) => {
-
+  var newMarketAll = DINRegistry.NewMarket({market: marketAddress}, {fromBlock: 0, toBlock: 'latest'})
+  newMarketAll.watch((error, result) => {
     if (!error) {
-
       const DIN = parseInt(result["args"]["DIN"]["c"][0], 10)
-      products.push({ DIN: DIN })
+
+      // Make sure the DIN is still pointing to given market
+      if (DINRegistry.market(DIN) === marketAddress) {
+        products.push({ DIN: DIN })
+      }
 
     } else {
       reject(error)
     }
-
     resolve(products)
-    newRegistrationAll = null
+    newMarketAll.stopWatching()
   })
-
 
 })
 

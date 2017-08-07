@@ -2,8 +2,7 @@ import React, { Component } from 'react'
 import NewProduct from '../NewProduct'
 
 import getWeb3 from '../utils/getWeb3'
-import { getDINRegistry, getDINRegistrar, getENSMarket, getENS, getENSPublicProduct } from '../utils/contracts'
-import ENSProductJSON from '../../build/contracts/PublicMarket.json'
+import { getENSPublicProduct } from '../utils/contracts'
 import namehash from 'eth-ens-namehash'
 
 class NewENSDomain extends Component {
