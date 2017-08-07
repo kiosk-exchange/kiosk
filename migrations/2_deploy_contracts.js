@@ -24,8 +24,9 @@ module.exports = function(deployer) {
 
 	const genesis = 10000000
 	const tld = 'eth'
+	const subnodeName = 'example.eth'
 	const subnodeSHA3 = web3.sha3('example')
-	const subnodeNameHash = namehash('example.eth')
+	const subnodeNameHash = namehash(subnodeName)
 	const rootNode = getRootNodeFromTLD(tld)
 	const price = web3.toWei(2, 'ether')
 
@@ -61,7 +62,7 @@ module.exports = function(deployer) {
 			ENS.address
 		)
 	}).then(() => {
-		return ENSPublicProduct.at(ENSPublicProduct.address).addENSDomain(subnodeNameHash, price)
+		return ENSPublicProduct.at(ENSPublicProduct.address).addENSDomain(subnodeName, subnodeNameHash, price)
 	})
 
 }

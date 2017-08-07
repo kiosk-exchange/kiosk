@@ -33,10 +33,4 @@ contract Product is PriceResolver, InventoryResolver, BuyHandler {
   	registry = _registry;
   }
 
-	function price(uint256 DIN, address buyer) constant returns (uint256);
-
-	function totalPrice(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256) {
-		return price(DIN, buyer) * quantity;
-	}
-
 }

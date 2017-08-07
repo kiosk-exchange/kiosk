@@ -36,6 +36,7 @@ class NewENSDomain extends Component {
     const account1 = this.state.web3.eth.coinbase
 
     this.state.ENSPublicProduct.addENSDomain(
+    	name,
     	node, 
     	priceInWei,
     	{

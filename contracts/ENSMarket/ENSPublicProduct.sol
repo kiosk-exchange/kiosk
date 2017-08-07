@@ -42,19 +42,21 @@ contract ENSPublicProduct is Product {
 		ens = _ens;
 	}
 
-	function addENSDomain(bytes32 node, uint256 price) {
+	function addENSDomain(string name, bytes32 node, uint256 price) {
 		require(price > 0);
 
 		// Register a new DIN for the ENS node.
 		uint256 DIN = registrar.registerNewDIN();
 
 		// Store the details of the ENS node.
-		nodes[DIN].price = price;
+		nodes[DIN].name = name;
 		nodes[DIN].node = node;
+		nodes[DIN].price = price;
 		nodes[DIN].isValid = true;
 
 		// Add the ENS node to the ENS market.
-		ensMarket.setENSNode(DIN, node);
+		ensMarket.setName(DIN, name);
+		ensMarket.setNode(DIN, node);
 		ensMarket.addProduct(DIN, this, this, this);
 
 		registry.setMarket(DIN, ensMarket);
@@ -79,7 +81,8 @@ contract ENSPublicProduct is Product {
 		nodes[DIN].node = node;
 	}
 
-	function price(uint256 DIN, address buyer) constant returns (uint256) {
+	// Quantity is irrelevant here. We're only ever selling one ENS domain at a time
+	function totalPrice(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256) {
 		return nodes[DIN].price;
 	}
 

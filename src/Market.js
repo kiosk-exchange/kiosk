@@ -66,9 +66,13 @@ class Market extends Component {
 					product.price = price
 
 					const ensMarket = this.state.web3.eth.contract(ENSMarketJSON.abi).at(market)
+					this.setState({ market: ensMarket })
+
 					const node = ensMarket.ENSNode(product.DIN)
 					product.node = node
-					this.setState({ market: ensMarket })
+
+					const name = ensMarket.name(product.DIN)
+					product.name = name
 
 					return product
 				})
