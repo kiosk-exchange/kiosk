@@ -80,7 +80,7 @@ truffle migrate
 Then, start the React project and open http://localhost:3000/ to see the app.
 
 ```
-yarn start
+npm start
 ```
 
 ## Testing
