@@ -20,8 +20,8 @@ contract ENSMarket is PublicMarket {
 	mapping(uint256 => ENSDomain) public domains;
 
 	// Constructor
-	function ENSMarket(DINRegistry _dinRegistry, OrderTracker _orderTracker, AbstractENS _ens)
-		PublicMarket(_dinRegistry, _orderTracker)
+	function ENSMarket(DINRegistry _dinRegistry, AbstractENS _ens)
+		PublicMarket(_dinRegistry)
 	{
 		ens = _ens;
 	}

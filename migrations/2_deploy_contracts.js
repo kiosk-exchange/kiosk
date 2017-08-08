@@ -49,13 +49,19 @@ module.exports = function(deployer) {
 	}).then(() => {
 		// Set the DIN registry's registrar to the deployed registrar
 		return DINRegistry.at(DINRegistry.address).setRegistrar(DINRegistrar.address)
-	}).then(() => {
-		return deployer.deploy(OrderTracker, DINRegistry.address)
+	// }).then(() => {
+		// return deployer.deploy(OrderTracker, DINRegistry.address)
 	}).then(() => {
 		// Deploy ENS Market, where ENS domains can be bought and sold
-		return deployer.deploy(ENSMarket, DINRegistry.address, OrderTracker.address, ENS.address)
+		return deployer.deploy(ENSMarket, DINRegistry.address, ENS.address)
 	}).then(() => {
-		return deployer.deploy(ENSPublicProduct, DINRegistry.address, DINRegistrar.address, ENSMarket.address, ENS.address)
+		return deployer.deploy(
+			ENSPublicProduct, 
+			DINRegistry.address, 
+			DINRegistrar.address, 
+			ENSMarket.address, 
+			ENS.address
+		)
 	}).then(() => {
 		// List "example.eth" on ENSMarket
 		return ENSPublicProduct.at(ENSPublicProduct.address).addENSDomain(subnodeName, subnodeNameHash, price)

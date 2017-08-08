@@ -87,9 +87,9 @@ contract PublicMarket is Market {
     }
 
     // Constructor
-    function PublicMarket(DINRegistry _dinRegistry, OrderTracker _orderTracker) {
+    function PublicMarket(DINRegistry _dinRegistry) {
         dinRegistry = _dinRegistry;
-        orderTracker = _orderTracker;
+        // orderTracker = _orderTracker;
     }
 
     /**
