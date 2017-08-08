@@ -56,9 +56,7 @@ function handleOrder(uint256 orderID, uint256 DIN, uint256 quantity, address buy
 
 ## Quick Start
 
-The first market we're building on top of Kiosk is a secondary market for [ENS](https://ens.domains/) domains. It's currently a work in progress.
-
-Get started by testing locally with [TestRPC](https://github.com/ethereumjs/testrpc).
+As a proof of concept, we're building a secondary market for [ENS](https://ens.domains/) domains on top of Kiosk. It's currently a work in progress. Try it out by testing locally with [TestRPC](https://github.com/ethereumjs/testrpc).
 
 Install project dependencies.
 
