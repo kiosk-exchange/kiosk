@@ -26,23 +26,33 @@ For developers, Kiosk’s protocol can provide a foundation to quickly build and
 
 Get started by testing locally with [TestRPC](https://github.com/ethereumjs/testrpc).
 
-```
-$ testrpc
-```
-
-Compile and deploy the Solidity contracts using [Truffle](http://truffleframework.com/). This will also register a new Decentralized Identification Number (DIN) for the first testrpc account and add a demo product to the deployed `PublicMarket.sol`.
+Install project dependencies.
 
 ```
-$ truffle compile
-$ truffle migrate
+npm install
 ```
 
-Finally, start the React project and open http://localhost:3000/ to see the app.
+In a separate terminal tab, start TestRPC.
 
 ```
-$ yarn start
+testrpc
 ```
+
+Compile and deploy the Solidity contracts using [Truffle](http://truffleframework.com/).
+
+```
+truffle compile
+truffle migrate
+```
+
+Then, start the React project and open http://localhost:3000/ to see the app.
+
+```
+yarn start
+```
+
 ## Testing
+
 ```
 truffle test
 ```
