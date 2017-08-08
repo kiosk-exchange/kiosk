@@ -5,9 +5,9 @@ pragma solidity ^0.4.11;
 contract OrderTracker {
 
 	// The address of DIN registry where all DINs are stored.
-  DINRegistry public dinRegistry;
+	DINRegistry public dinRegistry;
 
-  // The current order ID.
+	// The current order ID.
 	uint256 public orderIndex = 0;
 
 	event NewOrder(
@@ -23,7 +23,7 @@ contract OrderTracker {
 	// Only allow updates from registered markets.
 	modifier only_market(uint256 DIN) {
 		require (dinRegistry.market(DIN) == msg.sender);
-    _;
+		_;
 	}
 
 	function OrderTracker(DINRegistry _dinRegistry) {
