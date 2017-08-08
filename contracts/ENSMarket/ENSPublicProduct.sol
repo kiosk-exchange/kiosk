@@ -53,7 +53,6 @@ contract ENSPublicProduct is Product {
 		nodes[DIN].node = node;
 		nodes[DIN].price = price;
 		nodes[DIN].isValid = true;
-
 		// Add the ENS node to the ENS market.
 		ensMarket.setName(DIN, name);
 		ensMarket.setNode(DIN, node);
@@ -63,6 +62,7 @@ contract ENSPublicProduct is Product {
 		
 		// Transfer ownership of the DIN so that the seller can withdraw proceeds.
 		registry.setOwner(DIN, msg.sender);
+
 	}
 
 	function name(uint256 DIN) constant returns (string) {

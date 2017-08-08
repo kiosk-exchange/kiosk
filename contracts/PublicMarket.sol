@@ -3,6 +3,7 @@ import './PriceResolver.sol';
 import './InventoryResolver.sol';
 import './BuyHandler.sol';
 import './Market.sol';
+import './OrderTracker.sol';
 
 pragma solidity ^0.4.11;
 
@@ -34,13 +35,14 @@ contract PublicMarket is Market {
         Fulfilled
     }
 
-    // The address of DIN registry where all product IDs are stored.
+    // The address of DIN registry where all DINs are stored.
     DINRegistry public dinRegistry;
+
+    // The address of the order tracker where all new order events are stored.
+    OrderTracker public orderTracker;
 
     // DIN => Product
     mapping (uint256 => Product) products;
-
-    uint256 public orderIndex = 0;
 
     // Order ID => Order
     mapping (uint256 => Order) public orders;
@@ -53,15 +55,6 @@ contract PublicMarket is Market {
     event PriceResolverChanged(uint256 indexed DIN, address PriceResolver);
     event InventoryResolverChanged(uint256 indexed DIN, address InventoryResolver);
     event BuyHandlerChanged(uint256 indexed DIN, address BuyHandler);
-
-    event NewOrder(
-        uint orderID, 
-        address indexed buyer, 
-        address indexed seller, 
-        uint256 indexed DIN,
-        uint256 amountPaid, 
-        uint256 timestamp
-    );
 
     modifier only_owner(uint256 DIN) {
         require (dinRegistry.owner(DIN) == msg.sender);
@@ -94,8 +87,9 @@ contract PublicMarket is Market {
     }
 
     // Constructor
-    function PublicMarket(DINRegistry dinRegistryAddr) {
-        dinRegistry = dinRegistryAddr;
+    function PublicMarket(DINRegistry _dinRegistry, OrderTracker _orderTracker) {
+        dinRegistry = _dinRegistry;
+        orderTracker = _orderTracker;
     }
 
     /**
@@ -126,7 +120,6 @@ contract PublicMarket is Market {
     *   =========================
     */
 
-
     /**
      * Buy a quantity of a product.
      * @param DIN The DIN of the product to buy.
@@ -140,11 +133,17 @@ contract PublicMarket is Market {
     {
     	address seller = dinRegistry.owner(DIN);
 
-        // Increment the order index for a new order.
-        orderIndex++;
+        // Add the order to the order tracker and get the order ID.
+        uint256 orderID = orderTracker.registerNewOrder(
+            msg.sender, 
+            seller,
+            DIN,
+            msg.value, 
+            block.timestamp
+        );
 
-        // Add the order to the orders mapping.
-        orders[orderIndex] = Order(
+        // Add the order to internal storage.
+        orders[orderID] = Order(
             msg.sender, 
             seller, 
             DIN, 
@@ -153,25 +152,17 @@ contract PublicMarket is Market {
             OrderStatus.Pending
         );
 
-        NewOrder(
-            orderIndex, 
-            msg.sender, 
-            seller,
-            DIN,
-            msg.value, 
-            block.timestamp
-        );
-
-        pendingWithdrawals[orderIndex] += msg.value;
+        // Add proceeds to pending withdrawals.
+        pendingWithdrawals[orderID] += msg.value;
 
         // Call the product's buy handler to fulfill the order.
-        products[DIN].buyHandler.handleOrder(orderIndex, DIN, quantity, msg.sender);
+        products[DIN].buyHandler.handleOrder(orderID, DIN, quantity, msg.sender);
 
         // Throw an error if the order is not fulfilled.
-        require (isFulfilled(orderIndex) == true);
+        require (isFulfilled(orderID) == true);
 
         // Mark the order as fulfilled.
-        orders[orderIndex].status = OrderStatus.Fulfilled;
+        orders[orderID].status = OrderStatus.Fulfilled;
     }
 
     /**

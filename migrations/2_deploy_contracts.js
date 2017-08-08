@@ -1,6 +1,7 @@
 const web3 = new (require('web3'))()
 const DINRegistry = artifacts.require('./DINRegistry.sol')
 const DINRegistrar = artifacts.require('./DINRegistrar.sol')
+const OrderTracker = artifacts.require('./OrderTracker.sol')
 const ENSMarket = artifacts.require('./ENSMarket/ENSMarket.sol')
 const ENSPublicProduct = artifacts.require('./ENSMarket/ENSPublicProduct.sol')
 const ENS = artifacts.require('.ENSMarket/ENS/ENS.sol')
@@ -20,17 +21,20 @@ function getRootNodeFromTLD(tld) {
   };
 }
 
-module.exports = function(deployer) {
+module.exports = function(deployer, network, accounts) {
 
-	const genesis = 10000000
+	console.log(accounts)
+
 	const tld = 'eth'
-	const subnodeName = 'example.eth'
-	const subnodeSHA3 = web3.sha3('example')
-	const subnodeNameHash = namehash(subnodeName)
 	const rootNode = getRootNodeFromTLD(tld)
+	const subnodeSHA3 = web3.sha3('example')
+	const subnodeName = 'example.eth'
+	const subnodeNameHash = namehash(subnodeName)
 	const price = web3.toWei(2, 'ether')
+	const genesis = 10000000
+	const account1 = accounts[0]
 
-  // Deploy the ENS
+	// Deploy the ENS
 	deployer.deploy(ENS).then(() => {
 		// Deploy the FIFSRegistrar and bind it with ENS
   	return deployer.deploy(FIFSRegistrar, ENS.address, rootNode.namehash)
@@ -39,7 +43,7 @@ module.exports = function(deployer) {
     return ENS.at(ENS.address).setSubnodeOwner('0x0', rootNode.sha3, FIFSRegistrar.address)
   }).then(() => {
   	// Register "example.eth" to a test account
-  	return FIFSRegistrar.at(FIFSRegistrar.address).register(subnodeSHA3, "0x13e67388ce5194ac4d7d3391ec06bccc56de0104")
+  	return FIFSRegistrar.at(FIFSRegistrar.address).register(subnodeSHA3, account1)
   }).then(() => {
 		// Deploy the DIN Registry
 		return deployer.deploy(DINRegistry, genesis)
@@ -50,10 +54,11 @@ module.exports = function(deployer) {
 		// Set the DIN registry's registrar to the deployed registrar
 		return DINRegistry.at(DINRegistry.address).setRegistrar(DINRegistrar.address)
 	}).then(() => {
-		// Deploy ENS Market, where ENS domains can be bought and sold
-		return deployer.deploy(ENSMarket, DINRegistry.address, ENS.address)
+		return deployer.deploy(OrderTracker, DINRegistry.address)
 	}).then(() => {
-		// List "example.eth" on ENSMarket
+		// Deploy ENS Market, where ENS domains can be bought and sold
+		return deployer.deploy(ENSMarket, DINRegistry.address, OrderTracker.address, ENS.address)
+	}).then(() => {
 		return deployer.deploy(
 			ENSPublicProduct, 
 			DINRegistry.address, 
@@ -62,6 +67,7 @@ module.exports = function(deployer) {
 			ENS.address
 		)
 	}).then(() => {
+		// List "example.eth" on ENSMarket
 		return ENSPublicProduct.at(ENSPublicProduct.address).addENSDomain(subnodeName, subnodeNameHash, price)
 	}).then(() => {
 		// Transfer ownership of "example.eth" to the ENSPublicProduct
