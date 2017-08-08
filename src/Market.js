@@ -3,8 +3,6 @@ import getWeb3 from './utils/getWeb3'
 import { getDINRegistry, getENSMarket } from './utils/contracts'
 import { getMarketDINs, productFromDIN } from './utils/getProducts'
 import ProductTable from './Components/ProductTable'
-import PublicMarketJSON from './../build/contracts/PublicMarket.json'
-import ENSMarketJSON from './../build/contracts/ENSMarket.json'
 
 class Market extends Component {
 
