@@ -22,7 +22,7 @@ function market(uint256 DIN) constant returns (address)
 
 ### Market
 
-A `Market` stores `Products` and `Orders.` 
+A `Market` stores `Products` and `Orders`. 
 
 It has an interface that buyers can use to purchase a product based on its `DIN`.
 
@@ -30,7 +30,7 @@ It has an interface that buyers can use to purchase a product based on its `DIN`
 function buy(uint256 DIN, uint256 quantity) payable;
 ```
 
-A `Market` is also responsible for managing `Orders` and determining when a seller has fulfilled an `Order` and can withdraw its proceeds.
+A `Market` is also responsible for determining when a seller has fulfilled an `Order` and can withdraw its proceeds.
 
 ```cs
 function isFulfilled(uint256 orderID) constant returns (bool);
