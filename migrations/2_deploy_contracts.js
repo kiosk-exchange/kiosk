@@ -39,7 +39,7 @@ module.exports = function(deployer) {
     return ENS.at(ENS.address).setSubnodeOwner('0x0', rootNode.sha3, FIFSRegistrar.address)
   }).then(() => {
   	// Register "example.eth" to a test account
-  	return FIFSRegistrar.at(FIFSRegistrar.address).register(subnodeSHA3, "0xff93a94c342668b281d3cd7d7a301c4c699eaac0")
+  	return FIFSRegistrar.at(FIFSRegistrar.address).register(subnodeSHA3, "0x13e67388ce5194ac4d7d3391ec06bccc56de0104")
   }).then(() => {
 		// Deploy the DIN Registry
 		return deployer.deploy(DINRegistry, genesis)
