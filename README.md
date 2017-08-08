@@ -52,7 +52,7 @@ function handleOrder(uint256 orderID, uint256 DIN, uint256 quantity, address buy
 
 ![kiosk protocol](/kioskprotocol.jpg?raw=true)
 
-**The Kiosk protocol is designed with the buyer in mind**. Its goal is to make the buying experience as simple, consistent, and transparent as possible. With just a product's DIN, a buyer can determine its price and how to buy it on a fair market.
+**The Kiosk protocol is designed with the buyer in mind**. Its goal is to make the buying experience as simple, consistent, and transparent as possible. With just a product's DIN, a buyer can determine its price and how to buy it on a provably fair market.
 
 ## Quick Start
 
