@@ -12,7 +12,7 @@ Kiosk provides a framework for creating decentralized marketplaces. Its smart co
 
 The Kiosk protocol has three main components: `DINs`, `Markets`, and `Products`.
 
-## DIN
+### DIN
 
 A Decentralized Identification Number (DIN), is a unique, 10-digit product identifier, similar to a barcode. A client can look up a `DIN` on the global `DINRegistry` contract to find its corresponding `Market`.
 
@@ -20,7 +20,7 @@ A Decentralized Identification Number (DIN), is a unique, 10-digit product ident
 function market(uint256 DIN) constant returns (address)
 ```
 
-## Market
+### Market
 
 A `Market` stores `Products` and `Orders.` 
 
@@ -36,7 +36,7 @@ A `Market` is also responsible for managing `Orders` and determining when a sell
 function isFulfilled(uint256 orderID) constant returns (bool);
 ```
 
-## Product
+### Product
 
 A `Product` tells a `Market` its price and availability.
 
@@ -45,9 +45,14 @@ function totalPrice(uint256 DIN, uint256 quantity, address buyer) constant retur
 function isAvailableForSale(uint256 DIN, uint256 quantity) constant returns (bool);
 ```
 
+It will also receive a callback when a new order has been placed on its `Market`. For Ethereum-based assets, a `Product` is expected to provide instant settlement, or the transaction will fail.
+```cs
+function handleOrder(uint256 orderID, uint256 DIN, uint256 quantity, address buyer);
+```
+
 ![kiosk protocol](/kioskprotocol.jpg?raw=true)
 
-The Kiosk protocol is designed with the buyer in mind. Its goal is to make the buying experience as simple, consistent, and transparent as possible. With just a `DIN`, a buyer can know a product's price and how to buy it on a fair market.
+**The Kiosk protocol is designed with the buyer in mind**. Its goal is to make the buying experience as simple, consistent, and transparent as possible. With just a product's DIN, a buyer can determine its price and how to buy it on a fair market.
 
 ## Quick Start
 
