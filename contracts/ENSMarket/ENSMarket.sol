@@ -2,6 +2,7 @@ import './ENS/AbstractENS.sol';
 import '../PublicMarket.sol';
 import '../DINRegistry.sol';
 import '../Market.sol';
+import '../OrderTracker.sol';
 
 pragma solidity ^0.4.11;
 
@@ -19,10 +20,10 @@ contract ENSMarket is PublicMarket {
 	mapping(uint256 => ENSDomain) public domains;
 
 	// Constructor
-	function ENSMarket(DINRegistry dinRegistryAddr, AbstractENS ensAddr)
-		PublicMarket(dinRegistryAddr)
+	function ENSMarket(DINRegistry _dinRegistry, OrderTracker _orderTracker, AbstractENS _ens)
+		PublicMarket(_dinRegistry, _orderTracker)
 	{
-		ens = ensAddr;
+		ens = _ens;
 	}
 
 	function isFulfilled(uint256 orderID) constant returns (bool) {
