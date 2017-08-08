@@ -45,7 +45,7 @@ function totalPrice(uint256 DIN, uint256 quantity, address buyer) constant retur
 function isAvailableForSale(uint256 DIN, uint256 quantity) constant returns (bool);
 ```
 
-It will also receive a callback when a new order has been placed on its `Market`. For Ethereum-based assets, a `Product` is expected to provide instant settlement, or the transaction will fail.
+It will also receive a callback when a new order has been placed. For Ethereum-based assets, a `Product` is expected to provide instant settlement, or the transaction will fail.
 ```cs
 function handleOrder(uint256 orderID, uint256 DIN, uint256 quantity, address buyer);
 ```
