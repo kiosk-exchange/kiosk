@@ -21,7 +21,10 @@ function getRootNodeFromTLD(tld) {
   };
 }
 
-module.exports = function(deployer) {
+module.exports = function(deployer, network, accounts) {
+
+	console.log(accounts)
+
 	const tld = 'eth'
 	const rootNode = getRootNodeFromTLD(tld)
 	const subnodeSHA3 = web3.sha3('example')
@@ -29,6 +32,7 @@ module.exports = function(deployer) {
 	const subnodeNameHash = namehash(subnodeName)
 	const price = web3.toWei(2, 'ether')
 	const genesis = 10000000
+	const account1 = accounts[0]
 
 	// Deploy the ENS
 	deployer.deploy(ENS).then(() => {
@@ -39,7 +43,7 @@ module.exports = function(deployer) {
     return ENS.at(ENS.address).setSubnodeOwner('0x0', rootNode.sha3, FIFSRegistrar.address)
   }).then(() => {
   	// Register "example.eth" to a test account
-  	return FIFSRegistrar.at(FIFSRegistrar.address).register(subnodeSHA3, "0x13e67388ce5194ac4d7d3391ec06bccc56de0104")
+  	return FIFSRegistrar.at(FIFSRegistrar.address).register(subnodeSHA3, account1)
   }).then(() => {
 		// Deploy the DIN Registry
 		return deployer.deploy(DINRegistry, genesis)
