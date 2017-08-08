@@ -23,15 +23,13 @@ function getRootNodeFromTLD(tld) {
 
 module.exports = function(deployer, network, accounts) {
 
-	console.log(accounts)
-
 	const tld = 'eth'
 	const rootNode = getRootNodeFromTLD(tld)
 	const subnodeSHA3 = web3.sha3('example')
 	const subnodeName = 'example.eth'
 	const subnodeNameHash = namehash(subnodeName)
 	const price = web3.toWei(2, 'ether')
-	const genesis = 10000000
+	const genesis = 1000000000
 	const account1 = accounts[0]
 
 	// Deploy the ENS
