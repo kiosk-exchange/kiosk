@@ -45,7 +45,7 @@ contract ENSPublicProduct is Product {
 	function addENSDomain(string name, bytes32 node, uint256 price) {
 		require(price > 0);
 
-		// Register a new DIN for the ENS node.
+		// // Register a new DIN for the ENS node.
 		uint256 DIN = registrar.registerNewDIN();
 
 		// Store the details of the ENS node.
@@ -54,15 +54,15 @@ contract ENSPublicProduct is Product {
 		nodes[DIN].price = price;
 		nodes[DIN].isValid = true;
 
-		// Add the ENS node to the ENS market.
-		ensMarket.setName(DIN, name);
-		ensMarket.setNode(DIN, node);
-		ensMarket.addProduct(DIN, this, this, this);
+		// // Add the ENS node to the ENS market.
+		// ensMarket.setName(DIN, name);
+		// ensMarket.setNode(DIN, node);
+		// ensMarket.addProduct(DIN, this, this, this);
 
-		registry.setMarket(DIN, ensMarket);
+		// registry.setMarket(DIN, ensMarket);
 		
-		// Transfer ownership of the DIN so that the seller can withdraw proceeds.
-		registry.setOwner(DIN, msg.sender);
+		// // Transfer ownership of the DIN so that the seller can withdraw proceeds.
+		// registry.setOwner(DIN, msg.sender);
 	}
 
 	function name(uint256 DIN) constant returns (string) {
