@@ -4,23 +4,14 @@ const {
 	ENSMarket,
 	ENS,
 	DINRegistry,
-	DINRegistrar,
 	PublicMarket,
 	ENSPublicProduct
 } = new Artifacts(artifacts)
 
-contract('ENSProduct', function(accounts) {
-
-	it("should have a registrar", () => {
-		return ENSProduct.deployed().then((instance) => {
-			return instance.registrar()
-		}).then((registrar) => {
-			assert.equal(registrar, DINRegistrar.address, "ENSProduct does not have the correct registrary")
-		})
-	})
+contract('ENSPublicProduct', function(accounts) {
 
 	it("should have a market", () => {
-		return ENSProduct.deployed().then((instance) => {
+		return ENSPublicProduct.deployed().then((instance) => {
 			return instance.market()
 		}).then((market) => {
 			assert.equal(market, ENSMarket.address, "ENSProduct does not have the correct market")

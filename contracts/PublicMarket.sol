@@ -136,7 +136,7 @@ contract PublicMarket is Market {
         // Mark the order as fulfilled.
         orders[orderID].status = OrderStatus.Fulfilled;
 
-        return orderID;
+        return 0;
     }
 
     /**

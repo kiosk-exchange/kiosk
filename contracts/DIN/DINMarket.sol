@@ -1,11 +1,19 @@
-import '../Market.sol';
-import '../Product.sol';
+import '../PublicMarket.sol';
+import '../DINRegistry.sol';
+import '../OrderTracker.sol';
 
 pragma solidity ^0.4.11;
 
-contract DINMarket is PublicMarket, Product {
+contract DINMarket is PublicMarket {
+
+	function DINMarket(DINRegistry _dinRegistry, OrderTracker _orderTracker)
+		PublicMarket(_dinRegistry, _orderTracker) {}
 
 	function isFulfilled(uint256 orderID) constant returns (bool) {
+		return true;
+	}
+
+	function availableForSale(uint256 DIN, uint256 quantity) constant returns (bool) {
 		return true;
 	}
 

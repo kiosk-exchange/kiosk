@@ -1,7 +1,6 @@
 import './ENS/AbstractENS.sol';
 import '../PublicMarket.sol';
 import '../DINRegistry.sol';
-import '../Market.sol';
 import '../OrderTracker.sol';
 
 pragma solidity ^0.4.11;
@@ -35,7 +34,7 @@ contract ENSMarket is PublicMarket {
 		return (ens.owner(node) == orders[orderID].buyer);
 	}
 
-	function isAvailableForSale(uint256 DIN, uint256 quantity) constant returns (bool) {
+	function availableForSale(uint256 DIN, uint256 quantity) constant returns (bool) {
 		// The owner of the node must be able to transfer it during a purchase.
 		if (ens.owner(ENSNode(DIN)) != buyHandler(DIN)) {
 			return false;
@@ -56,7 +55,7 @@ contract ENSMarket is PublicMarket {
 		return domains[DIN].node;
 	}
 
-	function setNode(uint256 DIN, bytes32 node) only_owner(DIN) {
+	function setENSNode(uint256 DIN, bytes32 node) only_owner(DIN) {
 		domains[DIN].node = node;
 	}
 

@@ -9,7 +9,7 @@ contract DINRegistry {
 
     struct Record {
         address owner; // Address that owns the DIN.
-        Market market; // Address of the market associated with the DIN.
+        address market; // Address of the market associated with the DIN.
     }
 
     // DIN => Record
@@ -108,7 +108,7 @@ contract DINRegistry {
     /**
     * Returns the address of the market for the specified DIN.
     */
-    function market(uint DIN) constant returns (Market) {
+    function market(uint DIN) constant returns (address) {
         return records[DIN].market;
     }
 
