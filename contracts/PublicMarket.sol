@@ -17,7 +17,6 @@ contract PublicMarket is Market {
         PriceResolver priceResolver;            // Returns product price.
         InventoryResolver inventoryResolver;    // Returns whether product is in stock.
         BuyHandler buyHandler;                  // Returns the address of the contract that handles orders.
-        bool isValid;                           // True if all above properties are set.
     }
 
     struct Order {
@@ -62,17 +61,12 @@ contract PublicMarket is Market {
     }
 
     modifier only_correct_price(uint256 DIN, uint256 quantity) {
-        require(totalPrice(DIN, quantity) == msg.value);
+        require(price(DIN, quantity) == msg.value);
         _;
     }
 
     modifier only_in_stock(uint256 DIN, uint256 quantity) {
-        require(isAvailableForSale(DIN, quantity) == true);
-        _;
-    }
-
-    modifier only_valid_product(uint256 DIN) {
-        require(products[DIN].isValid == true);
+        require(availableForSale(DIN, quantity) == true);
         _;
     }
 
@@ -94,28 +88,6 @@ contract PublicMarket is Market {
 
     /**
     *   =========================
-    *          Add Product          
-    *   =========================
-    */
-
-    function addProduct(
-        uint256 DIN,
-        PriceResolver priceResolver, 
-        InventoryResolver inventoryResolver, 
-        BuyHandler buyHandler
-    ) 
-        only_owner(DIN)
-    {
-        products[DIN].priceResolver = priceResolver;
-        products[DIN].inventoryResolver = inventoryResolver;
-        products[DIN].buyHandler = buyHandler;
-
-        // Product has been initialized and is now valid.
-        products[DIN].isValid = true;
-    }
-
-    /**
-    *   =========================
     *            Orders         
     *   =========================
     */
@@ -127,7 +99,6 @@ contract PublicMarket is Market {
      */   
     function buy(uint256 DIN, uint256 quantity) 
         payable
-        only_valid_product(DIN)
         only_correct_price(DIN, quantity) 
         only_in_stock(DIN, quantity) 
     {
@@ -176,15 +147,6 @@ contract PublicMarket is Market {
         msg.sender.transfer(amount);
     }
 
-    // Helper methods for sellers
-    function availableForWithdrawal(uint256 orderID) constant returns (uint256) {
-        return pendingWithdrawals[orderID];
-    }
-
-    function DINForOrder(uint256 orderID) constant returns (uint256) {
-        return orders[orderID].DIN;
-    }
-
     /**
     *   =========================
     *      Product Information          
@@ -192,7 +154,7 @@ contract PublicMarket is Market {
     */ 
 
     // Price
-    function totalPrice(uint256 DIN, uint256 quantity) constant returns (uint256) {
+    function price(uint256 DIN, uint256 quantity) constant returns (uint256) {
         return products[DIN].priceResolver.totalPrice(DIN, quantity, msg.sender);
     }
 
@@ -206,7 +168,7 @@ contract PublicMarket is Market {
     }
 
     // Inventory
-    function isAvailableForSale(uint256 DIN, uint256 quantity) constant returns (bool) {
+    function availableForSale(uint256 DIN, uint256 quantity) constant returns (bool) {
         return products[DIN].inventoryResolver.isAvailableForSale(DIN, quantity);
     }
 
@@ -227,11 +189,6 @@ contract PublicMarket is Market {
     function setBuyHandler(uint256 DIN, BuyHandler handler) only_owner(DIN) {
         products[DIN].buyHandler = handler;
         BuyHandlerChanged(DIN, handler);
-    }
-
-    // Valid
-    function isValid(uint256 DIN) constant returns (bool) {
-        return products[DIN].isValid;
     }
 
 }

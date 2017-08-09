@@ -1,6 +1,5 @@
 import '../Product.sol';
 import '../DINRegistry.sol';
-import '../DINRegistrar.sol';
 import './ENSMarket.sol';
 import './ENS/ENS.sol';
 
@@ -11,7 +10,6 @@ pragma solidity ^0.4.11;
 */
 contract ENSPublicProduct is Product {
 
-	DINRegistrar public registrar;
 	ENSMarket public ensMarket;
 	ENS public ens;
 
@@ -28,7 +26,6 @@ contract ENSPublicProduct is Product {
 	// Constructor
 	function ENSPublicProduct(
 		DINRegistry _registry,
-		DINRegistrar _registrar, 
 		ENSMarket _market,
 		ENS _ens
 	)
@@ -38,7 +35,6 @@ contract ENSPublicProduct is Product {
 		)
 	{
 		ensMarket = _market;
-		registrar = _registrar;
 		ens = _ens;
 	}
 
@@ -46,7 +42,11 @@ contract ENSPublicProduct is Product {
 		require(price > 0);
 
 		// Register a new DIN for the ENS node.
-		uint256 DIN = registrar.registerNewDIN();
+		uint256 genesisDIN = registry.genesis();
+		registry.market(genesisDIN).buy(genesisDIN, 1);
+
+		// TODO: How do we implement this?
+		uint256 DIN = 1000000001;
 
 		// Store the details of the ENS node.
 		nodes[DIN].name = name;
@@ -56,7 +56,7 @@ contract ENSPublicProduct is Product {
 		// Add the ENS node to the ENS market.
 		ensMarket.setName(DIN, name);
 		ensMarket.setNode(DIN, node);
-		ensMarket.addProduct(DIN, this, this, this);
+		// ensMarket.addProduct(DIN, this, this, this);
 
 		registry.setMarket(DIN, ensMarket);
 		
@@ -99,9 +99,6 @@ contract ENSPublicProduct is Product {
 	}
 
 	function handleOrder(uint256 orderID, uint256 DIN, uint256 quantity, address buyer) only_market {
-		// Check that correct proceeds from the order are ready for withdrawal.
-		require(market.availableForWithdrawal(orderID) == nodes[DIN].price);
-		require(market.DINForOrder(orderID) == DIN);
 		// The buyer is only getting a single domain.
 		require(quantity == 1);
 

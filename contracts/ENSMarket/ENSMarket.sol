@@ -41,7 +41,7 @@ contract ENSMarket is PublicMarket {
 			return false;
 		}
 
-		return PublicMarket.isAvailableForSale(DIN, quantity);
+		return PublicMarket.availableForSale(DIN, quantity);
 	}
 
 	function name(uint256 DIN) constant returns (string) {
