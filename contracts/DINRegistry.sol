@@ -18,6 +18,9 @@ contract DINRegistry {
     // The first DIN registered.
     uint public genesis;
 
+    // The current DIN index.
+    uint public index;
+
     // Logged when the owner of a DIN transfers ownership to a new account.
     event NewOwner(uint indexed DIN, address indexed newOwner, address indexed oldOwner);
 
@@ -32,12 +35,6 @@ contract DINRegistry {
         _;
     }
 
-    modifier only_unregistered(uint DIN) {
-        require (records[DIN].owner == 0x0);
-        require (DIN > genesis);
-        _;
-    }
-
     modifier only_market(uint DIN) {
         require (market(DIN) == msg.sender);
         _;
@@ -49,6 +46,7 @@ contract DINRegistry {
      */
     function DINRegistry(uint _genesis) {
         genesis = _genesis;
+        index = _genesis;
 
         // Register the genesis DIN to Kiosk. This will represent a DIN product.
         records[genesis].owner = msg.sender;
@@ -56,23 +54,38 @@ contract DINRegistry {
 
     /**
      * Register a new DIN.
-     * @param DIN The DIN to register.
-     * @param owner The account that will own the registered DIN.
+     * @param owner The account that will own the DIN.
      */
-    function registerDIN(uint DIN, address owner) only_market(genesis) only_unregistered(DIN) {
-        records[DIN].owner = owner;
-        NewRegistration(DIN, owner);
+    function registerDINForOwner(address owner) 
+        only_market(genesis) 
+        returns (uint256)
+    {
+        index++;
+        records[index].owner = owner;
+        NewRegistration(index, owner);
+
+        return index;
+    }
+
+    // Convenience method
+    function registerDIN() {
+        registerDINForOwner(msg.sender);
     }
 
     /**
      * Register multiple new DINs.
-     * @param DINs The DINs to register.
+     * @param quantity The number of DINs to register.
      * @param owner The account that will own the registered DINs.
      */
-    function registerDINs(uint[] DINs, address owner) only_market(genesis) {
-        for (uint i = 0; i < DINs.length; i++) {
-            registerDIN(i, owner);
+    function registerDINsForOwner(uint256 quantity, address owner) only_market(genesis) {
+        for (uint i = 0; i < quantity; i++) {
+            registerDINForOwner(owner);
         }
+    }
+
+    // Convenience method
+    function registerDINs(uint256 quantity) {
+        registerDINsForOwner(quantity, msg.sender);
     }
 
     /**

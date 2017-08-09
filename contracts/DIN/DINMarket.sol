@@ -5,16 +5,8 @@ pragma solidity ^0.4.11;
 
 contract DINMarket is PublicMarket, Product {
 
-	uint256 public index;
-
-	function DINMarket(DINRegistry _dinRegistry, OrderTracker _orderTracker) 
-		PublicMarket(_dinRegistry, _orderTracker)
-	{
-		index = _dinRegistry.genesis();
-	}
-
 	function isFulfilled(uint256 orderID) constant returns (bool) {
-		return (dinRegistry.owner(index) == msg.sender);
+		return true;
 	}
 
 	// Price Resolver
@@ -29,8 +21,7 @@ contract DINMarket is PublicMarket, Product {
 
 	// Buy Handler
 	function handleOrder(uint256 orderID, uint256 DIN, uint256 quantity, address buyer) {
-		index++;
-		dinRegistry.registerDIN(index, buyer);
+		dinRegistry.registerDINsForOwner(quantity, buyer);
 	}
 
 }

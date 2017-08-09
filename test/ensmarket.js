@@ -3,7 +3,7 @@ var ENS = artifacts.require('./ENS/ENS.sol')
 var DINRegistry = artifacts.require('./DINRegistry.sol')
 var DINRegistrar = artifacts.require('./DINRegistrar.sol')
 var PublicMarket = artifacts.require('./PublicMarket.sol')
-var ENSProduct = artifacts.require('./ENSProduct.sol')
+var ENSProduct = artifacts.require('./ENSPublicProduct.sol')
 
 contract('ENSProduct', function(accounts) {
 

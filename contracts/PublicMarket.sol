@@ -100,7 +100,8 @@ contract PublicMarket is Market {
     function buy(uint256 DIN, uint256 quantity) 
         payable
         only_correct_price(DIN, quantity) 
-        only_in_stock(DIN, quantity) 
+        only_in_stock(DIN, quantity)
+        returns (uint256) 
     {
     	address seller = dinRegistry.owner(DIN);
 
@@ -134,6 +135,8 @@ contract PublicMarket is Market {
 
         // Mark the order as fulfilled.
         orders[orderID].status = OrderStatus.Fulfilled;
+
+        return orderID;
     }
 
     /**
