@@ -39,29 +39,29 @@ contract ENSPublicProduct is Product {
 	}
 
 	function addENSDomain(string name, bytes32 node, uint256 price) {
-		require(price > 0);
+		// require(price > 0);
 
-		// Register a new DIN for the ENS node.
-		uint256 genesisDIN = registry.genesis();
-		registry.market(genesisDIN).buy(genesisDIN, 1);
+		// // Register a new DIN for the ENS node.
+		// uint256 genesisDIN = registry.genesis();
+		// registry.market(genesisDIN).buy(genesisDIN, 1);
 
-		// TODO: How do we implement this?
-		uint256 DIN = 1000000001;
+		// // TODO: How do we implement this?
+		// uint256 DIN = 1000000001;
 
-		// Store the details of the ENS node.
-		nodes[DIN].name = name;
-		nodes[DIN].node = node;
-		nodes[DIN].price = price;
-		nodes[DIN].isValid = true;
-		// Add the ENS node to the ENS market.
-		ensMarket.setName(DIN, name);
-		ensMarket.setNode(DIN, node);
-		// ensMarket.addProduct(DIN, this, this, this);
+		// // Store the details of the ENS node.
+		// nodes[DIN].name = name;
+		// nodes[DIN].node = node;
+		// nodes[DIN].price = price;
+		// nodes[DIN].isValid = true;
+		// // Add the ENS node to the ENS market.
+		// ensMarket.setName(DIN, name);
+		// ensMarket.setNode(DIN, node);
+		// // ensMarket.addProduct(DIN, this, this, this);
 
-		registry.setMarket(DIN, ensMarket);
+		// registry.setMarket(DIN, ensMarket);
 		
-		// Transfer ownership of the DIN so that the seller can withdraw proceeds.
-		registry.setOwner(DIN, msg.sender);
+		// // Transfer ownership of the DIN so that the seller can withdraw proceeds.
+		// registry.setOwner(DIN, msg.sender);
 
 	}
 

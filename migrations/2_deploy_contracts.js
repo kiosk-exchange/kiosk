@@ -1,6 +1,5 @@
 const web3 = new (require('web3'))()
 const DINRegistry = artifacts.require('./DINRegistry.sol')
-const DINRegistrar = artifacts.require('./DINRegistrar.sol')
 const OrderTracker = artifacts.require('./OrderTracker.sol')
 const ENSMarket = artifacts.require('./ENSMarket/ENSMarket.sol')
 const ENSPublicProduct = artifacts.require('./ENSMarket/ENSPublicProduct.sol')
@@ -46,12 +45,6 @@ module.exports = function(deployer, network, accounts) {
 		// Deploy the DIN Registry
 		return deployer.deploy(DINRegistry, genesis)
 	}).then(() => {
-		// Deploy the DIN Registrar and bind it with the DIN Registry
-		return deployer.deploy(DINRegistrar, DINRegistry.address)
-	}).then(() => {
-		// Set the DIN registry's registrar to the deployed registrar
-		return DINRegistry.at(DINRegistry.address).setRegistrar(DINRegistrar.address)
-	}).then(() => {
 		return deployer.deploy(OrderTracker, DINRegistry.address)
 	}).then(() => {
 		// Deploy ENS Market, where ENS domains can be bought and sold
@@ -60,7 +53,6 @@ module.exports = function(deployer, network, accounts) {
 		return deployer.deploy(
 			ENSPublicProduct, 
 			DINRegistry.address, 
-			DINRegistrar.address, 
 			ENSMarket.address, 
 			ENS.address
 		)
