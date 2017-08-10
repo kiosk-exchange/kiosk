@@ -62,7 +62,7 @@ contract('ENSMarket', function(accounts) {
 			assert.equal(owner, ENSProduct.address, "The ENS node was not transferred to ENSProduct")
 			return ENSMarket.deployed()
 		}).then((instance) => {
-			return instance.totalPrice(DIN, quantity)
+			return instance.price(DIN, quantity)
 		}).then((domainPrice) => {
 			assert.equal(domainPrice.toNumber(), price, "The price of the ENS node is incorrect")
 		})

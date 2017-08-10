@@ -56,7 +56,7 @@ function productFromDIN(DIN, web3, market) {
   }
 
   // Get the price from the perspective of the null account. Otherwise, price will show up as zero if the buyer is also the seller.
-  const price = market.totalPrice(DIN, 1, {from: '0x0000000000000000000000000000000000000000'}).toNumber()
+  const price = market.price(DIN, 1, {from: '0x0000000000000000000000000000000000000000'}).toNumber()
   product.price = price
   product.formattedPrice = web3.fromWei(price, 'ether')
 
@@ -68,7 +68,7 @@ function productFromDIN(DIN, web3, market) {
   product.name = name
 
   // If the product is available for sale, show a "Buy Now" button
-  if (market.isAvailableForSale(product.DIN) === true) {
+  if (market.availableForSale(product.DIN) === true) {
     product.available = true
   } else {
     product.available = false
