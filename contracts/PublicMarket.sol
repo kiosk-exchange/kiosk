@@ -1,4 +1,5 @@
 import './DINRegistry.sol';
+import './InfoResolver.sol';
 import './PriceResolver.sol';
 import './InventoryResolver.sol';
 import './BuyHandler.sol';
@@ -14,6 +15,7 @@ pragma solidity ^0.4.11;
 contract PublicMarket is Market {
 
     struct Product {
+        InfoResolver infoResolver;              // Returns product information.
         PriceResolver priceResolver;            // Returns product price.
         InventoryResolver inventoryResolver;    // Returns whether product is in stock.
         BuyHandler buyHandler;                  // Returns the address of the contract that handles orders.
@@ -23,7 +25,8 @@ contract PublicMarket is Market {
         address buyer;
         address seller;
         uint256 DIN;
-        uint256 amountPaid;
+        bytes32 info;                           // A snapshot of product information.
+        uint256 value;                          // The amount paid.
         uint256 timestamp;
         OrderStatus status;
     }
@@ -50,7 +53,7 @@ contract PublicMarket is Market {
     mapping (uint256 => uint256) public pendingWithdrawals;
 
     // Events
-    event ProductInfoChanged(uint256 indexed DIN, address ProductInfo);
+    event InfoResolverChanged(uint256 indexed DIN, address InfoResolver);
     event PriceResolverChanged(uint256 indexed DIN, address PriceResolver);
     event InventoryResolverChanged(uint256 indexed DIN, address InventoryResolver);
     event BuyHandlerChanged(uint256 indexed DIN, address BuyHandler);
@@ -75,7 +78,7 @@ contract PublicMarket is Market {
         _;
     }
 
-    // This contract does not accept ether directly. Use the "buy" function to buy a product.
+    // This contract does not accept direct payments. Use the "buy" function to buy a product.
     function () {
         throw;
     }
@@ -104,22 +107,25 @@ contract PublicMarket is Market {
         returns (uint256) 
     {
     	address seller = dinRegistry.owner(DIN);
+        bytes32 productInfo = info(DIN);
 
         // Add the order to the order tracker and get the order ID.
         uint256 orderID = orderTracker.registerNewOrder(
-            msg.sender, 
+            msg.sender,
             seller,
             DIN,
-            msg.value, 
+            productInfo,
+            msg.value,
             block.timestamp
         );
 
         // Add the order to internal storage.
         orders[orderID] = Order(
-            msg.sender, 
-            seller, 
-            DIN, 
-            msg.value, 
+            msg.sender,
+            seller,
+            DIN,
+            productInfo,
+            msg.value,
             block.timestamp,
             OrderStatus.Pending
         );
@@ -155,6 +161,20 @@ contract PublicMarket is Market {
     *      Product Information          
     *   =========================
     */ 
+
+    // Info
+    function info(uint256 DIN) constant returns (bytes32) {
+        return products[DIN].infoResolver.productInfo(DIN);
+    }
+
+    function infoResolver(uint256 DIN) constant returns (address) {
+        return products[DIN].infoResolver;
+    }
+
+    function setInfoResolver(uint256 DIN, InfoResolver resolver) constant returns (address) {
+        products[DIN].infoResolver = resolver;
+        InfoResolverChanged(DIN, resolver);
+    }
 
     // Price
     function price(uint256 DIN, uint256 quantity) constant returns (uint256) {

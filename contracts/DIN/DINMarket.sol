@@ -1,10 +1,11 @@
 import '../PublicMarket.sol';
 import '../DINRegistry.sol';
 import '../OrderTracker.sol';
+import '../Product.sol';
 
 pragma solidity ^0.4.11;
 
-contract DINMarket is PublicMarket {
+contract DINMarket is PublicMarket, Product {
 
 	function DINMarket(DINRegistry _dinRegistry, OrderTracker _orderTracker)
 		PublicMarket(_dinRegistry, _orderTracker) {}
@@ -13,8 +14,10 @@ contract DINMarket is PublicMarket {
 		return true;
 	}
 
-	function availableForSale(uint256 DIN, uint256 quantity) constant returns (bool) {
-		return true;
+	// Info Resolver
+	function productInfo(uint256 DIN) constant returns (bytes32) {
+		uint256 nextDIN = dinRegistry.index() + 1;
+		return bytes32(nextDIN);
 	}
 
 	// Price Resolver

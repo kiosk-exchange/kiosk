@@ -16,6 +16,7 @@ contract OrderTracker {
 		address indexed seller, 
 		address market,
 		uint256 indexed DIN,
+		bytes32 info,
 		uint256 value, 
 		uint256 timestamp
 	);
@@ -34,6 +35,7 @@ contract OrderTracker {
 		address buyer, 
 		address seller, 
 		uint256 DIN,
+		bytes32 info,
 		uint256 value, 
 		uint256 timestamp
 	)
@@ -50,6 +52,7 @@ contract OrderTracker {
 			seller,
 			msg.sender,
 			DIN,
+			info,
 			value,
 			timestamp
 		);
