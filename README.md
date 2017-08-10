@@ -10,7 +10,7 @@ Kiosk provides a framework for creating decentralized marketplaces. Its smart co
 
 ## How It Works
 
-The Kiosk protocol has three main components: `DINs`, `Markets`, and `Products`.
+The Kiosk protocol has four main components: `DIN`, `Market`, `Product`, and `Order`.
 
 ### DIN
 
@@ -24,10 +24,10 @@ function market(uint256 DIN) constant returns (address)
 
 A `Market` stores `Products` and `Orders`. 
 
-It has an interface that buyers can use to purchase a product based on its `DIN`.
+It has an interface that buyers can use to purchase a product based on its `DIN`. This creates an `Order` and returns its order ID from the global `OrderTracker`.
 
 ```cs
-function buy(uint256 DIN, uint256 quantity) payable;
+function buy(uint256 DIN, uint256 quantity) payable returns (uint256);
 ```
 
 A `Market` is also responsible for determining when a seller has fulfilled an `Order` and can withdraw its proceeds.
@@ -45,9 +45,27 @@ function totalPrice(uint256 DIN, uint256 quantity, address buyer) constant retur
 function isAvailableForSale(uint256 DIN, uint256 quantity) constant returns (bool);
 ```
 
-It will also receive a callback when a new order has been placed. For Ethereum-based assets, a `Product` is expected to provide instant settlement, or the transaction will fail.
+It will receive a callback when a new order has been placed. For Ethereum-based assets, a `Product` is expected to provide instant settlement, or the transaction will fail.
 ```cs
 function handleOrder(uint256 orderID, uint256 DIN, uint256 quantity, address buyer);
+```
+
+### Order
+
+An `Order` contains information about a purchase. A `Market`communicates its orders to a global `OrderTracker` and gets an order ID which buyers and sellers can use to see their order history across all markets.
+
+```cs
+	function registerNewOrder(
+		address buyer, 
+		address seller, 
+		uint256 DIN,
+		bytes32 info,
+		uint256 value,
+		uint256 quantity,
+		uint256 timestamp
+	)
+		only_market(DIN)
+		returns (uint256);
 ```
 
 ![kiosk protocol](/kioskprotocol.jpg?raw=true)
@@ -61,7 +79,7 @@ As a proof of concept, we're building a secondary market for [ENS](https://ens.d
 Install project dependencies.
 
 ```
-yarn install
+npm install
 ```
 
 In a separate terminal tab, start TestRPC.
@@ -80,7 +98,7 @@ truffle migrate
 Then, start the React project and open http://localhost:3000/ to see the app.
 
 ```
-yarn start
+npm start
 ```
 
 ## Testing
