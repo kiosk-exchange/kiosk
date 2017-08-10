@@ -11,12 +11,14 @@ contract OrderTracker {
 	uint256 public orderIndex = 0;
 
 	event NewOrder(
-		uint256 orderID, 
-		address indexed buyer, 
-		address indexed seller, 
+		uint256 orderID,
+		address indexed buyer,
+		address indexed seller,
 		address market,
 		uint256 indexed DIN,
-		uint256 value, 
+		bytes32 info,
+		uint256 value,
+		uint256 quantity,
 		uint256 timestamp
 	);
 
@@ -34,7 +36,9 @@ contract OrderTracker {
 		address buyer, 
 		address seller, 
 		uint256 DIN,
-		uint256 value, 
+		bytes32 info,
+		uint256 value,
+		uint256 quantity,
 		uint256 timestamp
 	)
 		only_market(DIN)
@@ -50,7 +54,9 @@ contract OrderTracker {
 			seller,
 			msg.sender,
 			DIN,
+			info,
 			value,
+			quantity,
 			timestamp
 		);
 

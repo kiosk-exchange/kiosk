@@ -11,8 +11,6 @@ pragma solidity ^0.4.11;
 */
 contract Product is PriceResolver, InventoryResolver, BuyHandler {
 
-	address public owner;
-
 	PublicMarket public market;
 	DINRegistry public registry;
 
@@ -28,7 +26,6 @@ contract Product is PriceResolver, InventoryResolver, BuyHandler {
 
   // Constructor
   function Product(PublicMarket _market, DINRegistry _registry) {
-  	owner = msg.sender;
   	market = _market;
   	registry = _registry;
   }

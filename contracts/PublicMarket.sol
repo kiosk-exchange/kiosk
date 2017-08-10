@@ -8,8 +8,7 @@ import './OrderTracker.sol';
 pragma solidity ^0.4.11;
 
 /**
-*  This is the default Kiosk implementation of a public Market contract.
-*  Subclasses must implement "isFulfilled".
+*  This is the default Kiosk implementation of a Market contract.
 */
 contract PublicMarket is Market {
 
@@ -17,14 +16,15 @@ contract PublicMarket is Market {
         PriceResolver priceResolver;            // Returns product price.
         InventoryResolver inventoryResolver;    // Returns whether product is in stock.
         BuyHandler buyHandler;                  // Returns the address of the contract that handles orders.
-        bool isValid;                           // True if all above properties are set.
     }
 
     struct Order {
         address buyer;
         address seller;
         uint256 DIN;
-        uint256 amountPaid;
+        bytes32 info;                           // A snapshot of product information.
+        uint256 value;                          // The amount paid.
+        uint256 quantity;
         uint256 timestamp;
         OrderStatus status;
     }
@@ -51,7 +51,6 @@ contract PublicMarket is Market {
     mapping (uint256 => uint256) public pendingWithdrawals;
 
     // Events
-    event ProductInfoChanged(uint256 indexed DIN, address ProductInfo);
     event PriceResolverChanged(uint256 indexed DIN, address PriceResolver);
     event InventoryResolverChanged(uint256 indexed DIN, address InventoryResolver);
     event BuyHandlerChanged(uint256 indexed DIN, address BuyHandler);
@@ -62,17 +61,12 @@ contract PublicMarket is Market {
     }
 
     modifier only_correct_price(uint256 DIN, uint256 quantity) {
-        require(totalPrice(DIN, quantity) == msg.value);
+        require(price(DIN, quantity) == msg.value);
         _;
     }
 
     modifier only_in_stock(uint256 DIN, uint256 quantity) {
-        require(isAvailableForSale(DIN, quantity) == true);
-        _;
-    }
-
-    modifier only_valid_product(uint256 DIN) {
-        require(products[DIN].isValid == true);
+        require(availableForSale(DIN, quantity) == true);
         _;
     }
 
@@ -81,7 +75,7 @@ contract PublicMarket is Market {
         _;
     }
 
-    // This contract does not accept ether directly. Use the "buy" function to buy a product.
+    // This contract does not accept direct payments. Use the "buy" function to buy a product.
     function () {
         throw;
     }
@@ -90,28 +84,6 @@ contract PublicMarket is Market {
     function PublicMarket(DINRegistry _dinRegistry, OrderTracker _orderTracker) {
         dinRegistry = _dinRegistry;
         orderTracker = _orderTracker;
-    }
-
-    /**
-    *   =========================
-    *          Add Product          
-    *   =========================
-    */
-
-    function addProduct(
-        uint256 DIN,
-        PriceResolver priceResolver, 
-        InventoryResolver inventoryResolver, 
-        BuyHandler buyHandler
-    ) 
-        only_owner(DIN)
-    {
-        products[DIN].priceResolver = priceResolver;
-        products[DIN].inventoryResolver = inventoryResolver;
-        products[DIN].buyHandler = buyHandler;
-
-        // Product has been initialized and is now valid.
-        products[DIN].isValid = true;
     }
 
     /**
@@ -127,27 +99,32 @@ contract PublicMarket is Market {
      */   
     function buy(uint256 DIN, uint256 quantity) 
         payable
-        only_valid_product(DIN)
         only_correct_price(DIN, quantity) 
-        only_in_stock(DIN, quantity) 
+        only_in_stock(DIN, quantity)
+        returns (uint256) 
     {
     	address seller = dinRegistry.owner(DIN);
+        bytes32 info = orderInfo(DIN);
 
         // Add the order to the order tracker and get the order ID.
         uint256 orderID = orderTracker.registerNewOrder(
-            msg.sender, 
+            msg.sender,
             seller,
             DIN,
-            msg.value, 
+            info,
+            msg.value,
+            quantity,
             block.timestamp
         );
 
         // Add the order to internal storage.
         orders[orderID] = Order(
-            msg.sender, 
-            seller, 
-            DIN, 
-            msg.value, 
+            msg.sender,
+            seller,
+            DIN,
+            info,
+            msg.value,
+            quantity,
             block.timestamp,
             OrderStatus.Pending
         );
@@ -163,6 +140,8 @@ contract PublicMarket is Market {
 
         // Mark the order as fulfilled.
         orders[orderID].status = OrderStatus.Fulfilled;
+
+        return orderID;
     }
 
     /**
@@ -176,15 +155,6 @@ contract PublicMarket is Market {
         msg.sender.transfer(amount);
     }
 
-    // Helper methods for sellers
-    function availableForWithdrawal(uint256 orderID) constant returns (uint256) {
-        return pendingWithdrawals[orderID];
-    }
-
-    function DINForOrder(uint256 orderID) constant returns (uint256) {
-        return orders[orderID].DIN;
-    }
-
     /**
     *   =========================
     *      Product Information          
@@ -192,7 +162,7 @@ contract PublicMarket is Market {
     */ 
 
     // Price
-    function totalPrice(uint256 DIN, uint256 quantity) constant returns (uint256) {
+    function price(uint256 DIN, uint256 quantity) constant returns (uint256) {
         return products[DIN].priceResolver.totalPrice(DIN, quantity, msg.sender);
     }
 
@@ -206,7 +176,7 @@ contract PublicMarket is Market {
     }
 
     // Inventory
-    function isAvailableForSale(uint256 DIN, uint256 quantity) constant returns (bool) {
+    function availableForSale(uint256 DIN, uint256 quantity) constant returns (bool) {
         return products[DIN].inventoryResolver.isAvailableForSale(DIN, quantity);
     }
 
@@ -227,11 +197,6 @@ contract PublicMarket is Market {
     function setBuyHandler(uint256 DIN, BuyHandler handler) only_owner(DIN) {
         products[DIN].buyHandler = handler;
         BuyHandlerChanged(DIN, handler);
-    }
-
-    // Valid
-    function isValid(uint256 DIN) constant returns (bool) {
-        return products[DIN].isValid;
     }
 
 }

@@ -1,22 +1,15 @@
 var ENSMarket = artifacts.require('./ENS/ENSMarket.sol')
 var ENS = artifacts.require('./ENS/ENS.sol')
 var DINRegistry = artifacts.require('./DINRegistry.sol')
-var DINRegistrar = artifacts.require('./DINRegistrar.sol')
+var DINMarket = artifacts.require('./DINMarket.sol')
 var PublicMarket = artifacts.require('./PublicMarket.sol')
-var ENSProduct = artifacts.require('./ENSProduct.sol')
+var ENSPublicProduct = artifacts.require('./ENSPublicProduct.sol')
+var OrderTracker = artifacts.require('./OrderTracker.sol')
 
-contract('ENSProduct', function(accounts) {
-
-	it("should have a registrar", () => {
-		return ENSProduct.deployed().then((instance) => {
-			return instance.registrar()
-		}).then((registrar) => {
-			assert.equal(registrar, DINRegistrar.address, "ENSProduct does not have the correct registrary")
-		})
-	})
+contract('ENSPublicProduct', function(accounts) {
 
 	it("should have a market", () => {
-		return ENSProduct.deployed().then((instance) => {
+		return ENSPublicProduct.deployed().then((instance) => {
 			return instance.market()
 		}).then((market) => {
 			assert.equal(market, ENSMarket.address, "ENSProduct does not have the correct market")
@@ -27,8 +20,10 @@ contract('ENSProduct', function(accounts) {
 
 contract('ENSMarket', function(accounts) {
 
-	var account1 = accounts[0];
-	var account2 = accounts[1];
+	const account1 = accounts[0];
+	const account2 = accounts[1];
+	const DIN = 1000000001
+	const price = web3.toWei(2, 'ether')
 
 	it("should have a DIN Registry", () => {
 		return ENSMarket.deployed().then((instance) => {
@@ -55,9 +50,7 @@ contract('ENSMarket', function(accounts) {
 	})
 
 	it("should let sellers add a domain", () => {
-		const DIN = 10000001
 		const quantity = 1
-		const price = web3.toWei(2, 'ether')
 		var ens
 			// Transfer ownership of the ENS node to the ENSProduct contract
 		ENS.deployed().then((instance) => {
@@ -69,14 +62,13 @@ contract('ENSMarket', function(accounts) {
 			assert.equal(owner, ENSProduct.address, "The ENS node was not transferred to ENSProduct")
 			return ENSMarket.deployed()
 		}).then((instance) => {
-			return instance.totalPrice(DIN, quantity)
+			return instance.price(DIN, quantity)
 		}).then((domainPrice) => {
 			assert.equal(domainPrice.toNumber(), price, "The price of the ENS node is incorrect")
 		})
 	})
 
 	it("should only allow ENS node products that are owned by their buy handler", () => {
-		const DIN = 10000001
 		var market
 		var ensNode
 		var ensOwner
@@ -99,8 +91,6 @@ contract('ENSMarket', function(accounts) {
 	})
 
 	it("should let buyers buy a domain", () => {
-		const price = web3.toWei(2, 'ether')
-		const DIN = 10000001
 		const quantity = 1
 		var node
 		var market
@@ -111,8 +101,6 @@ contract('ENSMarket', function(accounts) {
 			return market.ENSNode(DIN)
 		}).then((ensNode) => {
 			node = ensNode
-			return ENS.at(ENS.address).owner(node)
-		}).then((owner) => {
 			return market.buy(DIN, 1, {value: price, from: account2})
 		}).then(() => {
 			return ENS.at(ENS.address).owner(node)
@@ -123,13 +111,20 @@ contract('ENSMarket', function(accounts) {
 
 	it("should have funds in escrow for seller", () => {
 		const expectedProceeds = web3.toWei(2, 'ether')
-		const orderID = 1
+		var orderIndex
 
-		return ENSMarket.deployed().then((instance) => {
-			return instance.availableForWithdrawal(1)
+		// Get the most recent order ID
+		return OrderTracker.deployed().then((instance) => {
+			return instance.orderIndex()
+		}).then((index) => {
+			orderIndex = index.toNumber()
+			return ENSMarket.deployed()
+		}).then((instance) => {
+			return instance.pendingWithdrawals(orderIndex)
 		}).then((escrow) => {
-			assert.equal(escrow, expectedProceeds, "The escrow from the sale is incorrect")
+			assert.equal(escrow.toNumber(), expectedProceeds, "The escrow from the sale is incorrect")
 		})
+
 	})
 
 	it("should not let a random account withdraw", () => {
@@ -145,7 +140,7 @@ contract('ENSMarket', function(accounts) {
 
 	it("should increase the seller's balance after withdrawing", () => {
 		const beginBalance = web3.fromWei(web3.eth.getBalance(account1), 'ether').toNumber()
-		const orderID = 1
+		const orderID = 2
 		const expectedProceeds = 2
 		const gasAllowance = 0.1
 
