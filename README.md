@@ -79,7 +79,7 @@ As a proof of concept, we're building a secondary market for [ENS](https://ens.d
 Install project dependencies.
 
 ```
-npm install
+yarn install
 ```
 
 In a separate terminal tab, start TestRPC.
@@ -98,7 +98,7 @@ truffle migrate
 Then, start the React project and open http://localhost:3000/ to see the app.
 
 ```
-npm start
+yarn start
 ```
 
 ## Testing
