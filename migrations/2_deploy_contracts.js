@@ -73,7 +73,7 @@ module.exports = function(deployer, network, accounts) {
     return DINMarket.at(DINMarket.address).setBuyHandler(genesis, DINMarket.address)
   }).then(() => {
     // Register a new DIN.
-    return DINMarket.at(DINMarket.address).buy(genesis, 1, {from: account1, value: 0, gas: 470000})
+    return DINMarket.at(DINMarket.address).buy(genesis, 1, {from: account1, value: 0, gas: 4700000})
   }).then(() => {
     return DINRegistry.at(DINRegistry.address).setMarket(DIN, ENSMarket.address)
   }).then(() => {

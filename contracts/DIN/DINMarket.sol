@@ -18,7 +18,21 @@ contract DINMarket is PublicMarket, PriceResolver, InventoryResolver, BuyHandler
 	}
 
 	function isFulfilled(uint256 orderID) constant returns (bool) {
-		return true;
+		uint256 firstDIN = uint256(orders[orderID].info);
+		uint256 quantity = orders[orderID].quantity;
+
+		// If only one DIN was registered, check that it is owned by the buyer.
+		if (quantity == 1) {
+			return (dinRegistry.owner(firstDIN) == orders[orderID].buyer);
+		}
+
+		uint256 lastDIN = firstDIN + quantity - 1;
+
+		// If more than one DIN was registered, check that the first and last DIN are owned by the buyer.
+		return (
+			(dinRegistry.owner(firstDIN) == orders[orderID].buyer) &&
+			(dinRegistry.owner(lastDIN) == orders[orderID].buyer)
+		);
 	}
 
 	// Price Resolver

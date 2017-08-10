@@ -125,8 +125,8 @@ contract PublicMarket is Market {
             DIN,
             info,
             msg.value,
-            block.timestamp,
             quantity,
+            block.timestamp,
             OrderStatus.Pending
         );
 
