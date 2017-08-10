@@ -21,12 +21,12 @@ contract('ENSPublicProduct', function(accounts) {
 
 })
 
-const DIN = 1000000001
-
 contract('ENSMarket', function(accounts) {
 
-	var account1 = accounts[0];
-	var account2 = accounts[1];
+	const account1 = accounts[0];
+	const account2 = accounts[1];
+	const DIN = 1000000001
+	const price = web3.toWei(2, 'ether')
 
 	it("should have a DIN Registry", () => {
 		return ENSMarket.deployed().then((instance) => {
@@ -54,7 +54,6 @@ contract('ENSMarket', function(accounts) {
 
 	it("should let sellers add a domain", () => {
 		const quantity = 1
-		const price = web3.toWei(2, 'ether')
 		var ens
 			// Transfer ownership of the ENS node to the ENSProduct contract
 		ENS.deployed().then((instance) => {
@@ -95,7 +94,6 @@ contract('ENSMarket', function(accounts) {
 	})
 
 	it("should let buyers buy a domain", () => {
-		const price = web3.toWei(2, 'ether')
 		const quantity = 1
 		var node
 		var market
@@ -106,34 +104,26 @@ contract('ENSMarket', function(accounts) {
 			return market.ENSNode(DIN)
 		}).then((ensNode) => {
 			node = ensNode
+			return market.buy(DIN, 1, {value: price, from: account2})
+		}).then(() => {
 			return ENS.at(ENS.address).owner(node)
 		}).then((owner) => {
-			// return market.buy(DIN, 1, {value: price, from: account2})
-		// }).then(() => {
-			return ENS.at(ENS.address).owner(node)
-		}).then((owner) => {
-			console.log(ENSMarket.address)
-			console.log(ENSPublicProduct.address)
-			console.log(account1)
-			console.log(account2)
-
 			assert.equal(owner, account2, "The ENS node was not transferred to the buyer")
 		})
 	})
 
 	it("should have funds in escrow for seller", () => {
 		const expectedProceeds = web3.toWei(2, 'ether')
-		var ind
+		var orderIndex
 
 		// Get the most recent order ID
 		return OrderTracker.deployed().then((instance) => {
 			return instance.orderIndex()
 		}).then((index) => {
-			ind = index.toNumber()
-			console.log(ind)
+			orderIndex = index.toNumber()
 			return ENSMarket.deployed()
 		}).then((instance) => {
-			return instance.pendingWithdrawals(ind)
+			return instance.pendingWithdrawals(orderIndex)
 		}).then((escrow) => {
 			assert.equal(escrow.toNumber(), expectedProceeds, "The escrow from the sale is incorrect")
 		})
@@ -153,7 +143,7 @@ contract('ENSMarket', function(accounts) {
 
 	it("should increase the seller's balance after withdrawing", () => {
 		const beginBalance = web3.fromWei(web3.eth.getBalance(account1), 'ether').toNumber()
-		const orderID = 1
+		const orderID = 2
 		const expectedProceeds = 2
 		const gasAllowance = 0.1
 
