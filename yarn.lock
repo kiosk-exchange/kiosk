@@ -2530,9 +2530,9 @@ etag@~1.8.0:
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/etag/-/etag-1.8.0.tgz#6f631aef336d6c46362b51764044ce216be3c051"
 
-eth-ens-namehash@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/eth-ens-namehash/-/eth-ens-namehash-2.0.0.tgz#9661517bfc138726592fa0f160b606ecd5874ef2"
+eth-ens-namehash@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/eth-ens-namehash/-/eth-ens-namehash-1.0.2.tgz#05ecdd6bac2d7fd7bc5ca84a993c6bad9da4edb9"
   dependencies:
     idna-uts46 "^1.0.1"
     js-sha3 "^0.5.7"
