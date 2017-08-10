@@ -8,8 +8,7 @@ import './OrderTracker.sol';
 pragma solidity ^0.4.11;
 
 /**
-*  This is the default Kiosk implementation of a public Market contract.
-*  Subclasses must implement "isFulfilled".
+*  This is the default Kiosk implementation of a Market contract.
 */
 contract PublicMarket is Market {
 
