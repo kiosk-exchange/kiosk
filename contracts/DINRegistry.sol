@@ -13,29 +13,29 @@ contract DINRegistry {
     }
 
     // DIN => Record
-    mapping (uint => Record) records;
+    mapping (uint256 => Record) records;
 
     // The first DIN registered.
-    uint public genesis;
+    uint256 public genesis;
 
     // The current DIN index.
-    uint public index;
+    uint256 public index;
 
     // Logged when the owner of a DIN transfers ownership to a new account.
-    event NewOwner(uint indexed DIN, address indexed newOwner, address indexed oldOwner);
+    event NewOwner(uint256 indexed DIN, address indexed newOwner, address indexed oldOwner);
 
     // Logged when the market associated with a DIN changes.
-    event NewMarket(uint indexed DIN, address indexed market);
+    event NewMarket(uint256 indexed DIN, address indexed market);
 
     // Logged when a new DIN is registered.
-    event NewRegistration(uint indexed DIN, address indexed owner);
+    event NewRegistration(uint256 indexed DIN, address indexed owner);
 
-    modifier only_owner(uint DIN) {
+    modifier only_owner(uint256 DIN) {
         require(records[DIN].owner == msg.sender);
         _;
     }
 
-    modifier only_market(uint DIN) {
+    modifier only_market(uint256 DIN) {
         require (market(DIN) == msg.sender);
         _;
     }
@@ -44,7 +44,7 @@ contract DINRegistry {
      * Constructs a new DIN registry.
      * @param _genesis The start index for DIN numbering.
      */
-    function DINRegistry(uint _genesis) {
+    function DINRegistry(uint256 _genesis) {
         genesis = _genesis;
         index = _genesis;
 
@@ -91,7 +91,7 @@ contract DINRegistry {
     /**
      * Returns the address that owns the specified DIN.
      */
-    function owner(uint DIN) constant returns (address) {
+    function owner(uint256 DIN) constant returns (address) {
         return records[DIN].owner;
     }
 
@@ -100,7 +100,7 @@ contract DINRegistry {
      * @param DIN The DIN to update.
      * @param owner The address of the new owner.
      */
-    function setOwner(uint DIN, address owner) only_owner(DIN) {
+    function setOwner(uint256 DIN, address owner) only_owner(DIN) {
         records[DIN].owner = owner;
         NewOwner(DIN, owner, msg.sender);
     }
@@ -108,7 +108,7 @@ contract DINRegistry {
     /**
     * Returns the address of the market for the specified DIN.
     */
-    function market(uint DIN) constant returns (address) {
+    function market(uint256 DIN) constant returns (address) {
         return records[DIN].market;
     }
 
@@ -117,7 +117,7 @@ contract DINRegistry {
      * @param DIN The DIN to update.
      * @param market The address of the market.
      */
-    function setMarket(uint DIN, Market market) only_owner(DIN) {
+    function setMarket(uint256 DIN, Market market) only_owner(DIN) {
         records[DIN].market = market;
         NewMarket(DIN, market);
     }
