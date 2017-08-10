@@ -5,6 +5,7 @@ export class Artifacts {
 	DINMarket
 	PublicMarket
 	ENSPublicProduct
+	OrderTracker
 
 	constructor(artifacts) {
 		this.ENSMarket = artifacts.require('./ENS/ENSMarket.sol')
@@ -13,6 +14,7 @@ export class Artifacts {
 		this.DINMarket = artifacts.require('./DINMarket.sol')
 		this.PublicMarket = artifacts.require('./PublicMarket.sol')
 		this.ENSPublicProduct = artifacts.require('./ENSPublicProduct.sol')
+		this.OrderTracker = artifacts.require('./OrderTracker.sol')
 	}
 
 }

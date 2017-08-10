@@ -5,7 +5,8 @@ const {
 	ENS,
 	DINRegistry,
 	PublicMarket,
-	ENSPublicProduct
+	ENSPublicProduct,
+	OrderTracker
 } = new Artifacts(artifacts)
 
 contract('ENSPublicProduct', function(accounts) {
@@ -19,6 +20,8 @@ contract('ENSPublicProduct', function(accounts) {
 	})
 
 })
+
+const DIN = 1000000001
 
 contract('ENSMarket', function(accounts) {
 
@@ -50,7 +53,6 @@ contract('ENSMarket', function(accounts) {
 	})
 
 	it("should let sellers add a domain", () => {
-		const DIN = 10000001
 		const quantity = 1
 		const price = web3.toWei(2, 'ether')
 		var ens
@@ -71,7 +73,6 @@ contract('ENSMarket', function(accounts) {
 	})
 
 	it("should only allow ENS node products that are owned by their buy handler", () => {
-		const DIN = 10000001
 		var market
 		var ensNode
 		var ensOwner
@@ -95,7 +96,6 @@ contract('ENSMarket', function(accounts) {
 
 	it("should let buyers buy a domain", () => {
 		const price = web3.toWei(2, 'ether')
-		const DIN = 10000001
 		const quantity = 1
 		var node
 		var market
@@ -108,23 +108,36 @@ contract('ENSMarket', function(accounts) {
 			node = ensNode
 			return ENS.at(ENS.address).owner(node)
 		}).then((owner) => {
-			return market.buy(DIN, 1, {value: price, from: account2})
-		}).then(() => {
+			// return market.buy(DIN, 1, {value: price, from: account2})
+		// }).then(() => {
 			return ENS.at(ENS.address).owner(node)
 		}).then((owner) => {
+			console.log(ENSMarket.address)
+			console.log(ENSPublicProduct.address)
+			console.log(account1)
+			console.log(account2)
+
 			assert.equal(owner, account2, "The ENS node was not transferred to the buyer")
 		})
 	})
 
 	it("should have funds in escrow for seller", () => {
 		const expectedProceeds = web3.toWei(2, 'ether')
-		const orderID = 1
+		var ind
 
-		return ENSMarket.deployed().then((instance) => {
-			return instance.availableForWithdrawal(1)
+		// Get the most recent order ID
+		return OrderTracker.deployed().then((instance) => {
+			return instance.orderIndex()
+		}).then((index) => {
+			ind = index.toNumber()
+			console.log(ind)
+			return ENSMarket.deployed()
+		}).then((instance) => {
+			return instance.pendingWithdrawals(ind)
 		}).then((escrow) => {
-			assert.equal(escrow, expectedProceeds, "The escrow from the sale is incorrect")
+			assert.equal(escrow.toNumber(), expectedProceeds, "The escrow from the sale is incorrect")
 		})
+
 	})
 
 	it("should not let a random account withdraw", () => {
