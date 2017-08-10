@@ -1,13 +1,10 @@
-import { Artifacts } from '../utils/artifacts'
-
-const {
-	ENSMarket,
-	ENS,
-	DINRegistry,
-	PublicMarket,
-	ENSPublicProduct,
-	OrderTracker
-} = new Artifacts(artifacts)
+var ENSMarket = artifacts.require('./ENS/ENSMarket.sol')
+var ENS = artifacts.require('./ENS/ENS.sol')
+var DINRegistry = artifacts.require('./DINRegistry.sol')
+var DINMarket = artifacts.require('./DINMarket.sol')
+var PublicMarket = artifacts.require('./PublicMarket.sol')
+var ENSPublicProduct = artifacts.require('./ENSPublicProduct.sol')
+var OrderTracker = artifacts.require('./OrderTracker.sol')
 
 contract('ENSPublicProduct', function(accounts) {
 
