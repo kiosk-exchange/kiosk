@@ -1,5 +1,4 @@
 import './DINRegistry.sol';
-import './InfoResolver.sol';
 import './PriceResolver.sol';
 import './InventoryResolver.sol';
 import './BuyHandler.sol';
@@ -15,7 +14,6 @@ pragma solidity ^0.4.11;
 contract PublicMarket is Market {
 
     struct Product {
-        InfoResolver infoResolver;              // Returns product information.
         PriceResolver priceResolver;            // Returns product price.
         InventoryResolver inventoryResolver;    // Returns whether product is in stock.
         BuyHandler buyHandler;                  // Returns the address of the contract that handles orders.
@@ -27,6 +25,7 @@ contract PublicMarket is Market {
         uint256 DIN;
         bytes32 info;                           // A snapshot of product information.
         uint256 value;                          // The amount paid.
+        uint256 quantity;
         uint256 timestamp;
         OrderStatus status;
     }
@@ -53,7 +52,6 @@ contract PublicMarket is Market {
     mapping (uint256 => uint256) public pendingWithdrawals;
 
     // Events
-    event InfoResolverChanged(uint256 indexed DIN, address InfoResolver);
     event PriceResolverChanged(uint256 indexed DIN, address PriceResolver);
     event InventoryResolverChanged(uint256 indexed DIN, address InventoryResolver);
     event BuyHandlerChanged(uint256 indexed DIN, address BuyHandler);
@@ -107,15 +105,16 @@ contract PublicMarket is Market {
         returns (uint256) 
     {
     	address seller = dinRegistry.owner(DIN);
-        bytes32 productInfo = info(DIN);
+        bytes32 info = orderInfo(DIN);
 
         // Add the order to the order tracker and get the order ID.
         uint256 orderID = orderTracker.registerNewOrder(
             msg.sender,
             seller,
             DIN,
-            productInfo,
+            info,
             msg.value,
+            quantity,
             block.timestamp
         );
 
@@ -124,9 +123,10 @@ contract PublicMarket is Market {
             msg.sender,
             seller,
             DIN,
-            productInfo,
+            info,
             msg.value,
             block.timestamp,
+            quantity,
             OrderStatus.Pending
         );
 
@@ -161,20 +161,6 @@ contract PublicMarket is Market {
     *      Product Information          
     *   =========================
     */ 
-
-    // Info
-    function info(uint256 DIN) constant returns (bytes32) {
-        return products[DIN].infoResolver.productInfo(DIN);
-    }
-
-    function infoResolver(uint256 DIN) constant returns (address) {
-        return products[DIN].infoResolver;
-    }
-
-    function setInfoResolver(uint256 DIN, InfoResolver resolver) constant returns (address) {
-        products[DIN].infoResolver = resolver;
-        InfoResolverChanged(DIN, resolver);
-    }
 
     // Price
     function price(uint256 DIN, uint256 quantity) constant returns (uint256) {

@@ -61,38 +61,38 @@ module.exports = function(deployer, network, accounts) {
   }).then(() => {
     // Deploy the DINMarket
     return deployer.deploy(DINMarket, DINRegistry.address, OrderTracker.address)
-  }).then(() => {
-    // Set the market for the genesis DIN to the DINMarket
-    return DINRegistry.at(DINRegistry.address).setMarket(genesis, DINMarket.address)
-  }).then(() => {
-    // Set the Product resolvers of DINMarket to itself
-    return DINMarket.at(DINMarket.address).setPriceResolver(genesis, DINMarket.address)
-  }).then(() => {
-    return DINMarket.at(DINMarket.address).setInventoryResolver(genesis, DINMarket.address)
-  }).then(() => {
-    return DINMarket.at(DINMarket.address).setBuyHandler(genesis, DINMarket.address)
-  }).then(() => {
-    // Register a new DIN.
-    return DINMarket.at(DINMarket.address).buy(genesis, 1, {from: account1, value: 0, gas: 470000})
-  }).then(() => {
-    return DINRegistry.at(DINRegistry.address).setMarket(DIN, ENSMarket.address)
-  }).then(() => {
-    // Add product resolvers and information to ENSMarket (ideally, a factory will be able to do this)
-    return ENSMarket.at(ENSMarket.address).setPriceResolver(DIN, ENSPublicProduct.address)
-  }).then(() => {
-    return ENSMarket.at(ENSMarket.address).setInventoryResolver(DIN, ENSPublicProduct.address)
-  }).then(() => {
-    return ENSMarket.at(ENSMarket.address).setBuyHandler(DIN, ENSPublicProduct.address)
-  }).then(() => {
-    return ENSMarket.at(ENSMarket.address).setName(DIN, subnodeName)
-  }).then(() => {
-    return ENSMarket.at(ENSMarket.address).setENSNode(DIN, subnodeNameHash)
-  }).then(() => {
-    // List "example.eth" on ENSMarket
-    return ENSPublicProduct.at(ENSPublicProduct.address).addENSDomain(DIN, subnodeName, subnodeNameHash, price)
-  }).then(() => {
-    // Transfer ownership of "example.eth" to the ENSPublicProduct
-    return ENS.at(ENS.address).setOwner(subnodeNameHash, ENSPublicProduct.address)
+  // }).then(() => {
+  //   // Set the market for the genesis DIN to the DINMarket
+  //   return DINRegistry.at(DINRegistry.address).setMarket(genesis, DINMarket.address)
+  // }).then(() => {
+  //   // Set the Product resolvers of DINMarket to itself
+  //   return DINMarket.at(DINMarket.address).setPriceResolver(genesis, DINMarket.address)
+  // }).then(() => {
+  //   return DINMarket.at(DINMarket.address).setInventoryResolver(genesis, DINMarket.address)
+  // }).then(() => {
+  //   return DINMarket.at(DINMarket.address).setBuyHandler(genesis, DINMarket.address)
+  // }).then(() => {
+  //   // Register a new DIN.
+  //   return DINMarket.at(DINMarket.address).buy(genesis, 1, {from: account1, value: 0, gas: 470000})
+  // }).then(() => {
+  //   return DINRegistry.at(DINRegistry.address).setMarket(DIN, ENSMarket.address)
+  // }).then(() => {
+  //   // Add product resolvers and information to ENSMarket (ideally, a factory will be able to do this)
+  //   return ENSMarket.at(ENSMarket.address).setPriceResolver(DIN, ENSPublicProduct.address)
+  // }).then(() => {
+  //   return ENSMarket.at(ENSMarket.address).setInventoryResolver(DIN, ENSPublicProduct.address)
+  // }).then(() => {
+  //   return ENSMarket.at(ENSMarket.address).setBuyHandler(DIN, ENSPublicProduct.address)
+  // }).then(() => {
+  //   return ENSMarket.at(ENSMarket.address).setName(DIN, subnodeName)
+  // }).then(() => {
+  //   return ENSMarket.at(ENSMarket.address).setENSNode(DIN, subnodeNameHash)
+  // }).then(() => {
+  //   // List "example.eth" on ENSMarket
+  //   return ENSPublicProduct.at(ENSPublicProduct.address).addENSDomain(DIN, subnodeName, subnodeNameHash, price)
+  // }).then(() => {
+  //   // Transfer ownership of "example.eth" to the ENSPublicProduct
+  //   return ENS.at(ENS.address).setOwner(subnodeNameHash, ENSPublicProduct.address)
   })
 
 }

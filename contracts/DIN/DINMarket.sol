@@ -1,23 +1,24 @@
 import '../PublicMarket.sol';
 import '../DINRegistry.sol';
 import '../OrderTracker.sol';
-import '../Product.sol';
+import '../PriceResolver.sol';
+import '../InventoryResolver.sol';
+import '../BuyHandler.sol';
 
 pragma solidity ^0.4.11;
 
-contract DINMarket is PublicMarket, Product {
+contract DINMarket is PublicMarket, PriceResolver, InventoryResolver, BuyHandler {
 
 	function DINMarket(DINRegistry _dinRegistry, OrderTracker _orderTracker)
 		PublicMarket(_dinRegistry, _orderTracker) {}
 
-	function isFulfilled(uint256 orderID) constant returns (bool) {
-		return true;
-	}
-
-	// Info Resolver
-	function productInfo(uint256 DIN) constant returns (bytes32) {
+	function orderInfo(uint256 DIN) constant returns (bytes32) {
 		uint256 nextDIN = dinRegistry.index() + 1;
 		return bytes32(nextDIN);
+	}
+
+	function isFulfilled(uint256 orderID) constant returns (bool) {
+		return true;
 	}
 
 	// Price Resolver
