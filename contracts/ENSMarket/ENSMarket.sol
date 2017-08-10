@@ -37,8 +37,7 @@ contract ENSMarket is PublicMarket {
 
 	function isFulfilled(uint256 orderID) constant returns (bool) {
 		// Get the ENS node from the order
-		uint256 DIN = orders[orderID].DIN;
-		bytes32 node = ENSNode(DIN);
+		bytes32 node = orders[orderID].info;
 
 		// Check that buyer is the owner
 		return (ens.owner(node) == orders[orderID].buyer);
