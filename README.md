@@ -10,6 +10,8 @@ Kiosk provides a framework for creating decentralized marketplaces. Its smart co
 
 ## How It Works
 
+![kiosk protocol](/kioskprotocol.jpg?raw=true)
+
 The Kiosk protocol has four main components: `DIN`, `Market`, `Product`, and `Order`.
 
 ### DIN
@@ -55,20 +57,18 @@ function handleOrder(uint256 orderID, uint256 DIN, uint256 quantity, address buy
 An `Order` contains information about a purchase. A `Market`communicates its orders to a global `OrderTracker` and gets an order ID which buyers and sellers can use to see their order history across all markets.
 
 ```cs
-	function registerNewOrder(
-		address buyer, 
-		address seller, 
-		uint256 DIN,
-		bytes32 info,
-		uint256 value,
-		uint256 quantity,
-		uint256 timestamp
-	)
-		only_market(DIN)
-		returns (uint256);
+function registerNewOrder(
+	address buyer, 
+	address seller, 
+	uint256 DIN,
+	bytes32 info,
+	uint256 value,
+	uint256 quantity,
+	uint256 timestamp
+)
+	only_market(DIN)
+	returns (uint256);
 ```
-
-![kiosk protocol](/kioskprotocol.jpg?raw=true)
 
 **The Kiosk protocol is designed with the buyer in mind**. Its goal is to make the buying experience as simple, consistent, and transparent as possible. With just a product's DIN, a buyer can determine its price and how to buy it on a provably fair market.
 
