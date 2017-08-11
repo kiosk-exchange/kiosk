@@ -81,15 +81,12 @@ function infoFromDIN(DIN, DINRegistry) {
   var product = {
     DIN: DIN,
     name: "",
-    price: "",
     owner: "",
     market: ""
   }
 
   product.owner = DINRegistry.owner(DIN);
   product.market = DINRegistry.market(DIN);
-
-  console.log(product)
 
   return product;
 }

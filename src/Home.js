@@ -63,9 +63,25 @@ class Home extends Component {
               <tr>
                 <th>DIN</th>
                 <th>Name</th>
-                <th>Price</th>
+                <th>Owner</th>
                 <th>Market</th>
               </tr>
+              {this.state.products.map((product, index) =>
+                <tr key={index}>
+                  <td>
+                    {product.DIN}
+                  </td>
+                  <td>
+                    {product.name}
+                  </td>
+                  <td>
+                    {product.owner}
+                  </td>
+                  <td>
+                    <a>{product.market}</a>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </Table>
         </div>

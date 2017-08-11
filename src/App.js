@@ -3,7 +3,7 @@ import { Switch, Route } from "react-router-dom";
 
 import NavigationBar from "./Components/NavigationBar";
 import Home from "./Home";
-import Market from "./Market";
+// import Market from "./Market";
 import NewENSDomain from "./ENS/NewENSDomain";
 import NewProduct from "./NewProduct";
 import Products from "./Products";
