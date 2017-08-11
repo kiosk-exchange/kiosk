@@ -1,36 +1,77 @@
-import React, { Component } from 'react'
-import SearchBar from './Components/SearchBar'
-import FeaturedProducts from './Components/FeaturedProducts'
+import React, { Component } from "react";
+import getWeb3 from "./utils/getWeb3";
+import { getDINRegistry } from "./utils/contracts";
+import { Table } from "react-bootstrap";
+import SearchBar from "./Components/SearchBar";
+import { getAllDINs, infoFromDIN } from "./utils/getProducts";
 
 class Home extends Component {
-
   constructor(props) {
-    super(props)
+    super(props);
 
-    this.handleSearch = this.handleSearch.bind(this)
+    this.state = {
+      web3: null,
+      DINRegistry: null,
+      products: []
+    };
+
+    this.handleSearch = this.handleSearch.bind(this);
+  }
+
+  componentWillMount() {
+    getWeb3.then(results => {
+      this.setState({ web3: results.web3 }, () => {
+        // Get the global DIN registry
+        getDINRegistry(this.state.web3).then(registry => {
+          this.setState({ DINRegistry: registry }, () => {
+            this.getProducts();
+          });
+        });
+      });
+    });
+  }
+
+  getProducts() {
+    getAllDINs(this.state.DINRegistry).then(DINs => {
+      // Get product details (name, node, price) from the market
+      var fullProducts = DINs.map(DIN => {
+        return infoFromDIN(DIN, this.state.DINRegistry);
+      });
+
+      this.setState({ products: fullProducts });
+    });
   }
 
   handleSearch(query) {
-    var din = "/DIN/" + query
-    this.props.history.push(din)
+    var din = "/DIN/" + query;
+    this.props.history.push(din);
+  }
+
+  handleBuy() {
+    console.log("Buy");
   }
 
   render() {
     return (
       <div>
-      	<div className="welcome-header">
-      		<h1>Welcome to Kiosk</h1>
-      	</div>
         <div className="search-bar">
-          <SearchBar action={this.handleSearch}/>
+          <SearchBar action={this.handleSearch} />
         </div>
-        <div>
-          <FeaturedProducts dins={[10000002, 10000003, 10000004]} />
+        <div className="home-table">
+          <Table striped bordered condensed hover>
+            <tbody>
+              <tr>
+                <th>DIN</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Market</th>
+              </tr>
+            </tbody>
+          </Table>
         </div>
       </div>
     );
   }
-
 }
 
 export default Home;

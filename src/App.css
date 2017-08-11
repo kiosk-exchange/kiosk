@@ -91,7 +91,7 @@ td a {
 }
 
 /* Product Table */ 
-.product-table-container {
+.product-table-container, .home-table {
   padding: 20px 50px 20px 50px;
 }
 
