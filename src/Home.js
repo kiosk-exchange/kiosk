@@ -1,9 +1,10 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import getWeb3 from "./utils/getWeb3";
 import { getDINRegistry } from "./utils/contracts";
 import { Table } from "react-bootstrap";
-import SearchBar from "./Components/SearchBar";
 import { getAllDINs, infoFromDIN } from "./utils/getProducts";
+import BuyModal from "./Components/BuyModal";
 
 class Home extends Component {
   constructor(props) {
@@ -12,10 +13,12 @@ class Home extends Component {
     this.state = {
       web3: null,
       DINRegistry: null,
-      products: []
+      products: [],
+      showBuyModal: false
     };
 
     this.handleSearch = this.handleSearch.bind(this);
+    this.showBuyModal = this.showBuyModal.bind(this);
   }
 
   componentWillMount() {
@@ -51,12 +54,16 @@ class Home extends Component {
     console.log("Buy");
   }
 
+  showBuyModal() {
+    console.log("Hello")
+    this.setState({ showBuyModal: true })
+  }
+
   render() {
+    let hideBuyModal = () => this.setState({ showBuyModal: false });
+
     return (
       <div>
-        <div className="search-bar">
-          <SearchBar action={this.handleSearch} />
-        </div>
         <div className="home-table">
           <Table striped bordered condensed hover>
             <tbody>
@@ -69,7 +76,10 @@ class Home extends Component {
               {this.state.products.map((product, index) =>
                 <tr key={index}>
                   <td>
-                    {product.DIN}
+                    <a href="#" onClick={this.showBuyModal}>{product.DIN}</a>
+                    {
+                      // <Link to={`/DIN/${product.DIN}`}>{product.DIN}</Link>
+                    }
                   </td>
                   <td>
                     {product.name}
@@ -78,13 +88,14 @@ class Home extends Component {
                     {product.owner}
                   </td>
                   <td>
-                    <a>{product.market}</a>
+                    <Link to={`/market/${product.market}`}>{product.market}</Link>
                   </td>
                 </tr>
               )}
             </tbody>
           </Table>
         </div>
+        <BuyModal show={this.state.showBuyModal} onHide={hideBuyModal} />
       </div>
     );
   }
