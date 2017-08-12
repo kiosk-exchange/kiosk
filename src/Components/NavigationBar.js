@@ -22,6 +22,7 @@ class NavigationBar extends Component {
             >
               <MenuItem href="/products">Products</MenuItem>
               <MenuItem href="/orders">Orders</MenuItem>
+              <MenuItem>Balance: {this.props.balance}</MenuItem>
             </NavDropdown>
           </Nav>
         </Navbar.Collapse>

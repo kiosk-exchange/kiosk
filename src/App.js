@@ -16,14 +16,21 @@ class App extends Component {
     super(props)
 
     this.state = {
-      account: ""
+      account: "",
+      balance: ""
     };
 
   }
 
   componentWillMount() {
     getWeb3.then(results => {
-      this.setState({ account: results.web3.eth.coinbase })
+      const web3 = results.web3;
+      const balance = web3.eth.getBalance(web3.eth.coinbase);
+      const formattedBalance = web3.fromWei(balance, 'ether').toNumber().toFixed(3) + " ETH";
+      this.setState({ 
+        account: web3.eth.coinbase,
+        balance: formattedBalance
+      })
     })
   }
 
@@ -31,7 +38,7 @@ class App extends Component {
     return (
       <div>
         <div>
-          <NavigationBar className="navigation-bar" account={this.state.account} />
+          <NavigationBar className="navigation-bar" account={this.state.account} balance={this.state.balance} />
         </div>
         <div className="App">
           <Switch>
