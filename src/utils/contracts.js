@@ -1,5 +1,5 @@
 import DINRegistryJSON from '../../build/contracts/DINRegistry.json'
-import DINRegistrarJSON from '../../build/contracts/DINRegistrar.json'
+import DINMarketJSON from '../../build/contracts/DINMarket.json'
 import PublicMarketJSON from '../../build/contracts/PublicMarket.json'
 import ENSJSON from '../../build/contracts/ENS.json'
 import ENSMarketJSON from '../../build/contracts/ENSMarket.json'
@@ -16,10 +16,10 @@ const getContract = (web3, json) => new Promise((resolve, reject) => {
 })
 
 const getDINRegistry = (web3) => { return getContract(web3, DINRegistryJSON) }
-const getDINRegistrar = (web3) => { return getContract(web3, DINRegistrarJSON) }
+const getDINMarket = (web3) => { return getContract(web3, DINMarketJSON) }
 const getPublicMarket = (web3) => { return getContract(web3, PublicMarketJSON) }
 const getENS = (web3) => { return getContract(web3, ENSJSON) }
 const getENSMarket = (web3) => { return getContract(web3, ENSMarketJSON) }
 const getENSPublicProduct = (web3) => { return getContract(web3, ENSPublicProductJSON) }
 
-export { getDINRegistry, getDINRegistrar, getPublicMarket, getENS, getENSMarket, getENSPublicProduct }
+export { getDINRegistry, getDINMarket, getPublicMarket, getENS, getENSMarket, getENSPublicProduct }

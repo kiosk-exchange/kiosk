@@ -1,4 +1,4 @@
-button {
+button, .buy-now {
   background-color: #00B0FF;
   border: none;
   border-radius: 4px;
@@ -28,10 +28,6 @@ td {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-td a {
-	text-decoration: underline;
 }
 
 .search-bar {
@@ -112,4 +108,12 @@ td a {
 
 .product-table {
   padding-top: 20px;
+}
+
+/* Buy Modal */
+.buy-modal .buy-now {
+  display: block;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding: 10px 50px;
 }

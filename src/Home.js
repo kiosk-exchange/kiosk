@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import getWeb3 from "./utils/getWeb3";
-import { getDINRegistry } from "./utils/contracts";
+import { getDINRegistry, getDINMarket } from "./utils/contracts";
 import { Table } from "react-bootstrap";
 import { getAllDINs, infoFromDIN } from "./utils/getProducts";
+import { buyProduct } from "./utils/buy";
 import BuyModal from "./Components/BuyModal";
 
 class Home extends Component {
@@ -13,12 +14,14 @@ class Home extends Component {
     this.state = {
       web3: null,
       DINRegistry: null,
+      DINMarket: null,
       products: [],
       showBuyModal: false
     };
 
     this.handleSearch = this.handleSearch.bind(this);
     this.showBuyModal = this.showBuyModal.bind(this);
+    this.handleBuy = this.handleBuy.bind(this);
   }
 
   componentWillMount() {
@@ -27,7 +30,12 @@ class Home extends Component {
         // Get the global DIN registry
         getDINRegistry(this.state.web3).then(registry => {
           this.setState({ DINRegistry: registry }, () => {
-            this.getProducts();
+            // TODO: Delete
+            getDINMarket(this.state.web3).then(market => {
+              this.setState({ DINMarket: market }, () => {
+                this.getProducts();
+              });
+            });
           });
         });
       });
@@ -51,11 +59,13 @@ class Home extends Component {
   }
 
   handleBuy() {
-    console.log("Buy");
+    const DIN = 1000000000;
+    const buyer = this.state.web3.eth.accounts[0];
+
+    buyProduct(DIN, 1, 0, buyer, this.state.DINMarket)
   }
 
   showBuyModal() {
-    console.log("Hello")
     this.setState({ showBuyModal: true })
   }
 
@@ -65,7 +75,7 @@ class Home extends Component {
     return (
       <div>
         <div className="home-table">
-          <Table striped bordered condensed hover>
+          <Table striped bordered hover>
             <tbody>
               <tr>
                 <th>DIN</th>
@@ -95,7 +105,7 @@ class Home extends Component {
             </tbody>
           </Table>
         </div>
-        <BuyModal show={this.state.showBuyModal} onHide={hideBuyModal} />
+        <BuyModal show={this.state.showBuyModal} onHide={hideBuyModal} handleBuy={this.handleBuy} />
       </div>
     );
   }
