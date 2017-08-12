@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Switch, Route } from "react-router-dom";
+import getWeb3 from "./utils/getWeb3";
 
 import NavigationBar from "./Components/NavigationBar";
 import Home from "./Home";
@@ -11,11 +12,26 @@ import Orders from "./Orders";
 import View from "./View";
 
 class App extends Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      account: ""
+    };
+
+  }
+
+  componentWillMount() {
+    getWeb3.then(results => {
+      this.setState({ account: results.web3.eth.coinbase })
+    })
+  }
+
   render() {
     return (
       <div>
         <div>
-          <NavigationBar className="navigation-bar" />
+          <NavigationBar className="navigation-bar" account={this.state.account} />
         </div>
         <div className="App">
           <Switch>

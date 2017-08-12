@@ -17,7 +17,7 @@ class NavigationBar extends Component {
           <Nav pullRight onSelect={this.handleSelect}>
             <NavDropdown
               eventKey="1"
-              title="0x1fcbc4e622599d82cdbe39decaeff1ea4d4a6452"
+              title={this.props.account}
               id="nav-dropdown"
             >
               <MenuItem href="/products">Products</MenuItem>
