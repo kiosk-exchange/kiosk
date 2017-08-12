@@ -87,9 +87,6 @@ class Home extends Component {
                 <tr key={index}>
                   <td>
                     <a href="#" onClick={this.showBuyModal}>{product.DIN}</a>
-                    {
-                      // <Link to={`/DIN/${product.DIN}`}>{product.DIN}</Link>
-                    }
                   </td>
                   <td>
                     {product.name}

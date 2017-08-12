@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from "react-bootstrap";
+import { Navbar, Nav, NavDropdown, MenuItem } from "react-bootstrap";
 
 class NavigationBar extends Component {
   render() {
@@ -32,10 +32,3 @@ class NavigationBar extends Component {
 }
 
 export default NavigationBar;
-
-// <Nav pullRight>
-//   <NavItem href="/orders">Orders</NavItem>
-// </Nav>
-// <Nav pullRight>
-//   <NavItem href="/products">Products</NavItem>
-// </Nav>

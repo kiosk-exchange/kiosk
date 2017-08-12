@@ -1,9 +1,8 @@
-import React, { Component } from 'react'
-import { Table } from 'react-bootstrap'
-import TableRowButton from './TableRowButton'
+import React, { Component } from "react";
+import { Table } from "react-bootstrap";
+import TableRowButton from "./TableRowButton";
 
 class ProductTable extends Component {
-
 	render() {
 		return (
 			<div className="product-table">
@@ -16,24 +15,64 @@ class ProductTable extends Component {
 							<th>Price (in Ether)</th>
 							<th>Status</th>
 						</tr>
-						{this.props.products.map((product, index) => (
-								<tr key={index}>
-									<td>{product.DIN}</td>
-									<td>{product.name}</td>
-									<td>{product.node}</td>
-									<td>{product.formattedPrice}</td>
-									<td>
-										<TableRowButton available={product.available} index={index} handleBuy={this.props.handleBuy} />
-									</td>
-								</tr>
-							)
+						{this.props.products.map((product, index) =>
+							<tr key={index}>
+								<td>
+									{product.DIN}
+								</td>
+								<td>
+									{product.name}
+								</td>
+								<td>
+									{product.node}
+								</td>
+								<td>
+									{product.formattedPrice}
+								</td>
+								<td>
+									<TableRowButton
+										available={product.available}
+										index={index}
+										handleBuy={this.props.handleBuy}
+									/>
+								</td>
+							</tr>
 						)}
 					</tbody>
 				</Table>
+				<h1>Hello</h1>
+				<nav aria-label="Page navigation example">
+					<ul className="pagination">
+						<li className="page-item">
+							<a className="page-link" href="#">
+								Previous
+							</a>
+						</li>
+						<li className="page-item">
+							<a className="page-link" href="#">
+								1
+							</a>
+						</li>
+						<li className="page-item">
+							<a className="page-link" href="#">
+								2
+							</a>
+						</li>
+						<li className="page-item">
+							<a className="page-link" href="#">
+								3
+							</a>
+						</li>
+						<li className="page-item">
+							<a className="page-link" href="#">
+								Next
+							</a>
+						</li>
+					</ul>
+				</nav>
 			</div>
-		)
+		);
 	}
-
 }
 
-export default ProductTable
+export default ProductTable;
