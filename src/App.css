@@ -1,5 +1,6 @@
 body {
   font-family: 'Roboto', sans-serif;
+  color: black;
 }
 
 /* Navigation Bar */
@@ -17,6 +18,11 @@ body {
 
 .navbar-default .navbar-nav li a {
   color: black;
+  font-size: 18px;
+}
+
+.navbar-default .navbar-nav li a:hover {
+  color: #00B0FF;
   font-size: 18px;
 }
 

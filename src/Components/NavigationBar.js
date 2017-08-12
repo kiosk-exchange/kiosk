@@ -2,12 +2,6 @@ import React, { Component } from "react";
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from "react-bootstrap";
 
 class NavigationBar extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {};
-  }
-
   render() {
     return (
       <Navbar>
@@ -20,10 +14,14 @@ class NavigationBar extends Component {
           <Navbar.Toggle />
         </Navbar.Header>
         <Navbar.Collapse>
-          <Nav pullRight>
-            <NavDropdown eventKey="1" title="0x1fcbc4e622599d82cdbe39decaeff1ea4d4a6452" id="nav-dropdown">
-              <MenuItem eventKey="1.1">Products</MenuItem>
-              <MenuItem eventKey="1.2">Orders</MenuItem>
+          <Nav pullRight onSelect={this.handleSelect}>
+            <NavDropdown
+              eventKey="1"
+              title="0x1fcbc4e622599d82cdbe39decaeff1ea4d4a6452"
+              id="nav-dropdown"
+            >
+              <MenuItem href="/products">Products</MenuItem>
+              <MenuItem href="/orders">Orders</MenuItem>
             </NavDropdown>
           </Nav>
         </Navbar.Collapse>
