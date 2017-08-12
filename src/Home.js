@@ -79,7 +79,7 @@ class Home extends Component {
             <tbody>
               <tr>
                 <th>DIN</th>
-                <th>Name</th>
+                <th>Product Name</th>
                 <th>Owner</th>
                 <th>Market</th>
               </tr>

@@ -1,3 +1,29 @@
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Navigation Bar */
+.navbar-default {
+  padding: 10px 0px;
+  color: blue;
+  background-color: white;
+  font-weight: bolder;
+}
+
+.navbar-default .navbar-brand {
+  color: black;
+  font-size: 44px;
+}
+
+.navbar-default .navbar-nav li a {
+  color: black;
+  font-size: 18px;
+}
+
+a {
+  color: #00B0FF;
+}
+
 button, .buy-now {
   background-color: #00B0FF;
   border: none;
