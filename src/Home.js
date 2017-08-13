@@ -6,7 +6,6 @@ import { Table, Pagination } from "react-bootstrap";
 import { getAllDINs, infoFromDIN } from "./utils/getProducts";
 import { buyProduct } from "./utils/buy";
 import BuyModal from "./Components/BuyModal";
-import KioskTable from "./Components/KioskTable";
 
 class Home extends Component {
   constructor(props) {
@@ -17,6 +16,7 @@ class Home extends Component {
       DINRegistry: null,
       DINMarket: null,
       products: [],
+      productNames: [], // [{ DIN: name }]
       activePage: 1,
       showBuyModal: false
     };
@@ -25,6 +25,7 @@ class Home extends Component {
     this.showBuyModal = this.showBuyModal.bind(this);
     this.handleBuy = this.handleBuy.bind(this);
     this.handlePageSelect = this.handlePageSelect.bind(this);
+    this.getProductName = this.getProductName.bind(this);
   }
 
   componentWillMount() {
@@ -49,7 +50,8 @@ class Home extends Component {
     getAllDINs(this.state.DINRegistry).then(DINs => {
       // Get product details (name, node, price) from the market
       var fullProducts = DINs.map(DIN => {
-        return infoFromDIN(DIN, this.state.DINRegistry);
+        // this.getProductName(DIN);
+        return infoFromDIN(DIN, this.state.web3, this.state.DINRegistry);
       });
 
       this.setState({ products: fullProducts });
@@ -78,6 +80,10 @@ class Home extends Component {
     });
   }
 
+  getProductName(DIN) {
+
+  }
+
   render() {
     let hideBuyModal = () => this.setState({ showBuyModal: false });
     const tableHeaders = ["DIN", "Product Name", "Owner", "Market"];
@@ -96,7 +102,7 @@ class Home extends Component {
             <tbody>
               <tr>
                 {tableHeaders.map(header =>
-                  <th>
+                  <th key={header}>
                     {header}
                   </th>
                 )}

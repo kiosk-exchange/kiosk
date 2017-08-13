@@ -7,6 +7,8 @@ pragma solidity ^0.4.11;
 
 contract ENSMarket is PublicMarket {
 
+	string public title = "ENS";
+
 	// ENS Registry
 	AbstractENS public ens;
 

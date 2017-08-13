@@ -1,3 +1,5 @@
+import MarketJSON from "../../build/contracts/Market.json";
+
 const getMarketDINs = (DINRegistry, marketAddress) =>
   new Promise((resolve, reject) => {
     var DINs = [];
@@ -50,7 +52,7 @@ const getUserDINs = (DINRegistry, user) =>
     });
   });
 
-const getAllDINs = (DINRegistry) =>
+const getAllDINs = DINRegistry =>
   new Promise((resolve, reject) => {
     var DINs = [];
 
@@ -59,7 +61,7 @@ const getAllDINs = (DINRegistry) =>
       { fromBlock: 0, toBlock: "latest" }
     );
     newRegistrationEvent.watch((error, result) => {
-      parseResponse(DINs, error, result, resolve, reject)
+      parseResponse(DINs, error, result, resolve, reject);
       newRegistrationEvent.stopWatching();
     });
   });
@@ -77,16 +79,22 @@ function parseResponse(DINs, error, result, resolve, reject) {
   resolve(DINs);
 }
 
-function infoFromDIN(DIN, DINRegistry) {
-  var product = {
+function infoFromDIN(DIN, web3, DINRegistry) {
+  let product = {
     DIN: DIN,
     name: "",
     owner: "",
     market: ""
-  }
+  };
+
+  const marketAddr = DINRegistry.market(DIN)
 
   product.owner = DINRegistry.owner(DIN);
-  product.market = DINRegistry.market(DIN);
+  product.market = marketAddr;
+
+  const marketContract = web3.eth.contract(MarketJSON.abi);
+  const market = marketContract.at(marketAddr);
+  product.name = market.name(DIN);
 
   return product;
 }
