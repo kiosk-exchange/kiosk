@@ -2,10 +2,11 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import getWeb3 from "./utils/getWeb3";
 import { getDINRegistry, getDINMarket } from "./utils/contracts";
-import { Table } from "react-bootstrap";
+import { Table, Pagination } from "react-bootstrap";
 import { getAllDINs, infoFromDIN } from "./utils/getProducts";
 import { buyProduct } from "./utils/buy";
 import BuyModal from "./Components/BuyModal";
+import KioskTable from "./Components/KioskTable";
 
 class Home extends Component {
   constructor(props) {
@@ -16,12 +17,14 @@ class Home extends Component {
       DINRegistry: null,
       DINMarket: null,
       products: [],
+      activePage: 1,
       showBuyModal: false
     };
 
     this.handleSearch = this.handleSearch.bind(this);
     this.showBuyModal = this.showBuyModal.bind(this);
     this.handleBuy = this.handleBuy.bind(this);
+    this.handlePageSelect = this.handlePageSelect.bind(this);
   }
 
   componentWillMount() {
@@ -62,15 +65,29 @@ class Home extends Component {
     const DIN = 1000000000;
     const buyer = this.state.web3.eth.accounts[0];
 
-    buyProduct(DIN, 1, 0, buyer, this.state.DINMarket)
+    buyProduct(DIN, 1, 0, buyer, this.state.DINMarket);
   }
 
   showBuyModal() {
-    this.setState({ showBuyModal: true })
+    this.setState({ showBuyModal: true });
+  }
+
+  handlePageSelect(eventKey) {
+    this.setState({
+      activePage: eventKey
+    });
   }
 
   render() {
     let hideBuyModal = () => this.setState({ showBuyModal: false });
+    const tableHeaders = ["DIN", "Product Name", "Owner", "Market"];
+
+    const pageLimit = 10;
+    var pages = Math.ceil(this.state.products.length / pageLimit);
+
+    var lower = (this.state.activePage - 1) * pageLimit;
+    var upper = lower + pageLimit + 1;
+    var products = this.state.products.slice(lower, upper);
 
     return (
       <div>
@@ -78,15 +95,19 @@ class Home extends Component {
           <Table striped bordered hover>
             <tbody>
               <tr>
-                <th>DIN</th>
-                <th>Product Name</th>
-                <th>Owner</th>
-                <th>Market</th>
+                {tableHeaders.map(header =>
+                  <th>
+                    {header}
+                  </th>
+                )}
               </tr>
-              {this.state.products.map((product, index) =>
-                <tr key={index}>
+
+              {products.map(product =>
+                <tr key={product.DIN}>
                   <td>
-                    <a href="#" onClick={this.showBuyModal}>{product.DIN}</a>
+                    <a href="#" onClick={this.showBuyModal}>
+                      {product.DIN}
+                    </a>
                   </td>
                   <td>
                     {product.name}
@@ -95,14 +116,29 @@ class Home extends Component {
                     {product.owner}
                   </td>
                   <td>
-                    <Link to={`/market/${product.market}`}>{product.market}</Link>
+                    <Link to={`/market/${product.market}`}>
+                      {product.market}
+                    </Link>
                   </td>
                 </tr>
               )}
             </tbody>
           </Table>
+          <Pagination
+            prev="Previous"
+            next="Next"
+            ellipsis
+            items={pages}
+            maxButtons={5}
+            activePage={this.state.activePage}
+            onSelect={this.handlePageSelect}
+          />
         </div>
-        <BuyModal show={this.state.showBuyModal} onHide={hideBuyModal} handleBuy={this.handleBuy} />
+        <BuyModal
+          show={this.state.showBuyModal}
+          onHide={hideBuyModal}
+          handleBuy={this.handleBuy}
+        />
       </div>
     );
   }
