@@ -6,6 +6,7 @@ import { Table, Pagination } from "react-bootstrap";
 import { getAllDINs, infoFromDIN } from "./utils/getProducts";
 import { buyProduct } from "./utils/buy";
 import BuyModal from "./Components/BuyModal";
+import MarketJSON from "./../build/contracts/Market.json";
 
 class Home extends Component {
   constructor(props) {
@@ -18,14 +19,14 @@ class Home extends Component {
       products: [],
       productNames: [], // [{ DIN: name }]
       activePage: 1,
-      showBuyModal: false
+      showBuyModal: false,
+      selectedProduct: {}
     };
 
     this.handleSearch = this.handleSearch.bind(this);
     this.showBuyModal = this.showBuyModal.bind(this);
     this.handleBuy = this.handleBuy.bind(this);
     this.handlePageSelect = this.handlePageSelect.bind(this);
-    this.getProductName = this.getProductName.bind(this);
   }
 
   componentWillMount() {
@@ -64,24 +65,27 @@ class Home extends Component {
   }
 
   handleBuy() {
-    const DIN = 1000000000;
+    const DIN = this.state.selectedProduct.DIN;
     const buyer = this.state.web3.eth.accounts[0];
 
-    buyProduct(DIN, 1, 0, buyer, this.state.DINMarket);
+    const marketContract = this.state.web3.eth.contract(MarketJSON.abi);
+    const market = marketContract.at(this.state.selectedProduct.market);
+    const price = market.price(this.state.selectedProduct.DIN, 1);
+
+    buyProduct(DIN, 1, price, buyer, market);
   }
 
-  showBuyModal() {
-    this.setState({ showBuyModal: true });
+  showBuyModal(product) {
+    this.setState({
+      showBuyModal: true,
+      selectedProduct: product
+    });
   }
 
   handlePageSelect(eventKey) {
     this.setState({
       activePage: eventKey
     });
-  }
-
-  getProductName(DIN) {
-
   }
 
   render() {
@@ -111,7 +115,7 @@ class Home extends Component {
               {products.map(product =>
                 <tr key={product.DIN}>
                   <td>
-                    <a href="#" onClick={this.showBuyModal}>
+                    <a href="#" onClick={() => this.showBuyModal(product)}>
                       {product.DIN}
                     </a>
                   </td>
@@ -144,6 +148,8 @@ class Home extends Component {
           show={this.state.showBuyModal}
           onHide={hideBuyModal}
           handleBuy={this.handleBuy}
+          product={this.state.selectedProduct}
+          web3={this.state.web3}
         />
       </div>
     );

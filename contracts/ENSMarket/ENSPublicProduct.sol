@@ -65,10 +65,10 @@ contract ENSPublicProduct is Product {
 
 	// Quantity is irrelevant here. We're only ever selling one ENS domain at a time
 	function totalPrice(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256) {
-		// Let the buyer buy back his domain (remove it from the market) for free.
-		if (buyer == registry.owner(DIN)) {
-			return 0;
-		}
+		// // Let the buyer buy back his domain (remove it from the market) for free.
+		// if (buyer == registry.owner(DIN)) {
+		// 	return 0;
+		// }
 		return nodes[DIN].price;
 	}
 
