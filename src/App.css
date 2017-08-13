@@ -1,4 +1,36 @@
-button {
+body {
+  color: black;
+}
+
+/* Navigation Bar */
+.navbar-default {
+  padding: 10px 0px;
+  color: blue;
+  background-color: white;
+  font-family: 'Roboto', sans-serif;
+  font-weight: bolder;
+}
+
+.navbar-default .navbar-brand {
+  color: black;
+  font-size: 44px;
+}
+
+.navbar-default .navbar-nav li a {
+  color: black;
+  font-size: 18px;
+}
+
+.navbar-default .navbar-nav li a:hover {
+  color: #00B0FF;
+  font-size: 18px;
+}
+
+a {
+  color: #00B0FF;
+}
+
+button, .buy-now {
   background-color: #00B0FF;
   border: none;
   border-radius: 4px;
@@ -28,10 +60,6 @@ td {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-td a {
-	text-decoration: underline;
 }
 
 .search-bar {
@@ -91,7 +119,7 @@ td a {
 }
 
 /* Product Table */ 
-.product-table-container {
+.product-table-container, .home-table {
   padding: 20px 50px 20px 50px;
 }
 
@@ -112,4 +140,16 @@ td a {
 
 .product-table {
   padding-top: 20px;
+}
+
+.pagination {
+  float: right;
+}
+
+/* Buy Modal */
+.buy-modal .buy-now {
+  display: block;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding: 10px 50px;
 }

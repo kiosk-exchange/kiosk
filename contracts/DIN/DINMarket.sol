@@ -9,6 +9,8 @@ pragma solidity ^0.4.11;
 
 contract DINMarket is PublicMarket, PriceResolver, InventoryResolver, BuyHandler {
 
+	string public title = "DIN";
+
 	function DINMarket(DINRegistry _dinRegistry, OrderTracker _orderTracker)
 		PublicMarket(_dinRegistry, _orderTracker) {}
 
@@ -33,6 +35,10 @@ contract DINMarket is PublicMarket, PriceResolver, InventoryResolver, BuyHandler
 			(dinRegistry.owner(firstDIN) == orders[orderID].buyer) &&
 			(dinRegistry.owner(lastDIN) == orders[orderID].buyer)
 		);
+	}
+
+	function name(uint256 DIN) constant returns (string) {
+		return "DIN";
 	}
 
 	// Price Resolver

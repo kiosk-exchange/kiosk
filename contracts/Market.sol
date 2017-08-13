@@ -5,11 +5,7 @@ pragma solidity ^0.4.11;
 */
 contract Market {
 
-  /**
-  *   =========================
-  *            Required         
-  *   =========================
-  */
+	string public title;
 
 	// Snapshot of information that is added to an order which can be used to validate order fulfillment.
 	function orderInfo(uint256 DIN) constant returns (bytes32);
@@ -17,11 +13,7 @@ contract Market {
 	// Returns true if the seller has fulfilled the order.
 	function isFulfilled(uint256 orderID) constant returns (bool);
 
-  /**
-  *   ========================================
-  *    Optional (implemented by PublicMarket)       
-  *   ========================================
-  */
+  function name(uint256 DIN) constant returns (string);
 
 	// Buy a product. Returns an order ID from the order tracker.
 	function buy(uint256 DIN, uint256 quantity) payable returns (uint256);
