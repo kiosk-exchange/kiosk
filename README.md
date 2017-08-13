@@ -8,6 +8,36 @@ The blockchain has the potential to transform how we exchange goods and services
 
 Kiosk provides a framework for creating decentralized marketplaces. Its smart contracts are building blocks that can be swapped in and out and reconfigured for many different markets.
 
+
+## Quick Start
+
+As a proof of concept, we're building a secondary market for [ENS](https://ens.domains/) domains on top of Kiosk. It's currently a work in progress. Try it out by testing locally with [TestRPC](https://github.com/ethereumjs/testrpc).
+
+Install project dependencies.
+
+```
+yarn install
+```
+
+In a separate terminal tab, start TestRPC.
+
+```
+testrpc
+```
+
+Compile and deploy the Solidity contracts using [Truffle](http://truffleframework.com/).
+
+```
+truffle compile
+truffle migrate
+```
+
+Then, start the React project and open http://localhost:3000/ to see the app.
+
+```
+yarn start
+```
+
 ## How It Works
 
 ![kiosk protocol](/kioskprotocol.jpg?raw=true)
@@ -71,35 +101,6 @@ function registerNewOrder(
 ```
 
 **The Kiosk protocol is designed with the buyer in mind**. Its goal is to make the buying experience as simple, consistent, and transparent as possible. With just a product's DIN, a buyer can determine its price and how to buy it on a provably fair market.
-
-## Quick Start
-
-As a proof of concept, we're building a secondary market for [ENS](https://ens.domains/) domains on top of Kiosk. It's currently a work in progress. Try it out by testing locally with [TestRPC](https://github.com/ethereumjs/testrpc).
-
-Install project dependencies.
-
-```
-yarn install
-```
-
-In a separate terminal tab, start TestRPC.
-
-```
-testrpc
-```
-
-Compile and deploy the Solidity contracts using [Truffle](http://truffleframework.com/).
-
-```
-truffle compile
-truffle migrate
-```
-
-Then, start the React project and open http://localhost:3000/ to see the app.
-
-```
-yarn start
-```
 
 ## Testing
 
