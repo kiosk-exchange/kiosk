@@ -94,7 +94,11 @@ function infoFromDIN(DIN, web3, DINRegistry) {
 
   const marketContract = web3.eth.contract(MarketJSON.abi);
   const market = marketContract.at(marketAddr);
-  product.name = market.name(DIN);
+
+  // TODO: Handle Solidity errors
+  if (DIN <= 1000000001) {
+    product.name = market.name(DIN);
+  }
 
   return product;
 }

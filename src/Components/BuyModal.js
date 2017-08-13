@@ -12,10 +12,10 @@ class BuyModal extends Component {
 			>
 				<Modal.Header closeButton />
 				<Modal.Body>
-					<h2>Name</h2>
-					<h6>DIN</h6>
-					<h4>Quantity</h4>
-					<h4>Total Price</h4>
+					<h3>Name:</h3>
+					<h3>DIN:</h3>
+					<h3>Quantity:</h3>
+					<h3>Total Price:</h3>
 				</Modal.Body>
 				<Button className="buy-now" onClick={this.props.handleBuy}>Buy Now</Button>
 			</Modal>
