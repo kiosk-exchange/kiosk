@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import getWeb3 from "./utils/getWeb3";
-import { getDINRegistry, getDINMarket } from "./utils/contracts";
+import { getDINRegistry } from "./utils/contracts";
 import { Table, Pagination } from "react-bootstrap";
 import { getAllDINs, infoFromDIN } from "./utils/getProducts";
 import { buyProduct } from "./utils/buy";
@@ -15,9 +15,7 @@ class Home extends Component {
     this.state = {
       web3: null,
       DINRegistry: null,
-      DINMarket: null,
       products: [],
-      productNames: [], // [{ DIN: name }]
       activePage: 1,
       showBuyModal: false,
       selectedProduct: {}
@@ -35,12 +33,7 @@ class Home extends Component {
         // Get the global DIN registry
         getDINRegistry(this.state.web3).then(registry => {
           this.setState({ DINRegistry: registry }, () => {
-            // TODO: Delete
-            getDINMarket(this.state.web3).then(market => {
-              this.setState({ DINMarket: market }, () => {
                 this.getProducts();
-              });
-            });
           });
         });
       });

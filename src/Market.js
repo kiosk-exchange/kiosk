@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import getWeb3 from "./utils/getWeb3";
-import { getDINRegistry, getENSMarket } from "./utils/contracts";
+import { getDINRegistry } from "./utils/contracts";
 import { getMarketDINs, productFromDIN } from "./utils/getProducts";
 import ProductTable from "./Components/ProductTable";
+import MarketJSON from "./../build/contracts/Market.json";
 
 class Market extends Component {
 	constructor(props) {
@@ -12,6 +13,7 @@ class Market extends Component {
 			web3: null,
 			DINRegistry: null,
 			market: null,
+			title: "",
 			products: []
 		};
 
@@ -25,12 +27,11 @@ class Market extends Component {
 				// Get the global DIN registry
 				getDINRegistry(this.state.web3).then(registry => {
 					this.setState({ DINRegistry: registry }, () => {
-						// Get the ENSMarket, which is used to filter DINs in the DIN Registry
-						getENSMarket(this.state.web3).then(market => {
-							this.setState({ market: market }, () => {
-								this.getProducts();
-							});
-						});
+							const marketContract = this.state.web3.eth.contract(MarketJSON.abi);
+  						const market = marketContract.at(this.props.match.params.market);
+  						const title = market.title();
+  						this.setState({ title: title });
+							this.getProducts();
 					});
 				});
 			});
@@ -66,11 +67,11 @@ class Market extends Component {
 	getProducts() {
 		getMarketDINs(
 			this.state.DINRegistry,
-			this.state.market.address
+			this.props.match.params.market // The address of the market
 		).then(DINs => {
 			// Get product details (name, node, price) from the market
 			var fullProducts = DINs.map(DIN => {
-				return productFromDIN(DIN, this.state.web3, this.state.market);
+				return productFromDIN(DIN, this.state.web3, this.props.match.params.market);
 			});
 
 			this.setState({ products: fullProducts });
@@ -82,14 +83,8 @@ class Market extends Component {
 			<div className="product-table-container">
 				<div className="product-table-header">
 					<h1 className="product-table-header-title">
-						{this.props.name}
+						{this.state.title}
 					</h1>
-					<button
-						className="product-table-header-button"
-						onClick={this.handleAddProduct}
-					>
-						{this.props.addProduct}
-					</button>
 				</div>
 				<div className="product-table">
 					<ProductTable

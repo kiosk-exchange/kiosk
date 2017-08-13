@@ -54,7 +54,7 @@ class App extends Component {
               render={props => <NewENSDomain {...props} />}
             />
             <Route path="/DIN/:din" component={View} />
-            <Route path="/market/:marketAddr" component={Market} />
+            <Route path="/market/:market" component={Market} />
           </Switch>
         </div>
       </div>

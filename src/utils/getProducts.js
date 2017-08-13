@@ -2,6 +2,7 @@ import MarketJSON from "../../build/contracts/Market.json";
 
 const getMarketDINs = (DINRegistry, marketAddress) =>
   new Promise((resolve, reject) => {
+
     var DINs = [];
 
     // Add registration event listener
@@ -92,8 +93,7 @@ function infoFromDIN(DIN, web3, DINRegistry) {
   product.owner = DINRegistry.owner(DIN);
   product.market = marketAddr;
 
-  const marketContract = web3.eth.contract(MarketJSON.abi);
-  const market = marketContract.at(marketAddr);
+  const market = marketFrom(marketAddr, web3)
 
   // TODO: Handle Solidity errors
   if (DIN <= 1000000001) {
@@ -103,25 +103,29 @@ function infoFromDIN(DIN, web3, DINRegistry) {
   return product;
 }
 
-function productFromDIN(DIN, web3, market) {
+function marketFrom(address, web3) {
+  const marketContract = web3.eth.contract(MarketJSON.abi);
+  return marketContract.at(address);
+}
+
+function productFromDIN(DIN, web3, marketAddr) {
   var product = {
     DIN: DIN,
     price: null,
     formattedPrice: null,
-    node: null,
     name: null
   };
 
+  const market = marketFrom(marketAddr, web3);
+
   // Get the price from the perspective of the null account. Otherwise, price will show up as zero if the buyer is also the seller.
-  const price = market
-    .price(DIN, 1)
-    .toNumber();
+  const price = market.price(DIN, 1)
   product.price = price;
-  product.formattedPrice = web3.fromWei(price, "ether");
+  product.formattedPrice = web3.fromWei(price, "ether").toNumber().toFixed(3);
 
   // TODO: This logic should not be ENS specific!
-  const node = market.ENSNode(DIN);
-  product.node = node;
+  // const node = market.ENSNode(DIN);
+  // product.node = node;
 
   const name = market.name(DIN);
   product.name = name;
