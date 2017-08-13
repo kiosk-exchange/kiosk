@@ -106,3 +106,7 @@ yarn start
 ```
 truffle test
 ```
+
+## Contact Us
+
+The best way to get in touch is to join our public [Slack channel](https://slackin-yckywoaxhp.now.sh/).
