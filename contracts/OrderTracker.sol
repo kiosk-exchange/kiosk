@@ -33,8 +33,8 @@ contract OrderTracker {
 	}
 
 	function registerNewOrder(
-		address buyer, 
-		address seller, 
+		address buyer,
+		address seller,
 		uint256 DIN,
 		bytes32 info,
 		uint256 value,

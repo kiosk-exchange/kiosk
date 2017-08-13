@@ -4,6 +4,7 @@ import PublicMarketJSON from '../../build/contracts/PublicMarket.json'
 import ENSJSON from '../../build/contracts/ENS.json'
 import ENSMarketJSON from '../../build/contracts/ENSMarket.json'
 import ENSPublicProductJSON from '../../build/contracts/ENSPublicProduct.json'
+import OrderTrackerJSON from '../../build/contracts/OrderTracker.json'
 
 const contract = require('truffle-contract')
 
@@ -21,5 +22,6 @@ const getPublicMarket = (web3) => { return getContract(web3, PublicMarketJSON) }
 const getENS = (web3) => { return getContract(web3, ENSJSON) }
 const getENSMarket = (web3) => { return getContract(web3, ENSMarketJSON) }
 const getENSPublicProduct = (web3) => { return getContract(web3, ENSPublicProductJSON) }
+const getOrderTracker = (web3) => { return getContract(web3, OrderTrackerJSON) }
 
-export { getDINRegistry, getDINMarket, getPublicMarket, getENS, getENSMarket, getENSPublicProduct }
+export { getDINRegistry, getDINMarket, getPublicMarket, getENS, getENSMarket, getENSPublicProduct, getOrderTracker }

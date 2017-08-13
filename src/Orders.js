@@ -1,19 +1,16 @@
 import React, { Component } from 'react'
 import { Table } from 'react-bootstrap'
-
 import getWeb3 from './utils/getWeb3'
+import { getOrderTracker } from './utils/contracts'
 
-import publicMarketABI from '../build/contracts/PublicMarket.json'
-const contract = require('truffle-contract')
 
 class Orders extends Component {
-
   constructor(props) {
     super(props)
 
     this.state = {
       web3: null,
-      publicMarket: null,
+      orderTracker: null,
       orders: []
     }
   }
@@ -21,19 +18,25 @@ class Orders extends Component {
   componentWillMount() {
     getWeb3.then(results => {
       this.setState({
-      web3: results.web3,
-    })
-
-      this.initializePublicMarket()
+        web3: results.web3,
+      }, () => {
+        this.getOrderContract()
+      })
     })
   }
 
-  initializePublicMarket() {
-    const publicMarket = contract(publicMarketABI)
-    publicMarket.setProvider(this.state.web3.currentProvider)
-    publicMarket.deployed().then((instance) => {
-      this.setState({ publicMarket: instance.contract }, () => {
-        this.getOrders()
+  getOrderContract() {
+    getOrderTracker(this.state.web3).then(contract => {
+      this.setState({ orderTracker: contract })
+
+      var fetchOrders = contract.NewOrder({buyer: this.state.web3.eth.accounts[0]}, {fromBlock: 0, toBlock: 'latest'})
+      fetchOrders.watch((error, result) => {
+        if (!error) {
+          console.log(result["args"]["DIN"]["c"][0])
+        } else {
+          console.log(error)
+          fetchOrders.stopWatching()
+        }
       })
     })
   }
@@ -91,9 +94,7 @@ class Orders extends Component {
 	render() {
 		return (
       <div>
-
         <div className="container-orders-table">
-
           <div className="container-orders-header">
             <h1>Orders</h1>
           </div>
@@ -108,27 +109,30 @@ class Orders extends Component {
                   <th>Paid</th>
                   <th>Date</th>
                 </tr>
-                {this.state.orders.map((order, index) => (
-                    <tr key={index}>
-                      <td>{order.orderID}</td>
-                      <td>{order.DIN}</td>
-                      <td>{order.buyer}</td>
-                      <td>{order.amountPaid}</td>
-                      <td>{order.date}</td>
-                    </tr>
-                  )
-                )}
+                {this.state.orders.map((order, index) => (<OrderItem order={order} index={index}/>))}
               </tbody>
             </Table>
           </div>
-
         </div>
-
       </div>
-
 		);
   }
+}
 
+class OrderItem extends Component {
+  render() {
+    return (
+      <div>
+        <tr key={this.props.index}>
+          <td>{this.props.order.orderID}</td>
+          <td>{this.props.order.DIN}</td>
+          <td>{this.props.order.buyer}</td>
+          <td>{this.props.order.amountPaid}</td>
+          <td>{this.props.order.date}</td>
+        </tr>
+      </div>
+    );
+  }
 }
 
 export default Orders;
