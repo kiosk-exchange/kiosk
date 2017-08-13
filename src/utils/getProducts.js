@@ -108,36 +108,4 @@ function marketFrom(address, web3) {
   return marketContract.at(address);
 }
 
-function productFromDIN(DIN, web3, marketAddr) {
-  var product = {
-    DIN: DIN,
-    price: null,
-    formattedPrice: null,
-    name: null
-  };
-
-  const market = marketFrom(marketAddr, web3);
-
-  // Get the price from the perspective of the null account. Otherwise, price will show up as zero if the buyer is also the seller.
-  const price = market.price(DIN, 1)
-  product.price = price;
-  product.formattedPrice = web3.fromWei(price, "ether").toNumber().toFixed(3);
-
-  // TODO: This logic should not be ENS specific!
-  // const node = market.ENSNode(DIN);
-  // product.node = node;
-
-  const name = market.name(DIN);
-  product.name = name;
-
-  // If the product is available for sale, show a "Buy Now" button
-  if (market.availableForSale(product.DIN) === true) {
-    product.available = true;
-  } else {
-    product.available = false;
-  }
-
-  return product;
-}
-
-export { getMarketDINs, getUserDINs, getAllDINs, infoFromDIN, productFromDIN };
+export { getMarketDINs, getUserDINs, getAllDINs, infoFromDIN };
