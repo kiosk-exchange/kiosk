@@ -32,7 +32,17 @@ class Orders extends Component {
       var fetchOrders = contract.NewOrder({buyer: this.state.web3.eth.accounts[0]}, {fromBlock: 0, toBlock: 'latest'})
       fetchOrders.watch((error, result) => {
         if (!error) {
-          console.log(result["args"]["DIN"]["c"][0])
+          var orders = this.state.orders
+          const din = result["args"]["DIN"]["c"][0]
+          const quantity = result["args"]["quantity"]["c"][0]
+          const market = result["args"]["market"]
+          const seller = result["args"]["seller"]
+          const orderID = result["args"]["orderID"]["c"][0]
+          const info = result["args"]["info"]
+          const timestamp = parseInt(result["args"]["timestamp"], 10)
+
+          orders.push({din: din, quantity: quantity, market: market, orderID: orderID, info: info, date: this.date(timestamp), seller: seller})
+          this.setState({orders: orders})
         } else {
           console.log(error)
           fetchOrders.stopWatching()
@@ -52,45 +62,6 @@ class Orders extends Component {
     return formattedDate
   }
 
-  getOrders() {
-    var orders = []
-    // Add order event listener
-    var newOrderEventAll = this.state.publicMarket.NewOrder({}, {fromBlock: 0, toBlock: 'latest'})
-    newOrderEventAll.watch((error, result) => {
-      if (!error) {
-
-        console.log(result)
-
-        const orderID = result["args"]["orderID"]["c"][0]
-        const DIN = result["args"]["DIN"]["c"][0]
-        const buyer = result["args"]["buyer"]
-
-        const amountPaid = parseInt(result["args"]["amountPaid"], 10)
-        const etherPaid = this.state.web3.fromWei(amountPaid, 'ether')
-
-        const timestamp = parseInt(result["args"]["timestamp"], 10)
-        const date = this.date(timestamp)
-
-        orders.push(
-          {
-            orderID: orderID,
-            DIN: DIN,
-            buyer: buyer,
-            amountPaid: etherPaid,
-            date: date
-          }
-        )
-
-        this.setState({ orders: orders })
-      } else {
-        console.log(error)
-      }
-
-      newOrderEventAll = null
-    })
-  }
-
-
 	render() {
 		return (
       <div>
@@ -105,11 +76,11 @@ class Orders extends Component {
                 <tr>
                   <th>Order ID</th>
                   <th>DIN</th>
-                  <th>Buyer</th>
-                  <th>Paid</th>
+                  <th>Seller</th>
+                  <th>Quantity</th>
                   <th>Date</th>
                 </tr>
-                {this.state.orders.map((order, index) => (<OrderItem order={order} index={index}/>))}
+                {this.state.orders.map((order, index) => (<OrderItem order={order} key={order.orderID}/>))}
               </tbody>
             </Table>
           </div>
@@ -122,15 +93,13 @@ class Orders extends Component {
 class OrderItem extends Component {
   render() {
     return (
-      <div>
-        <tr key={this.props.index}>
-          <td>{this.props.order.orderID}</td>
-          <td>{this.props.order.DIN}</td>
-          <td>{this.props.order.buyer}</td>
-          <td>{this.props.order.amountPaid}</td>
-          <td>{this.props.order.date}</td>
-        </tr>
-      </div>
+      <tr key={this.props.order.orderID}>
+        <td>{this.props.order.orderID}</td>
+        <td>{this.props.order.din}</td>
+        <td>{this.props.order.seller}</td>
+        <td>{this.props.order.quantity}</td>
+        <td>{this.props.order.date}</td>
+      </tr>
     );
   }
 }
