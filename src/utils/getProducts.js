@@ -114,7 +114,7 @@ function productFromDIN(DIN, web3, market) {
 
   // Get the price from the perspective of the null account. Otherwise, price will show up as zero if the buyer is also the seller.
   const price = market
-    .price(DIN, 1, { from: "0x0000000000000000000000000000000000000000" })
+    .price(DIN, 1)
     .toNumber();
   product.price = price;
   product.formattedPrice = web3.fromWei(price, "ether");

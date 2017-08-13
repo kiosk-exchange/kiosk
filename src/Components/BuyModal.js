@@ -1,7 +1,25 @@
 import React, { Component } from "react";
 import { Modal, Button } from "react-bootstrap";
+import MarketJSON from "../../build/contracts/Market.json";
 
 class BuyModal extends Component {
+	price() {
+		if (this.props.web3 && this.props.show == true) {
+			const marketContract = this.props.web3.eth.contract(MarketJSON.abi);
+			const market = marketContract.at(this.props.product.market);
+
+			console.log(this.props.product.market);
+
+			const priceInWei = market.price(this.props.product.DIN, 1);
+			const price = this.props.web3.fromWei(priceInWei, 'ether').toNumber().toFixed(3)
+			const formattedPrice = price + " ETH"
+
+			return formattedPrice;
+		}
+
+		return "";
+	}
+
 	render() {
 		return (
 			<Modal
@@ -12,12 +30,20 @@ class BuyModal extends Component {
 			>
 				<Modal.Header closeButton />
 				<Modal.Body>
-					<h3>Name:</h3>
-					<h3>DIN:</h3>
-					<h3>Quantity:</h3>
-					<h3>Total Price:</h3>
+					<h3>
+						Name: {this.props.product.name}
+					</h3>
+					<h3>
+						DIN: {this.props.product.DIN}
+					</h3>
+					<h3>Quantity: 1</h3>
+					<h3>
+						Total Price: {this.price()}
+					</h3>
 				</Modal.Body>
-				<Button className="buy-now" onClick={this.props.handleBuy}>Buy Now</Button>
+				<Button className="buy-now" onClick={this.props.handleBuy}>
+					Buy Now
+				</Button>
 			</Modal>
 		);
 	}
