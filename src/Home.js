@@ -70,8 +70,9 @@ class Home extends Component {
 
     const marketContract = this.state.web3.eth.contract(MarketJSON.abi);
     const market = marketContract.at(this.state.selectedProduct.market);
+    const price = market.price(this.state.selectedProduct.DIN, 1);
 
-    buyProduct(DIN, 1, 0, buyer, market);
+    buyProduct(DIN, 1, price, buyer, market);
   }
 
   showBuyModal(product) {
