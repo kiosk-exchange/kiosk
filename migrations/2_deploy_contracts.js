@@ -94,5 +94,4 @@ module.exports = function(deployer, network, accounts) {
     // Transfer ownership of "example.eth" to the ENSPublicProduct
     return ENS.at(ENS.address).setOwner(subnodeNameHash, ENSPublicProduct.address)
   })
-
 }
