@@ -84,56 +84,34 @@ function infoFromDIN(DIN, web3, DINRegistry) {
     DIN: DIN,
     name: "",
     owner: "",
-    market: ""
+    market: "",
+    price: ""
   };
 
-  const marketAddr = DINRegistry.market(DIN)
+  const marketAddr = DINRegistry.market(DIN);
 
   product.owner = DINRegistry.owner(DIN);
   product.market = marketAddr;
 
-  const marketContract = web3.eth.contract(MarketJSON.abi);
-  const market = marketContract.at(marketAddr);
+  const market = marketFrom(marketAddr, web3);
 
   // TODO: Handle Solidity errors
   if (DIN <= 1000000001) {
     product.name = market.name(DIN);
+    const priceInWei = market.price(DIN, 1);
+    const price = web3
+      .fromWei(priceInWei, "ether")
+      .toNumber()
+      .toFixed(3);
+    product.price = price;
   }
 
   return product;
 }
 
-function productFromDIN(DIN, web3, market) {
-  var product = {
-    DIN: DIN,
-    price: null,
-    formattedPrice: null,
-    node: null,
-    name: null
-  };
-
-  // Get the price from the perspective of the null account. Otherwise, price will show up as zero if the buyer is also the seller.
-  const price = market
-    .price(DIN, 1)
-    .toNumber();
-  product.price = price;
-  product.formattedPrice = web3.fromWei(price, "ether");
-
-  // TODO: This logic should not be ENS specific!
-  const node = market.ENSNode(DIN);
-  product.node = node;
-
-  const name = market.name(DIN);
-  product.name = name;
-
-  // If the product is available for sale, show a "Buy Now" button
-  if (market.availableForSale(product.DIN) === true) {
-    product.available = true;
-  } else {
-    product.available = false;
-  }
-
-  return product;
+function marketFrom(address, web3) {
+  const marketContract = web3.eth.contract(MarketJSON.abi);
+  return marketContract.at(address);
 }
 
-export { getMarketDINs, getUserDINs, getAllDINs, infoFromDIN, productFromDIN };
+export { getMarketDINs, getUserDINs, getAllDINs, infoFromDIN };

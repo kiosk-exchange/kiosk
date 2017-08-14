@@ -1,20 +1,27 @@
 import React, { Component } from "react";
 import { Modal, Button } from "react-bootstrap";
 import MarketJSON from "../../build/contracts/Market.json";
+import { buyProduct } from "../utils/buy";
 
 class BuyModal extends Component {
+	constructor(props) {
+		super(props);
+
+		this.handleBuy = this.handleBuy.bind(this)
+	}
+
+	handleBuy() {
+		const DIN = this.props.product.DIN;
+		const marketContract = this.props.web3.eth.contract(MarketJSON.abi);
+		const market = marketContract.at(this.props.product.market);
+		const priceInWei = market.price(this.props.product.DIN, 1);
+		const buyer = this.props.web3.eth.accounts[0];
+		buyProduct(DIN, 1, priceInWei, buyer, market);
+	}
+
 	price() {
-		if (this.props.web3 && this.props.show == true) {
-			const marketContract = this.props.web3.eth.contract(MarketJSON.abi);
-			const market = marketContract.at(this.props.product.market);
-
-			console.log(this.props.product.market);
-
-			const priceInWei = market.price(this.props.product.DIN, 1);
-			const price = this.props.web3.fromWei(priceInWei, 'ether').toNumber().toFixed(3)
-			const formattedPrice = price + " ETH"
-
-			return formattedPrice;
+		if (this.props.show === true) {
+			return this.props.product.price + " ETH";
 		}
 
 		return "";
@@ -41,7 +48,7 @@ class BuyModal extends Component {
 						Total Price: {this.price()}
 					</h3>
 				</Modal.Body>
-				<Button className="buy-now" onClick={this.props.handleBuy}>
+				<Button className="buy-now" onClick={this.handleBuy}>
 					Buy Now
 				</Button>
 			</Modal>

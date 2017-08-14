@@ -11,7 +11,6 @@ class ProductTable extends Component {
 						<tr>
 							<th>DIN</th>
 							<th>Name</th>
-							<th>Node</th>
 							<th>Price (in Ether)</th>
 							<th>Status</th>
 						</tr>
@@ -22,9 +21,6 @@ class ProductTable extends Component {
 								</td>
 								<td>
 									{product.name}
-								</td>
-								<td>
-									{product.node}
 								</td>
 								<td>
 									{product.formattedPrice}
