@@ -28,6 +28,7 @@ testrpc
 Compile and deploy the Solidity contracts using [Truffle](http://truffleframework.com/).
 
 ```
+truffle init
 truffle compile
 truffle migrate
 ```
