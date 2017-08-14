@@ -77,7 +77,6 @@ class Market extends Component {
 						headers={["DIN", "Product Name", "Price"]}
 						products={this.state.products}
 						handleSelectProduct={this.handleSelectProduct}
-						type="Market"
 					/>
 				</div>
 				<BuyModal

@@ -117,7 +117,7 @@ class OrderItem extends Component {
       <tr key={order.orderID}>
         <td>{order.orderID}</td>
         <td>{order.din}</td>
-        <td>{orderType == 2 ? order.buyer : order.seller}</td>
+        <td>{orderType === 2 ? order.buyer : order.seller}</td>
         <td>{order.quantity}</td>
         <td>{order.date}</td>
       </tr>

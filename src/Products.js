@@ -28,7 +28,7 @@ class Products extends Component {
 	}
 
 	getProducts() {
-		console
+		console;
 		getUserDINs(
 			this.state.DINRegistry,
 			this.state.web3.eth.coinbase
