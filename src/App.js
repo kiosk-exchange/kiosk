@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 import { Switch, Route } from "react-router-dom";
 import getWeb3 from "./utils/getWeb3";
-
 import NavigationBar from "./Components/NavigationBar";
-import NetworkFooter from "./Components/NetworkFooter";
 import Home from "./Home";
 import Market from "./Market";
 import NewENSDomain from "./ENS/NewENSDomain";
@@ -17,6 +15,8 @@ class App extends Component {
     super(props);
 
     this.state = {
+      web3: null,
+      network: "",
       account: "",
       balance: ""
     };
@@ -24,14 +24,46 @@ class App extends Component {
 
   componentWillMount() {
     getWeb3.then(results => {
-      const web3 = results.web3;
-      const balance = web3.eth.getBalance(web3.eth.coinbase);
+      this.setState(
+        {
+          web3: results.web3
+        },
+        () => {
+          this.getNetwork();
+          this.getAccount();
+        }
+      );
+    });
+  }
+
+  getNetwork() {
+    var network;
+    this.state.web3.version.getNetwork((err, networkId) => {
+      switch (networkId) {
+        case "1":
+          network = "Main Ethereum Network";
+          break;
+        case "2":
+          network = "Morden Test Network";
+          break;
+        case "3":
+          network = "Ropsten Test Network";
+          break;
+        default:
+          network = "Private Network";
+          break;
+      }
+      this.setState({ network: network });
+    });
+  }
+
+  getAccount() {
+    const account = this.state.web3.eth.coinbase;
+    this.setState({ account: account });
+    this.state.web3.eth.getBalance(account, (error, result) => {
       const formattedBalance =
-        web3.fromWei(balance, "ether").toNumber().toFixed(3) + " ETH";
-      this.setState({
-        account: web3.eth.coinbase,
-        balance: formattedBalance
-      });
+        this.state.web3.fromWei(result, "ether").toNumber().toFixed(3) + " ETH";
+      this.setState({ balance: formattedBalance });
     });
   }
 
@@ -40,9 +72,10 @@ class App extends Component {
       <div>
         <div>
           <NavigationBar
-            className="navigation-bar"
+            network={this.state.network}
             account={this.state.account}
             balance={this.state.balance}
+            className="navigation-bar"
           />
         </div>
         <div className="App">

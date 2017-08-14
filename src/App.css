@@ -26,6 +26,11 @@ body {
   font-size: 18px;
 }
 
+.network-label {
+  margin: 0;
+  float: none;
+}
+
 /* Footer */
 .network-footer {
   margin: 50px;

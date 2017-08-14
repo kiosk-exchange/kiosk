@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Navbar, Nav, NavDropdown, MenuItem } from "react-bootstrap";
+import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from "react-bootstrap";
 
 class NavigationBar extends Component {
   render() {
@@ -11,7 +11,6 @@ class NavigationBar extends Component {
               kiosk
             </a>
           </Navbar.Brand>
-          <Navbar.Toggle />
         </Navbar.Header>
         <Navbar.Collapse>
           <Nav pullRight onSelect={this.handleSelect}>
@@ -22,8 +21,13 @@ class NavigationBar extends Component {
             >
               <MenuItem href="/products">My Products</MenuItem>
               <MenuItem href="/orders">My Orders</MenuItem>
-              <MenuItem>Balance: {this.props.balance}</MenuItem>
             </NavDropdown>
+            <NavItem>
+              {this.props.network}
+            </NavItem>
+            <NavItem>
+              {this.props.balance}
+            </NavItem>
           </Nav>
         </Navbar.Collapse>
       </Navbar>
