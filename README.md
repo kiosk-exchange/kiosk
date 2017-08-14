@@ -13,7 +13,12 @@ Kiosk provides a framework for creating decentralized marketplaces. Its smart co
 
 As a proof of concept, we're building a secondary market for [ENS](https://ens.domains/) domains on top of Kiosk. It's currently a work in progress. Try it out by testing locally with [TestRPC](https://github.com/ethereumjs/testrpc).
 
-Install project dependencies.
+Download the project.
+```
+git clone https://github.com/kioskprotocol/kiosk.git
+```
+
+In the root directory, install project dependencies.
 
 ```
 yarn install
