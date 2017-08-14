@@ -20,9 +20,9 @@ class KioskTableRow extends Component {
 								</td>
 							);
 						case "Product Name":
-							return <KioskTableDetail key={header} detail={product.name} />
+							return <KioskTableDetail key={header} detail={product.name} />;
 						case "Owner":
-							return <KioskTableDetail key={header} detail={product.owner} />
+							return <KioskTableDetail key={header} detail={product.owner} />;
 						case "Market":
 							return (
 								<td key={header}>
@@ -32,9 +32,9 @@ class KioskTableRow extends Component {
 								</td>
 							);
 						case "Price":
-							return <KioskTableDetail key={header} detail={product.price} />
+							return <KioskTableDetail key={header} detail={product.price} />;
 						default:
-						 return <tr/>
+							return <tr />;
 					}
 				})}
 			</tr>
