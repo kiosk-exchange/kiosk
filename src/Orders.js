@@ -7,19 +7,15 @@ class Orders extends Component {
   constructor(props) {
     super(props)
 
-    this.didChangeOrderType = this.didChangeOrderType.bind(this);
-    this.fetchOrders = this.fetchOrders.bind(this);
-
-    /*Order Type Selection:
-      1: Purchases
-      2: Sales
-    */
     this.state = {
       web3: null,
       orderTracker: null,
       orders: [],
       orderTypeSelection: 1
     }
+
+    this.didChangeOrderType = this.didChangeOrderType.bind(this);
+    this.fetchOrders = this.fetchOrders.bind(this);
   }
 
   componentWillMount() {
@@ -40,9 +36,6 @@ class Orders extends Component {
         args = {buyer: this.state.web3.eth.accounts[0]}
         break;
       case 2:
-        args = {buyer: this.state.web3.eth.accounts[0]}
-        break;
-      case 3:
         args = {seller: this.state.web3.eth.accounts[0]}
         break;
       default:

@@ -3,85 +3,73 @@ import MarketJSON from "../../build/contracts/Market.json";
 const getMarketDINs = (DINRegistry, marketAddress) =>
   new Promise((resolve, reject) => {
     var DINs = [];
-
-    // Add registration event listener
-    var newMarketAll = DINRegistry.NewMarket(
-      {},
-      { fromBlock: 0, toBlock: "latest" }
-    );
-    newMarketAll.watch((error, result) => {
-      parseResponseMarket(DINs, error, result, resolve, reject, DINRegistry, marketAddress)
-      newMarketAll.stopWatching();
-    });
+    var event = DINRegistry.NewMarket({}, { fromBlock: 0, toBlock: "latest" });
+    getDINs(event, DINs, resolve, reject, marketFilter, [
+      DINRegistry,
+      marketAddress
+    ]);
   });
 
 const getUserDINs = (DINRegistry, user) =>
   new Promise((resolve, reject) => {
     var DINs = [];
-
-    var newOwnerAll = DINRegistry.NewRegistration(
+    var event = DINRegistry.NewRegistration(
       { owner: user },
       { fromBlock: 0, toBlock: "latest" }
     );
-    newOwnerAll.watch((error, result) => {
-      parseResponseOwner(DINs, error, result, resolve, reject, DINRegistry, user)
-      newOwnerAll.stopWatching();
-    });
+    getDINs(event, DINs, resolve, reject, ownerFilter, [DINRegistry, user]);
   });
 
 const getAllDINs = DINRegistry =>
   new Promise((resolve, reject) => {
     var DINs = [];
-
-    var newRegistrationEvent = DINRegistry.NewRegistration(
+    var event = DINRegistry.NewRegistration(
       {},
       { fromBlock: 0, toBlock: "latest" }
     );
-    newRegistrationEvent.watch((error, result) => {
-      parseResponse(DINs, error, result, resolve, reject);
-      newRegistrationEvent.stopWatching();
-    });
+    getDINs(event, DINs, resolve, reject, null, null);
   });
 
-function parseResponse(DINs, error, result, resolve, reject) {
+function getDINs(event, DINs, resolve, reject, filter, filterArgs) {
+  event.watch((error, result) => {
+    parseResponse(DINs, error, result, resolve, reject, filter, filterArgs);
+    event.stopWatching();
+  });
+}
+
+function parseResponse(
+  DINs,
+  error,
+  result,
+  resolve,
+  reject,
+  filter,
+  filterArgs
+) {
   if (!error) {
     const DIN = parseInt(result["args"]["DIN"]["c"][0], 10);
-    if (DINs.includes(DIN) === false) {
+    if (filter && filterArgs) {
+      const args = [DIN].concat(filterArgs);
+      console.log(args)
+      if (filter.apply(this, args) == true) {
+        DINs.push(DIN);
+      }
+    } else {
       DINs.push(DIN);
     }
   } else {
     reject(error);
   }
+
   resolve(DINs);
 }
 
-function parseResponseOwner(DINs, error, result, resolve, reject, DINRegistry, user) {
-  if (!error) {
-    const DIN = parseInt(result["args"]["DIN"]["c"][0], 10);
-    // Make sure the DIN is still owned by the user and it's not already in the array
-    if (DINRegistry.owner(DIN) === user && DINs.includes(DIN) === false) {
-      DINs.push(DIN);
-    }
-  } else {
-    reject(error);
-  }
-  resolve(DINs);
+function marketFilter(DIN, DINRegistry, marketAddress) {
+  return DINRegistry.market(DIN) === marketAddress;
 }
 
-function parseResponseMarket(DINs, error, result, resolve, reject, DINRegistry, marketAddress) {
-  if (!error) {
-    const DIN = parseInt(result["args"]["DIN"]["c"][0], 10);
-    // Make sure the DIN is still pointing to given market and it's not already in the array
-    if (
-      DINRegistry.market(DIN) === marketAddress &&
-      DINs.includes(DIN) === false
-    ) {
-      DINs.push(DIN);
-    }
-  } else {
-    reject(error);
-  }
-  resolve(DINs);
+function ownerFilter(DIN, DINRegistry, owner) {
+  return DINRegistry.owner(DIN) === owner;
 }
 
 function infoFromDIN(DIN, web3, DINRegistry) {
