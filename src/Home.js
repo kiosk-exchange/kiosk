@@ -59,7 +59,6 @@ class Home extends Component {
             headers={["DIN", "Product Name", "Seller", "Market"]}
             products={this.state.products}
             handleSelectProduct={this.handleSelectProduct}
-            type="Home"
           />
         </div>
         <BuyModal

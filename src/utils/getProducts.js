@@ -10,20 +10,7 @@ const getMarketDINs = (DINRegistry, marketAddress) =>
       { fromBlock: 0, toBlock: "latest" }
     );
     newMarketAll.watch((error, result) => {
-      if (!error) {
-        const DIN = parseInt(result["args"]["DIN"]["c"][0], 10);
-
-        // Make sure the DIN is still pointing to given market and it's not already in the array
-        if (
-          DINRegistry.market(DIN) === marketAddress &&
-          DINs.includes(DIN) === false
-        ) {
-          DINs.push(DIN);
-        }
-      } else {
-        reject(error);
-      }
-      resolve(DINs);
+      parseResponseMarket(DINs, error, result, resolve, reject, DINRegistry, marketAddress)
       newMarketAll.stopWatching();
     });
   });
@@ -32,22 +19,12 @@ const getUserDINs = (DINRegistry, user) =>
   new Promise((resolve, reject) => {
     var DINs = [];
 
-    var newOwnerAll = DINRegistry.NewOwner(
+    var newOwnerAll = DINRegistry.NewRegistration(
       { owner: user },
       { fromBlock: 0, toBlock: "latest" }
     );
     newOwnerAll.watch((error, result) => {
-      if (!error) {
-        const DIN = parseInt(result["args"]["DIN"]["c"][0], 10);
-
-        // Make sure the DIN is still owned by the user and it's not already in the array
-        if (DINRegistry.owner(DIN) === user && DINs.includes(DIN) === false) {
-          DINs.push(DIN);
-        }
-      } else {
-        reject(error);
-      }
-      resolve(DINs);
+      parseResponseOwner(DINs, error, result, resolve, reject, DINRegistry, user)
       newOwnerAll.stopWatching();
     });
   });
@@ -69,8 +46,36 @@ const getAllDINs = DINRegistry =>
 function parseResponse(DINs, error, result, resolve, reject) {
   if (!error) {
     const DIN = parseInt(result["args"]["DIN"]["c"][0], 10);
-
     if (DINs.includes(DIN) === false) {
+      DINs.push(DIN);
+    }
+  } else {
+    reject(error);
+  }
+  resolve(DINs);
+}
+
+function parseResponseOwner(DINs, error, result, resolve, reject, DINRegistry, user) {
+  if (!error) {
+    const DIN = parseInt(result["args"]["DIN"]["c"][0], 10);
+    // Make sure the DIN is still owned by the user and it's not already in the array
+    if (DINRegistry.owner(DIN) === user && DINs.includes(DIN) === false) {
+      DINs.push(DIN);
+    }
+  } else {
+    reject(error);
+  }
+  resolve(DINs);
+}
+
+function parseResponseMarket(DINs, error, result, resolve, reject, DINRegistry, marketAddress) {
+  if (!error) {
+    const DIN = parseInt(result["args"]["DIN"]["c"][0], 10);
+    // Make sure the DIN is still pointing to given market and it's not already in the array
+    if (
+      DINRegistry.market(DIN) === marketAddress &&
+      DINs.includes(DIN) === false
+    ) {
       DINs.push(DIN);
     }
   } else {
@@ -99,10 +104,7 @@ function infoFromDIN(DIN, web3, DINRegistry) {
   if (DIN <= 1000000001) {
     product.name = market.name(DIN);
     const priceInWei = market.price(DIN, 1);
-    const price = web3
-      .fromWei(priceInWei, "ether")
-      .toNumber()
-      .toFixed(3);
+    const price = web3.fromWei(priceInWei, "ether").toNumber().toFixed(3);
     product.price = price;
   }
 
