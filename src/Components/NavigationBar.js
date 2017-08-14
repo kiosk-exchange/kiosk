@@ -20,8 +20,8 @@ class NavigationBar extends Component {
               title={this.props.account}
               id="nav-dropdown"
             >
-              <MenuItem href="/products">Products</MenuItem>
-              <MenuItem href="/orders">Orders</MenuItem>
+              <MenuItem href="/products">My Products</MenuItem>
+              <MenuItem href="/orders">My Orders</MenuItem>
               <MenuItem>Balance: {this.props.balance}</MenuItem>
             </NavDropdown>
           </Nav>

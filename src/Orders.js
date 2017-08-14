@@ -11,9 +11,8 @@ class Orders extends Component {
     this.fetchOrders = this.fetchOrders.bind(this);
 
     /*Order Type Selection:
-      1: All
+      1: Purchases
       2: Sales
-      3: Purchases
     */
     this.state = {
       web3: null,
@@ -65,13 +64,10 @@ class Orders extends Component {
     var typeLabel = ""
     switch(orderType) {
       case 1:
-        typeLabel = "Seller/Buyer"
+        typeLabel = "Seller"
         break;
       case 2:
         typeLabel = "Buyer"
-        break;
-      case 3:
-        typeLabel = "Seller"
         break;
       default:
         break
@@ -79,19 +75,21 @@ class Orders extends Component {
 
 		return (
       <div>
-        <div className="container-orders-table">
-          <div className="container-orders-header">
-            <h1>Orders</h1>
-            <ButtonToolbar>
-              <ToggleButtonGroup type="radio" name="options" defaultValue={1} onChange={this.didChangeOrderType}>
-                <ToggleButton value={1}>All</ToggleButton>
-                <ToggleButton value={2}>Sales</ToggleButton>
-                <ToggleButton value={3}>Purchases</ToggleButton>
-              </ToggleButtonGroup>
-            </ButtonToolbar>
+          <div className="product-table-container">
+            <div className="product-table-header">
+              <h1 className="product-table-header-title">
+                Orders
+              </h1>
+              <ButtonToolbar className="order-toggle">
+                <ToggleButtonGroup type="radio" name="options" defaultValue={1} onChange={this.didChangeOrderType}>
+                  <ToggleButton value={1}>Purchases</ToggleButton>
+                  <ToggleButton value={2}>Sales</ToggleButton>
+                </ToggleButtonGroup>
+              </ButtonToolbar>
+            </div>
           </div>
 
-          <div className="orders-table">
+          <div className="product-table-container">
             <Table striped bordered condensed hover>
               <tbody>
                 <tr>
@@ -106,7 +104,6 @@ class Orders extends Component {
             </Table>
           </div>
         </div>
-      </div>
 		);
   }
 }

@@ -21,7 +21,7 @@ class KioskTableRow extends Component {
 							);
 						case "Product Name":
 							return <KioskTableDetail key={header} detail={product.name} />;
-						case "Owner":
+						case "Seller":
 							return <KioskTableDetail key={header} detail={product.owner} />;
 						case "Market":
 							return (

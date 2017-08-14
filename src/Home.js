@@ -54,9 +54,9 @@ class Home extends Component {
 
     return (
       <div>
-        <div className="home-table">
+        <div className="product-table-container">
           <KioskTable
-            headers={["DIN", "Product Name", "Owner", "Market"]}
+            headers={["DIN", "Product Name", "Seller", "Market"]}
             products={this.state.products}
             handleSelectProduct={this.handleSelectProduct}
             type="Home"
