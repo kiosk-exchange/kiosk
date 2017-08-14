@@ -50,7 +50,6 @@ function parseResponse(
     const DIN = parseInt(result["args"]["DIN"]["c"][0], 10);
     if (filter && filterArgs) {
       const args = [DIN].concat(filterArgs);
-      console.log(args)
       if (filter.apply(this, args) == true) {
         DINs.push(DIN);
       }
