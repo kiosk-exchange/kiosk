@@ -90,7 +90,8 @@ function infoFromDIN(DIN, web3, DINRegistry) {
     name: "",
     owner: "",
     market: "",
-    price: ""
+    price: "",
+    available: false
   };
 
   const marketAddr = DINRegistry.market(DIN);
@@ -106,6 +107,7 @@ function infoFromDIN(DIN, web3, DINRegistry) {
     const priceInWei = market.price(DIN, 1);
     const price = web3.fromWei(priceInWei, "ether").toNumber().toFixed(3);
     product.price = price;
+    product.available = market.availableForSale(DIN, 1);
   }
 
   return product;

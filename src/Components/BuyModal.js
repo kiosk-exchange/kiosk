@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Modal, Button } from "react-bootstrap";
+import QuantityPicker from "./QuantityPicker";
 import MarketJSON from "../../build/contracts/Market.json";
 import { buyProduct } from "../utils/buy";
 
@@ -7,7 +8,7 @@ class BuyModal extends Component {
 	constructor(props) {
 		super(props);
 
-		this.handleBuy = this.handleBuy.bind(this)
+		this.handleBuy = this.handleBuy.bind(this);
 	}
 
 	handleBuy() {
@@ -28,28 +29,35 @@ class BuyModal extends Component {
 	}
 
 	render() {
+		const hidden = { display: "none" }
+		const visible = { display: "block" }
+
 		return (
 			<Modal
 				{...this.props}
+				animation={false}
 				bsSize="small"
 				aria-labelledby="contained-modal-title-sm"
 				className="buy-modal"
 			>
 				<Modal.Header closeButton />
 				<Modal.Body>
-					<h3>
-						Name: {this.props.product.name}
-					</h3>
-					<h3>
+					<h1>
+						{this.props.product.name}
+					</h1>
+					<p>
 						DIN: {this.props.product.DIN}
-					</h3>
-					<h3>Quantity: 1</h3>
+					</p>
+					<QuantityPicker />
 					<h3>
 						Total Price: {this.price()}
 					</h3>
 				</Modal.Body>
-				<Button className="buy-now" onClick={this.handleBuy}>
+				<Button style={this.props.product.available === true ? visible : hidden} className="buy-now" onClick={this.handleBuy}>
 					Buy Now
+				</Button>
+				<Button style={this.props.product.available === false ? visible : hidden} className="not-available">
+					Not Available
 				</Button>
 			</Modal>
 		);

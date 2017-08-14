@@ -22,12 +22,11 @@ body {
 }
 
 .navbar-default .navbar-nav li a:hover {
-  color: #00B0FF;
+  color: #00b0ff;
   font-size: 18px;
 }
 
 .network-label {
-  margin: 0;
   float: none;
 }
 
@@ -35,15 +34,16 @@ body {
 .network-footer {
   margin: 50px;
   height: 50px;
-  background-color: #05868A;
+  background-color: #05868a;
 }
 
 a {
-  color: #00B0FF;
+  color: #00b0ff;
 }
 
-button, .buy-now {
-  background-color: #00B0FF;
+button,
+.buy-now,
+.not-available {
   border: none;
   border-radius: 4px;
   color: white;
@@ -53,6 +53,15 @@ button, .buy-now {
   font-size: 16px;
   margin: auto;
   cursor: pointer;
+}
+
+button,
+.buy-now {
+  background-color: #00b0ff;
+}
+
+.not-available {
+  background-color: gray;
 }
 
 .table-row-button-true {
@@ -95,7 +104,7 @@ td {
   text-align: center;
 }
 
-.welcome-header h1 { 
+.welcome-header h1 {
   margin: 100px 0px 50px 0px;
 }
 
@@ -130,7 +139,7 @@ td {
   width: 100%;
 }
 
-/* Product Table */ 
+/* Product Table */
 .product-table-container {
   padding: 20px 50px 20px 50px;
 }
@@ -138,7 +147,7 @@ td {
 .product-table-header {
   padding-top: 20px;
   padding-bottom: 20px;
-  border-bottom: 1px solid #D3D3D3;
+  border-bottom: 1px solid #d3d3d3;
 }
 
 .product-table-header-title {
@@ -159,11 +168,19 @@ td {
 }
 
 /* Buy Modal */
-.buy-modal .buy-now {
+.buy-modal .buy-now,
+.not-available {
   display: block;
   margin-top: 20px;
   margin-bottom: 20px;
   padding: 10px 50px;
+}
+
+.modal-dialog {
+  position: absolute;
+  top: 33%;
+  left: 50%;
+  transform: translate(-50%, -50%) !important;
 }
 
 /* Orders */
