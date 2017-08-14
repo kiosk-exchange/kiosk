@@ -20,16 +20,8 @@ class BuyModal extends Component {
 	}
 
 	price() {
-		if (this.props.web3 && this.props.show === true) {
-			const marketContract = this.props.web3.eth.contract(MarketJSON.abi);
-			const market = marketContract.at(this.props.product.market);
-			const priceInWei = market.price(this.props.product.DIN, 1);
-			const price = this.props.web3
-				.fromWei(priceInWei, "ether")
-				.toNumber()
-				.toFixed(3);
-			const formattedPrice = price + " ETH";
-			return formattedPrice;
+		if (this.props.show === true) {
+			return this.props.product.price + " ETH";
 		}
 
 		return "";

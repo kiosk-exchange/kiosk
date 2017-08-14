@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Table, Pagination } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import KioskTableRow from "./KioskTableRow";
 
 class KioskTable extends Component {
   constructor(props) {
@@ -23,7 +23,6 @@ class KioskTable extends Component {
   render() {
     const pageLimit = 10;
     var pages = Math.ceil(this.props.products.length / pageLimit);
-
     var lower = (this.state.activePage - 1) * pageLimit;
     var upper = lower + pageLimit + 1;
     var products = this.props.products.slice(lower, upper);
@@ -39,26 +38,16 @@ class KioskTable extends Component {
                 </th>
               )}
             </tr>
-            {products.map(product =>
-              <tr key={product.DIN}>
-                <td>
-                  <a href="#" onClick={() => this.props.handleSelectProduct(product)}>
-                    {product.DIN}
-                  </a>
-                </td>
-                <td>
-                  {product.name}
-                </td>
-                <td>
-                  {product.owner}
-                </td>
-                <td>
-                  <Link to={`/market/${product.market}`}>
-                    {product.market}
-                  </Link>
-                </td>
-              </tr>
-            )}
+            {products.map(product => {
+              return (
+                <KioskTableRow
+                  product={product}
+                  key={product.DIN}
+                  handleSelectProduct={this.props.handleSelectProduct}
+                  headers={this.props.headers}
+                />
+              );
+            })}
           </tbody>
         </Table>
         <Pagination

@@ -2,7 +2,6 @@ import MarketJSON from "../../build/contracts/Market.json";
 
 const getMarketDINs = (DINRegistry, marketAddress) =>
   new Promise((resolve, reject) => {
-
     var DINs = [];
 
     // Add registration event listener
@@ -85,19 +84,26 @@ function infoFromDIN(DIN, web3, DINRegistry) {
     DIN: DIN,
     name: "",
     owner: "",
-    market: ""
+    market: "",
+    price: ""
   };
 
-  const marketAddr = DINRegistry.market(DIN)
+  const marketAddr = DINRegistry.market(DIN);
 
   product.owner = DINRegistry.owner(DIN);
   product.market = marketAddr;
 
-  const market = marketFrom(marketAddr, web3)
+  const market = marketFrom(marketAddr, web3);
 
   // TODO: Handle Solidity errors
   if (DIN <= 1000000001) {
     product.name = market.name(DIN);
+    const priceInWei = market.price(DIN, 1);
+    const price = web3
+      .fromWei(priceInWei, "ether")
+      .toNumber()
+      .toFixed(3);
+    product.price = price;
   }
 
   return product;

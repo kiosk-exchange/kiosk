@@ -34,9 +34,7 @@ class Home extends Component {
 
   getProducts() {
     getAllDINs(this.state.DINRegistry).then(DINs => {
-      // Get product details (name, node, price) from the market
       var fullProducts = DINs.map(DIN => {
-        // this.getProductName(DIN);
         return infoFromDIN(DIN, this.state.web3, this.state.DINRegistry);
       });
 
@@ -57,7 +55,12 @@ class Home extends Component {
     return (
       <div>
         <div className="home-table">
-          <KioskTable products={this.state.products} handleSelectProduct={this.handleSelectProduct} />
+          <KioskTable
+            headers={["DIN", "Product Name", "Owner", "Market"]}
+            products={this.state.products}
+            handleSelectProduct={this.handleSelectProduct}
+            type="Home"
+          />
         </div>
         <BuyModal
           show={this.state.showBuyModal}

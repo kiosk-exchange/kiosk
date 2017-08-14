@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import getWeb3 from "./utils/getWeb3";
 import { getDINRegistry } from "./utils/contracts";
 import { getMarketDINs, infoFromDIN } from "./utils/getProducts";
-import ProductTable from "./Components/ProductTable";
 import MarketJSON from "./../build/contracts/Market.json";
 import BuyModal from "./Components/BuyModal";
 import KioskTable from "./Components/KioskTable";
@@ -78,6 +77,7 @@ class Market extends Component {
 						headers={["DIN", "Product Name", "Price"]}
 						products={this.state.products}
 						handleSelectProduct={this.handleSelectProduct}
+						type="Market"
 					/>
 				</div>
 				<BuyModal
