@@ -23,7 +23,7 @@ body {
 }
 
 .navbar-default .navbar-nav li a:hover {
-  color: #00b0ff;
+  color: #2575FC;
   font-size: 18px;
 }
 
@@ -39,7 +39,7 @@ body {
 }
 
 a {
-  color: #00b0ff;
+  color: #2575FC;
 }
 
 button,
@@ -58,7 +58,7 @@ button,
 
 button,
 .buy-now {
-  background-color: #00b0ff;
+  background-color: #2575FC;
 }
 
 .not-available {
@@ -173,8 +173,8 @@ td {
 .pagination li.active a:active,
 .pagination li.active a:link,
 .pagination li.active a:visited {
-  background-color: #00b0ff;
-  border-color: #00b0ff;
+  background-color: #2575FC;
+  border-color: #2575FC;
   color: white;
 }
 
