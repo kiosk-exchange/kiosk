@@ -6724,6 +6724,15 @@ truffle-default-builder@^1.0.3:
     uglify-js "^2.6.1"
     web3 "^0.16.0"
 
+truffle-hdwallet-provider@0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/truffle-hdwallet-provider/-/truffle-hdwallet-provider-0.0.3.tgz#0e1de02104b73d3875e1cf7093305b4ea8a2d843"
+  dependencies:
+    bip39 "^2.2.0"
+    ethereumjs-wallet "^0.6.0"
+    web3 "^0.18.2"
+    web3-provider-engine "^8.4.0"
+
 truffle-solidity-loader@0.0.8:
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/truffle-solidity-loader/-/truffle-solidity-loader-0.0.8.tgz#5d34df0b596b85859e31baf0e9be05f9613d1f76"
@@ -7014,7 +7023,7 @@ watchpack@^0.2.1:
     chokidar "^1.0.0"
     graceful-fs "^4.1.2"
 
-web3-provider-engine@^8.0.3:
+web3-provider-engine@^8.0.3, web3-provider-engine@^8.4.0:
   version "8.6.1"
   resolved "https://registry.yarnpkg.com/web3-provider-engine/-/web3-provider-engine-8.6.1.tgz#4d86e19e30caaf97df351511ec0f60136e5b30eb"
   dependencies:
@@ -7060,7 +7069,7 @@ web3@^0.17.0-alpha:
     utf8 "^2.1.1"
     xmlhttprequest "*"
 
-web3@^0.18.0:
+web3@^0.18.0, web3@^0.18.2:
   version "0.18.4"
   resolved "https://registry.yarnpkg.com/web3/-/web3-0.18.4.tgz#81ec1784145491f2eaa8955b31c06049e07c5e7d"
   dependencies:
@@ -7378,3 +7387,9 @@ yargs@~3.10.0:
     cliui "^2.1.0"
     decamelize "^1.0.0"
     window-size "0.1.0"
+
+zeppelin-solidity@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/zeppelin-solidity/-/zeppelin-solidity-1.2.0.tgz#3a50c991a4da2f14fd79e66a2eb576407a6fb124"
+  dependencies:
+    truffle-hdwallet-provider "0.0.3"
