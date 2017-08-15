@@ -1,4 +1,5 @@
 body {
+  font-family: 'Roboto', sans-serif;
   color: black;
 }
 
@@ -195,6 +196,30 @@ td {
   top: 33%;
   left: 50%;
   transform: translate(-50%, -50%) !important;
+}
+
+.buy-modal-name,
+.buy-modal-din {
+  text-align: center;
+}
+
+.buy-modal-quantity,
+.buy-modal-price-label {
+  display: inline-block;
+}
+
+.buy-modal-price-value {
+  font-weight: 700;
+}
+
+.buy-modal-quantity-picker,
+.buy-modal-price-value {
+  display: inline-block;
+  float: right;
+}
+
+.buy-modal-subtitle-container {
+  padding: 10px;
 }
 
 /* Orders */
