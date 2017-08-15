@@ -51,6 +51,7 @@ class KioskTable extends Component {
           </tbody>
         </Table>
         <Pagination
+          className="table-pagination"
           prev="Previous"
           next="Next"
           ellipsis
