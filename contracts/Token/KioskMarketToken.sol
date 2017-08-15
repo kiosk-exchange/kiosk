@@ -1,4 +1,4 @@
-// Based on https://github.com/ConsenSys/Tokens/blob/master/contracts/HumanStandardToken.sol
+// https://github.com/ConsenSys/Tokens/blob/master/contracts/HumanStandardToken.sol
 
 pragma solidity ^0.4.11;
 
