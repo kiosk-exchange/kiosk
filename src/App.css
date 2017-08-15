@@ -167,6 +167,20 @@ td {
   float: right;
 }
 
+.pagination li.active a,
+.pagination li.active a:hover,
+.pagination li.active a:active,
+.pagination li.active a:link,
+.pagination li.active a:visited {
+  background-color: #00b0ff;
+  border-color: #00b0ff;
+  color: white;
+}
+
+.pagination li a {
+  color: gray;
+}
+
 /* Buy Modal */
 .buy-modal .buy-now,
 .not-available {

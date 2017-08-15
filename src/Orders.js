@@ -1,18 +1,32 @@
-import React, { Component } from 'react'
-import { Table, ButtonToolbar, ToggleButton, ToggleButtonGroup } from 'react-bootstrap'
-import getWeb3 from './utils/getWeb3'
-import { getOrders } from './utils/getOrders'
+import React, { Component } from "react";
+import {
+  Table,
+  ButtonToolbar,
+  ToggleButton,
+  ToggleButtonGroup
+} from "react-bootstrap";
+import getWeb3 from "./utils/getWeb3";
+import { getOrders } from "./utils/getOrders";
+
+const OrderType = {
+  buyer: 1,
+  seller: 2,
+  properties: {
+    1: { nameLabel: "Buyer", priceLabel: "Paid", value: 1 },
+    2: { nameLabel: "Seller", priceLabel: "Revenue", value: 2 }
+  }
+};
 
 class Orders extends Component {
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
       web3: null,
       orderTracker: null,
       orders: [],
-      orderTypeSelection: 1
-    }
+      orderType: OrderType.buyer
+    };
 
     this.didChangeOrderType = this.didChangeOrderType.bind(this);
     this.fetchOrders = this.fetchOrders.bind(this);
@@ -20,99 +34,129 @@ class Orders extends Component {
 
   componentWillMount() {
     getWeb3.then(results => {
-      this.setState({
-        web3: results.web3,
-      }, () => {
-        this.fetchOrders()
-      })
-    })
+      this.setState(
+        {
+          web3: results.web3
+        },
+        () => {
+          this.fetchOrders();
+        }
+      );
+    });
   }
 
   fetchOrders() {
-    var args = null
-    const orderType = this.state.orderTypeSelection
-    switch(orderType) {
-      case 1:
-        args = {buyer: this.state.web3.eth.accounts[0]}
+    var args = null;
+    const account = this.state.web3.eth.coinbase;
+    switch (this.state.orderType) {
+      case OrderType.buyer:
+        args = { buyer: account };
         break;
-      case 2:
-        args = {seller: this.state.web3.eth.accounts[0]}
+      case OrderType.seller:
+        args = { seller: account };
         break;
       default:
-        break
+        break;
     }
 
-    getOrders(this.state.web3, args, {fromBlock: 0, toBlock: 'latest'}).then((orders) => {
-      this.setState({orders: orders})
-    })
+    getOrders(this.state.web3, args, {
+      fromBlock: 0,
+      toBlock: "latest"
+    }).then(orders => {
+      this.setState({ orders: orders });
+    });
   }
 
   didChangeOrderType(v) {
-    this.setState({orderTypeSelection: v})
-    this.fetchOrders()
+    this.setState({ orderType: v });
+    this.fetchOrders();
   }
 
-	render() {
-    const orderType = this.state.orderTypeSelection
-    var typeLabel = ""
-    switch(orderType) {
-      case 1:
-        typeLabel = "Seller"
-        break;
-      case 2:
-        typeLabel = "Buyer"
-        break;
-      default:
-        break
-    }
+  render() {
+    const statusStyle =
+      this.state.orderType === OrderType.seller ? null : { display: "none" };
 
-		return (
+    return (
       <div>
-          <div className="product-table-container">
-            <div className="product-table-header">
-              <h1 className="product-table-header-title">
-                Orders
-              </h1>
-              <ButtonToolbar className="order-toggle">
-                <ToggleButtonGroup type="radio" name="options" defaultValue={1} onChange={this.didChangeOrderType}>
-                  <ToggleButton value={1}>Purchases</ToggleButton>
-                  <ToggleButton value={2}>Sales</ToggleButton>
-                </ToggleButtonGroup>
-              </ButtonToolbar>
-            </div>
-          </div>
-
-          <div className="product-table-container">
-            <Table striped bordered condensed hover>
-              <tbody>
-                <tr>
-                  <th>Order ID</th>
-                  <th>DIN</th>
-                  <th>{typeLabel}</th>
-                  <th>Quantity</th>
-                  <th>Date</th>
-                </tr>
-                {this.state.orders.map((order, index) => (<OrderItem order={order} key={order.orderID} orderType={this.props.orderTypeSelection}/>))}
-              </tbody>
-            </Table>
+        <div className="product-table-container">
+          <div className="product-table-header">
+            <h1 className="product-table-header-title">Orders</h1>
+            <ButtonToolbar className="order-toggle">
+              <ToggleButtonGroup
+                type="radio"
+                name="options"
+                defaultValue={1}
+                onChange={this.didChangeOrderType}
+              >
+                <ToggleButton value={1}>Purchases</ToggleButton>
+                <ToggleButton value={2}>Sales</ToggleButton>
+              </ToggleButtonGroup>
+            </ButtonToolbar>
           </div>
         </div>
-		);
+
+        <div className="product-table-container">
+          <Table striped bordered condensed hover>
+            <tbody>
+              <tr>
+                <th>Order ID</th>
+                <th>DIN</th>
+                <th>
+                  {OrderType.properties[this.state.orderType].nameLabel}
+                </th>
+                <th>
+                  {OrderType.properties[this.state.orderType].priceLabel}
+                </th>
+                <th>Quantity</th>
+                <th>Date</th>
+                <th style={statusStyle}>Status</th>
+              </tr>
+              {this.state.orders.map((order, index) =>
+                <OrderItem
+                  order={order}
+                  key={order.orderID}
+                  orderType={this.state.orderType}
+                />
+              )}
+            </tbody>
+          </Table>
+        </div>
+      </div>
+    );
   }
 }
 
 class OrderItem extends Component {
   render() {
-    const orderType = this.props.orderType
-    const order = this.props.order
+    const orderType = this.props.orderType;
+    const order = this.props.order;
+    console.log(order);
+    const statusStyle =
+      orderType === OrderType.seller ? null : { display: "none" };
 
     return (
       <tr key={order.orderID}>
-        <td>{order.orderID}</td>
-        <td>{order.din}</td>
-        <td>{orderType === 2 ? order.buyer : order.seller}</td>
-        <td>{order.quantity}</td>
-        <td>{order.date}</td>
+        <td>
+          {order.orderID}
+        </td>
+        <td>
+          {order.din}
+        </td>
+        <td>
+          {orderType === OrderType.buyer ? order.buyer : order.seller}
+        </td>
+        <td>
+          {order.value}
+        </td>
+        <td>
+          {order.quantity}
+        </td>
+        <td>
+          {order.date}
+        </td>
+        <td style={statusStyle}>
+          <a href="#">Collect</a>
+        </td>
       </tr>
     );
   }
