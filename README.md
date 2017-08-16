@@ -115,4 +115,4 @@ truffle test
 
 ## Contact Us
 
-The best way to get in touch is to join our public [Slack channel](https://slackin-yckywoaxhp.now.sh/).
+The best way to get in touch is to join our public [Slack channel](https://join.slack.com/t/kioskprotocol/shared_invite/MjI3NzAwMzMyMTYyLTE1MDI5MjYyNzItM2FiMjA1NWIxZg).
