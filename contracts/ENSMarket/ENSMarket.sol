@@ -1,9 +1,10 @@
-import './ENS/AbstractENS.sol';
-import '../PublicMarket.sol';
-import '../DINRegistry.sol';
-import '../OrderTracker.sol';
-
 pragma solidity ^0.4.11;
+
+import "./ENS/AbstractENS.sol";
+import "../PublicMarket.sol";
+import "../DINRegistry.sol";
+import "../OrderTracker.sol";
+import "../KioskMarketToken.sol";
 
 contract ENSMarket is PublicMarket {
 
@@ -22,13 +23,15 @@ contract ENSMarket is PublicMarket {
 
 	// Constructor
 	function ENSMarket(
-		DINRegistry _dinRegistry, 
-		OrderTracker _orderTracker, 
+		DINRegistry _dinRegistry,
+		OrderTracker _orderTracker,
+		KioskMarketToken _token,
 		AbstractENS _ens
 	)
 		PublicMarket(
 			_dinRegistry, 
-			_orderTracker
+			_orderTracker,
+			_token
 		)
 	{
 		ens = _ens;
@@ -40,10 +43,10 @@ contract ENSMarket is PublicMarket {
 
 	function isFulfilled(uint256 orderID) constant returns (bool) {
 		// Get the ENS node from the order
-		bytes32 node = orders[orderID].info;
+		bytes32 node = orderTracker.data(orderID);
 
 		// Check that buyer is the owner
-		return (ens.owner(node) == orders[orderID].buyer);
+		return (ens.owner(node) == orderTracker.buyer(orderID));
 	}
 
 	function availableForSale(uint256 DIN, uint256 quantity) constant returns (bool) {

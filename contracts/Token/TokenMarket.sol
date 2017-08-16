@@ -3,10 +3,12 @@ pragma solidity ^0.4.11;
 import "../PublicMarket.sol";
 import "../DINRegistry.sol";
 import "../OrderTracker.sol";
+import "../KioskMarketToken.sol";
 import "zeppelin-solidity/contracts/token/ERC20.sol";
 
 // This is a market for a specific ERC20 token.
 contract TokenMarket is PublicMarket {
+
 	// TODO: Is there a way to make this generic for all tokens instead of having a market for each one?
 	string public title = "Kiosk Market Token (KMT) Market";
 	ERC20 public token;
@@ -14,11 +16,13 @@ contract TokenMarket is PublicMarket {
 	function TokenMarket(
 		DINRegistry _dinRegistry, 
 		OrderTracker _orderTracker,
+		KioskMarketToken _kioskToken,
 		ERC20 _token
 	)
 		PublicMarket(
 			_dinRegistry,
-			_orderTracker
+			_orderTracker,
+			_kioskToken
 		)
 	{
 		token = _token;
@@ -34,13 +38,13 @@ contract TokenMarket is PublicMarket {
 
 	function isFulfilled(uint256 orderID) constant returns (bool) {
 		// The buyer's initial token balance is attached to the order.
-		uint256 beginBalance = uint256(orders[orderID].info);
+		uint256 beginBalance = uint256(orderTracker.data(orderID));
 
 		// The buyer's current token balance.
-		uint256 endBalance = token.balanceOf(orders[orderID].buyer);
+		uint256 endBalance = token.balanceOf(orderTracker.buyer(orderID));
 
 		// The number of tokens purchased by the buyer.
-		uint256 quantity = orders[orderID].quantity;
+		uint256 quantity = orderTracker.quantity(orderID);
 
 		// If the buyer's token balance has increased by the expected amount, the transaction is successful.
 		return (endBalance == beginBalance + quantity);
