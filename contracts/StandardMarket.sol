@@ -6,7 +6,6 @@ import "./Market.sol";
 *  This is the interface for a market.
 */
 contract StandardMarket is Market {
-
 	// The title of the market (e.g., "Token Market").
 	string public title;
 
@@ -18,6 +17,5 @@ contract StandardMarket is Market {
 
 	// The seller can withdraw proceeds from escrow when the order has been fulfilled.
 	function withdraw(uint256 orderID);
-
 }
 

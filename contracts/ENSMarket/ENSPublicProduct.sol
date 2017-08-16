@@ -1,10 +1,10 @@
 pragma solidity ^0.4.11;
 
-import '../Product.sol';
-import '../DINRegistry.sol';
-import '../Market.sol';
-import './ENSMarket.sol';
-import './ENS/ENS.sol';
+import "../Product.sol";
+import "../DINRegistry.sol";
+import "../Market.sol";
+import "./ENSMarket.sol";
+import "./ENS/ENS.sol";
 
 /**
 *  This is an example of how to sell an ENS domain.

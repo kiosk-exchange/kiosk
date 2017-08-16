@@ -1,7 +1,7 @@
 pragma solidity ^0.4.11;
 
 /**
-*  This is the interface for a market.
+*  This is the interface for a Market.
 */
 contract Market {
 	// Returns true if the seller has fulfilled the order.

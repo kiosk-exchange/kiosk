@@ -1,6 +1,6 @@
-import "./Market.sol";
-
 pragma solidity ^0.4.11;
+
+import "./Market.sol";
 
 /**
 *  This contract is the Decentralized Identification Number (DIN) registry.
