@@ -18,6 +18,6 @@ contract StandardMarket is Market {
 
 	// The seller can withdraw proceeds from escrow when the order has been fulfilled.
 	function withdraw(uint256 orderID);
-	
+
 }
 
