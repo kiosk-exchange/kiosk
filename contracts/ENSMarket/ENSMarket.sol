@@ -59,7 +59,7 @@ contract ENSMarket is PublicMarket {
 		return domains[DIN].name;
 	}
 
-	function setName(uint256 DIN, string name) only_owner(DIN) {
+	function setName(uint256 DIN, string name) only_trusted(DIN) {
 		domains[DIN].name = name;
 	}
 
@@ -67,7 +67,7 @@ contract ENSMarket is PublicMarket {
 		return domains[DIN].node;
 	}
 
-	function setENSNode(uint256 DIN, bytes32 node) only_owner(DIN) {
+	function setENSNode(uint256 DIN, bytes32 node) only_trusted(DIN) {
 		domains[DIN].node = node;
 	}
 

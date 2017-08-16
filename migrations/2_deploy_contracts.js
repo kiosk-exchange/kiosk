@@ -164,16 +164,24 @@ module.exports = function(deployer, network, accounts) {
       );
     })
     .then(() => {
+      return deployer.deploy(
+        TokenPublicProduct,
+        DINRegistry.address,
+        TokenMarket.address
+      );
+    })
+    .then(() => {
       return DINRegistry.at(DINRegistry.address).setMarket(
         tokenDIN,
         TokenMarket.address
       );
     })
     .then(() => {
-      return deployer.deploy(
-        TokenPublicProduct,
-        DINRegistry.address,
-        TokenMarket.address
+      return TokenMarket.at(TokenMarket.address).setProduct(
+        tokenDIN,
+        TokenPublicProduct.address,
+        TokenPublicProduct.address,
+        TokenPublicProduct.address
       );
     })
     .then(() => {
@@ -185,5 +193,9 @@ module.exports = function(deployer, network, accounts) {
         quantity,
         totalPrice
       );
-    });
+    })
+    .then(() => {
+      const quantity = web3.toWei(100, "ether");
+      return KioskMarketToken.at(KioskMarketToken.address).approve(TokenPublicProduct.address, quantity);
+    })
 };

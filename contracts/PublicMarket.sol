@@ -60,11 +60,11 @@ contract PublicMarket is Market {
         _;
     }
 
-    // // Allow the owner or the buy handler to modify product details.
-    // modifier only_trusted(uint256 DIN) {
-    //     require (dinRegistry.owner(DIN) == msg.sender);
-    //     _;
-    // }
+    // Allow the owner or the buy handler to modify product details.
+    modifier only_trusted(uint256 DIN) {
+        require (dinRegistry.owner(DIN) == msg.sender || buyHandler(DIN) == msg.sender);
+        _;
+    }
 
     modifier only_correct_price(uint256 DIN, uint256 quantity) {
         require(price(DIN, quantity) == msg.value);

@@ -44,7 +44,7 @@ contract DINMarket is PublicMarket, PriceResolver, InventoryResolver, BuyHandler
 	}
 
 	function name(uint256 DIN) constant returns (string) {
-		return "DIN";
+		return "Decentralized Identification Number (DIN)";
 	}
 
 	// Price Resolver

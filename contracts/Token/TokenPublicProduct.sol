@@ -44,8 +44,9 @@ contract TokenPublicProduct is Product {
 		// Store the details of the ask
 		asks[DIN].quantity = quantity;
 		asks[DIN].totalPrice = totalPrice;
+		asks[DIN].seller = msg.sender;
 		asks[DIN].isValid = true;
-		// tokenMarket.setQuantity(DIN, quantity);
+		tokenMarket.setQuantity(DIN, quantity);
 	}
 
 	// Price Resolver

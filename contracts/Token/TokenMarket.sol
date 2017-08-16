@@ -47,31 +47,34 @@ contract TokenMarket is PublicMarket {
 	}
 
 	function name(uint256 DIN) constant returns (string) {
-		uint256 quantity = asks[DIN];
-		return bytes32ToString(bytes32(quantity));
+		return "Kiosk Market Token";
 	}
 
-	function setQuantity(uint256 DIN, uint256 quantity) only_owner(DIN) {
+	function quantity(uint256 DIN) constant returns (uint256) {
+		return asks[DIN];
+	}
+
+	function setQuantity(uint256 DIN, uint256 quantity) only_trusted(DIN) {
 		asks[DIN] = quantity;
 	}
 
 	// Helper
 	// TODO: Move this to a string utils.
-	function bytes32ToString(bytes32 x) constant returns (string) {
-    bytes memory bytesString = new bytes(32);
-    uint charCount = 0;
-    for (uint j = 0; j < 32; j++) {
-        byte char = byte(bytes32(uint(x) * 2 ** (8 * j)));
-        if (char != 0) {
-            bytesString[charCount] = char;
-            charCount++;
+    function bytes32ToString(bytes32 x) constant returns (string) {
+        bytes memory bytesString = new bytes(32);
+        uint charCount = 0;
+        for (uint j = 0; j < 32; j++) {
+            byte char = byte(bytes32(uint(x) * 2 ** (8 * j)));
+            if (char != 0) {
+                bytesString[charCount] = char;
+                charCount++;
+            }
         }
+        bytes memory bytesStringTrimmed = new bytes(charCount);
+        for (j = 0; j < charCount; j++) {
+            bytesStringTrimmed[j] = bytesString[j];
+        }
+        return string(bytesStringTrimmed);
     }
-    bytes memory bytesStringTrimmed = new bytes(charCount);
-    for (j = 0; j < charCount; j++) {
-        bytesStringTrimmed[j] = bytesString[j];
-    }
-    return string(bytesStringTrimmed);
-	}
 
 } 
