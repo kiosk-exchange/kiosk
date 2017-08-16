@@ -1,12 +1,14 @@
 const web3 = new (require("web3"))();
-const DINRegistry = artifacts.require("./DINRegistry.sol");
-const OrderTracker = artifacts.require("./OrderTracker.sol");
-const DINMarket = artifacts.require("./DIN/DINMarket.sol");
-const ENSMarket = artifacts.require("./ENSMarket/ENSMarket.sol");
-const ENSPublicProduct = artifacts.require("./ENSMarket/ENSPublicProduct.sol");
-const ENS = artifacts.require(".ENSMarket/ENS/ENS.sol");
-const FIFSRegistrar = artifacts.require(".ENSMarket/ENS/FIFSRegistrar.sol");
-const KioskMarketToken = artifacts.require(".Token/KioskMarketToken.sol");
+const DINRegistry = artifacts.require("DINRegistry.sol");
+const OrderTracker = artifacts.require("OrderTracker.sol");
+const DINMarket = artifacts.require("DIN/DINMarket.sol");
+const ENSMarket = artifacts.require("ENSMarket/ENSMarket.sol");
+const ENSPublicProduct = artifacts.require("ENSMarket/ENSPublicProduct.sol");
+const ENS = artifacts.require("ENSMarket/ENS/ENS.sol");
+const FIFSRegistrar = artifacts.require("ENSMarket/ENS/FIFSRegistrar.sol");
+const KioskMarketToken = artifacts.require("Token/KioskMarketToken.sol");
+const TokenMarket = artifacts.require("Token/TokenMarket.sol");
+const TokenPublicProduct = artifacts.require("Token/TokenPublicProduct.sol");
 const namehash = require("../node_modules/eth-ens-namehash");
 
 // https://github.com/ethereum/ens/blob/master/migrations/2_deploy_contracts.js
@@ -30,7 +32,8 @@ module.exports = function(deployer, network, accounts) {
   const subnodeNameHash = namehash(subnodeName);
   const price = web3.toWei(2, "ether");
   const genesis = 1000000000;
-  const DIN = 1000000001;
+  const ENSDIN = 1000000001; // The first DIN registered (used for demo ENS product)
+  const tokenDIN = 1000000002; // The second DIN registered (used for demo token product)
   const account1 = accounts[0];
 
   // Deploy the ENS
@@ -95,67 +98,46 @@ module.exports = function(deployer, network, accounts) {
       );
     })
     .then(() => {
-      // Set the Product resolvers of DINMarket to itself
-      return DINMarket.at(DINMarket.address).setPriceResolver(
-        genesis,
-        DINMarket.address
-      );
-    })
-    .then(() => {
-      return DINMarket.at(DINMarket.address).setInventoryResolver(
-        genesis,
-        DINMarket.address
-      );
-    })
-    .then(() => {
-      return DINMarket.at(DINMarket.address).setBuyHandler(
-        genesis,
-        DINMarket.address
-      );
-    })
-    .then(() => {
-      // Register a new DIN.
-      return DINMarket.at(DINMarket.address).buy(genesis, 1, {
+      // Register two new DINs (one for a demo ENS domain and one for a demo token ask offer).
+      return DINMarket.at(DINMarket.address).buy(genesis, 2, {
         from: account1,
         value: 0,
         gas: 4700000
       });
     })
     .then(() => {
+      // Set the market for the ENS DIN to the ENSMarket
       return DINRegistry.at(DINRegistry.address).setMarket(
-        DIN,
+        ENSDIN,
         ENSMarket.address
       );
     })
     .then(() => {
-      // Add product resolvers and information to ENSMarket (ideally, a factory will be able to do this)
-      return ENSMarket.at(ENSMarket.address).setPriceResolver(
-        DIN,
+      // Add resolvers for ENS DIN to ENSMarket
+      return ENSMarket.at(ENSMarket.address).setProduct(
+        ENSDIN,
+        ENSPublicProduct.address,
+        ENSPublicProduct.address,
         ENSPublicProduct.address
       );
     })
     .then(() => {
-      return ENSMarket.at(ENSMarket.address).setInventoryResolver(
-        DIN,
-        ENSPublicProduct.address
+      // TODO: Figure out a better way to do this
+      // Set market specific information for ENS
+      return ENSMarket.at(ENSMarket.address).setName(ENSDIN, subnodeName);
+    })
+    .then(() => {
+      // TODO: Figure out a better way to do this
+      // Set market specific information for ENS
+      return ENSMarket.at(ENSMarket.address).setENSNode(
+        ENSDIN,
+        subnodeNameHash
       );
-    })
-    .then(() => {
-      return ENSMarket.at(ENSMarket.address).setBuyHandler(
-        DIN,
-        ENSPublicProduct.address
-      );
-    })
-    .then(() => {
-      return ENSMarket.at(ENSMarket.address).setName(DIN, subnodeName);
-    })
-    .then(() => {
-      return ENSMarket.at(ENSMarket.address).setENSNode(DIN, subnodeNameHash);
     })
     .then(() => {
       // List "example.eth" on ENSMarket
       return ENSPublicProduct.at(ENSPublicProduct.address).addENSDomain(
-        DIN,
+        ENSDIN,
         subnodeName,
         subnodeNameHash,
         price
@@ -169,13 +151,39 @@ module.exports = function(deployer, network, accounts) {
       );
     })
     .then(() => {
-      // Create Kiosk Market token with a total supply of 1 billion tokens
-      return deployer.deploy(KioskMarketToken, 1000000000)
+      // Create Kiosk Market Token (KMT) with a total supply of 1 million tokens
+      return deployer.deploy(KioskMarketToken, 1000000);
     })
     .then(() => {
-      return KioskMarketToken.at(KioskMarketToken.address).totalSupply()
+      // Deploy the Kiosk Market Token (KMT) market
+      return deployer.deploy(
+        TokenMarket,
+        DINRegistry.address,
+        OrderTracker.address,
+        KioskMarketToken.address
+      );
     })
-    .then((totalSupply) => {
-      console.log(totalSupply.toNumber())
+    .then(() => {
+      return DINRegistry.at(DINRegistry.address).setMarket(
+        tokenDIN,
+        TokenMarket.address
+      );
     })
+    .then(() => {
+      return deployer.deploy(
+        TokenPublicProduct,
+        DINRegistry.address,
+        TokenMarket.address
+      );
+    })
+    .then(() => {
+      const quantity = web3.toWei(100, "ether");
+      const pricePerKMT = web3.toWei(0.25, "ether"); // Ask 0.25 ether per KMT
+      const totalPrice = quantity * pricePerKMT;
+      return TokenPublicProduct.at(TokenPublicProduct.address).addToken(
+        tokenDIN,
+        quantity,
+        totalPrice
+      );
+    });
 };

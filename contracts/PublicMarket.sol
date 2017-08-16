@@ -60,6 +60,12 @@ contract PublicMarket is Market {
         _;
     }
 
+    // // Allow the owner or the buy handler to modify product details.
+    // modifier only_trusted(uint256 DIN) {
+    //     require (dinRegistry.owner(DIN) == msg.sender);
+    //     _;
+    // }
+
     modifier only_correct_price(uint256 DIN, uint256 quantity) {
         require(price(DIN, quantity) == msg.value);
         _;
@@ -104,7 +110,7 @@ contract PublicMarket is Market {
         returns (uint256) 
     {
     	address seller = dinRegistry.owner(DIN);
-        bytes32 info = orderInfo(DIN);
+        bytes32 info = orderInfo(DIN, msg.sender);
 
         // Add the order to the order tracker and get the order ID.
         uint256 orderID = orderTracker.registerNewOrder(
@@ -157,11 +163,10 @@ contract PublicMarket is Market {
 
     /**
     *   =========================
-    *      Product Information          
+    *            Price          
     *   =========================
     */ 
 
-    // Price
     function price(uint256 DIN, uint256 quantity) constant returns (uint256) {
         return products[DIN].priceResolver.totalPrice(DIN, quantity, msg.sender);
     }
@@ -175,7 +180,12 @@ contract PublicMarket is Market {
         PriceResolverChanged(DIN, resolver);
     }
 
-    // Inventory
+    /**
+    *   =========================
+    *          Inventory          
+    *   =========================
+    */ 
+
     function availableForSale(uint256 DIN, uint256 quantity) constant returns (bool) {
         return products[DIN].inventoryResolver.isAvailableForSale(DIN, quantity);
     }
@@ -189,7 +199,12 @@ contract PublicMarket is Market {
         InventoryResolverChanged(DIN, resolver);
     }
 
-    // Buy
+    /**
+    *   =========================
+    *            Buy          
+    *   =========================
+    */ 
+
     function buyHandler(uint256 DIN) constant returns (address) {
         return products[DIN].buyHandler;
     }
@@ -197,6 +212,19 @@ contract PublicMarket is Market {
     function setBuyHandler(uint256 DIN, BuyHandler handler) only_owner(DIN) {
         products[DIN].buyHandler = handler;
         BuyHandlerChanged(DIN, handler);
+    }
+
+    // Convenience method (set all resolvers at once)
+    function setProduct(uint256 DIN, PriceResolver priceResolver, InventoryResolver inventoryResolver, BuyHandler buyHandler) only_owner(DIN) {
+        // Set product resolvers
+        products[DIN].priceResolver = priceResolver;
+        products[DIN].inventoryResolver = inventoryResolver;
+        products[DIN].buyHandler = buyHandler;
+
+        // Events
+        PriceResolverChanged(DIN, priceResolver);
+        InventoryResolverChanged(DIN, inventoryResolver);
+        BuyHandlerChanged(DIN, buyHandler);
     }
 
 }

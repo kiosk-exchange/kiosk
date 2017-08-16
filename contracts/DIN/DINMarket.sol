@@ -12,7 +12,13 @@ contract DINMarket is PublicMarket, PriceResolver, InventoryResolver, BuyHandler
 	string public title = "DIN Market";
 
 	function DINMarket(DINRegistry _dinRegistry, OrderTracker _orderTracker)
-		PublicMarket(_dinRegistry, _orderTracker) {}
+		PublicMarket(_dinRegistry, _orderTracker) 
+	{
+		uint256 genesis = _dinRegistry.genesis();
+		products[genesis].priceResolver = this;
+		products[genesis].inventoryResolver = this;
+		products[genesis].buyHandler = this;
+	}
 
 	function orderInfo(uint256 DIN, address buyer) constant returns (bytes32) {
 		uint256 nextDIN = dinRegistry.index() + 1;
