@@ -14,18 +14,18 @@ contract OrderTracker {
 	// The current order ID.
 	uint256 public orderIndex = 0;
 
-  // Order ID => Order
-  mapping (uint256 => Order) public orders;
+	// Order ID => Order
+	mapping (uint256 => Order) public orders;
 
-  struct Order {
-    address buyer;
-    address seller;
-    uint256 DIN;
-    bytes32 data;						// Used by Markets to confirm order fulfillment.
-    uint256 value;                          
-    uint256 quantity;
-    uint256 timestamp;
-    OrderUtils.Status status;
+	struct Order {
+		address buyer;
+		address seller;
+		uint256 DIN;
+		bytes32 data;					// Used by Markets to confirm order fulfillment.
+		uint256 value;                          
+		uint256 quantity;
+		uint256 timestamp;
+		OrderUtils.Status status;
 	}
 
 	event NewOrder(
@@ -64,20 +64,20 @@ contract OrderTracker {
 		uint256 quantity,
 		uint256 timestamp
 	)
-		only_token
-		returns (uint256)
+		only_token // Only Kiosk Market token is allowed to register new orders.
+		returns (uint256) // Return the newly generated order ID.
 	{
 		// Increment the order index for a new order.
 		orderIndex++;
 
-    // Add the order details to internal storage.
-    orders[orderIndex].buyer = buyer;
-    orders[orderIndex].seller = seller;
-    orders[orderIndex].DIN = DIN;
-    orders[orderIndex].value = value;
-    orders[orderIndex].quantity = quantity;
-    orders[orderIndex].timestamp = timestamp;
-    orders[orderIndex].status = OrderUtils.Status.Pending;
+		// Add the order details to internal storage.
+		orders[orderIndex].buyer = buyer;
+		orders[orderIndex].seller = seller;
+		orders[orderIndex].DIN = DIN;
+		orders[orderIndex].value = value;
+		orders[orderIndex].quantity = quantity;
+		orders[orderIndex].timestamp = timestamp;
+		orders[orderIndex].status = OrderUtils.Status.Pending;
 
 		// Record a new order event.
 		NewOrder(
@@ -105,11 +105,11 @@ contract OrderTracker {
 		orders[orderID].status = status;
 	}
 
-  /**
-  *   =========================
-  *            Getters         
-  *   =========================
-  */
+	/**
+	*   =========================
+	*            Getters         
+	*   =========================
+	*/
 
 	function buyer(uint256 orderID) constant returns (address) {
 		return orders[orderID].buyer;
