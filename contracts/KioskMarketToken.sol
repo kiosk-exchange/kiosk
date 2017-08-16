@@ -11,6 +11,7 @@ contract KioskMarketToken is StandardToken {
 	string public name = "Kiosk Market Token";      // Set the name for display purposes
 	string public symbol = "KMT";                   // Set the symbol for display purposes
 	uint256 public decimals = 18;                   // Amount of decimals for display purposes
+	address public owner;
 
 	// The address of DIN registry where all DINs are stored.
 	DINRegistry public dinRegistry;
@@ -18,12 +19,13 @@ contract KioskMarketToken is StandardToken {
 	// The address of the order tracker where all new order events are stored.
 	OrderTracker public orderTracker;
 
-	function KioskMarketToken(
-		DINRegistry _dinRegistry, 
-		OrderTracker _orderTracker,
-		uint256 _totalSupply
-	) 
-	{
+	modifier only_owner {
+		require (owner == msg.sender);
+		_;
+	}
+
+	function KioskMarketToken(uint256 _totalSupply) {
+		owner = msg.sender;
 		balances[msg.sender] = _totalSupply * 10**decimals;   // Give the creator all initial tokens
 		totalSupply = _totalSupply * 10**decimals;            // Update total supply
 	}
@@ -52,7 +54,7 @@ contract KioskMarketToken is StandardToken {
 			seller,
 			market,
 			DIN,
-			msg.value,
+			value,
 			quantity,
 			block.timestamp
 		);
@@ -81,5 +83,16 @@ contract KioskMarketToken is StandardToken {
 		return false;
 	}
 
+	function setOwner(address _owner) only_owner {
+		owner = _owner;
+	}
+
+	function setDINRegistry(DINRegistry _dinRegistry) only_owner {
+		dinRegistry = _dinRegistry;
+	}
+
+	function setOrderTracker(OrderTracker _orderTracker) only_owner {
+		orderTracker = _orderTracker;
+	}
 
 }

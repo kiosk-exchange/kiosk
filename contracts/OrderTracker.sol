@@ -9,7 +9,7 @@ contract OrderTracker {
 	DINRegistry public dinRegistry;
 
 	// The address of the Kiosk Market Token contract.
-	KioskMarketToken public token;
+	KioskMarketToken public KMT;
 
 	// The current order ID.
 	uint256 public orderIndex = 0;
@@ -39,20 +39,20 @@ contract OrderTracker {
 		uint256 timestamp
 	);
 
-	// Only allow updates from registered markets.
 	modifier only_market(uint256 DIN) {
 		require (dinRegistry.market(DIN) == msg.sender);
 		_;
 	}
 
 	modifier only_token {
-		require (token == msg.sender);
+		require (KMT == msg.sender);
 		_;
 	}
 
+	// Constructor
 	function OrderTracker(DINRegistry _dinRegistry, KioskMarketToken _token) {
 		dinRegistry = _dinRegistry;
-		token = _token;
+		KMT = _token;
 	}
 
 	function registerNewOrder(

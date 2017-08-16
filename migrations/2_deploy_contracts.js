@@ -31,14 +31,54 @@ module.exports = function(deployer, network, accounts) {
   const subnodeName = "example.eth";
   const subnodeNameHash = namehash(subnodeName);
   const price = web3.toWei(2, "ether");
+  const initialSupply = 1000000; // Initialize KMT with 1 million tokens
   const genesis = 1000000000;
   const ENSDIN = 1000000001; // The first DIN registered (used for demo ENS product)
   const tokenDIN = 1000000002; // The second DIN registered (used for demo token product)
   const account1 = accounts[0];
 
-  // Deploy the ENS
+  /**
+    *   =========================
+    *        Kiosk Protocol         
+    *   =========================
+    */
+
+  // Deploy Kiosk Market Token with a total supply of 1 million tokens.
   deployer
-    .deploy(ENS)
+    .deploy(KioskMarketToken, initialSupply)
+    .then(() => {
+      // Deploy DINRegistry with a genesis DIN of 10000000000.
+      return deployer.deploy(DINRegistry, genesis);
+    })
+    .then(() => {
+      // Deploy OrderTracker and bind it with DINRegistry and Kiosk Market Token.
+      return deployer.deploy(
+        OrderTracker,
+        DINRegistry.address,
+        KioskMarketToken.address
+      );
+    })
+    .then(() => {
+      // Add DINRegistry to Kiosk Market Token.
+      return KioskMarketToken.at(KioskMarketToken.address).setDINRegistry(
+        DINRegistry.address
+      );
+    })
+    .then(() => {
+      // Add OrderTracker to Kiosk Market Token.
+      return KioskMarketToken.at(KioskMarketToken.address).setOrderTracker(
+        OrderTracker.address
+      );
+    })
+    /**
+      *   =========================
+      *              ENS
+      *   =========================
+      */
+
+    .then(() => {
+      return deployer.deploy(ENS);
+    })
     .then(() => {
       // Deploy the FIFSRegistrar and bind it with ENS
       return deployer.deploy(FIFSRegistrar, ENS.address, rootNode.namehash);
@@ -59,18 +99,12 @@ module.exports = function(deployer, network, accounts) {
       );
     })
     .then(() => {
-      // Deploy the DIN Registry
-      return deployer.deploy(DINRegistry, genesis);
-    })
-    .then(() => {
-      return deployer.deploy(OrderTracker, DINRegistry.address);
-    })
-    .then(() => {
       // Deploy ENS Market, where ENS domains can be bought and sold
       return deployer.deploy(
         ENSMarket,
         DINRegistry.address,
         OrderTracker.address,
+        KioskMarketToken.address,
         ENS.address
       );
     })
@@ -83,11 +117,18 @@ module.exports = function(deployer, network, accounts) {
       );
     })
     .then(() => {
+      /**
+      *   =========================
+      *              DIN
+      *   =========================
+      */
+
       // Deploy the DINMarket
       return deployer.deploy(
         DINMarket,
         DINRegistry.address,
-        OrderTracker.address
+        OrderTracker.address,
+        KioskMarketToken.address
       );
     })
     .then(() => {
@@ -99,11 +140,7 @@ module.exports = function(deployer, network, accounts) {
     })
     .then(() => {
       // Register two new DINs (one for a demo ENS domain and one for a demo token ask offer).
-      return DINMarket.at(DINMarket.address).buy(genesis, 2, {
-        from: account1,
-        value: 0,
-        gas: 4700000
-      });
+      return KioskMarketToken.at(KioskMarketToken.address).buy(genesis, 2, 0);
     })
     .then(() => {
       // Set the market for the ENS DIN to the ENSMarket
@@ -149,53 +186,5 @@ module.exports = function(deployer, network, accounts) {
         subnodeNameHash,
         ENSPublicProduct.address
       );
-    })
-    .then(() => {
-      // Create Kiosk Market Token (KMT) with a total supply of 1 million tokens
-      return deployer.deploy(KioskMarketToken, 1000000);
-    })
-    .then(() => {
-      // Deploy the Kiosk Market Token (KMT) market
-      return deployer.deploy(
-        TokenMarket,
-        DINRegistry.address,
-        OrderTracker.address,
-        KioskMarketToken.address
-      );
-    })
-    .then(() => {
-      return deployer.deploy(
-        TokenPublicProduct,
-        DINRegistry.address,
-        TokenMarket.address
-      );
-    })
-    .then(() => {
-      return DINRegistry.at(DINRegistry.address).setMarket(
-        tokenDIN,
-        TokenMarket.address
-      );
-    })
-    .then(() => {
-      return TokenMarket.at(TokenMarket.address).setProduct(
-        tokenDIN,
-        TokenPublicProduct.address,
-        TokenPublicProduct.address,
-        TokenPublicProduct.address
-      );
-    })
-    .then(() => {
-      const quantity = web3.toWei(100, "ether");
-      const pricePerKMT = web3.toWei(0.25, "ether"); // Ask 0.25 ether per KMT
-      const totalPrice = quantity * pricePerKMT;
-      return TokenPublicProduct.at(TokenPublicProduct.address).addToken(
-        tokenDIN,
-        quantity,
-        totalPrice
-      );
-    })
-    .then(() => {
-      const quantity = web3.toWei(100, "ether");
-      return KioskMarketToken.at(KioskMarketToken.address).approve(TokenPublicProduct.address, quantity);
     })
 };

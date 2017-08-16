@@ -37,7 +37,7 @@ contract ENSMarket is PublicMarket {
 		ens = _ens;
 	}
 
-	function orderInfo(uint256 DIN, address buyer) constant returns (bytes32) {
+	function orderData(uint256 DIN, address buyer) constant returns (bytes32) {
 		return ENSNode(DIN);
 	}
 
@@ -59,6 +59,7 @@ contract ENSMarket is PublicMarket {
 	}
 
 	function name(uint256 DIN) constant returns (string) {
+		return "";
 		return domains[DIN].name;
 	}
 

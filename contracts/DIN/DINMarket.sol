@@ -25,7 +25,7 @@ contract DINMarket is PublicMarket, PriceResolver, InventoryResolver, BuyHandler
 		products[genesis].buyHandler = this;
 	}
 
-	function orderInfo(uint256 DIN, address buyer) constant returns (bytes32) {
+	function orderData(uint256 DIN, address buyer) constant returns (bytes32) {
 		uint256 nextDIN = dinRegistry.index() + 1;
 		return bytes32(nextDIN);
 	}

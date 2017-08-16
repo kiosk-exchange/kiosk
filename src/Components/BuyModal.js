@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Modal, Button } from "react-bootstrap";
 import QuantityPicker from "./QuantityPicker";
-import MarketJSON from "../../build/contracts/Market.json";
+import MarketJSON from "../../build/contracts/StandardMarket.json";
 import { buyProduct } from "../utils/buy";
 
 class BuyModal extends Component {

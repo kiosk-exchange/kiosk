@@ -1,4 +1,4 @@
-import MarketJSON from "../../build/contracts/Market.json";
+import MarketJSON from "../../build/contracts/StandardMarket.json";
 
 const getMarketDINs = (DINRegistry, marketAddress) =>
   new Promise((resolve, reject) => {
@@ -89,7 +89,7 @@ function infoFromDIN(DIN, web3, DINRegistry) {
   const market = marketFrom(marketAddr, web3);
 
   // TODO: Handle Solidity errors
-  if (DIN <= 1000000002) {
+  if (DIN <= 1000000001) {
     product.name = market.name(DIN);
     const priceInWei = market.price(DIN, 1);
     const price = web3.fromWei(priceInWei, "ether").toNumber().toFixed(3);

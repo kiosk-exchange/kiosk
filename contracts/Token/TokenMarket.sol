@@ -31,7 +31,7 @@ contract TokenMarket is PublicMarket {
 	// DIN => Quantity
 	mapping(uint256 => uint256) public asks;
 
-	function orderInfo(uint256 DIN, address buyer) constant returns (bytes32) {
+	function orderData(uint256 DIN, address buyer) constant returns (bytes32) {
 		// Add the buyer's initial token balance to the order.
 		return bytes32(token.balanceOf(buyer));
 	}
