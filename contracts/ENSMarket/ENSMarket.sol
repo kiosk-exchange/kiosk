@@ -7,7 +7,7 @@ pragma solidity ^0.4.11;
 
 contract ENSMarket is PublicMarket {
 
-	string public title = "ENS";
+	string public title = "ENS Market";
 
 	// ENS Registry
 	AbstractENS public ens;
@@ -24,7 +24,8 @@ contract ENSMarket is PublicMarket {
 	function ENSMarket(
 		DINRegistry _dinRegistry, 
 		OrderTracker _orderTracker, 
-		AbstractENS _ens)
+		AbstractENS _ens
+	)
 		PublicMarket(
 			_dinRegistry, 
 			_orderTracker
@@ -33,7 +34,7 @@ contract ENSMarket is PublicMarket {
 		ens = _ens;
 	}
 
-	function orderInfo(uint256 DIN) constant returns (bytes32) {
+	function orderInfo(uint256 DIN, address buyer) constant returns (bytes32) {
 		return ENSNode(DIN);
 	}
 

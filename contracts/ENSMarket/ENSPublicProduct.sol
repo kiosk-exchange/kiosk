@@ -1,10 +1,10 @@
+pragma solidity ^0.4.11;
+
 import '../Product.sol';
 import '../DINRegistry.sol';
 import '../Market.sol';
 import './ENSMarket.sol';
 import './ENS/ENS.sol';
-
-pragma solidity ^0.4.11;
 
 /**
 *  This is an example of how to sell an ENS domain.
@@ -39,7 +39,12 @@ contract ENSPublicProduct is Product {
 		ens = _ens;
 	}
 
-	function addENSDomain(uint256 DIN, string name, bytes32 node, uint256 price) {
+	function addENSDomain(
+		uint256 DIN, 
+		string name,
+		bytes32 node, 
+		uint256 price
+	) only_owner(DIN) {
 		// Store the details of the ENS node.
 		nodes[DIN].name = name;
 		nodes[DIN].node = node;

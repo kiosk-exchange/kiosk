@@ -1,9 +1,8 @@
-// https://github.com/ConsenSys/Tokens/blob/master/contracts/HumanStandardToken.sol
-
 pragma solidity ^0.4.11;
 
-import 'zeppelin-solidity/contracts/token/StandardToken.sol';
+import "zeppelin-solidity/contracts/token/StandardToken.sol";
 
+// https://github.com/ConsenSys/Tokens/blob/master/contracts/HumanStandardToken.sol
 contract KioskMarketToken is StandardToken {
 	string public name = "Kiosk Market Token";							// Set the name for display purposes
   string public symbol = "KMT";														// Set the symbol for display purposes

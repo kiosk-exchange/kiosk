@@ -1,3 +1,5 @@
+pragma solidity ^0.4.11;
+
 import '../PublicMarket.sol';
 import '../DINRegistry.sol';
 import '../OrderTracker.sol';
@@ -5,16 +7,14 @@ import '../PriceResolver.sol';
 import '../InventoryResolver.sol';
 import '../BuyHandler.sol';
 
-pragma solidity ^0.4.11;
-
 contract DINMarket is PublicMarket, PriceResolver, InventoryResolver, BuyHandler {
 
-	string public title = "DIN";
+	string public title = "DIN Market";
 
 	function DINMarket(DINRegistry _dinRegistry, OrderTracker _orderTracker)
 		PublicMarket(_dinRegistry, _orderTracker) {}
 
-	function orderInfo(uint256 DIN) constant returns (bytes32) {
+	function orderInfo(uint256 DIN, address buyer) constant returns (bytes32) {
 		uint256 nextDIN = dinRegistry.index() + 1;
 		return bytes32(nextDIN);
 	}

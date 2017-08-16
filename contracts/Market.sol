@@ -8,7 +8,7 @@ contract Market {
 	string public title;
 
 	// Snapshot of information that is added to an order which can be used to validate order fulfillment.
-	function orderInfo(uint256 DIN) constant returns (bytes32);
+	function orderInfo(uint256 DIN, address buyer) constant returns (bytes32);
 
 	// Returns true if the seller has fulfilled the order.
 	function isFulfilled(uint256 orderID) constant returns (bool);
