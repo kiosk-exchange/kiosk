@@ -1,10 +1,10 @@
-export const buyProduct = (DIN, quantity, price, buyer, market) => {
-	market.buy(
+export const buyProduct = (KMT, DIN, quantity, value, buyer) => {
+	KMT.buy(
 		DIN,
 		quantity,
+		value,
 		{
 			from: buyer,
-			value: price,
 			gas: 4700000 // TODO: Use estimated gas
 		},
 		(error, result) => {

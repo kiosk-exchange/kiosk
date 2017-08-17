@@ -39,6 +39,9 @@ contract KioskMarketToken is StandardToken {
 		// Get the address of the market.
 		Market market = dinRegistry.market(DIN);
 
+		// The buyer must have enough tokens for the purchase.
+		require (balances[msg.sender] >= value);
+
 		// **UNTRUSTED (MARKET)** The requested quantity must be available for sale.
 		require(market.availableForSale(DIN, quantity) == true);
 

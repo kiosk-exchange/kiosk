@@ -59,7 +59,6 @@ contract ENSMarket is PublicMarket {
 	}
 
 	function name(uint256 DIN) constant returns (string) {
-		return "";
 		return domains[DIN].name;
 	}
 

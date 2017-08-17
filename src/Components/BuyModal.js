@@ -3,17 +3,31 @@ import { Modal, Button } from "react-bootstrap";
 import QuantityPicker from "./QuantityPicker";
 import MarketJSON from "../../build/contracts/StandardMarket.json";
 import { buyProduct } from "../utils/buy";
+import getWeb3 from "../utils/getWeb3";
+import { getKioskMarketToken } from "../utils/contracts";
 
 class BuyModal extends Component {
 	constructor(props) {
 		super(props);
 
 		this.state = {
+			web3: null,
+			KMT: null,
 			quantity: 1
-		}
+		};
 
 		this.handleBuy = this.handleBuy.bind(this);
 		this.handleQuantityChange = this.handleQuantityChange.bind(this);
+	}
+
+	componentWillMount() {
+		getWeb3.then(results => {
+			this.setState({ web3: results.web3 }, () => {
+				getKioskMarketToken(this.state.web3).then(KMT => {
+					this.setState({ KMT: KMT });
+				});
+			});
+		});
 	}
 
 	handleBuy(quantity) {
@@ -22,8 +36,7 @@ class BuyModal extends Component {
 		const market = marketContract.at(this.props.product.market);
 		const priceInWei = market.price(this.props.product.DIN, 1);
 		const buyer = this.props.web3.eth.accounts[0];
-		console.log(quantity)
-		buyProduct(DIN, quantity, priceInWei, buyer, market);
+		buyProduct(this.state.KMT, DIN, quantity, priceInWei, buyer);
 	}
 
 	handleQuantityChange(eventKey) {
@@ -53,7 +66,9 @@ class BuyModal extends Component {
 					<div className="buy-modal-subtitle-container">
 						<h4 className="buy-modal-quantity">Quantity</h4>
 						<div className="buy-modal-quantity-picker">
-							<QuantityPicker handleQuantityChange={this.handleQuantityChange}/>
+							<QuantityPicker
+								handleQuantityChange={this.handleQuantityChange}
+							/>
 						</div>
 					</div>
 					<div className="buy-modal-subtitle-container">
@@ -64,14 +79,20 @@ class BuyModal extends Component {
 					</div>
 				</Modal.Body>
 				<Button
-					style={this.props.product.available === true ? visible : hidden}
+					style={
+						this.props.product.available === true ? visible : hidden
+					}
 					className="buy-now"
 					onClick={() => this.handleBuy(this.state.quantity)}
 				>
 					Buy Now
 				</Button>
 				<Button
-					style={this.props.product.available === false ? visible : hidden}
+					style={
+						this.props.product.available === false
+							? visible
+							: hidden
+					}
 					className="not-available"
 				>
 					Not Available

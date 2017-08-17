@@ -140,7 +140,7 @@ module.exports = function(deployer, network, accounts) {
     })
     .then(() => {
       // Register two new DINs (one for a demo ENS domain and one for a demo token ask offer).
-      return KioskMarketToken.at(KioskMarketToken.address).buy(genesis, 2, 0);
+      return KioskMarketToken.at(KioskMarketToken.address).buy(genesis, 1, 0);
     })
     .then(() => {
       // Set the market for the ENS DIN to the ENSMarket
