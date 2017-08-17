@@ -1,7 +1,7 @@
 module.exports = {
   migrations_directory: "./migrations",
   networks: {
-  	"kovan": {
+  	kovan: {
       network_id: "42",
       host: "localhost",
       port: 8546   // Different than the default below
