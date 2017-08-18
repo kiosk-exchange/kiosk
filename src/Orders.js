@@ -130,7 +130,6 @@ class OrderItem extends Component {
   render() {
     const orderType = this.props.orderType;
     const order = this.props.order;
-    console.log(order);
     const statusStyle =
       orderType === OrderType.seller ? null : { display: "none" };
 

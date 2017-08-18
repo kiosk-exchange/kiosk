@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import getWeb3 from "./utils/getWeb3";
 import { getDINRegistry } from "./utils/contracts";
 import { getMarketDINs, infoFromDIN } from "./utils/getProducts";
-import MarketJSON from "./../build/contracts/Market.json";
+import MarketJSON from "./../build/contracts/StandardMarket.json";
 import BuyModal from "./Components/BuyModal";
 import KioskTable from "./Components/KioskTable";
 

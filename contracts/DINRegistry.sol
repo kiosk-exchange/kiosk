@@ -1,6 +1,6 @@
-import './Market.sol';
-
 pragma solidity ^0.4.11;
+
+import "./Market.sol";
 
 /**
 *  This contract is the Decentralized Identification Number (DIN) registry.
@@ -9,7 +9,7 @@ contract DINRegistry {
 
     struct Record {
         address owner; // Address that owns the DIN.
-        address market; // Address of the market associated with the DIN.
+        Market market; // Address of the market associated with the DIN.
     }
 
     // DIN => Record
@@ -109,7 +109,7 @@ contract DINRegistry {
     /**
     * Returns the address of the market for the specified DIN.
     */
-    function market(uint256 DIN) constant returns (address) {
+    function market(uint256 DIN) constant returns (Market) {
         return records[DIN].market;
     }
 

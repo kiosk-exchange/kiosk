@@ -34,11 +34,13 @@ class Home extends Component {
 
   getProducts() {
     getAllDINs(this.state.DINRegistry).then(DINs => {
-      var fullProducts = DINs.map(DIN => {
+      let promises = DINs.map(DIN => {
         return infoFromDIN(DIN, this.state.web3, this.state.DINRegistry);
       });
 
-      this.setState({ products: fullProducts });
+      Promise.all(promises).then(results => {
+        this.setState({ products: results });
+      })
     });
   }
 

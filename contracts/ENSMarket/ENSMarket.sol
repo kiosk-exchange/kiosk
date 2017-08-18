@@ -1,13 +1,14 @@
-import './ENS/AbstractENS.sol';
-import '../PublicMarket.sol';
-import '../DINRegistry.sol';
-import '../OrderTracker.sol';
-
 pragma solidity ^0.4.11;
+
+import "./ENS/AbstractENS.sol";
+import "../PublicMarket.sol";
+import "../DINRegistry.sol";
+import "../OrderTracker.sol";
+import "../KioskMarketToken.sol";
 
 contract ENSMarket is PublicMarket {
 
-	string public title = "ENS";
+	string public title = "ENS Market";
 
 	// ENS Registry
 	AbstractENS public ens;
@@ -22,27 +23,30 @@ contract ENSMarket is PublicMarket {
 
 	// Constructor
 	function ENSMarket(
-		DINRegistry _dinRegistry, 
-		OrderTracker _orderTracker, 
-		AbstractENS _ens)
+		DINRegistry _dinRegistry,
+		OrderTracker _orderTracker,
+		KioskMarketToken _token,
+		AbstractENS _ens
+	)
 		PublicMarket(
 			_dinRegistry, 
-			_orderTracker
+			_orderTracker,
+			_token
 		)
 	{
 		ens = _ens;
 	}
 
-	function orderInfo(uint256 DIN) constant returns (bytes32) {
+	function orderData(uint256 DIN, address buyer) constant returns (bytes32) {
 		return ENSNode(DIN);
 	}
 
 	function isFulfilled(uint256 orderID) constant returns (bool) {
 		// Get the ENS node from the order
-		bytes32 node = orders[orderID].info;
+		bytes32 node = orderTracker.data(orderID);
 
 		// Check that buyer is the owner
-		return (ens.owner(node) == orders[orderID].buyer);
+		return (ens.owner(node) == orderTracker.buyer(orderID));
 	}
 
 	function availableForSale(uint256 DIN, uint256 quantity) constant returns (bool) {
@@ -58,7 +62,7 @@ contract ENSMarket is PublicMarket {
 		return domains[DIN].name;
 	}
 
-	function setName(uint256 DIN, string name) only_owner(DIN) {
+	function setName(uint256 DIN, string name) only_trusted(DIN) {
 		domains[DIN].name = name;
 	}
 
@@ -66,7 +70,7 @@ contract ENSMarket is PublicMarket {
 		return domains[DIN].node;
 	}
 
-	function setENSNode(uint256 DIN, bytes32 node) only_owner(DIN) {
+	function setENSNode(uint256 DIN, bytes32 node) only_trusted(DIN) {
 		domains[DIN].node = node;
 	}
 

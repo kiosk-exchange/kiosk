@@ -1,38 +1,23 @@
-import './DINRegistry.sol';
-import './PriceResolver.sol';
-import './InventoryResolver.sol';
-import './BuyHandler.sol';
-import './Market.sol';
-import './OrderTracker.sol';
-
 pragma solidity ^0.4.11;
+
+import "./DINRegistry.sol";
+import "./OrderTracker.sol";
+import "./KioskMarketToken.sol";
+import "./PriceResolver.sol";
+import "./InventoryResolver.sol";
+import "./BuyHandler.sol";
+import "./StandardMarket.sol";
+import "./OrderUtils.sol";
 
 /**
 *  This is the default Kiosk implementation of a Market contract.
 */
-contract PublicMarket is Market {
+contract PublicMarket is StandardMarket {
 
     struct Product {
         PriceResolver priceResolver;            // Returns product price.
         InventoryResolver inventoryResolver;    // Returns whether product is in stock.
         BuyHandler buyHandler;                  // Returns the address of the contract that handles orders.
-    }
-
-    struct Order {
-        address buyer;
-        address seller;
-        uint256 DIN;
-        bytes32 info;                           // A snapshot of product information.
-        uint256 value;                          // The amount paid.
-        uint256 quantity;
-        uint256 timestamp;
-        OrderStatus status;
-    }
-
-    enum OrderStatus {
-        Pending,
-        Canceled,
-        Fulfilled
     }
 
     // The address of DIN registry where all DINs are stored.
@@ -41,11 +26,11 @@ contract PublicMarket is Market {
     // The address of the order tracker where all new order events are stored.
     OrderTracker public orderTracker;
 
+    // The address of the Kiosk Market Token contract.
+    KioskMarketToken public KMT;
+
     // DIN => Product
     mapping (uint256 => Product) products;
-
-    // Order ID => Order
-    mapping (uint256 => Order) public orders;
 
     // Order ID => Amount paid
     mapping (uint256 => uint256) public pendingWithdrawals;
@@ -55,23 +40,29 @@ contract PublicMarket is Market {
     event InventoryResolverChanged(uint256 indexed DIN, address InventoryResolver);
     event BuyHandlerChanged(uint256 indexed DIN, address BuyHandler);
 
+    modifier only_token {
+        require (KMT == msg.sender);
+        _;
+    }
+
     modifier only_owner(uint256 DIN) {
         require (dinRegistry.owner(DIN) == msg.sender);
         _;
     }
 
-    modifier only_correct_price(uint256 DIN, uint256 quantity) {
-        require(price(DIN, quantity) == msg.value);
+    modifier only_seller(uint256 orderID) {
+        require (orderTracker.seller(orderID) == msg.sender);
         _;
     }
 
-    modifier only_in_stock(uint256 DIN, uint256 quantity) {
-        require(availableForSale(DIN, quantity) == true);
+    // Allow the owner or the buy handler to modify product details.
+    modifier only_trusted(uint256 DIN) {
+        require (dinRegistry.owner(DIN) == msg.sender || buyHandler(DIN) == msg.sender);
         _;
     }
 
     modifier only_fulfilled(uint256 orderID) {
-        require (orders[orderID].status == OrderStatus.Fulfilled);
+        require (orderTracker.status(orderID) == OrderUtils.Status.Fulfilled);
         _;
     }
 
@@ -81,9 +72,15 @@ contract PublicMarket is Market {
     }
 
     // Constructor
-    function PublicMarket(DINRegistry _dinRegistry, OrderTracker _orderTracker) {
+    function PublicMarket(
+        DINRegistry _dinRegistry, 
+        OrderTracker _orderTracker,
+        KioskMarketToken _token
+    ) 
+    {
         dinRegistry = _dinRegistry;
         orderTracker = _orderTracker;
+        KMT = _token;
     }
 
     /**
@@ -92,78 +89,49 @@ contract PublicMarket is Market {
     *   =========================
     */
 
-    /**
-     * Buy a quantity of a product.
-     * @param DIN The DIN of the product to buy.
-     * @param quantity The quantity to buy.
-     */   
-    function buy(uint256 DIN, uint256 quantity) 
-        payable
-        only_correct_price(DIN, quantity) 
-        only_in_stock(DIN, quantity)
-        returns (uint256) 
-    {
-    	address seller = dinRegistry.owner(DIN);
-        bytes32 info = orderInfo(DIN);
-
-        // Add the order to the order tracker and get the order ID.
-        uint256 orderID = orderTracker.registerNewOrder(
-            msg.sender,
-            seller,
-            DIN,
-            info,
-            msg.value,
-            quantity,
-            block.timestamp
-        );
-
-        // Add the order to internal storage.
-        orders[orderID] = Order(
-            msg.sender,
-            seller,
-            DIN,
-            info,
-            msg.value,
-            quantity,
-            block.timestamp,
-            OrderStatus.Pending
-        );
-
+    function buy(uint256 orderID) only_token returns (bool) {
         // Add proceeds to pending withdrawals.
-        pendingWithdrawals[orderID] += msg.value;
+        uint256 DIN = orderTracker.DIN(orderID);
+        uint256 quantity = orderTracker.quantity(orderID);
+        address buyer = orderTracker.buyer(orderID);
+
+        bytes32 data = orderData(DIN, buyer);
+        // Add data to the order.
+        orderTracker.setData(orderID, data);
 
         // Call the product's buy handler to fulfill the order.
-        products[DIN].buyHandler.handleOrder(orderID, DIN, quantity, msg.sender);
+        products[DIN].buyHandler.handleOrder(orderID, DIN, quantity, buyer);
 
-        // Throw an error if the order is not fulfilled.
+        // Throw an error if the order is not fulfilled. Revert changes in state to protect the seller.
         require (isFulfilled(orderID) == true);
 
-        // Mark the order as fulfilled.
-        orders[orderID].status = OrderStatus.Fulfilled;
+        // Add the proceeds to the seller's balance.
+        pendingWithdrawals[orderID] += msg.value;
 
-        return orderID;
+        return true;
     }
 
     /**
     *   Withdraw proceeds of sales.
     */
-    function withdraw(uint256 orderID) only_owner(orders[orderID].DIN) only_fulfilled(orderID) {
+    function withdraw(uint256 orderID) only_seller(orderID) only_fulfilled(orderID) {
         uint256 amount = pendingWithdrawals[orderID];
 
         // Zero the pending refund before to prevent re-entrancy attacks.
         pendingWithdrawals[orderID] = 0;
+
+        // TODO: THIS NEEDS TO TRANSFER FROM KMT.
         msg.sender.transfer(amount);
     }
 
     /**
     *   =========================
-    *      Product Information          
+    *            Price          
     *   =========================
     */ 
 
-    // Price
-    function price(uint256 DIN, uint256 quantity) constant returns (uint256) {
-        return products[DIN].priceResolver.totalPrice(DIN, quantity, msg.sender);
+    function price(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256) {
+        return products[DIN].priceResolver.totalPrice(DIN, quantity, buyer);
     }
 
     function priceResolver(uint256 DIN) constant returns (address) {
@@ -175,7 +143,12 @@ contract PublicMarket is Market {
         PriceResolverChanged(DIN, resolver);
     }
 
-    // Inventory
+    /**
+    *   =========================
+    *          Inventory          
+    *   =========================
+    */ 
+
     function availableForSale(uint256 DIN, uint256 quantity) constant returns (bool) {
         return products[DIN].inventoryResolver.isAvailableForSale(DIN, quantity);
     }
@@ -189,7 +162,12 @@ contract PublicMarket is Market {
         InventoryResolverChanged(DIN, resolver);
     }
 
-    // Buy
+    /**
+    *   =========================
+    *         Buy Handler          
+    *   =========================
+    */ 
+
     function buyHandler(uint256 DIN) constant returns (address) {
         return products[DIN].buyHandler;
     }
@@ -197,6 +175,19 @@ contract PublicMarket is Market {
     function setBuyHandler(uint256 DIN, BuyHandler handler) only_owner(DIN) {
         products[DIN].buyHandler = handler;
         BuyHandlerChanged(DIN, handler);
+    }
+
+    // Convenience method (set all resolvers at once)
+    function setProduct(uint256 DIN, PriceResolver priceResolver, InventoryResolver inventoryResolver, BuyHandler buyHandler) only_owner(DIN) {
+        // Set product resolvers
+        products[DIN].priceResolver = priceResolver;
+        products[DIN].inventoryResolver = inventoryResolver;
+        products[DIN].buyHandler = buyHandler;
+
+        // Events
+        PriceResolverChanged(DIN, priceResolver);
+        InventoryResolverChanged(DIN, inventoryResolver);
+        BuyHandlerChanged(DIN, buyHandler);
     }
 
 }
