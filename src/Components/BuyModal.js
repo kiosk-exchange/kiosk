@@ -34,9 +34,10 @@ class BuyModal extends Component {
 		const DIN = this.props.product.DIN;
 		const marketContract = this.props.web3.eth.contract(MarketJSON.abi);
 		const market = marketContract.at(this.props.product.market);
-		const priceInWei = market.price(this.props.product.DIN, 1);
-		const buyer = this.props.web3.eth.accounts[0];
-		buyProduct(this.state.KMT, DIN, quantity, priceInWei, buyer);
+		const priceInWei = market.price(this.props.product.DIN, quantity, (error, price) => {
+			const buyer = this.props.web3.eth.accounts[0];
+			buyProduct(this.state.KMT, DIN, quantity, price, buyer);
+		})
 	}
 
 	handleQuantityChange(eventKey) {

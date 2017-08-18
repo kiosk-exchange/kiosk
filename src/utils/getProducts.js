@@ -72,37 +72,66 @@ function ownerFilter(DIN, DINRegistry, owner) {
 }
 
 function infoFromDIN(DIN, web3, DINRegistry) {
-  let product = {
-    DIN: DIN,
-    name: "",
-    owner: "",
-    market: "",
-    price: "",
-    available: false
-  };
+  return new Promise((resolve, reject) => {
+    let product = {
+      DIN: DIN,
+      name: "",
+      owner: "",
+      market: "",
+      price: "",
+      available: false
+    };
 
-  const marketAddr = DINRegistry.market(DIN);
+    const owner = new Promise((resolve, reject) => {
+      DINRegistry.owner(DIN, (error, result) => {
+        resolve(result);
+      });
+    });
 
-  product.owner = DINRegistry.owner(DIN);
-  product.market = marketAddr;
+    const market = new Promise((resolve, reject) => {
+      DINRegistry.market(DIN, (error, result) => {
+        resolve(result);
+      });
+    });
 
-  const market = marketFrom(marketAddr, web3);
+    Promise.all([owner, market]).then(results => {
+      product.owner = results[0];
 
-  // TODO: Handle Solidity errors
-  if (DIN <= 1000000001) {
-    product.name = market.name(DIN);
-    const priceInWei = market.price(DIN, 1);
-    const price = web3.fromWei(priceInWei, "ether").toNumber().toFixed(3);
-    product.price = price;
-    product.available = market.availableForSale(DIN, 1);
-  }
+      const marketAddr = results[1];
 
-  return product;
-}
+      product.market = marketAddr;
 
-function marketFrom(address, web3) {
-  const marketContract = web3.eth.contract(MarketJSON.abi);
-  return marketContract.at(address);
+      // Get the market contract from its address
+      const marketContract = web3.eth.contract(MarketJSON.abi).at(marketAddr);
+
+      const name = new Promise((resolve, reject) => {
+        marketContract.name(DIN, (error, name) => {
+          resolve(name);
+        });
+      });
+
+      const price = new Promise((resolve, reject) => {
+        marketContract.price(DIN, 1, (error, priceInWei) => {
+          const price = web3.fromWei(priceInWei, "ether").toNumber().toFixed(3);
+          resolve(price);
+        });
+      });
+
+      const isAvailable = new Promise((resolve, reject) => {
+        marketContract.availableForSale(DIN, 1, (error, isAvailable) => {
+          console.log(isAvailable)
+          resolve(isAvailable);
+        });
+      });
+
+      Promise.all([name, price, isAvailable]).then(results => {
+        product.name = results[0];
+        product.price = results[1];
+        product.available = results[2];
+        resolve(product);
+      });
+    });
+  });
 }
 
 export { getMarketDINs, getUserDINs, getAllDINs, infoFromDIN };

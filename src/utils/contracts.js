@@ -18,12 +18,12 @@ const getContract = (web3, json) => new Promise((resolve, reject) => {
 })
 
 const getDINRegistry = (web3) => { return getContract(web3, DINRegistryJSON) }
+const getKioskMarketToken = (web3) => { return getContract(web3, KioskMarketTokenJSON )}
 const getDINMarket = (web3) => { return getContract(web3, DINMarketJSON) }
 const getPublicMarket = (web3) => { return getContract(web3, PublicMarketJSON) }
 const getENS = (web3) => { return getContract(web3, ENSJSON) }
 const getENSMarket = (web3) => { return getContract(web3, ENSMarketJSON) }
 const getENSPublicProduct = (web3) => { return getContract(web3, ENSPublicProductJSON) }
 const getOrderTracker = (web3) => { return getContract(web3, OrderTrackerJSON) }
-const getKioskMarketToken = (web3) => { return getContract(web3, KioskMarketTokenJSON )}
 
 export { getDINRegistry, getDINMarket, getPublicMarket, getENS, getENSMarket, getENSPublicProduct, getOrderTracker, getKioskMarketToken }

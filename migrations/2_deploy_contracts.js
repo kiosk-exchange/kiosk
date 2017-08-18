@@ -159,12 +159,10 @@ module.exports = function(deployer, network, accounts) {
       );
     })
     .then(() => {
-      // TODO: Figure out a better way to do this
       // Set market specific information for ENS
       return ENSMarket.at(ENSMarket.address).setName(ENSDIN, subnodeName);
     })
     .then(() => {
-      // TODO: Figure out a better way to do this
       // Set market specific information for ENS
       return ENSMarket.at(ENSMarket.address).setENSNode(
         ENSDIN,
