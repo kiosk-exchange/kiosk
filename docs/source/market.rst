@@ -1,5 +1,5 @@
 ==================
-Creating a Market
+Create a Market
 ==================
 
 A ``Market`` is a contract that implements the following methods: ::

@@ -13,3 +13,4 @@ Welcome to Kiosk's documentation!
    din-registry
    buy
    market
+   faq
