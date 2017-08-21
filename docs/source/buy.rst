@@ -2,11 +2,11 @@
 Buying a Product
 ======================
 
-Buyers can buy products using Kiosk Market Token, which is an `ERC20 Token <https://theethereum.wiki/w/index.php/ERC20_Token_Standard>`_ with an additional method called `buy`. ::
+Buyers can buy products using Kiosk Market Token, which is an `ERC20 Token <https://theethereum.wiki/w/index.php/ERC20_Token_Standard>`_ with an additional method called ``buy``. ::
 
 	function buy(uint256 DIN, uint256 quantity, uint256 value) returns (bool)
 
-This method is the core of the Kiosk protocol. Instead of simply transferring tokens from one account to another like ``transfer`` or ``transferFrom`` in the ERC20 standard, ``buy`` provides an interface for a two-way transaction in which the buyer exchanges Kiosk Market Tokens for some `consideration <https://en.wikipedia.org/wiki/Consideration>`_ from the seller.
+This method is the core of the Kiosk protocol. Instead of simply transferring tokens from one account to another like ``transfer`` or ``transferFrom`` in the ERC20 standard, ``buy`` provides an interface for a two-way transaction in which the buyer exchanges tokens for some `consideration <https://en.wikipedia.org/wiki/Consideration>`_ from the seller.
 
 The buy method interacts with a DIN’s corresponding ``Market`` contract. ::
 
@@ -67,6 +67,12 @@ The buy method interacts with a DIN’s corresponding ``Market`` contract. ::
 		return false;
 	}
 
+**NOTE: This method does not follow Solidity best practices. Future implementations will likely contain breaking changes.**
+
 First, it verifies that the product is available for sale and that the value parameter is equal to the market price. Then it creates an ``Order`` and stores it on the global ``OrderTracker``. It will then execute the ``Market`` method ``buy(uint256 orderID)`` which must execute one or many transactions so that its method ``isFulfilled(uint256 orderID)`` will return ``true``.
 
-**NOTE: This method does not follow Solidity best practices. Future implementations will likely contain breaking changes.**
+This method is designed to make the buying experience as simple as possible. For example, to buy a new ``DIN``, you could run the following: ::
+
+	KioskMarketTokenContract.buy(1000000000, 1, 0)
+
+
