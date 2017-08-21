@@ -1,4 +1,6 @@
+======================
 Buying a Product
+======================
 
 Buyers can buy products using Kiosk Market Token, which is an `ERC20 Token <https://theethereum.wiki/w/index.php/ERC20_Token_Standard>`_ with an additional method called `buy`. ::
 
