@@ -11,3 +11,4 @@ Welcome to Kiosk's documentation!
    :caption: Contents:
 
    din-registry
+   buy
