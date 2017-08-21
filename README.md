@@ -11,8 +11,6 @@ Kiosk provides a framework for creating decentralized marketplaces. Its smart co
 
 ## Quick Start
 
-As a proof of concept, we're building a secondary market for [ENS](https://ens.domains/) domains on top of Kiosk. It's currently a work in progress. Try it out by testing locally with [TestRPC](https://github.com/ethereumjs/testrpc).
-
 Download the project.
 ```
 git clone https://github.com/kioskprotocol/kiosk.git
@@ -51,61 +49,21 @@ The Kiosk protocol has four main components: `DIN`, `Market`, `Product`, and `Or
 
 ### DIN
 
-A Decentralized Identification Number (DIN), is a unique, 10-digit product identifier, similar to a barcode. A client can look up a `DIN` on the global `DINRegistry` contract to find its corresponding `Market`.
-
-```cs
-function market(uint256 DIN) constant returns (address)
-```
+A Decentralized Identification Number (DIN), is a unique, 10-digit product identifier. A client can look up a `DIN` on the global `DINRegistry` contract to find its corresponding `Market`.
 
 ### Market
 
-A `Market` stores `Products` and `Orders`. 
-
-It has an interface that buyers can use to purchase a product based on its `DIN`. This creates an `Order` and returns its order ID from the global `OrderTracker`.
-
-```cs
-function buy(uint256 DIN, uint256 quantity) payable returns (uint256);
-```
-
-A `Market` is also responsible for determining when a seller has fulfilled an `Order` and can withdraw its proceeds.
-
-```cs
-function isFulfilled(uint256 orderID) constant returns (bool);
-```
+A `Market` is an interface that buyers can use to purchase a product based on its `DIN`.
 
 ### Product
 
 A `Product` tells a `Market` its price and availability.
 
-```cs
-function totalPrice(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256);
-function isAvailableForSale(uint256 DIN, uint256 quantity) constant returns (bool);
-```
-
-It will receive a callback when a new order has been placed. For Ethereum-based assets, a `Product` is expected to provide instant settlement, or the transaction will fail.
-```cs
-function handleOrder(uint256 orderID, uint256 DIN, uint256 quantity, address buyer);
-```
-
 ### Order
 
-An `Order` contains information about a purchase. A `Market`communicates its orders to a global `OrderTracker` and gets an order ID which buyers and sellers can use to see their order history across all markets.
+An `Order` contains information about a purchase.
 
-```cs
-function registerNewOrder(
-	address buyer, 
-	address seller, 
-	uint256 DIN,
-	bytes32 info,
-	uint256 value,
-	uint256 quantity,
-	uint256 timestamp
-)
-	only_market(DIN)
-	returns (uint256);
-```
-
-**The Kiosk protocol is designed with the buyer in mind**. Its goal is to make the buying experience as simple, consistent, and transparent as possible. With just a product's DIN, a buyer can determine its price and how to buy it on a provably fair market.
+For documentation (work-in-progress), please visit: [Kiosk Documentation](http://kiosk.readthedocs.io/)
 
 ## Testing
 
