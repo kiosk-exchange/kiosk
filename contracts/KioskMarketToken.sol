@@ -31,9 +31,10 @@ contract KioskMarketToken is StandardToken {
 	}
 
 	/**
-	* Buy a quantity of a product.
+	* Buy a product.
 	* @param DIN The DIN of the product to buy.
 	* @param quantity The quantity to buy.
+	* @param value The total price of the product(s).
 	*/   
 	function buy(uint256 DIN, uint256 quantity, uint256 value) returns (bool) {
 		// Get the address of the market.
@@ -42,10 +43,10 @@ contract KioskMarketToken is StandardToken {
 		// The buyer must have enough tokens for the purchase.
 		require (balances[msg.sender] >= value);
 
-		// **UNTRUSTED (MARKET)** The requested quantity must be available for sale.
+		// The requested quantity must be available for sale.
 		require(market.availableForSale(DIN, quantity) == true);
 
-		// **UNTRUSTED (MARKET)** The value must match the market price. 
+		// The value must match the market price. 
 		require(market.price(DIN, quantity, msg.sender) == value);
 
 		// Get the address of the seller.
@@ -62,10 +63,10 @@ contract KioskMarketToken is StandardToken {
 			block.timestamp
 		);
 
-		// **UNTRUSTED (MARKET)** Tell the market to execute the order.
+		// Tell the market to execute the order.
 		market.buy(orderID);
 
-		// **UNTRUSTED (MARKET)** Throw an error if the order is not fulfilled by the market.
+		// Throw an error if the order is not fulfilled by the market.
 		if (market.isFulfilled(orderID) == true) {
 			// Transfer the value of the order to the market.
 			balances[msg.sender] = balances[msg.sender].sub(value);
