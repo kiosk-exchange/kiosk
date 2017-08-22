@@ -26,7 +26,7 @@ class MarketplaceTable extends Component {
         <TableBody displayRowCheckbox={false}>
           {this.props.products.map(product => {
               return (
-                <TableRow style={tableRowStyle}>
+                <TableRow style={tableRowStyle} key={product.DIN}>
                   <TableRowColumn>{product.DIN}</TableRowColumn>
                   <TableRowColumn style={tableColumnStyle}>{product.name}</TableRowColumn>
                   <TableRowColumn>{product.market}</TableRowColumn>

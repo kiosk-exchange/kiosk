@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Switch, Route } from "react-router-dom";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import getWeb3 from "./utils/getWeb3";
+// import getNetwork from "./utils/network";
 import Home from "./Home";
 import Market from "./Market";
 import NewENSDomain from "./ENS/NewENSDomain";
@@ -16,9 +17,6 @@ class App extends Component {
 
     this.state = {
       web3: null,
-      network: "",
-      account: "",
-      balance: ""
     };
   }
 
@@ -29,34 +27,10 @@ class App extends Component {
           web3: results.web3
         },
         () => {
-          this.getNetwork();
+          // getNetwork(this.state.web3);
           this.getAccount();
         }
       );
-    });
-  }
-
-  getNetwork() {
-    var network;
-    this.state.web3.version.getNetwork((err, networkId) => {
-      switch (networkId) {
-        case "1":
-          network = "Main Ethereum Network";
-          break;
-        case "2":
-          network = "Morden Test Network";
-          break;
-        case "3":
-          network = "Ropsten Test Network";
-          break;
-        case "42":
-          network = "Kovan Test Network";
-          break;
-        default:
-          network = "Private Network";
-          break;
-      }
-      this.setState({ network: network });
     });
   }
 
