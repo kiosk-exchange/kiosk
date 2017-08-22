@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { List, ListItem } from "material-ui/List";
-import ContentInbox from "material-ui/svg-icons/content/inbox";
-import ActionGrade from "material-ui/svg-icons/action/grade";
-import ContentSend from "material-ui/svg-icons/content/send";
-import ContentDrafts from "material-ui/svg-icons/content/drafts";
+import Store from "material-ui/svg-icons/action/store";
+import ShoppingCart from "material-ui/svg-icons/action/shopping-cart";
+import Products from "material-ui/svg-icons/action/loyalty";
+import Money from "material-ui/svg-icons/editor/attach-money";
 
 class SideMenu extends Component {
 	showMarketplace() {
@@ -30,25 +30,25 @@ class SideMenu extends Component {
 				<ListItem
 					style={listItemStyle}
 					primaryText="Marketplace"
-					leftIcon={<ContentInbox color="white" />}
+					leftIcon={<Store color="white" />}
 					onClick={this.showMarketplace.bind(this)}
 				/>
 				<ListItem
 					style={listItemStyle}
 					primaryText="Purchases"
-					leftIcon={<ActionGrade color="white" />}
+					leftIcon={<ShoppingCart color="white" />}
 					onClick={this.showPurchases.bind(this)}
 				/>
 				<ListItem
 					style={listItemStyle}
 					primaryText="Products"
-					leftIcon={<ContentSend color="white" />}
+					leftIcon={<Products color="white" />}
 					onClick={this.showProducts.bind(this)}
 				/>
 				<ListItem
 					style={listItemStyle}
 					primaryText="Orders"
-					leftIcon={<ContentDrafts color="white" />}
+					leftIcon={<Money color="white" />}
 					onClick={this.showOrders.bind(this)}
 				/>
 			</List>
