@@ -3,6 +3,55 @@ body {
   color: black;
 }
 
+/* Landing Page */
+.welcome-nav {
+  padding: 20px;
+  float: right;
+  text-transform: uppercase;
+}
+
+.welcome {
+  padding-top: 130px;
+  text-align: center;
+}
+
+.welcome h1 {
+  color: #2C363F;
+  letter-spacing: 3px;
+  font-size: 100px;
+  font-weight: bolder;
+}
+
+.welcome h3 {
+  padding: 10px;
+  color: #6E7E85;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.alpha, .welcome-nav button {
+  text-transform: uppercase;
+  font-size: 18px;
+  font-weight: bold;
+  letter-spacing: 3px;
+}
+
+.welcome-nav button {
+  color: #2C363F;
+  background-color: transparent;
+}
+
+.alpha {
+  padding: 0px 50px;
+  margin-top: 50px;
+  color: white;
+  background-color: #FC575E;
+  font-weight: medium;
+  height: 60px;
+}
+
 /* Navigation Bar */
 .navbar-default {
   padding: 10px 0px;
@@ -23,7 +72,7 @@ body {
 }
 
 .navbar-default .navbar-nav li a:hover {
-  color: #2575FC;
+  color: #2575fc;
   font-size: 18px;
 }
 
@@ -39,7 +88,7 @@ body {
 }
 
 a {
-  color: #2575FC;
+  color: #2575fc;
 }
 
 button,
@@ -58,7 +107,7 @@ button,
 
 button,
 .buy-now {
-  background-color: #2575FC;
+  background-color: #2575fc;
 }
 
 .not-available {
@@ -173,8 +222,8 @@ td {
 .pagination li.active a:active,
 .pagination li.active a:link,
 .pagination li.active a:visited {
-  background-color: #2575FC;
-  border-color: #2575FC;
+  background-color: #2575fc;
+  border-color: #2575fc;
   color: white;
 }
 

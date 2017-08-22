@@ -3,6 +3,7 @@ import { Switch, Route } from "react-router-dom";
 import getWeb3 from "./utils/getWeb3";
 import NavigationBar from "./Components/NavigationBar";
 import Home from "./Home";
+import Landing from "./Pages/Landing";
 import Market from "./Market";
 import NewENSDomain from "./ENS/NewENSDomain";
 import NewProduct from "./NewProduct";
@@ -49,6 +50,9 @@ class App extends Component {
         case "3":
           network = "Ropsten Test Network";
           break;
+        case "42":
+          network = "Kovan Test Network";
+          break
         default:
           network = "Private Network";
           break;
