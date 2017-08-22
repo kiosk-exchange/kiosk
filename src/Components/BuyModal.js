@@ -36,7 +36,7 @@ class BuyModal extends Component {
 		const market = marketContract.at(this.props.product.market);
 		const priceInWei = market.price(this.props.product.DIN, quantity, (error, price) => {
 			const buyer = this.props.web3.eth.accounts[0];
-			buyProduct(this.state.KMT, DIN, quantity, price, buyer);
+			buyProduct(this.state.KMT, DIN, quantity, price.toNumber(), buyer);
 		})
 	}
 
