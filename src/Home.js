@@ -5,7 +5,7 @@ import { getAllDINs, infoFromDIN } from "./utils/getProducts";
 // import BuyModal from "./Components/BuyModal";
 // import KioskTable from "./Components/KioskTable";
 import SideMenu from "./Components/SideMenu";
-import NewTable from "./Components/NewTable";
+import MarketplaceTable from "./Tables/MarketplaceTable";
 
 class Home extends Component {
   constructor(props) {
@@ -57,10 +57,10 @@ class Home extends Component {
     // let hideBuyModal = () => this.setState({ showBuyModal: false });
 
     return (
-      <div>
-        <SideMenu />
+      <div className="home-container">
+        <SideMenu className="side-menu" />
         <div className="new-table">
-        <NewTable/>
+          <MarketplaceTable products={this.state.products} />
         </div>
       </div>
     );
@@ -69,17 +69,17 @@ class Home extends Component {
 
 export default Home;
 
-        // <BuyModal
-        //   show={this.state.showBuyModal}
-        //   onHide={hideBuyModal}
-        //   product={this.state.selectedProduct}
-        //   web3={this.state.web3}
-        // />
+// <BuyModal
+//   show={this.state.showBuyModal}
+//   onHide={hideBuyModal}
+//   product={this.state.selectedProduct}
+//   web3={this.state.web3}
+// />
 
-        // <div className="product-table-container">
-        //   <KioskTable
-        //     headers={["DIN", "Product Name", "Seller", "Market"]}
-        //     products={this.state.products}
-        //     handleSelectProduct={this.handleSelectProduct}
-        //   />
-        // </div>
+// <div className="product-table-container">
+//   <KioskTable
+//     headers={["DIN", "Product Name", "Seller", "Market"]}
+//     products={this.state.products}
+//     handleSelectProduct={this.handleSelectProduct}
+//   />
+// </div>

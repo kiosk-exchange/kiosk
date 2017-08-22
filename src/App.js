@@ -73,27 +73,23 @@ class App extends Component {
   render() {
     return (
       <MuiThemeProvider>
-        <div>
-          <div className="App">
-            <Switch>
-              <Route exact path="/" component={Home} />
-              <Route exact path="/orders" component={Orders} />
-              <Route exact path="/products" component={Products} />
-              <Route
-                exact
-                path="/products/new"
-                render={props => <NewProduct {...props} />}
-              />
-              <Route
-                exact
-                path="/products/new/ens"
-                render={props => <NewENSDomain {...props} />}
-              />
-              <Route path="/DIN/:din" component={View} />
-              <Route path="/market/:market" component={Market} />
-            </Switch>
-          </div>
-        </div>
+          <Switch>
+            <Route exact path="/" component={Home} />
+            <Route exact path="/orders" component={Orders} />
+            <Route exact path="/products" component={Products} />
+            <Route
+              exact
+              path="/products/new"
+              render={props => <NewProduct {...props} />}
+            />
+            <Route
+              exact
+              path="/products/new/ens"
+              render={props => <NewENSDomain {...props} />}
+            />
+            <Route path="/DIN/:din" component={View} />
+            <Route path="/market/:market" component={Market} />
+          </Switch>
       </MuiThemeProvider>
     );
   }

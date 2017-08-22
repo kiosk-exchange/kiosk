@@ -23,26 +23,32 @@ class SideMenu extends Component {
 	}
 
 	render() {
+		const listItemStyle = { "color" : "white" }
+
 		return (
 			<List className="side-menu">
 				<ListItem
+					style={listItemStyle}
 					primaryText="Marketplace"
-					leftIcon={<ContentInbox />}
+					leftIcon={<ContentInbox color="white" />}
 					onClick={this.showMarketplace.bind(this)}
 				/>
 				<ListItem
+					style={listItemStyle}
 					primaryText="Purchases"
-					leftIcon={<ActionGrade />}
+					leftIcon={<ActionGrade color="white" />}
 					onClick={this.showPurchases.bind(this)}
 				/>
 				<ListItem
+					style={listItemStyle}
 					primaryText="Products"
-					leftIcon={<ContentSend />}
+					leftIcon={<ContentSend color="white" />}
 					onClick={this.showProducts.bind(this)}
 				/>
 				<ListItem
+					style={listItemStyle}
 					primaryText="Orders"
-					leftIcon={<ContentDrafts />}
+					leftIcon={<ContentDrafts color="white" />}
 					onClick={this.showOrders.bind(this)}
 				/>
 			</List>
