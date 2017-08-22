@@ -143,10 +143,10 @@ const addENSProduct = async (deployer, network, accounts) => {
 };
 
 module.exports = async (deployer, network, accounts) => {
-  // deployer.deploy(KioskMarketToken, initialSupply).then(async () => {
-  //   await deployKiosk(deployer, network, accounts);
-  //   await deployENS(deployer, network, accounts);
-  //   await addDINProduct(deployer, network, accounts);
-  //   await addENSProduct(deployer, network, accounts);
-  // });
+  deployer.deploy(KioskMarketToken, initialSupply).then(async () => {
+    await deployKiosk(deployer, network, accounts);
+    await deployENS(deployer, network, accounts);
+    await addDINProduct(deployer, network, accounts);
+    await addENSProduct(deployer, network, accounts);
+  });
 };
