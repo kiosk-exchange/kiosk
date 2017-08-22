@@ -4,6 +4,8 @@ import { getDINRegistry } from "./utils/contracts";
 import { getAllDINs, infoFromDIN } from "./utils/getProducts";
 import BuyModal from "./Components/BuyModal";
 import KioskTable from "./Components/KioskTable";
+import SideMenu from "./Components/SideMenu";
+import NewTable from "./Components/NewTable";
 
 class Home extends Component {
   constructor(props) {
@@ -40,7 +42,7 @@ class Home extends Component {
 
       Promise.all(promises).then(results => {
         this.setState({ products: results });
-      })
+      });
     });
   }
 
@@ -56,22 +58,28 @@ class Home extends Component {
 
     return (
       <div>
-        <div className="product-table-container">
-          <KioskTable
-            headers={["DIN", "Product Name", "Seller", "Market"]}
-            products={this.state.products}
-            handleSelectProduct={this.handleSelectProduct}
-          />
+        <SideMenu />
+        <div className="new-table">
+        <NewTable/>
         </div>
-        <BuyModal
-          show={this.state.showBuyModal}
-          onHide={hideBuyModal}
-          product={this.state.selectedProduct}
-          web3={this.state.web3}
-        />
       </div>
     );
   }
 }
 
 export default Home;
+
+        // <BuyModal
+        //   show={this.state.showBuyModal}
+        //   onHide={hideBuyModal}
+        //   product={this.state.selectedProduct}
+        //   web3={this.state.web3}
+        // />
+
+        // <div className="product-table-container">
+        //   <KioskTable
+        //     headers={["DIN", "Product Name", "Seller", "Market"]}
+        //     products={this.state.products}
+        //     handleSelectProduct={this.handleSelectProduct}
+        //   />
+        // </div>

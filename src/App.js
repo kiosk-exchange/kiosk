@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Switch, Route } from "react-router-dom";
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getWeb3 from "./utils/getWeb3";
 import NavigationBar from "./Components/NavigationBar";
 import Home from "./Home";
@@ -73,35 +74,37 @@ class App extends Component {
 
   render() {
     return (
-      <div>
+      <MuiThemeProvider>
         <div>
-          <NavigationBar
-            network={this.state.network}
-            account={this.state.account}
-            balance={this.state.balance}
-            className="navigation-bar"
-          />
-        </div>
-        <div className="App">
-          <Switch>
-            <Route exact path="/" component={Home} />
-            <Route exact path="/orders" component={Orders} />
-            <Route exact path="/products" component={Products} />
-            <Route
-              exact
-              path="/products/new"
-              render={props => <NewProduct {...props} />}
+          <div>
+            <NavigationBar
+              network={this.state.network}
+              account={this.state.account}
+              balance={this.state.balance}
+              className="navigation-bar"
             />
-            <Route
-              exact
-              path="/products/new/ens"
-              render={props => <NewENSDomain {...props} />}
-            />
-            <Route path="/DIN/:din" component={View} />
-            <Route path="/market/:market" component={Market} />
-          </Switch>
+          </div>
+          <div className="App">
+            <Switch>
+              <Route exact path="/" component={Home} />
+              <Route exact path="/orders" component={Orders} />
+              <Route exact path="/products" component={Products} />
+              <Route
+                exact
+                path="/products/new"
+                render={props => <NewProduct {...props} />}
+              />
+              <Route
+                exact
+                path="/products/new/ens"
+                render={props => <NewENSDomain {...props} />}
+              />
+              <Route path="/DIN/:din" component={View} />
+              <Route path="/market/:market" component={Market} />
+            </Switch>
+          </div>
         </div>
-      </div>
+      </MuiThemeProvider>
     );
   }
 }
