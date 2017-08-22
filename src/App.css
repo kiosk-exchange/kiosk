@@ -1,15 +1,11 @@
 /* Main */
-.app {
-  height: 100%;
-}
-
 .ListItem {
   color: white;
 }
 
 .home-container {
   height: 100%;
-  background-color: orange;
+  background-color: #F6F8FF;
 }
 
 .side-menu {
@@ -19,10 +15,19 @@
   display: inline-table;
 }
 
+.header-toolbar {
+  position: absolute;
+  top: 0px;
+  left: 250px;
+  right: 0px;
+}
+
 .new-table {
-  width: 600px;
-  margin: auto;
-  display: inline-table;
+  position: absolute;
+  top: 50px;
+  left: 250px;
+  right: 0px;
+  padding: 30px;
 }
 
 html, body {

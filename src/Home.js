@@ -5,6 +5,7 @@ import { getAllDINs, infoFromDIN } from "./utils/getProducts";
 // import BuyModal from "./Components/BuyModal";
 // import KioskTable from "./Components/KioskTable";
 import SideMenu from "./Components/SideMenu";
+import HeaderToolbar from "./Components/HeaderToolbar";
 import MarketplaceTable from "./Tables/MarketplaceTable";
 
 class Home extends Component {
@@ -59,6 +60,9 @@ class Home extends Component {
     return (
       <div className="home-container">
         <SideMenu className="side-menu" />
+        <div className="header-toolbar">
+          <HeaderToolbar />
+        </div>
         <div className="new-table">
           <MarketplaceTable products={this.state.products} />
         </div>

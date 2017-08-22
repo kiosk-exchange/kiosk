@@ -10,6 +10,9 @@ import {
 
 class MarketplaceTable extends Component {
   render() {
+    const tableRowStyle = { "height": "70px" }
+    const tableColumnStyle = { "whiteSpace": "normal" }
+
     return (
       <Table>
         <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
@@ -23,9 +26,9 @@ class MarketplaceTable extends Component {
         <TableBody displayRowCheckbox={false}>
           {this.props.products.map(product => {
               return (
-                <TableRow>
+                <TableRow style={tableRowStyle}>
                   <TableRowColumn>{product.DIN}</TableRowColumn>
-                  <TableRowColumn>{product.name}</TableRowColumn>
+                  <TableRowColumn style={tableColumnStyle}>{product.name}</TableRowColumn>
                   <TableRowColumn>{product.market}</TableRowColumn>
                   <TableRowColumn>Buy</TableRowColumn>
                 </TableRow>
