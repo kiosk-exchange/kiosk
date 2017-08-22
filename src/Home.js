@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import getWeb3 from "./utils/getWeb3";
 import { getDINRegistry } from "./utils/contracts";
 import { getAllDINs, infoFromDIN } from "./utils/getProducts";
-import BuyModal from "./Components/BuyModal";
-import KioskTable from "./Components/KioskTable";
+// import BuyModal from "./Components/BuyModal";
+// import KioskTable from "./Components/KioskTable";
 import SideMenu from "./Components/SideMenu";
 import NewTable from "./Components/NewTable";
 
@@ -54,7 +54,7 @@ class Home extends Component {
   }
 
   render() {
-    let hideBuyModal = () => this.setState({ showBuyModal: false });
+    // let hideBuyModal = () => this.setState({ showBuyModal: false });
 
     return (
       <div>

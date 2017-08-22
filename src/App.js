@@ -1,10 +1,8 @@
 import React, { Component } from "react";
 import { Switch, Route } from "react-router-dom";
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import getWeb3 from "./utils/getWeb3";
-import NavigationBar from "./Components/NavigationBar";
 import Home from "./Home";
-import Landing from "./Pages/Landing";
 import Market from "./Market";
 import NewENSDomain from "./ENS/NewENSDomain";
 import NewProduct from "./NewProduct";
@@ -53,7 +51,7 @@ class App extends Component {
           break;
         case "42":
           network = "Kovan Test Network";
-          break
+          break;
         default:
           network = "Private Network";
           break;
@@ -76,14 +74,6 @@ class App extends Component {
     return (
       <MuiThemeProvider>
         <div>
-          <div>
-            <NavigationBar
-              network={this.state.network}
-              account={this.state.account}
-              balance={this.state.balance}
-              className="navigation-bar"
-            />
-          </div>
           <div className="App">
             <Switch>
               <Route exact path="/" component={Home} />

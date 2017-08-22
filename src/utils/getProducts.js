@@ -124,7 +124,6 @@ function infoFromDIN(DIN, web3, DINRegistry) {
 
       const isAvailable = new Promise((resolve, reject) => {
         marketContract.availableForSale(DIN, 1, (error, isAvailable) => {
-          console.log(isAvailable)
           resolve(isAvailable);
         });
       });

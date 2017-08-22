@@ -55,7 +55,7 @@ class ProductView extends Component {
     getPublicMarketContract.then(contract => {
       this.setState({ publicMarket: contract })
       contract.price(this.props.din).then((price) => {
-        console.log("Price: " + price + " wei")
+        // console.log("Price: " + price + " wei")
 
         this.setState({ price: price.toNumber() })
 
@@ -70,9 +70,9 @@ class ProductView extends Component {
 
     this.state.publicMarket.contract.buy(this.props.din, 1, {from: account1, value: this.state.price, gas: 4700000}, (error, result) => {
       if (!error) {
-        console.log(result)
+        // console.log(result)
       } else {
-        console.log(error)
+        // console.log(error)
       }
     })
   }

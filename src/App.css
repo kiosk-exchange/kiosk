@@ -1,10 +1,14 @@
 /* Main */
 .side-menu {
-  width: 300px;
+  width: 200px;
+  margin: auto;
+  display: inline-table;
 }
 
 .new-table {
-  width: 400px;
+  width: 600px;
+  margin: auto;
+  display: inline-table;
 }
 
 body {
