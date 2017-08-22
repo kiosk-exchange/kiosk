@@ -17,7 +17,11 @@ contract DINMarket is PublicMarket, PriceResolver, InventoryResolver, BuyHandler
 		OrderTracker _orderTracker,
 		KioskMarketToken _token 
 	)
-		PublicMarket(_dinRegistry, _orderTracker, _token) 
+		PublicMarket(
+			_dinRegistry, 
+			_orderTracker, 
+			_token
+		) 
 	{
 		uint256 genesis = _dinRegistry.genesis();
 		products[genesis].priceResolver = this;
