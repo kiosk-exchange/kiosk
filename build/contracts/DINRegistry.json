@@ -1,0 +1,417 @@
+{
+  "contract_name": "DINRegistry",
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "registerDINForOwner",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "registerDIN",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "DIN",
+          "type": "uint256"
+        }
+      ],
+      "name": "market",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "index",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "quantity",
+          "type": "uint256"
+        }
+      ],
+      "name": "registerDINs",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "quantity",
+          "type": "uint256"
+        },
+        {
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "registerDINsForOwner",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "DIN",
+          "type": "uint256"
+        },
+        {
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "setOwner",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "DIN",
+          "type": "uint256"
+        }
+      ],
+      "name": "owner",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "genesis",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "DIN",
+          "type": "uint256"
+        },
+        {
+          "name": "market",
+          "type": "address"
+        }
+      ],
+      "name": "setMarket",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "_genesis",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "DIN",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "name": "newOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "oldOwner",
+          "type": "address"
+        }
+      ],
+      "name": "NewOwner",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "DIN",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "name": "market",
+          "type": "address"
+        }
+      ],
+      "name": "NewMarket",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "DIN",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "NewRegistration",
+      "type": "event"
+    }
+  ],
+  "unlinked_binary": "0x6060604052341561000c57fe5b60405160208061050583398101604052515b600181815560028290556000828152602081905260408082208054600160a060020a03191633600160a060020a03169081179091559254905190917fef8ea3d0ef6bf7f673a09aa675838d76573d86e5a9fc235846ac3f54195d721791a35b505b6104778061008e6000396000f300606060405236156100885763ffffffff60e060020a60003504166308e7ed05811461008a5780631196245b146100b857806328861d22146100ca5780632986c0e5146100f9578063516ed6221461011b5780636fa91c38146101305780637fd3924714610151578063a123c33e14610172578063a7f0b3de146101a1578063f4b2ad14146101c3575bfe5b341561009257fe5b6100a6600160a060020a03600435166101e4565b60408051918252519081900360200190f35b34156100c057fe5b6100c861027b565b005b34156100d257fe5b6100dd600435610288565b60408051600160a060020a039092168252519081900360200190f35b341561010157fe5b6100a66102a9565b60408051918252519081900360200190f35b341561012357fe5b6100c86004356102af565b005b341561013857fe5b6100c8600435600160a060020a03602435166102bd565b005b341561015957fe5b6100c8600435600160a060020a0360243516610314565b005b341561017a57fe5b6100dd60043561039e565b60408051600160a060020a039092168252519081900360200190f35b34156101a957fe5b6100a66103bc565b60408051918252519081900360200190f35b34156101cb57fe5b6100c8600435600160a060020a03602435166103c2565b005b600060015433600160a060020a03166101fc82610288565b600160a060020a0316146102105760006000fd5b600280546001018082556000908152602081905260408082208054600160a060020a031916600160a060020a0388169081179091559254905190917fef8ea3d0ef6bf7f673a09aa675838d76573d86e5a9fc235846ac3f54195d721791a360025491505b5b50919050565b610284336101e4565b505b565b600081815260208190526040902060010154600160a060020a03165b919050565b60025481565b61028481336102bd565b5b50565b600060015433600160a060020a03166102d582610288565b600160a060020a0316146102e95760006000fd5b600091505b8382101561030c576102ff836101e4565b505b6001909101906102ee565b5b5b50505050565b600082815260208190526040902054829033600160a060020a0390811691161461033e5760006000fd5b6000838152602081905260408082208054600160a060020a031916600160a060020a038681169182179092559151339091169286917ff7c4750a805ef7d91b01813e1a9e6eb976bc93f66d65cb50116b5d74b14ef2379190a45b5b505050565b600081815260208190526040902054600160a060020a03165b919050565b60015481565b600082815260208190526040902054829033600160a060020a039081169116146103ec5760006000fd5b6000838152602081905260408082206001018054600160a060020a031916600160a060020a0386169081179091559051909185917f4582f3d992ffac5686bfcf1936b27b7983244893d40847f87b6e297b1359dab99190a35b5b5050505600a165627a7a72305820ff1b959d734ac2f62c2870201db81263c59c165bf67dfec31f990d3ff2c6d80a0029",
+  "networks": {
+    "42": {
+      "links": {},
+      "events": {
+        "0xf7c4750a805ef7d91b01813e1a9e6eb976bc93f66d65cb50116b5d74b14ef237": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "name": "newOwner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "oldOwner",
+              "type": "address"
+            }
+          ],
+          "name": "NewOwner",
+          "type": "event"
+        },
+        "0x4582f3d992ffac5686bfcf1936b27b7983244893d40847f87b6e297b1359dab9": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "name": "market",
+              "type": "address"
+            }
+          ],
+          "name": "NewMarket",
+          "type": "event"
+        },
+        "0xef8ea3d0ef6bf7f673a09aa675838d76573d86e5a9fc235846ac3f54195d7217": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "name": "owner",
+              "type": "address"
+            }
+          ],
+          "name": "NewRegistration",
+          "type": "event"
+        }
+      },
+      "updated_at": 1503370132335,
+      "address": "0xc2ae2f848228417e149fb04b5d72d179f626a4f0"
+    },
+    "1503354387182": {
+      "links": {},
+      "events": {
+        "0xf7c4750a805ef7d91b01813e1a9e6eb976bc93f66d65cb50116b5d74b14ef237": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "name": "newOwner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "oldOwner",
+              "type": "address"
+            }
+          ],
+          "name": "NewOwner",
+          "type": "event"
+        },
+        "0x4582f3d992ffac5686bfcf1936b27b7983244893d40847f87b6e297b1359dab9": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "name": "market",
+              "type": "address"
+            }
+          ],
+          "name": "NewMarket",
+          "type": "event"
+        },
+        "0xef8ea3d0ef6bf7f673a09aa675838d76573d86e5a9fc235846ac3f54195d7217": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "name": "owner",
+              "type": "address"
+            }
+          ],
+          "name": "NewRegistration",
+          "type": "event"
+        }
+      },
+      "updated_at": 1503364450512,
+      "address": "0x8d9166ffa33163ceced6540f1f47ba34e2bb7c33"
+    },
+    "1503369291123": {
+      "events": {
+        "0xf7c4750a805ef7d91b01813e1a9e6eb976bc93f66d65cb50116b5d74b14ef237": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "name": "newOwner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "oldOwner",
+              "type": "address"
+            }
+          ],
+          "name": "NewOwner",
+          "type": "event"
+        },
+        "0x4582f3d992ffac5686bfcf1936b27b7983244893d40847f87b6e297b1359dab9": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "name": "market",
+              "type": "address"
+            }
+          ],
+          "name": "NewMarket",
+          "type": "event"
+        },
+        "0xef8ea3d0ef6bf7f673a09aa675838d76573d86e5a9fc235846ac3f54195d7217": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "name": "owner",
+              "type": "address"
+            }
+          ],
+          "name": "NewRegistration",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0xd5a1c52bbd487fe5c26b070e75a421bf82c004dc",
+      "updated_at": 1503369309755
+    }
+  },
+  "schema_version": "0.0.5",
+  "updated_at": 1503370132335
+}
