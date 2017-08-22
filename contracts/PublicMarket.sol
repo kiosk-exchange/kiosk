@@ -89,7 +89,7 @@ contract PublicMarket is StandardMarket {
     *   =========================
     */
 
-    function buy(uint256 orderID) only_token returns (bool) {
+    function buy(uint256 orderID) returns (bool) {
         // Add proceeds to pending withdrawals.
         uint256 DIN = orderTracker.DIN(orderID);
         uint256 quantity = orderTracker.quantity(orderID);

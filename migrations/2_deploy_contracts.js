@@ -43,6 +43,7 @@ const deployKiosk = async (deployer, network, accounts) => {
     DINRegistry.address,
     KioskMarketToken.address
   );
+
   // Add DINRegistry to Kiosk Market Token.
   await KioskMarketToken.at(KioskMarketToken.address).setDINRegistry(
     DINRegistry.address
@@ -52,6 +53,7 @@ const deployKiosk = async (deployer, network, accounts) => {
   await KioskMarketToken.at(KioskMarketToken.address).setOrderTracker(
     OrderTracker.address
   );
+  
 };
 
 const deployENS = async (deployer, network, accounts) => {
@@ -141,10 +143,10 @@ const addENSProduct = async (deployer, network, accounts) => {
 };
 
 module.exports = async (deployer, network, accounts) => {
-  deployer.deploy(KioskMarketToken, initialSupply).then(async () => {
-    await deployKiosk(deployer, network, accounts);
-    await deployENS(deployer, network, accounts);
-    await addDINProduct(deployer, network, accounts);
-    await addENSProduct(deployer, network, accounts);
-  });
+  // deployer.deploy(KioskMarketToken, initialSupply).then(async () => {
+  //   await deployKiosk(deployer, network, accounts);
+  //   await deployENS(deployer, network, accounts);
+  //   await addDINProduct(deployer, network, accounts);
+  //   await addENSProduct(deployer, network, accounts);
+  // });
 };

@@ -37,22 +37,22 @@ contract KioskMarketToken is StandardToken {
 	* @param value The total price of the product(s).
 	*/   
 	function buy(uint256 DIN, uint256 quantity, uint256 value) returns (bool) {
-		// Get the address of the market.
+		// // Get the address of the market.
 		Market market = dinRegistry.market(DIN);
 
-		// The buyer must have enough tokens for the purchase.
+		// // The buyer must have enough tokens for the purchase.
 		require (balances[msg.sender] >= value);
 
-		// The requested quantity must be available for sale.
+		// // The requested quantity must be available for sale.
 		require(market.availableForSale(DIN, quantity) == true);
 
-		// The value must match the market price. 
+		// // The value must match the market price. 
 		require(market.price(DIN, quantity, msg.sender) == value);
 
-		// Get the address of the seller.
+		// // Get the address of the seller.
 		address seller = dinRegistry.owner(DIN);
 
-		// Add the order to the order tracker and get the order ID.
+		// // Add the order to the order tracker and get the order ID.
 		uint256 orderID = orderTracker.registerNewOrder(
 			msg.sender,
 			seller,
