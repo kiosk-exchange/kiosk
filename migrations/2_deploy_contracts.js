@@ -24,7 +24,7 @@ function getRootNodeFromTLD(tld) {
   };
 }
 
-module.exports = function(deployer, network, accounts) {
+module.exports = async (deployer, network, accounts) => {
   const tld = "eth";
   const rootNode = getRootNodeFromTLD(tld);
   const subnodeSHA3 = web3.sha3("example");
