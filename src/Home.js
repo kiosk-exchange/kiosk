@@ -14,6 +14,7 @@ class Home extends Component {
     this.state = {
       DINRegistry: null,
       products: [],
+      orders: [],
       selectedProduct: {},
       selectedListItem: "marketplace"
     };
@@ -82,7 +83,7 @@ class Home extends Component {
 
   getPurchases() {
     getPurchases(this.props.web3, this.props.web3.eth.accounts[0]).then(orders => {
-      console.log(orders)
+      this.setState({ orders: orders })
     });
   }
 
