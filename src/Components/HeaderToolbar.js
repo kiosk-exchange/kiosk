@@ -24,23 +24,44 @@ class HeaderToolbar extends Component {
 		}
 
 		this.props.web3.version.getNetwork((err, networkId) => {
-			const network = this.networkName(networkId)
+			const network = this.getNetwork(networkId);
 			this.setState({ network: network });
 		});
 	}
 
-	networkName(networkId) {
+	getNetwork(networkId) {
 		switch (networkId) {
+			// MetaMask names and colors
 			case "1":
-				return "Main Ethereum Network";
+				return {
+					name: "Main Ethereum Network",
+					color: "#05868A"
+				};
 			case "2":
-				return "Morden Test Network";
+				return {
+					name: "Morden Test Network",
+					color: "#FFFFFF"
+				};
 			case "3":
-				return "Ropsten Test Network";
+				return {
+					name: "Ropsten Test Network",
+					color: "#E71650"
+				};
+			case "4":
+				return {
+					name: "Rinkeby Test Network",
+					color: "#EBB240"
+				};
 			case "42":
-				return "Kovan Test Network";
+				return {
+					name: "Kovan Test Network",
+					color: "#6A0397"
+				};
 			default:
-				return "Private Network";
+				return {
+					name: "Private Network",
+					color: this.context.kioskLightGray
+				};
 		}
 	}
 
@@ -53,7 +74,11 @@ class HeaderToolbar extends Component {
 	}
 
 	render() {
-		const style = {
+		const icon = blockies({
+			seed: this.state.account
+		});
+
+		const accountStyle = {
 			color: this.context.kioskGray,
 			fontSize: "16px",
 			fontWeight: "bold",
@@ -61,25 +86,39 @@ class HeaderToolbar extends Component {
 			padding: "10px"
 		};
 
-		const icon = blockies({
-            seed: this.state.account,
-        });
+		const networkStyle = {
+			color: this.state.network.color,
+			fontSize: "16px",
+			fontWeight: "bold",
+			letterSpacing: "1px",
+			padding: "10px"
+		};
 
-        const iconStyle = {
-        	width: "30px",
-        	height: "30px",
-        	borderRadius: "15px",
-        }
+		const toolbarStyle = {
+			backgroundColor: "white",
+			borderBottomStyle: "solid",
+			borderWidth: "1px",
+			borderColor: "#E0E0E0"
+		};
+
+		const iconStyle = {
+			width: "30px",
+			height: "30px",
+			borderRadius: "15px"
+		};
 
 		return (
-			<Toolbar style={{ backgroundColor: "white" }}>
+			<Toolbar style={toolbarStyle}>
 				<ToolbarGroup>
-					<ToolbarTitle style={style} text={this.state.network} />
+					<ToolbarTitle
+						style={networkStyle}
+						text={this.state.network.name}
+					/>
 				</ToolbarGroup>
 				<ToolbarGroup>
-					<img src={icon.toDataURL()} style={iconStyle}/>
+					<img src={icon.toDataURL()} style={iconStyle} />
 					<ToolbarTitle
-						style={style}
+						style={accountStyle}
 						text={this.truncated(this.state.account)}
 					/>
 				</ToolbarGroup>
@@ -89,7 +128,8 @@ class HeaderToolbar extends Component {
 }
 
 HeaderToolbar.contextTypes = {
-	kioskGray: React.PropTypes.string
+	kioskGray: React.PropTypes.string,
+	kioskLightGray: React.PropTypes.string
 };
 
 export default HeaderToolbar;

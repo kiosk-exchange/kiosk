@@ -10,11 +10,14 @@ import {
 
 class BaseTable extends Component {
   render() {
-    const tableRowStyle = { height: "70px" };
-    const tableColumnStyle = { whiteSpace: "normal" };
+    const tableStyle = {
+      borderStyle: "solid",
+      borderWidth: "1px",
+      borderColor: "#E0E0E0"
+    }
 
     return (
-      <Table>
+      <Table style={tableStyle} height="500px">
         <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
           <TableRow>
             {this.props.headers.map(header => {
