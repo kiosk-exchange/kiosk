@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { getDINRegistry } from "./utils/contracts";
-import { getAllDINs, infoFromDIN } from "./utils/getProducts";
+import { getAllProducts, getSellerProducts } from "./utils/getProducts";
 import BuyModal from "./Components/BuyModal";
 import SideMenu from "./Components/SideMenu";
 import HeaderToolbar from "./Components/HeaderToolbar";
@@ -13,29 +13,19 @@ class Home extends Component {
     this.state = {
       DINRegistry: null,
       products: [],
-      selectedProduct: {}
+      selectedProduct: {},
+      selectedListItem: "marketplace"
     };
 
     this.handleSelectProduct = this.handleSelectProduct.bind(this);
+    this.handleSelectListItem = this.handleSelectListItem.bind(this);
   }
 
   componentWillMount() {
     // Get the global DIN registry
     getDINRegistry(this.props.web3).then(registry => {
       this.setState({ DINRegistry: registry }, () => {
-        this.getProducts();
-      });
-    });
-  }
-
-  getProducts() {
-    getAllDINs(this.state.DINRegistry).then(DINs => {
-      let promises = DINs.map(DIN => {
-        return infoFromDIN(DIN, this.props.web3, this.state.DINRegistry);
-      });
-
-      Promise.all(promises).then(results => {
-        this.setState({ products: results });
+        this.getAllProducts();
       });
     });
   }
@@ -48,7 +38,44 @@ class Home extends Component {
   }
 
   handleSelectListItem(item) {
-    console.log(item)
+    if (item !== this.state.selectedListItem) {
+      // Remove all products
+      this.setState({
+        selectedListItem: item,
+        products: []
+      });
+
+      switch (item) {
+        case "marketplace":
+          this.getAllProducts();
+          break;
+        case "products":
+          this.getSellerProducts();
+          break;
+        default:
+          break;
+      }
+    }
+
+    console.log(item);
+  }
+
+  getAllProducts() {
+    getAllProducts(this.state.DINRegistry, this.props.web3).then(products => {
+      this.setState({ products: products });
+    });
+  }
+
+  getSellerProducts() {
+    getSellerProducts(
+      this.state.DINRegistry,
+      this.props.web3.eth.accounts[0],
+      this.props.web3
+    ).then(products => {
+      console.log("YOO");
+      console.log(products);
+      this.setState({ products: products });
+    });
   }
 
   render() {
@@ -56,7 +83,10 @@ class Home extends Component {
 
     return (
       <div className="home-container">
-        <SideMenu className="side-menu" handleSelectListItem={this.handleSelectListItem} />
+        <SideMenu
+          className="side-menu"
+          handleSelectListItem={this.handleSelectListItem}
+        />
         <div className="header-toolbar">
           <HeaderToolbar web3={this.props.web3} />
         </div>

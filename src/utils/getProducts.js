@@ -1,77 +1,54 @@
 import MarketJSON from "../../build/contracts/StandardMarket.json";
 
-const getMarketDINs = (DINRegistry, marketAddress) =>
-  new Promise((resolve, reject) => {
-    var DINs = [];
-    var event = DINRegistry.NewMarket({}, { fromBlock: 0, toBlock: "latest" });
-    getDINs(event, DINs, resolve, reject, marketFilter, [
-      DINRegistry,
-      marketAddress
-    ]);
+const getProducts = async (event, DINRegistry, web3) => {
+  return new Promise(resolve => {
+    event.get((error, logs) => {
+      const DINs = logs.map(log => {
+        return parseInt(log["args"]["DIN"]["c"][0], 10);
+      });
+
+      let promises = DINs.map(DIN => {
+        return productFromDIN(DIN, web3, DINRegistry);
+      });
+
+      Promise.all(promises).then(products => {
+        resolve(products);
+      });
+    });
   });
+};
 
-const getUserDINs = (DINRegistry, user) =>
-  new Promise((resolve, reject) => {
-    var DINs = [];
-    var event = DINRegistry.NewRegistration(
-      { owner: user },
-      { fromBlock: 0, toBlock: "latest" }
-    );
-    getDINs(event, DINs, resolve, reject, ownerFilter, [DINRegistry, user]);
-  });
+const getMarketProducts = async (DINRegistry, marketAddress, web3) => {
+  var event = DINRegistry.NewMarket({}, { fromBlock: 0, toBlock: "latest" });
+  return getProducts(event, DINRegistry, web3);
+};
 
-const getAllDINs = DINRegistry =>
-  new Promise((resolve, reject) => {
-    var DINs = [];
-    var event = DINRegistry.NewRegistration(
-      {},
-      { fromBlock: 0, toBlock: "latest" }
-    );
-    getDINs(event, DINs, resolve, reject, null, null);
-  });
+const getSellerProducts = async (DINRegistry, seller, web3) => {
+  var event = DINRegistry.NewRegistration(
+    { owner: seller },
+    { fromBlock: 0, toBlock: "latest" }
+  );
+  return getProducts(event, DINRegistry, web3);
+};
 
-function getDINs(event, DINs, resolve, reject, filter, filterArgs) {
-  event.watch((error, result) => {
-    parseResponse(DINs, error, result, resolve, reject, filter, filterArgs);
-    event.stopWatching();
-  });
-}
+const getAllProducts = async (DINRegistry, web3) => {
+  var event = DINRegistry.NewRegistration(
+    {},
+    { fromBlock: 0, toBlock: "latest" }
+  );
+  return getProducts(event, DINRegistry, web3);
+};
 
-function parseResponse(
-  DINs,
-  error,
-  result,
-  resolve,
-  reject,
-  filter,
-  filterArgs
-) {
-  if (!error) {
-    const DIN = parseInt(result["args"]["DIN"]["c"][0], 10);
-    if (filter && filterArgs) {
-      const args = [DIN].concat(filterArgs);
-      if (filter.apply(this, args) === true) {
-        DINs.push(DIN);
-      }
-    } else {
-      DINs.push(DIN);
-    }
-  } else {
-    reject(error);
-  }
+// TODO: FILTER
+// function marketFilter(DIN, DINRegistry, marketAddress) {
+//   return DINRegistry.market(DIN) === marketAddress;
+// }
 
-  resolve(DINs);
-}
+// function ownerFilter(DIN, DINRegistry, owner) {
+//   return DINRegistry.owner(DIN) === owner;
+// }
 
-function marketFilter(DIN, DINRegistry, marketAddress) {
-  return DINRegistry.market(DIN) === marketAddress;
-}
-
-function ownerFilter(DIN, DINRegistry, owner) {
-  return DINRegistry.owner(DIN) === owner;
-}
-
-function infoFromDIN(DIN, web3, DINRegistry) {
+function productFromDIN(DIN, web3, DINRegistry) {
   return new Promise((resolve, reject) => {
     let product = {
       DIN: DIN,
@@ -139,4 +116,4 @@ function infoFromDIN(DIN, web3, DINRegistry) {
   });
 }
 
-export { getMarketDINs, getUserDINs, getAllDINs, infoFromDIN };
+export { getMarketProducts, getSellerProducts, getAllProducts };
