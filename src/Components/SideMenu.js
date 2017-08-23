@@ -38,7 +38,7 @@ class SideMenu extends Component {
 					style={style}
 					primaryText="Sales"
 					leftIcon={<Money color="white" />}
-					onClick={() => this.props.handleSelectListItem("orders")}
+					onClick={() => this.props.handleSelectListItem("sales")}
 				/>
 			</List>
 		);

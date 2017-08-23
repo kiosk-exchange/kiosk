@@ -1,13 +1,11 @@
 import React, { Component } from "react";
 import RaisedButton from "material-ui/RaisedButton";
-import { TableBody, TableRow, TableRowColumn } from "material-ui/Table";
+import { TableRow, TableRowColumn } from "material-ui/Table";
+import { tableRowStyle, tableColumnStyle } from "./TableStyles"
 import BaseTable from "./BaseTable";
 
 class MarketplaceTable extends Component {
   render() {
-    const tableRowStyle = { height: "70px" };
-    const tableColumnStyle = { whiteSpace: "normal" };
-
     return (
       <BaseTable
         headers={["DIN", "Name", "Market", "Buy"]}

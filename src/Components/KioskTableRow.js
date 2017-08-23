@@ -13,16 +13,29 @@ class KioskTableRow extends Component {
 								<td key={header}>
 									<a
 										href="#"
-										onClick={() => this.props.handleSelectProduct(product)}
+										onClick={() =>
+											this.props.handleSelectProduct(
+												product
+											)}
 									>
 										{product.DIN}
 									</a>
 								</td>
 							);
 						case "Product Name":
-							return <KioskTableDetail key={header} detail={product.name} />;
+							return (
+								<KioskTableDetail
+									key={header}
+									detail={product.name}
+								/>
+							);
 						case "Seller":
-							return <KioskTableDetail key={header} detail={product.owner} />;
+							return (
+								<KioskTableDetail
+									key={header}
+									detail={product.owner}
+								/>
+							);
 						case "Market":
 							return (
 								<td key={header}>
@@ -32,7 +45,12 @@ class KioskTableRow extends Component {
 								</td>
 							);
 						case "Price":
-							return <KioskTableDetail key={header} detail={product.price} />;
+							return (
+								<KioskTableDetail
+									key={header}
+									detail={product.price}
+								/>
+							);
 						default:
 							return <tr />;
 					}
