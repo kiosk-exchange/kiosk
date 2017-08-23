@@ -13,7 +13,7 @@ class SideMenu extends Component {
 
 		return (
 			<List className="side-menu">
-				<Subheader style={subheaderStyle}>BUYER</Subheader>
+				<Subheader style={subheaderStyle}>BUY</Subheader>
 				<ListItem
 					style={style}
 					primaryText="Markets"
@@ -27,7 +27,7 @@ class SideMenu extends Component {
 					leftIcon={<ShoppingCart color="white" />}
 					onClick={() => this.props.handleSelectListItem("purchases")}
 				/>
-				<Subheader style={subheaderStyle}>SELLER</Subheader>
+				<Subheader style={subheaderStyle}>SELL</Subheader>
 				<ListItem
 					style={style}
 					primaryText="Products"
