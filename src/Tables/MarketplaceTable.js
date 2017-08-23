@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import RaisedButton from 'material-ui/RaisedButton';
 import {
   Table,
   TableBody,
@@ -30,7 +31,9 @@ class MarketplaceTable extends Component {
                   <TableRowColumn>{product.DIN}</TableRowColumn>
                   <TableRowColumn style={tableColumnStyle}>{product.name}</TableRowColumn>
                   <TableRowColumn>{product.market}</TableRowColumn>
-                  <TableRowColumn>Buy</TableRowColumn>
+                  <TableRowColumn>
+                    <RaisedButton label="Buy" backgroundColor="#32C1FF" labelColor="#FFFFFF" onClick={() => this.props.handleBuy(product)} />
+                  </TableRowColumn>
                 </TableRow>
               );
             })}

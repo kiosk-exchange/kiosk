@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import { getDINRegistry } from "./utils/contracts";
 import { getAllDINs, infoFromDIN } from "./utils/getProducts";
-// import BuyModal from "./Components/BuyModal";
-// import KioskTable from "./Components/KioskTable";
+import BuyModal from "./Components/BuyModal";
 import SideMenu from "./Components/SideMenu";
 import HeaderToolbar from "./Components/HeaderToolbar";
 import MarketplaceTable from "./Tables/MarketplaceTable";
@@ -49,35 +48,29 @@ class Home extends Component {
   }
 
   render() {
-    // let hideBuyModal = () => this.setState({ showBuyModal: false });
+    let hideBuyModal = () => this.setState({ showBuyModal: false });
 
     return (
       <div className="home-container">
         <SideMenu className="side-menu" />
         <div className="header-toolbar">
-          <HeaderToolbar web3={this.props.web3}/>
+          <HeaderToolbar web3={this.props.web3} />
         </div>
         <div className="new-table">
-          <MarketplaceTable products={this.state.products} />
+          <MarketplaceTable
+            products={this.state.products}
+            handleBuy={this.handleSelectProduct}
+          />
         </div>
+        <BuyModal
+          show={this.state.showBuyModal}
+          onHide={hideBuyModal}
+          product={this.state.selectedProduct}
+          web3={this.props.web3}
+        />
       </div>
     );
   }
 }
 
 export default Home;
-
-// <BuyModal
-//   show={this.state.showBuyModal}
-//   onHide={hideBuyModal}
-//   product={this.state.selectedProduct}
-//   web3={this.state.web3}
-// />
-
-// <div className="product-table-container">
-//   <KioskTable
-//     headers={["DIN", "Product Name", "Seller", "Market"]}
-//     products={this.state.products}
-//     handleSelectProduct={this.handleSelectProduct}
-//   />
-// </div>
