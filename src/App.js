@@ -5,32 +5,21 @@ import getWeb3 from "./utils/getWeb3";
 // import getNetwork from "./utils/network";
 import Home from "./Home";
 import Market from "./Market";
-import NewENSDomain from "./ENS/NewENSDomain";
-import NewProduct from "./NewProduct";
 import Products from "./Products";
 import Orders from "./Orders";
-import View from "./View";
 
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      web3: null,
+      web3: null
     };
   }
 
   componentWillMount() {
     getWeb3.then(results => {
-      this.setState(
-        {
-          web3: results.web3
-        },
-        () => {
-          // getNetwork(this.state.web3);
-          this.getAccount();
-        }
-      );
+      this.setState({ web3: results.web3 });
     });
   }
 
@@ -45,28 +34,38 @@ class App extends Component {
   }
 
   render() {
-    return (
-      <MuiThemeProvider>
+    // Make sure there is always a web3 object available
+    if (this.state.web3) {
+      return (
+        <MuiThemeProvider>
           <Switch>
-            <Route exact path="/" component={Home} />
-            <Route exact path="/orders" component={Orders} />
-            <Route exact path="/products" component={Products} />
             <Route
               exact
-              path="/products/new"
-              render={props => <NewProduct {...props} />}
+              path="/"
+              render={props => <Home {...props} web3={this.state.web3} />}
             />
             <Route
               exact
-              path="/products/new/ens"
-              render={props => <NewENSDomain {...props} />}
+              path="/orders"
+              render={props => <Orders {...props} web3={this.state.web3} />}
             />
-            <Route path="/DIN/:din" component={View} />
-            <Route path="/market/:market" component={Market} />
+            <Route
+              exact
+              path="/products"
+              render={props => <Products {...props} web3={this.state.web3} />}
+            />
+            <Route
+              path="/market/:market"
+              render={props => <Market {...props} web3={this.state.web3} />}
+            />
           </Switch>
-      </MuiThemeProvider>
-    );
+        </MuiThemeProvider>
+      );
+    }
+    // TODO: Otherwise, show an error message.
+    return null;
   }
+
 }
 
 export default App;

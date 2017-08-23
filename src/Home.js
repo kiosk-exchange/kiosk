@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import getWeb3 from "./utils/getWeb3";
 import { getDINRegistry } from "./utils/contracts";
 import { getAllDINs, infoFromDIN } from "./utils/getProducts";
 // import BuyModal from "./Components/BuyModal";
@@ -13,7 +12,6 @@ class Home extends Component {
     super(props);
 
     this.state = {
-      web3: null,
       DINRegistry: null,
       products: [],
       selectedProduct: {}
@@ -23,14 +21,10 @@ class Home extends Component {
   }
 
   componentWillMount() {
-    getWeb3.then(results => {
-      this.setState({ web3: results.web3 }, () => {
-        // Get the global DIN registry
-        getDINRegistry(this.state.web3).then(registry => {
-          this.setState({ DINRegistry: registry }, () => {
-            this.getProducts();
-          });
-        });
+    // Get the global DIN registry
+    getDINRegistry(this.props.web3).then(registry => {
+      this.setState({ DINRegistry: registry }, () => {
+        this.getProducts();
       });
     });
   }
@@ -38,7 +32,7 @@ class Home extends Component {
   getProducts() {
     getAllDINs(this.state.DINRegistry).then(DINs => {
       let promises = DINs.map(DIN => {
-        return infoFromDIN(DIN, this.state.web3, this.state.DINRegistry);
+        return infoFromDIN(DIN, this.props.web3, this.state.DINRegistry);
       });
 
       Promise.all(promises).then(results => {

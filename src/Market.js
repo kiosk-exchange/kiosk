@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import getWeb3 from "./utils/getWeb3";
 import { getDINRegistry } from "./utils/contracts";
 import { getMarketDINs, infoFromDIN } from "./utils/getProducts";
 import MarketJSON from "./../build/contracts/StandardMarket.json";
@@ -11,7 +10,6 @@ class Market extends Component {
 		super(props);
 
 		this.state = {
-			web3: null,
 			DINRegistry: null,
 			market: null,
 			title: "",
@@ -25,18 +23,18 @@ class Market extends Component {
 	}
 
 	componentWillMount() {
-		getWeb3.then(results => {
-			this.setState({ web3: results.web3 }, () => {
-				// Get the global DIN registry
-				getDINRegistry(this.state.web3).then(registry => {
-					this.setState({ DINRegistry: registry }, () => {
-						const marketContract = this.state.web3.eth.contract(MarketJSON.abi);
-						const market = marketContract.at(this.props.match.params.market);
-						const title = market.title();
-						this.setState({ title: title });
-						this.getProducts();
-					});
-				});
+		// Get the global DIN registry
+		getDINRegistry(this.props.web3).then(registry => {
+			this.setState({ DINRegistry: registry }, () => {
+				const marketContract = this.props.web3.eth.contract(
+					MarketJSON.abi
+				);
+				const market = marketContract.at(
+					this.props.match.params.market
+				);
+				const title = market.title();
+				this.setState({ title: title });
+				this.getProducts();
 			});
 		});
 	}
@@ -49,7 +47,11 @@ class Market extends Component {
 			this.props.match.params.market // The address of the market
 		).then(DINs => {
 			var fullProducts = DINs.map(DIN => {
-				return infoFromDIN(DIN, this.state.web3, this.state.DINRegistry);
+				return infoFromDIN(
+					DIN,
+					this.props.web3,
+					this.state.DINRegistry
+				);
 			});
 			this.setState({ products: fullProducts });
 		});
@@ -83,7 +85,7 @@ class Market extends Component {
 					show={this.state.showBuyModal}
 					onHide={hideBuyModal}
 					product={this.state.selectedProduct}
-					web3={this.state.web3}
+					web3={this.props.web3}
 				/>
 			</div>
 		);

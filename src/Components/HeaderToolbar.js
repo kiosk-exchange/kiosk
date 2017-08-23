@@ -6,15 +6,6 @@ import {
 } from "material-ui/Toolbar";
 
 class HeaderToolbar extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			value: 3
-		};
-	}
-
-	handleChange = (event, index, value) => this.setState({ value });
-
 	render() {
 		return (
 			<Toolbar style={{"backgroundColor": "white"}}>

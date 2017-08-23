@@ -5,7 +5,6 @@ import {
   ToggleButton,
   ToggleButtonGroup
 } from "react-bootstrap";
-import getWeb3 from "./utils/getWeb3";
 import { getOrders } from "./utils/getOrders";
 
 const OrderType = {
@@ -22,7 +21,6 @@ class Orders extends Component {
     super(props);
 
     this.state = {
-      web3: null,
       orderTracker: null,
       orders: [],
       orderType: OrderType.buyer
@@ -33,21 +31,12 @@ class Orders extends Component {
   }
 
   componentWillMount() {
-    getWeb3.then(results => {
-      this.setState(
-        {
-          web3: results.web3
-        },
-        () => {
-          this.fetchOrders();
-        }
-      );
-    });
+    this.fetchOrders();
   }
 
   fetchOrders() {
     var args = null;
-    const account = this.state.web3.eth.coinbase;
+    const account = this.props.web3.eth.coinbase;
     switch (this.state.orderType) {
       case OrderType.buyer:
         args = { buyer: account };
@@ -59,7 +48,7 @@ class Orders extends Component {
         break;
     }
 
-    getOrders(this.state.web3, args, {
+    getOrders(this.props.web3, args, {
       fromBlock: 0,
       toBlock: "latest"
     }).then(orders => {
