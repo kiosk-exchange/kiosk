@@ -17,7 +17,7 @@ class HeaderToolbar extends Component {
 					<ToolbarTitle text="Kovan Test Network" />
 				</ToolbarGroup>
 				<ToolbarGroup>
-					<ToolbarTitle text={this.state.account} />
+					<ToolbarTitle text={this.state.account.slice(0, 12)} />
 				</ToolbarGroup>
 			</Toolbar>
 		);
