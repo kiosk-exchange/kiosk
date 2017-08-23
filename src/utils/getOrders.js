@@ -11,43 +11,61 @@ function date(timestamp) {
   return formattedDate;
 }
 
-const getOrders = (web3, args, blockArgs) =>
-  new Promise((resolve, reject) => {
-    var orders = [];
+const orderFromLog = (result, web3) => {
+  const orderID = result["args"]["orderID"]["c"][0];
+  const buyer = result["args"]["buyer"];
+  const seller = result["args"]["seller"];
+  const market = result["args"]["market"];
+  const DIN = result["args"]["DIN"]["c"][0];
+  const info = result["args"]["info"];
+  const value = web3
+    .fromWei(result["args"]["value"], "ether")
+    .toNumber()
+    .toFixed(3);
+  const quantity = result["args"]["quantity"]["c"][0];
+  const timestamp = parseInt(result["args"]["timestamp"], 10);
 
+  const order = {
+    orderID: orderID,
+    buyer: buyer,
+    seller: seller,
+    market: market,
+    din: DIN,
+    info: info,
+    value: value,
+    quantity: quantity,
+    date: date(timestamp)
+  };
+
+  return order;
+};
+
+const getOrders = async (web3, args) => {
+  return new Promise(resolve => {
     getOrderTracker(web3).then(contract => {
-      var fetchOrders = contract.NewOrder(args, blockArgs);
-      fetchOrders.watch((error, result) => {
+      var event = contract.NewOrder(args, {
+        fromBlock: 0,
+        toBlock: "latest"
+      });
+      event.get((error, logs) => {
         if (!error) {
-          const orderID = result["args"]["orderID"]["c"][0];
-          const buyer = result["args"]["buyer"];
-          const seller = result["args"]["seller"];
-          const market = result["args"]["market"];
-          const DIN = result["args"]["DIN"]["c"][0];
-          const info = result["args"]["info"];
-          const value = web3.fromWei(result["args"]["value"], 'ether').toNumber().toFixed(3);
-          const quantity = result["args"]["quantity"]["c"][0];
-          const timestamp = parseInt(result["args"]["timestamp"], 10);
-
-          orders.push({
-            orderID: orderID,
-            buyer: buyer,
-            seller: seller,
-            market: market,
-            din: DIN,
-            info: info,
-            value: value,
-            quantity: quantity,
-            date: date(timestamp)
+          const orders = logs.map(log => {
+            const order = orderFromLog(log, web3);
+            return order;
           });
-        } else {
-          reject(error);
+          resolve(orders);
         }
-
-        resolve(orders);
-        fetchOrders.stopWatching();
       });
     });
   });
+};
 
-export { getOrders };
+const getPurchases = async (web3, buyer) => {
+  return getOrders(web3, { buyer: buyer });
+};
+
+const getSales = (web3, seller) => {
+  return getOrders(web3, { seller: seller });
+};
+
+export { getPurchases, getSales };

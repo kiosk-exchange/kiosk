@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { getDINRegistry } from "./utils/contracts";
 import { getAllProducts, getSellerProducts } from "./utils/getProducts";
+import { getPurchases, getSales } from "./utils/getOrders";
 import BuyModal from "./Components/BuyModal";
 import SideMenu from "./Components/SideMenu";
 import HeaderToolbar from "./Components/HeaderToolbar";
@@ -52,12 +53,15 @@ class Home extends Component {
         case "products":
           this.getSellerProducts();
           break;
+        case "purchases":
+          this.getPurchases();
+          break;
+        case "sales":
+          break;
         default:
           break;
       }
     }
-
-    console.log(item);
   }
 
   getAllProducts() {
@@ -72,9 +76,13 @@ class Home extends Component {
       this.props.web3.eth.accounts[0],
       this.props.web3
     ).then(products => {
-      console.log("YOO");
-      console.log(products);
       this.setState({ products: products });
+    });
+  }
+
+  getPurchases() {
+    getPurchases(this.props.web3, this.props.web3.eth.accounts[0]).then(orders => {
+      console.log(orders)
     });
   }
 
