@@ -85,6 +85,7 @@ function infoFromDIN(DIN, web3, DINRegistry) {
     // TODO: Handle solidity errors
     if (DIN > 1000000001) {
       resolve(product);
+      return;
     }
 
     const owner = new Promise((resolve, reject) => {

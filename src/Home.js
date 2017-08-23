@@ -47,12 +47,16 @@ class Home extends Component {
     });
   }
 
+  handleSelectListItem(item) {
+    console.log(item)
+  }
+
   render() {
     let hideBuyModal = () => this.setState({ showBuyModal: false });
 
     return (
       <div className="home-container">
-        <SideMenu className="side-menu" />
+        <SideMenu className="side-menu" handleSelectListItem={this.handleSelectListItem} />
         <div className="header-toolbar">
           <HeaderToolbar web3={this.props.web3} />
         </div>

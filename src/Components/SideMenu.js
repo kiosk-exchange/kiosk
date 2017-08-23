@@ -6,24 +6,8 @@ import Products from "material-ui/svg-icons/action/loyalty";
 import Money from "material-ui/svg-icons/editor/attach-money";
 
 class SideMenu extends Component {
-	showMarketplace() {
-		console.log("Marketplace");
-	}
-
-	showPurchases() {
-		console.log("Purchases")
-	}
-
-	showProducts() {
-		console.log("Products")
-	}
-
-	showOrders() {
-		console.log("Orders")
-	}
-
 	render() {
-		const listItemStyle = { "color" : "white" }
+		const listItemStyle = { color: "white" };
 
 		return (
 			<List className="side-menu">
@@ -31,25 +15,26 @@ class SideMenu extends Component {
 					style={listItemStyle}
 					primaryText="Marketplace"
 					leftIcon={<Store color="white" />}
-					onClick={this.showMarketplace.bind(this)}
+					onClick={() =>
+						this.props.handleSelectListItem("marketplace")}
 				/>
 				<ListItem
 					style={listItemStyle}
 					primaryText="Purchases"
 					leftIcon={<ShoppingCart color="white" />}
-					onClick={this.showPurchases.bind(this)}
+					onClick={() => this.props.handleSelectListItem("purchases")}
 				/>
 				<ListItem
 					style={listItemStyle}
 					primaryText="Products"
 					leftIcon={<Products color="white" />}
-					onClick={this.showProducts.bind(this)}
+					onClick={() => this.props.handleSelectListItem("products")}
 				/>
 				<ListItem
 					style={listItemStyle}
 					primaryText="Orders"
 					leftIcon={<Money color="white" />}
-					onClick={this.showOrders.bind(this)}
+					onClick={() => this.props.handleSelectListItem("orders")}
 				/>
 			</List>
 		);
