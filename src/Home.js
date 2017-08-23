@@ -55,7 +55,7 @@ class Home extends Component {
       <div className="home-container">
         <SideMenu className="side-menu" />
         <div className="header-toolbar">
-          <HeaderToolbar />
+          <HeaderToolbar web3={this.props.web3}/>
         </div>
         <div className="new-table">
           <MarketplaceTable products={this.state.products} />

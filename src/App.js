@@ -42,6 +42,7 @@ class App extends Component {
             <Route
               exact
               path="/"
+              // https://github.com/ReactTraining/react-router/issues/4627#issuecomment-284133957
               render={props => <Home {...props} web3={this.state.web3} />}
             />
             <Route
@@ -70,4 +71,3 @@ class App extends Component {
 
 export default App;
 
-// https://github.com/ReactTraining/react-router/issues/4627#issuecomment-284133957
