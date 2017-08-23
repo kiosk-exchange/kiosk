@@ -15,33 +15,32 @@ class HeaderToolbar extends Component {
 		var network;
 
 		if (this.props.web3.eth.defaultAccount) {
-			this.setState({ account: this.props.web3.eth.defaultAccount})
+			this.setState({ account: this.props.web3.eth.defaultAccount });
 		} else {
 			this.props.web3.eth.getAccounts((err, accounts) => {
-				this.setState({ account: accounts[0] })
-			})
+				this.setState({ account: accounts[0] });
+			});
 		}
 
 		this.props.web3.version.getNetwork((err, networkId) => {
-			switch (networkId) {
-				case "1":
-					network = "Main Ethereum Network";
-					break;
-				case "2":
-					network = "Morden Test Network";
-					break;
-				case "3":
-					network = "Ropsten Test Network";
-					break;
-				case "42":
-					network = "Kovan Test Network";
-					break;
-				default:
-					network = "Private Network";
-					break;
-			}
+			const network = this.networkName(networkId)
 			this.setState({ network: network });
 		});
+	}
+
+	networkName(networkId) {
+		switch (networkId) {
+			case "1":
+				return "Main Ethereum Network";
+			case "2":
+				return "Morden Test Network";
+			case "3":
+				return "Ropsten Test Network";
+			case "42":
+				return "Kovan Test Network";
+			default:
+				return "Private Network";
+		}
 	}
 
 	truncated(account) {
@@ -53,17 +52,31 @@ class HeaderToolbar extends Component {
 	}
 
 	render() {
+		const style = {
+			color: this.context.kioskGray,
+			fontSize: "16px",
+			fontWeight: "bold",
+			letterSpacing: "1px"
+		};
+
 		return (
 			<Toolbar style={{ backgroundColor: "white" }}>
 				<ToolbarGroup>
-					<ToolbarTitle text={this.state.network} />
+					<ToolbarTitle style={style} text={this.state.network} />
 				</ToolbarGroup>
 				<ToolbarGroup>
-					<ToolbarTitle text={this.truncated(this.state.account)} />
+					<ToolbarTitle
+						style={style}
+						text={this.truncated(this.state.account)}
+					/>
 				</ToolbarGroup>
 			</Toolbar>
 		);
 	}
 }
+
+HeaderToolbar.contextTypes = {
+	kioskGray: React.PropTypes.string
+};
 
 export default HeaderToolbar;
