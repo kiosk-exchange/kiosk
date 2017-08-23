@@ -531,8 +531,62 @@
       "links": {},
       "address": "0x9e196e0aa36ccd5f0eeaeca5b5e11b194b50ae37",
       "updated_at": 1503369309761
+    },
+    "1503424518478": {
+      "events": {
+        "0x506cb18801692179462f2b7b4b6f10bea763984f94a1f1f3cd858e3a645b2329": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "orderID",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "name": "buyer",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "seller",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "market",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "quantity",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "timestamp",
+              "type": "uint256"
+            }
+          ],
+          "name": "NewOrder",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x1cb754585940ab5ec0acaf8e252c94a9568cb30f",
+      "updated_at": 1503424579651
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1503370132335
+  "updated_at": 1503424579651
 }

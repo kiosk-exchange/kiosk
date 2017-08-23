@@ -1,46 +1,33 @@
 import React, { Component } from "react";
-import getWeb3 from "./utils/getWeb3";
 import { getDINRegistry } from "./utils/contracts";
-import { getAllDINs, infoFromDIN } from "./utils/getProducts";
+import { getAllProducts, getSellerProducts } from "./utils/getProducts";
+import { getPurchases, getSales } from "./utils/getOrders";
 import BuyModal from "./Components/BuyModal";
-import KioskTable from "./Components/KioskTable";
+import SideMenu from "./Components/SideMenu";
+import HeaderToolbar from "./Components/HeaderToolbar";
+import MarketplaceTable from "./Tables/MarketplaceTable";
 
 class Home extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      web3: null,
       DINRegistry: null,
       products: [],
-      selectedProduct: {}
+      selectedProduct: {},
+      selectedListItem: "marketplace"
     };
 
     this.handleSelectProduct = this.handleSelectProduct.bind(this);
+    this.handleSelectListItem = this.handleSelectListItem.bind(this);
   }
 
   componentWillMount() {
-    getWeb3.then(results => {
-      this.setState({ web3: results.web3 }, () => {
-        // Get the global DIN registry
-        getDINRegistry(this.state.web3).then(registry => {
-          this.setState({ DINRegistry: registry }, () => {
-            this.getProducts();
-          });
-        });
+    // Get the global DIN registry
+    getDINRegistry(this.props.web3).then(registry => {
+      this.setState({ DINRegistry: registry }, () => {
+        this.getAllProducts();
       });
-    });
-  }
-
-  getProducts() {
-    getAllDINs(this.state.DINRegistry).then(DINs => {
-      let promises = DINs.map(DIN => {
-        return infoFromDIN(DIN, this.state.web3, this.state.DINRegistry);
-      });
-
-      Promise.all(promises).then(results => {
-        this.setState({ products: results });
-      })
     });
   }
 
@@ -51,23 +38,77 @@ class Home extends Component {
     });
   }
 
+  handleSelectListItem(item) {
+    if (item !== this.state.selectedListItem) {
+      // Remove all products
+      this.setState({
+        selectedListItem: item,
+        products: []
+      });
+
+      switch (item) {
+        case "marketplace":
+          this.getAllProducts();
+          break;
+        case "products":
+          this.getSellerProducts();
+          break;
+        case "purchases":
+          this.getPurchases();
+          break;
+        case "sales":
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
+  getAllProducts() {
+    getAllProducts(this.state.DINRegistry, this.props.web3).then(products => {
+      this.setState({ products: products });
+    });
+  }
+
+  getSellerProducts() {
+    getSellerProducts(
+      this.state.DINRegistry,
+      this.props.web3.eth.accounts[0],
+      this.props.web3
+    ).then(products => {
+      this.setState({ products: products });
+    });
+  }
+
+  getPurchases() {
+    getPurchases(this.props.web3, this.props.web3.eth.accounts[0]).then(orders => {
+      console.log(orders)
+    });
+  }
+
   render() {
     let hideBuyModal = () => this.setState({ showBuyModal: false });
 
     return (
-      <div>
-        <div className="product-table-container">
-          <KioskTable
-            headers={["DIN", "Product Name", "Seller", "Market"]}
+      <div className="home-container">
+        <SideMenu
+          className="side-menu"
+          handleSelectListItem={this.handleSelectListItem}
+        />
+        <div className="header-toolbar">
+          <HeaderToolbar web3={this.props.web3} />
+        </div>
+        <div className="new-table">
+          <MarketplaceTable
             products={this.state.products}
-            handleSelectProduct={this.handleSelectProduct}
+            handleBuy={this.handleSelectProduct}
           />
         </div>
         <BuyModal
           show={this.state.showBuyModal}
           onHide={hideBuyModal}
           product={this.state.selectedProduct}
-          web3={this.state.web3}
+          web3={this.props.web3}
         />
       </div>
     );

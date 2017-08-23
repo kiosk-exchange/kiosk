@@ -42,7 +42,7 @@ class NewENSDomain extends Component {
     		from: account1,
     		gas: 4700000
     	}, (error, result) => {
-    		console.log(result.address)
+    		// console.log(result.address)
     	}
     )
 

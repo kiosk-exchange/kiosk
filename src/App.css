@@ -1,6 +1,39 @@
-body {
+/* Main */
+.ListItem {
+  color: white;
+}
+
+.home-container {
+  height: 100%;
+  background-color: #F6F8FF;
+}
+
+.side-menu {
+  background-color: #2C363F;
+  width: 250px;
+  height: 100vh;
+  display: inline-table;
+}
+
+.header-toolbar {
+  position: absolute;
+  top: 0px;
+  left: 250px;
+  right: 0px;
+}
+
+.new-table {
+  position: absolute;
+  top: 50px;
+  left: 250px;
+  right: 0px;
+  padding: 30px;
+}
+
+html, body {
   font-family: 'Roboto', sans-serif;
   color: black;
+  background-color: #F6F8FF;
 }
 
 /* Landing Page */
@@ -131,31 +164,6 @@ td {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.search-bar {
-  width: 80%;
-  margin: auto;
-  max-width: 600px;
-}
-
-.search-bar input {
-  padding: 20px 10px;
-  font-size: 16px;
-}
-
-.search-bar button {
-  border-top-left-radius: 0px;
-  border-bottom-left-radius: 0px;
-}
-
-/* Home */
-.welcome-header {
-  text-align: center;
-}
-
-.welcome-header h1 {
-  margin: 100px 0px 50px 0px;
 }
 
 /* Product View */

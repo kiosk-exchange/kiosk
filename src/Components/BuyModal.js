@@ -3,7 +3,6 @@ import { Modal, Button } from "react-bootstrap";
 import QuantityPicker from "./QuantityPicker";
 import MarketJSON from "../../build/contracts/StandardMarket.json";
 import { buyProduct } from "../utils/buy";
-import getWeb3 from "../utils/getWeb3";
 import { getKioskMarketToken } from "../utils/contracts";
 
 class BuyModal extends Component {
@@ -11,7 +10,6 @@ class BuyModal extends Component {
 		super(props);
 
 		this.state = {
-			web3: null,
 			KMT: null,
 			quantity: 1
 		};
@@ -21,12 +19,8 @@ class BuyModal extends Component {
 	}
 
 	componentWillMount() {
-		getWeb3.then(results => {
-			this.setState({ web3: results.web3 }, () => {
-				getKioskMarketToken(this.state.web3).then(KMT => {
-					this.setState({ KMT: KMT });
-				});
-			});
+		getKioskMarketToken(this.props.web3).then(KMT => {
+			this.setState({ KMT: KMT });
 		});
 	}
 
@@ -34,10 +28,10 @@ class BuyModal extends Component {
 		const DIN = this.props.product.DIN;
 		const marketContract = this.props.web3.eth.contract(MarketJSON.abi);
 		const market = marketContract.at(this.props.product.market);
-		const priceInWei = market.price(this.props.product.DIN, quantity, (error, price) => {
+		market.price(this.props.product.DIN, quantity, (error, price) => {
 			const buyer = this.props.web3.eth.accounts[0];
 			buyProduct(this.state.KMT, DIN, quantity, price.toNumber(), buyer);
-		})
+		});
 	}
 
 	handleQuantityChange(eventKey) {
