@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Toolbar, ToolbarGroup, ToolbarTitle } from "material-ui/Toolbar";
+import blockies from "blockies";
 
 class HeaderToolbar extends Component {
 	constructor(props) {
@@ -56,8 +57,19 @@ class HeaderToolbar extends Component {
 			color: this.context.kioskGray,
 			fontSize: "16px",
 			fontWeight: "bold",
-			letterSpacing: "1px"
+			letterSpacing: "1px",
+			padding: "10px"
 		};
+
+		const icon = blockies({
+            seed: this.state.account,
+        });
+
+        const iconStyle = {
+        	width: "30px",
+        	height: "30px",
+        	borderRadius: "15px",
+        }
 
 		return (
 			<Toolbar style={{ backgroundColor: "white" }}>
@@ -65,6 +77,7 @@ class HeaderToolbar extends Component {
 					<ToolbarTitle style={style} text={this.state.network} />
 				</ToolbarGroup>
 				<ToolbarGroup>
+					<img src={icon.toDataURL()} style={iconStyle}/>
 					<ToolbarTitle
 						style={style}
 						text={this.truncated(this.state.account)}
