@@ -6,6 +6,8 @@ import BuyModal from "./Components/BuyModal";
 import SideMenu from "./Components/SideMenu";
 import HeaderToolbar from "./Components/HeaderToolbar";
 import MarketplaceTable from "./Tables/MarketplaceTable";
+import PurchasesTable from "./Tables/PurchasesTable";
+import SalesTable from "./Tables/SalesTable";
 
 class Home extends Component {
   constructor(props) {
@@ -14,6 +16,7 @@ class Home extends Component {
     this.state = {
       DINRegistry: null,
       products: [],
+      orders: [],
       selectedProduct: {},
       selectedListItem: "marketplace"
     };
@@ -43,7 +46,8 @@ class Home extends Component {
       // Remove all products
       this.setState({
         selectedListItem: item,
-        products: []
+        products: [],
+        orders: []
       });
 
       switch (item) {
@@ -57,6 +61,7 @@ class Home extends Component {
           this.getPurchases();
           break;
         case "sales":
+          this.getSales();
           break;
         default:
           break;
@@ -81,13 +86,43 @@ class Home extends Component {
   }
 
   getPurchases() {
-    getPurchases(this.props.web3, this.props.web3.eth.accounts[0]).then(orders => {
-      console.log(orders)
+    getPurchases(
+      this.props.web3,
+      this.props.web3.eth.accounts[0]
+    ).then(orders => {
+      this.setState({ orders: orders });
+    });
+  }
+
+  getSales() {
+    getSales(this.props.web3, this.props.web3.eth.accounts[0]).then(orders => {
+      this.setState({ orders: orders });
     });
   }
 
   render() {
     let hideBuyModal = () => this.setState({ showBuyModal: false });
+    let table = null;
+
+    switch (this.state.selectedListItem) {
+      case "marketplace":
+        table = (
+          <MarketplaceTable
+            products={this.state.products}
+            handleBuy={this.handleSelectProduct}
+          />
+        );
+        break;
+      case "purchases":
+        table = <PurchasesTable orders={this.state.orders} />;
+        break;
+      case "sales":
+        table = <SalesTable orders={this.state.orders} />;
+        break;
+      default:
+        console.log(this.state.selectedListItem);
+        break;
+    }
 
     return (
       <div className="home-container">
@@ -99,10 +134,7 @@ class Home extends Component {
           <HeaderToolbar web3={this.props.web3} />
         </div>
         <div className="new-table">
-          <MarketplaceTable
-            products={this.state.products}
-            handleBuy={this.handleSelectProduct}
-          />
+          {table}
         </div>
         <BuyModal
           show={this.state.showBuyModal}

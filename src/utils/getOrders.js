@@ -30,7 +30,7 @@ const orderFromLog = (result, web3) => {
     buyer: buyer,
     seller: seller,
     market: market,
-    din: DIN,
+    DIN: DIN,
     info: info,
     value: value,
     quantity: quantity,
