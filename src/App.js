@@ -17,6 +17,16 @@ class App extends Component {
     };
   }
 
+  // Theme
+  getChildContext() {
+    return {
+      kioskRed: "#FC575E",
+      kioskGray: "#2C363F",
+      kioskLightGray: "#6E7E85",
+      kioskWhite: "#F6F8FF"
+    };
+  }
+
   componentWillMount() {
     getWeb3.then(results => {
       this.setState({ web3: results.web3 });
@@ -66,8 +76,16 @@ class App extends Component {
     // TODO: Otherwise, show an error message.
     return null;
   }
-
 }
 
-export default App;
+const PropTypes = require('prop-types');
 
+// Theme
+App.childContextTypes = {
+  kioskRed: PropTypes.string,
+  kioskGray: PropTypes.string,
+  kioskLightGray: PropTypes.string,
+  kioskWhite: PropTypes.string
+};
+
+export default App;
