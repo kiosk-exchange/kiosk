@@ -14,15 +14,15 @@ class HeaderToolbar extends Component {
 	}
 
 	componentWillMount() {
-		if (this.props.web3.eth.defaultAccount) {
-			this.setState({ account: this.props.web3.eth.defaultAccount });
+		if (this.context.web3.eth.defaultAccount) {
+			this.setState({ account: this.context.web3.eth.defaultAccount });
 		} else {
-			this.props.web3.eth.getAccounts((err, accounts) => {
+			this.context.web3.eth.getAccounts((err, accounts) => {
 				this.setState({ account: accounts[0] });
 			});
 		}
 
-		this.props.web3.version.getNetwork((err, networkId) => {
+		this.context.web3.version.getNetwork((err, networkId) => {
 			const network = this.getNetwork(networkId);
 			this.setState({ network: network });
 		});
@@ -127,6 +127,7 @@ class HeaderToolbar extends Component {
 }
 
 HeaderToolbar.contextTypes = {
+	web3: PropTypes.object,
 	kioskGray: PropTypes.string,
 	kioskLightGray: PropTypes.string
 };

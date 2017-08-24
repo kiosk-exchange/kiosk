@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { getDINRegistry } from "./utils/contracts";
 import { getAllProducts, getSellerProducts } from "./utils/getProducts";
 import { getPurchases, getSales } from "./utils/getOrders";
@@ -31,7 +32,7 @@ class Home extends Component {
 
   componentWillMount() {
     // Get the global DIN registry
-    getDINRegistry(this.props.web3).then(registry => {
+    getDINRegistry(this.context.web3).then(registry => {
       this.setState({ DINRegistry: registry }, () => {
         this.getAllProducts();
       });
@@ -39,7 +40,7 @@ class Home extends Component {
   }
 
   getAllProducts() {
-    getAllProducts(this.state.DINRegistry, this.props.web3).then(products => {
+    getAllProducts(this.state.DINRegistry, this.context.web3).then(products => {
       this.setState({ products: products });
     });
   }
@@ -47,8 +48,8 @@ class Home extends Component {
   getSellerProducts() {
     getSellerProducts(
       this.state.DINRegistry,
-      this.props.web3.eth.accounts[0],
-      this.props.web3
+      this.context.web3.eth.accounts[0],
+      this.context.web3
     ).then(products => {
       this.setState({ products: products });
     });
@@ -56,15 +57,15 @@ class Home extends Component {
 
   getPurchases() {
     getPurchases(
-      this.props.web3,
-      this.props.web3.eth.accounts[0]
+      this.context.web3,
+      this.context.web3.eth.accounts[0]
     ).then(orders => {
       this.setState({ orders: orders });
     });
   }
 
   getSales() {
-    getSales(this.props.web3, this.props.web3.eth.accounts[0]).then(orders => {
+    getSales(this.context.web3, this.context.web3.eth.accounts[0]).then(orders => {
       this.setState({ orders: orders });
     });
   }
@@ -144,7 +145,7 @@ class Home extends Component {
           handleBuyKMTClick={this.handleBuyKMTClick}
         />
         <div className="header-toolbar">
-          <HeaderToolbar web3={this.props.web3} />
+          <HeaderToolbar web3={this.context.web3} />
         </div>
         <div className="new-table">
           {table}
@@ -153,7 +154,7 @@ class Home extends Component {
           show={this.state.showBuyModal}
           onHide={hideBuyModal}
           product={this.state.selectedProduct}
-          web3={this.props.web3}
+          web3={this.context.web3}
         />
         <Alert
           open={this.state.showAlert}
@@ -165,5 +166,9 @@ class Home extends Component {
     );
   }
 }
+
+Home.contextTypes = {
+  web3: PropTypes.object
+};
 
 export default Home;

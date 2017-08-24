@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import {
   Table,
   ButtonToolbar,
@@ -36,7 +37,7 @@ class Orders extends Component {
 
   fetchOrders() {
     var args = null;
-    const account = this.props.web3.eth.coinbase;
+    const account = this.context.web3.eth.coinbase;
     switch (this.state.orderType) {
       case OrderType.buyer:
         args = { buyer: account };
@@ -48,7 +49,7 @@ class Orders extends Component {
         break;
     }
 
-    getOrders(this.props.web3, args, {
+    getOrders(this.context.web3, args, {
       fromBlock: 0,
       toBlock: "latest"
     }).then(orders => {
@@ -149,5 +150,9 @@ class OrderItem extends Component {
     );
   }
 }
+
+Orders.contextTypes = {
+  web3: PropTypes.object
+};
 
 export default Orders;

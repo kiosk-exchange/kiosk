@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { getKioskMarketToken } from "../utils/contracts";
 import { List, ListItem, makeSelectable } from "material-ui/List";
 import PropTypes from "prop-types";
 import Subheader from "material-ui/Subheader";
@@ -53,6 +54,48 @@ function wrapState(ComposedComponent) {
 SelectableList = wrapState(SelectableList);
 
 class SideMenu extends Component {
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			KMTBalance: null,
+			ETHBalance: null
+		};
+	}
+
+	componentWillMount() {
+		this.getEtherBalance();
+		this.getKMTBalance();
+	}
+
+	getEtherBalance() {
+		this.context.web3.eth.getBalance(
+			this.context.web3.eth.accounts[0],
+			(err, result) => {
+				const formattedBalance = this.formattedBalance(result) + " ETH";
+				this.setState({ ETHBalance: formattedBalance });
+			}
+		);
+	}
+
+	getKMTBalance() {
+		getKioskMarketToken(this.context.web3).then(KMT => {
+			KMT.balanceOf(this.context.web3.eth.accounts[0], (err, result) => {
+				const formattedBalance = this.formattedBalance(result) + " KMT";
+				this.setState({ KMTBalance: formattedBalance });
+			});
+		});
+	}
+
+	formattedBalance(wei) {
+		return this.context.web3
+			.fromWei(wei, "ether")
+			.toNumber()
+			.toFixed(3)
+			.toString()
+			.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	}
+
 	render() {
 		const style = {
 			color: "white",
@@ -105,16 +148,16 @@ class SideMenu extends Component {
 					onClick={() => this.props.handleSelectListItem("sales")}
 				/>
 				<Subheader style={subheaderStyle}>ACCOUNT</Subheader>
-				<ListItem 
+				<ListItem
 					style={style}
 					disabled={true}
-					primaryText="0.000 KMT"
+					primaryText={this.state.KMTBalance}
 					leftIcon={<Wallet color="white" />}
 				/>
-				<ListItem 
+				<ListItem
 					style={style}
 					disabled={true}
-					primaryText="0.000 ETH"
+					primaryText={this.state.ETHBalance}
 					leftIcon={<Wallet color="white" />}
 				/>
 				<RaisedButton
@@ -130,9 +173,8 @@ class SideMenu extends Component {
 }
 
 SideMenu.contextTypes = {
+	web3: PropTypes.object,
 	kioskRed: PropTypes.string
-	// kioskGray: PropTypes.string,
-	// kioskLightGray: PropTypes.string
 };
 
 export default SideMenu;

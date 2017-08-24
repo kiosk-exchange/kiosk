@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { getDINRegistry } from "./utils/contracts";
 import { getMarketDINs, infoFromDIN } from "./utils/getProducts";
 import MarketJSON from "./../build/contracts/StandardMarket.json";
@@ -24,9 +25,9 @@ class Market extends Component {
 
 	componentWillMount() {
 		// Get the global DIN registry
-		getDINRegistry(this.props.web3).then(registry => {
+		getDINRegistry(this.context.web3).then(registry => {
 			this.setState({ DINRegistry: registry }, () => {
-				const marketContract = this.props.web3.eth.contract(
+				const marketContract = this.context.web3.eth.contract(
 					MarketJSON.abi
 				);
 				const market = marketContract.at(
@@ -49,7 +50,7 @@ class Market extends Component {
 			var fullProducts = DINs.map(DIN => {
 				return infoFromDIN(
 					DIN,
-					this.props.web3,
+					this.context.web3,
 					this.state.DINRegistry
 				);
 			});
@@ -85,11 +86,15 @@ class Market extends Component {
 					show={this.state.showBuyModal}
 					onHide={hideBuyModal}
 					product={this.state.selectedProduct}
-					web3={this.props.web3}
+					web3={this.context.web3}
 				/>
 			</div>
 		);
 	}
 }
+
+Market.contextTypes = {
+  web3: PropTypes.object
+};
 
 export default Market;

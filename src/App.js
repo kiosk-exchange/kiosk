@@ -1,8 +1,8 @@
 import React, { Component } from "react";
+const PropTypes = require('prop-types');
 import { Switch, Route } from "react-router-dom";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import getWeb3 from "./utils/getWeb3";
-// import getNetwork from "./utils/network";
 import Home from "./Home";
 import Market from "./Market";
 import Products from "./Products";
@@ -20,6 +20,7 @@ class App extends Component {
   // Theme
   getChildContext() {
     return {
+      web3: this.state.web3,
       kioskRed: "#FC575E",
       kioskGray: "#2C363F",
       kioskLightGray: "#6E7E85",
@@ -78,10 +79,9 @@ class App extends Component {
   }
 }
 
-const PropTypes = require('prop-types');
-
-// Theme
+// Global Variables
 App.childContextTypes = {
+  web3: PropTypes.object,
   kioskRed: PropTypes.string,
   kioskGray: PropTypes.string,
   kioskLightGray: PropTypes.string,
