@@ -16,7 +16,7 @@ class BaseTable extends Component {
     }
 
     return (
-      <Table style={tableStyle} height="500px">
+      <Table style={tableStyle} height="500px" selectable={false}>
         <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
           <TableRow>
             {this.props.headers.map(header => {
