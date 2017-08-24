@@ -1,16 +1,15 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { getAllProducts } from "../utils/getProducts";
-import Home from "../Home";
 import MarketplaceTable from "../tables/MarketplaceTable";
 
 class Marketplace extends Component {
 	constructor(props) {
-		super(props)
+		super(props);
 
 		this.state = {
 			products: []
-		}
+		};
 	}
 
 	componentWillMount() {
@@ -23,17 +22,13 @@ class Marketplace extends Component {
 	}
 
 	render() {
-		return (
-			<Home {...this.props}>
-				<MarketplaceTable products={this.state.products} />
-			</Home>
-		);
+		return <MarketplaceTable products={this.state.products} />;
 	}
 }
 
 Marketplace.contextTypes = {
-  web3: PropTypes.object,
-  DINRegistry: PropTypes.object
+	web3: PropTypes.object,
+	DINRegistry: PropTypes.object
 };
 
 export default Marketplace;

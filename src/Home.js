@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import BuyModal from "./components/BuyModal";
 import SideMenu from "./components/SideMenu";
 import HeaderToolbar from "./components/HeaderToolbar";
@@ -8,6 +7,8 @@ import Alert from "./components/Alert";
 class Home extends Component {
   constructor(props) {
     super(props);
+
+    console.log(this.props)
 
     this.state = {
       selectedProduct: {},
@@ -56,7 +57,6 @@ class Home extends Component {
           show={this.state.showBuyModal}
           onHide={hideBuyModal}
           product={this.state.selectedProduct}
-          web3={this.context.web3}
         />
         <Alert
           open={this.state.showAlert}
@@ -68,10 +68,5 @@ class Home extends Component {
     );
   }
 }
-
-Home.contextTypes = {
-  web3: PropTypes.object,
-  DINRegistry: PropTypes.object
-};
 
 export default Home;

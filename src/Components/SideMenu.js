@@ -56,7 +56,7 @@ SelectableList = wrapState(SelectableList);
 class SideMenu extends Component {
 	constructor(props) {
 		super(props);
-
+		
 		this.state = {
 			KMTBalance: null,
 			ETHBalance: null

@@ -4,6 +4,7 @@ import { Switch, Route } from "react-router-dom";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import getWeb3 from "./utils/getWeb3";
 import { getDINRegistry } from "./utils/contracts";
+import Home from "./Home";
 import Marketplace from "./pages/Marketplace";
 import Purchases from "./pages/Purchases";
 import Products from "./pages/Products";
@@ -56,15 +57,38 @@ class App extends Component {
     // Render vs. component: https://github.com/ReactTraining/react-router/issues/4627#issuecomment-284133957}
     // <Route exact path="/" render={props => <Marketplace {...props}/>} />
     if (this.state.web3 && this.state.DINRegistry) {
+      console.log(this.props)
       return (
         <MuiThemeProvider>
-          <Switch>
-            <Route exact path="/" component={Marketplace} />
-            <Route exact path="/marketplace" component={Marketplace} />
-            <Route exact path="/purchases" component={Purchases} />
-            <Route exact path="/products" component={Products} />
-            <Route exact path="/sales" component={Sales} />
-          </Switch>
+          <Home {...this.props}>
+            <Switch>
+              <Route
+                exact
+                path="/"
+                render={props => <Marketplace {...props} />}
+              />
+              <Route
+                exact
+                path="/marketplace"
+                render={props => <Marketplace {...props} />}
+              />
+              <Route
+                exact
+                path="/purchases"
+                render={props => <Purchases {...props} />}
+              />
+              <Route
+                exact
+                path="/products"
+                render={props => <Products {...props} />}
+              />
+              <Route
+                exact
+                path="/sales"
+                render={props => <Sales {...props} />}
+              />
+            </Switch>
+          </Home>
         </MuiThemeProvider>
       );
     }
