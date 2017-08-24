@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Modal, Button } from "react-bootstrap";
 import QuantityPicker from "./QuantityPicker";
 import MarketJSON from "../../build/contracts/StandardMarket.json";
@@ -19,17 +20,17 @@ class BuyModal extends Component {
 	}
 
 	componentWillMount() {
-		getKioskMarketToken(this.props.web3).then(KMT => {
+		getKioskMarketToken(this.context.web3).then(KMT => {
 			this.setState({ KMT: KMT });
 		});
 	}
 
 	handleBuy(quantity) {
 		const DIN = this.props.product.DIN;
-		const marketContract = this.props.web3.eth.contract(MarketJSON.abi);
+		const marketContract = this.context.web3.eth.contract(MarketJSON.abi);
 		const market = marketContract.at(this.props.product.market);
 		market.price(this.props.product.DIN, quantity, (error, price) => {
-			const buyer = this.props.web3.eth.accounts[0];
+			const buyer = this.context.web3.eth.accounts[0];
 			buyProduct(this.state.KMT, DIN, quantity, price.toNumber(), buyer);
 		});
 	}
@@ -96,5 +97,9 @@ class BuyModal extends Component {
 		);
 	}
 }
+
+BuyModal.contextTypes = {
+	web3: PropTypes.object
+};
 
 export default BuyModal;

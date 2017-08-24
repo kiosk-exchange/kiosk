@@ -22,18 +22,18 @@
   right: 0px;
 }
 
-.new-table {
+html, body {
+  font-family: 'Roboto', sans-serif;
+  color: black;
+  background-color: #F6F8FF;
+}
+
+.home-table {
   position: absolute;
   top: 50px;
   left: 250px;
   right: 0px;
   padding: 30px;
-}
-
-html, body {
-  font-family: 'Roboto', sans-serif;
-  color: black;
-  background-color: #F6F8FF;
 }
 
 /* Landing Page */
