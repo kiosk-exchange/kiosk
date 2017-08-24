@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import RaisedButton from "material-ui/RaisedButton";
 import { TableRow, TableRowColumn } from "material-ui/Table";
 import { tableRowStyle, tableColumnStyle } from "./TableStyles";
@@ -20,7 +21,7 @@ class MarketplaceTable extends Component {
                 {product.name}
               </TableRowColumn>
               <TableRowColumn>
-                {product.market}
+                <Link style={{color: "#32C1FF"}} to={`/market/${product.market}`}>{product.market.slice(0,12)}</Link>
               </TableRowColumn>
               <TableRowColumn>
                 <RaisedButton

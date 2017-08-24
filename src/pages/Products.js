@@ -15,7 +15,7 @@ class Products extends Component {
 	componentWillMount() {
 		getSellerProducts(
 			this.context.DINRegistry,
-			this.context.web3.eth.accounts[0],
+			this.context.account,
 			this.context.web3
 		).then(products => {
 			this.setState({ products: products });
@@ -29,6 +29,7 @@ class Products extends Component {
 
 Products.contextTypes = {
 	web3: PropTypes.object,
+	account: PropTypes.string,
 	DINRegistry: PropTypes.object
 };
 

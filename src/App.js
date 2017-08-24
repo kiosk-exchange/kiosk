@@ -16,7 +16,8 @@ class App extends Component {
 
     this.state = {
       web3: null,
-      DINRegistry: null
+      DINRegistry: null,
+      account: null
     };
   }
 
@@ -25,6 +26,7 @@ class App extends Component {
     return {
       web3: this.state.web3,
       DINRegistry: this.state.DINRegistry,
+      account: this.state.account,
       kioskRed: "#FC575E",
       kioskGray: "#2C363F",
       kioskLightGray: "#6E7E85",
@@ -34,21 +36,18 @@ class App extends Component {
 
   componentWillMount() {
     getWeb3.then(results => {
-      this.setState({ web3: results.web3 });
+      const web3 = results.web3;
+
+      this.setState({ web3: web3 });
       // Get the global DIN registry
-      getDINRegistry(results.web3).then(registry => {
+      getDINRegistry(web3).then(registry => {
         this.setState({ DINRegistry: registry });
       });
-    });
-  }
 
-  getAccount() {
-    const account = this.state.web3.eth.coinbase;
-    this.setState({ account: account });
-    this.state.web3.eth.getBalance(account, (error, result) => {
-      const formattedBalance =
-        this.state.web3.fromWei(result, "ether").toNumber().toFixed(3) + " ETH";
-      this.setState({ balance: formattedBalance });
+      web3.eth.getAccounts((error, accounts) => {
+        this.setState({ account: accounts[0] })
+      })
+
     });
   }
 
@@ -56,7 +55,7 @@ class App extends Component {
     // Make sure there is always a web3 object available
     // Render vs. component: https://github.com/ReactTraining/react-router/issues/4627#issuecomment-284133957}
     // <Route exact path="/" render={props => <Marketplace {...props}/>} />
-    if (this.state.web3 && this.state.DINRegistry) {
+    if (this.state.web3 && this.state.DINRegistry && this.state.account) {
       return (
         <MuiThemeProvider>
           <Route
@@ -89,6 +88,7 @@ class App extends Component {
                     path="/sales"
                     render={props => <Sales {...props} />}
                   />
+                  <Route path="market/:market" />
                 </Switch>
               </Home>}
           />
@@ -103,6 +103,7 @@ class App extends Component {
 // Global Variables
 App.childContextTypes = {
   web3: PropTypes.object,
+  account: PropTypes.string,
   DINRegistry: PropTypes.object,
   kioskRed: PropTypes.string,
   kioskGray: PropTypes.string,

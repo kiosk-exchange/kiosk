@@ -70,7 +70,7 @@ class SideMenu extends Component {
 
 	getEtherBalance() {
 		this.context.web3.eth.getBalance(
-			this.context.web3.eth.accounts[0],
+			this.context.account,
 			(err, result) => {
 				const formattedBalance = this.formattedBalance(result) + " ETH";
 				this.setState({ ETHBalance: formattedBalance });
@@ -80,7 +80,7 @@ class SideMenu extends Component {
 
 	getKMTBalance() {
 		getKioskMarketToken(this.context.web3).then(KMT => {
-			KMT.balanceOf(this.context.web3.eth.accounts[0], (err, result) => {
+			KMT.balanceOf(this.context.account, (err, result) => {
 				const formattedBalance = this.formattedBalance(result) + " KMT";
 				this.setState({ KMTBalance: formattedBalance });
 			});
@@ -174,6 +174,7 @@ class SideMenu extends Component {
 
 SideMenu.contextTypes = {
 	web3: PropTypes.object,
+	account: PropTypes.string,
 	kioskRed: PropTypes.string
 };
 
