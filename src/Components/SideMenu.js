@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { getKioskMarketToken } from "../utils/contracts";
 import { List, ListItem, makeSelectable } from "material-ui/List";
 import Subheader from "material-ui/Subheader";
-import Divider from "material-ui/Divider";
 import Store from "material-ui/svg-icons/action/store";
 import ShoppingCart from "material-ui/svg-icons/action/shopping-cart";
 import Products from "material-ui/svg-icons/action/loyalty";
