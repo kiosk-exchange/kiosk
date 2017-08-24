@@ -8,6 +8,7 @@ import HeaderToolbar from "./Components/HeaderToolbar";
 import MarketplaceTable from "./Tables/MarketplaceTable";
 import PurchasesTable from "./Tables/PurchasesTable";
 import SalesTable from "./Tables/SalesTable";
+import Alert from "./Components/Alert";
 
 class Home extends Component {
   constructor(props) {
@@ -18,11 +19,14 @@ class Home extends Component {
       products: [],
       orders: [],
       selectedProduct: {},
-      selectedListItem: "marketplace"
+      selectedListItem: "marketplace",
+      showAlert: false
     };
 
     this.handleSelectProduct = this.handleSelectProduct.bind(this);
     this.handleSelectListItem = this.handleSelectListItem.bind(this);
+    this.handleBuyKMTClick = this.handleBuyKMTClick.bind(this);
+    this.dismissAlert = this.dismissAlert.bind(this);
   }
 
   componentWillMount() {
@@ -31,6 +35,37 @@ class Home extends Component {
       this.setState({ DINRegistry: registry }, () => {
         this.getAllProducts();
       });
+    });
+  }
+
+  getAllProducts() {
+    getAllProducts(this.state.DINRegistry, this.props.web3).then(products => {
+      this.setState({ products: products });
+    });
+  }
+
+  getSellerProducts() {
+    getSellerProducts(
+      this.state.DINRegistry,
+      this.props.web3.eth.accounts[0],
+      this.props.web3
+    ).then(products => {
+      this.setState({ products: products });
+    });
+  }
+
+  getPurchases() {
+    getPurchases(
+      this.props.web3,
+      this.props.web3.eth.accounts[0]
+    ).then(orders => {
+      this.setState({ orders: orders });
+    });
+  }
+
+  getSales() {
+    getSales(this.props.web3, this.props.web3.eth.accounts[0]).then(orders => {
+      this.setState({ orders: orders });
     });
   }
 
@@ -69,35 +104,12 @@ class Home extends Component {
     }
   }
 
-  getAllProducts() {
-    getAllProducts(this.state.DINRegistry, this.props.web3).then(products => {
-      this.setState({ products: products });
-    });
+  handleBuyKMTClick(event) {
+    this.setState({ showAlert: true });
   }
 
-  getSellerProducts() {
-    getSellerProducts(
-      this.state.DINRegistry,
-      this.props.web3.eth.accounts[0],
-      this.props.web3
-    ).then(products => {
-      this.setState({ products: products });
-    });
-  }
-
-  getPurchases() {
-    getPurchases(
-      this.props.web3,
-      this.props.web3.eth.accounts[0]
-    ).then(orders => {
-      this.setState({ orders: orders });
-    });
-  }
-
-  getSales() {
-    getSales(this.props.web3, this.props.web3.eth.accounts[0]).then(orders => {
-      this.setState({ orders: orders });
-    });
+  dismissAlert() {
+    this.setState({ showAlert: false });
   }
 
   render() {
@@ -129,6 +141,7 @@ class Home extends Component {
         <SideMenu
           className="side-menu"
           handleSelectListItem={this.handleSelectListItem}
+          handleBuyKMTClick={this.handleBuyKMTClick}
         />
         <div className="header-toolbar">
           <HeaderToolbar web3={this.props.web3} />
@@ -141,6 +154,12 @@ class Home extends Component {
           onHide={hideBuyModal}
           product={this.state.selectedProduct}
           web3={this.props.web3}
+        />
+        <Alert
+          open={this.state.showAlert}
+          title={"Coming Soon"}
+          message={"Coming Soon"}
+          handleClose={this.dismissAlert}
         />
       </div>
     );
