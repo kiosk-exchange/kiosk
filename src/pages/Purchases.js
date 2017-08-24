@@ -15,7 +15,7 @@ class Purchases extends Component {
 	componentWillMount() {
 		getPurchases(
 			this.context.web3,
-			this.context.web3.eth.accounts[0]
+			this.context.account
 		).then(orders => {
 			this.setState({ orders: orders });
 		});
@@ -28,6 +28,7 @@ class Purchases extends Component {
 
 Purchases.contextTypes = {
 	web3: PropTypes.object,
+	account: PropTypes.string,
 	DINRegistry: PropTypes.object
 };
 

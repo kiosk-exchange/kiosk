@@ -30,7 +30,7 @@ html, body {
 
 .home-table {
   position: absolute;
-  top: 50px;
+  top: 20px;
   left: 250px;
   right: 0px;
   padding: 30px;
@@ -282,4 +282,8 @@ td {
 /* Orders */
 .order-toggle {
   float: right;
+}
+
+.Link {
+  color: "#32C1FF";
 }

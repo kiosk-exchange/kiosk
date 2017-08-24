@@ -15,7 +15,7 @@ class Sales extends Component {
 	componentWillMount() {
 		getSales(
 			this.context.web3,
-			this.context.web3.eth.accounts[0]
+			this.context.account
 		).then(orders => {
 			this.setState({ orders: orders });
 		});
@@ -28,6 +28,7 @@ class Sales extends Component {
 
 Sales.contextTypes = {
 	web3: PropTypes.object,
+	account: PropTypes.string,
 	DINRegistry: PropTypes.object
 };
 

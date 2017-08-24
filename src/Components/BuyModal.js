@@ -30,7 +30,7 @@ class BuyModal extends Component {
 		const marketContract = this.context.web3.eth.contract(MarketJSON.abi);
 		const market = marketContract.at(this.props.product.market);
 		market.price(this.props.product.DIN, quantity, (error, price) => {
-			const buyer = this.context.web3.eth.accounts[0];
+			const buyer = this.context.account;
 			buyProduct(this.state.KMT, DIN, quantity, price.toNumber(), buyer);
 		});
 	}
@@ -99,7 +99,8 @@ class BuyModal extends Component {
 }
 
 BuyModal.contextTypes = {
-	web3: PropTypes.object
+	web3: PropTypes.object,
+	account: PropTypes.string,
 };
 
 export default BuyModal;

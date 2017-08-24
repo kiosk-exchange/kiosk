@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import { Toolbar, ToolbarGroup, ToolbarTitle } from "material-ui/Toolbar";
-import blockies from "blockies";
+import RaisedButton from "material-ui/RaisedButton";
 
 class HeaderToolbar extends Component {
 	constructor(props) {
@@ -64,27 +64,7 @@ class HeaderToolbar extends Component {
 		}
 	}
 
-	truncated(account) {
-		// Ethereum account 0x...
-		if (account.length === 42) {
-			return account.slice(0, 12);
-		}
-		return "";
-	}
-
 	render() {
-		const icon = blockies({
-			seed: this.state.account
-		});
-
-		const accountStyle = {
-			color: this.context.kioskGray,
-			fontSize: "16px",
-			fontWeight: "bold",
-			letterSpacing: "1px",
-			padding: "10px"
-		};
-
 		const networkStyle = {
 			color: this.state.network.color,
 			fontSize: "16px",
@@ -100,12 +80,6 @@ class HeaderToolbar extends Component {
 			borderColor: "#E0E0E0"
 		};
 
-		const iconStyle = {
-			width: "30px",
-			height: "30px",
-			borderRadius: "15px"
-		};
-
 		return (
 			<Toolbar style={toolbarStyle}>
 				<ToolbarGroup>
@@ -115,10 +89,11 @@ class HeaderToolbar extends Component {
 					/>
 				</ToolbarGroup>
 				<ToolbarGroup>
-					<img src={icon.toDataURL()} role="presentation" style={iconStyle} />
-					<ToolbarTitle
-						style={accountStyle}
-						text={this.truncated(this.state.account)}
+					<RaisedButton
+						label="Buy Kiosk Market Token"
+						backgroundColor={this.context.kioskRed}
+						labelColor="#FFFFFF"
+						onClick={this.props.handleBuyKMTClick}
 					/>
 				</ToolbarGroup>
 			</Toolbar>
@@ -128,6 +103,7 @@ class HeaderToolbar extends Component {
 
 HeaderToolbar.contextTypes = {
 	web3: PropTypes.object,
+	kioskRed: PropTypes.string,
 	kioskGray: PropTypes.string,
 	kioskLightGray: PropTypes.string
 };
