@@ -96,7 +96,7 @@ class HeaderToolbar extends Component {
 
 		const toolbarStyle = {
 			backgroundColor: "white",
-			borderBottomStyle: "solid",
+			borderStyle: "solid",
 			borderWidth: "1px",
 			borderColor: "#E0E0E0"
 		};

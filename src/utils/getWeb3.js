@@ -1,6 +1,6 @@
 import Web3 from 'web3'
 
-var IS_DEBUG = false
+var IS_DEBUG = true
 
 let getWeb3 = new Promise(function(resolve, reject) {
   // Wait for loading completion to avoid race conditions with web3 injection timing.
