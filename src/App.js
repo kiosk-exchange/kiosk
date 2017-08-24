@@ -57,38 +57,41 @@ class App extends Component {
     // Render vs. component: https://github.com/ReactTraining/react-router/issues/4627#issuecomment-284133957}
     // <Route exact path="/" render={props => <Marketplace {...props}/>} />
     if (this.state.web3 && this.state.DINRegistry) {
-      console.log(this.props)
       return (
         <MuiThemeProvider>
-          <Home {...this.props}>
-            <Switch>
-              <Route
-                exact
-                path="/"
-                render={props => <Marketplace {...props} />}
-              />
-              <Route
-                exact
-                path="/marketplace"
-                render={props => <Marketplace {...props} />}
-              />
-              <Route
-                exact
-                path="/purchases"
-                render={props => <Purchases {...props} />}
-              />
-              <Route
-                exact
-                path="/products"
-                render={props => <Products {...props} />}
-              />
-              <Route
-                exact
-                path="/sales"
-                render={props => <Sales {...props} />}
-              />
-            </Switch>
-          </Home>
+          <Route
+            render={props =>
+              // Inject history into everything
+              <Home {...props}>
+                <Switch>
+                  <Route
+                    exact
+                    path="/"
+                    render={props => <Marketplace {...props} />}
+                  />
+                  <Route
+                    exact
+                    path="/marketplace"
+                    render={props => <Marketplace {...props} />}
+                  />
+                  <Route
+                    exact
+                    path="/purchases"
+                    render={props => <Purchases {...props} />}
+                  />
+                  <Route
+                    exact
+                    path="/products"
+                    render={props => <Products {...props} />}
+                  />
+                  <Route
+                    exact
+                    path="/sales"
+                    render={props => <Sales {...props} />}
+                  />
+                </Switch>
+              </Home>}
+          />
         </MuiThemeProvider>
       );
     }
