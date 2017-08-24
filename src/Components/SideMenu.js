@@ -1,7 +1,7 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { getKioskMarketToken } from "../utils/contracts";
 import { List, ListItem, makeSelectable } from "material-ui/List";
-import PropTypes from "prop-types";
 import Subheader from "material-ui/Subheader";
 import RaisedButton from "material-ui/RaisedButton";
 import Store from "material-ui/svg-icons/action/store";

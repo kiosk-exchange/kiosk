@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import { TableRow, TableRowColumn } from "material-ui/Table";
 import { tableRowStyle, tableColumnStyle } from "./TableStyles"
-import BaseTable from "./BaseTable";
+import BaseTableContainer from "./BaseTableContainer";
 
 class ProductsTable extends Component {
   render() {
     return (
-      <BaseTable
+      <BaseTableContainer
+        title="Products"
         headers={["DIN", "Name", "Price", "Market"]}
         rows={this.props.products.map(product => {
           return (

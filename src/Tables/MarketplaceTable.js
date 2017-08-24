@@ -1,13 +1,14 @@
 import React, { Component } from "react";
 import RaisedButton from "material-ui/RaisedButton";
 import { TableRow, TableRowColumn } from "material-ui/Table";
-import { tableRowStyle, tableColumnStyle } from "./TableStyles"
-import BaseTable from "./BaseTable";
+import { tableRowStyle, tableColumnStyle } from "./TableStyles";
+import BaseTableContainer from "./BaseTableContainer";
 
 class MarketplaceTable extends Component {
   render() {
     return (
-      <BaseTable
+      <BaseTableContainer
+        title="Marketplace"
         headers={["DIN", "Name", "Market", "Buy"]}
         rows={this.props.products.map(product => {
           return (

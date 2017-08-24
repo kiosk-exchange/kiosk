@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import { TableRow, TableRowColumn } from "material-ui/Table";
 import { tableRowStyle } from "./TableStyles";
-import BaseTable from "./BaseTable";
+import BaseTableContainer from "./BaseTableContainer";
 
 class OrdersTable extends Component {
   render() {
     return (
-      <BaseTable
+      <BaseTableContainer
+        title={this.props.title}
         headers={[
           "Order ID",
           "DIN",
