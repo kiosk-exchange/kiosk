@@ -7,8 +7,8 @@ class ProductsTable extends Component {
   render() {
     return (
       <BaseTableContainer
-        title="Products"
-        headers={["DIN", "Name", "Price", "Market"]}
+        title={this.props.title}
+        headers={["DIN", "Name", "Price (KMT)", "Market"]}
         rows={this.props.products.map(product => {
           return (
             <TableRow style={tableRowStyle} key={product.DIN}>

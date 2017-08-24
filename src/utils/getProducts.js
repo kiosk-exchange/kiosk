@@ -1,54 +1,6 @@
 import MarketJSON from "../../build/contracts/StandardMarket.json";
 
-const getProducts = async (event, DINRegistry, web3) => {
-  return new Promise(resolve => {
-    event.get((error, logs) => {
-      const DINs = logs.map(log => {
-        return parseInt(log["args"]["DIN"]["c"][0], 10);
-      });
-
-      let promises = DINs.map(DIN => {
-        return productFromDIN(DIN, web3, DINRegistry);
-      });
-
-      Promise.all(promises).then(products => {
-        resolve(products);
-      });
-    });
-  });
-};
-
-const getMarketProducts = async (DINRegistry, marketAddress, web3) => {
-  var event = DINRegistry.NewMarket({}, { fromBlock: 0, toBlock: "latest" });
-  return getProducts(event, DINRegistry, web3);
-};
-
-const getSellerProducts = async (DINRegistry, seller, web3) => {
-  var event = DINRegistry.NewRegistration(
-    { owner: seller },
-    { fromBlock: 0, toBlock: "latest" }
-  );
-  return getProducts(event, DINRegistry, web3);
-};
-
-const getAllProducts = async (DINRegistry, web3) => {
-  var event = DINRegistry.NewRegistration(
-    {},
-    { fromBlock: 0, toBlock: "latest" }
-  );
-  return getProducts(event, DINRegistry, web3);
-};
-
-// TODO: FILTER
-// function marketFilter(DIN, DINRegistry, marketAddress) {
-//   return DINRegistry.market(DIN) === marketAddress;
-// }
-
-// function ownerFilter(DIN, DINRegistry, owner) {
-//   return DINRegistry.owner(DIN) === owner;
-// }
-
-function productFromDIN(DIN, web3, DINRegistry) {
+const productFromDIN = async (DIN, web3, DINRegistry) => {
   return new Promise((resolve, reject) => {
     let product = {
       DIN: DIN,
@@ -114,6 +66,50 @@ function productFromDIN(DIN, web3, DINRegistry) {
       });
     });
   });
-}
+};
 
-export { getMarketProducts, getSellerProducts, getAllProducts };
+const getProducts = async (event, DINRegistry, web3) => {
+  return new Promise(resolve => {
+    event.get((error, logs) => {
+      const DINs = logs.map(log => {
+        return parseInt(log["args"]["DIN"]["c"][0], 10);
+      });
+
+      let promises = DINs.map(DIN => {
+        return productFromDIN(DIN, web3, DINRegistry);
+      });
+
+      Promise.all(promises).then(products => {
+        resolve(products);
+      });
+    });
+  });
+};
+
+// TODO: This should confirm that the market has not changed
+const getMarketProducts = async (DINRegistry, marketAddress, web3) => {
+  var event = DINRegistry.NewMarket(
+    { market: marketAddress },
+    { fromBlock: 0, toBlock: "latest" }
+  );
+  return getProducts(event, DINRegistry, web3);
+};
+
+// TODO: This should confirm that the owner has not changed
+const getOwnerProducts = async (DINRegistry, seller, web3) => {
+  var event = DINRegistry.NewRegistration(
+    { owner: seller },
+    { fromBlock: 0, toBlock: "latest" }
+  );
+  return getProducts(event, DINRegistry, web3);
+};
+
+const getAllProducts = async (DINRegistry, web3) => {
+  var event = DINRegistry.NewRegistration(
+    {},
+    { fromBlock: 0, toBlock: "latest" }
+  );
+  return getProducts(event, DINRegistry, web3);
+};
+
+export { getMarketProducts, getOwnerProducts, getAllProducts };

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { getSellerProducts } from "../utils/getProducts";
+import { getOwnerProducts } from "../utils/getProducts";
 import ProductsTable from "../tables/ProductsTable";
 
 class Products extends Component {
@@ -13,7 +13,7 @@ class Products extends Component {
 	}
 
 	componentWillMount() {
-		getSellerProducts(
+		getOwnerProducts(
 			this.context.DINRegistry,
 			this.context.account,
 			this.context.web3
@@ -23,7 +23,9 @@ class Products extends Component {
 	}
 
 	render() {
-		return <ProductsTable products={this.state.products} />;
+		return (
+			<ProductsTable title="Products" products={this.state.products} />
+		);
 	}
 }
 

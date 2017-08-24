@@ -9,6 +9,7 @@ import Marketplace from "./pages/Marketplace";
 import Purchases from "./pages/Purchases";
 import Products from "./pages/Products";
 import Sales from "./pages/Sales";
+import Market from "./pages/Market";
 
 class App extends Component {
   constructor(props) {
@@ -45,9 +46,8 @@ class App extends Component {
       });
 
       web3.eth.getAccounts((error, accounts) => {
-        this.setState({ account: accounts[0] })
-      })
-
+        this.setState({ account: accounts[0] });
+      });
     });
   }
 
@@ -88,7 +88,10 @@ class App extends Component {
                     path="/sales"
                     render={props => <Sales {...props} />}
                   />
-                  <Route path="market/:market" />
+                  <Route
+                    path="/market/:market"
+                    render={props => <Market {...props} />}
+                  />
                 </Switch>
               </Home>}
           />
