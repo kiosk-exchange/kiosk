@@ -123,14 +123,14 @@ class SideMenu extends Component {
 					primaryText="Markets"
 					leftIcon={<Store color="white" />}
 					onClick={() =>
-						this.props.handleSelectListItem("marketplace")}
+						this.props.history.push("/marketplace")}
 				/>
 				<ListItem
 					value={2}
 					style={style}
 					primaryText="Purchases"
 					leftIcon={<ShoppingCart color="white" />}
-					onClick={() => this.props.handleSelectListItem("purchases")}
+					onClick={() => this.props.history.push("/purchases")}
 				/>
 				<Subheader style={subheaderStyle}>SELL</Subheader>
 				<ListItem
@@ -138,14 +138,14 @@ class SideMenu extends Component {
 					style={style}
 					primaryText="Products"
 					leftIcon={<Products color="white" />}
-					onClick={() => this.props.handleSelectListItem("products")}
+					onClick={() => this.props.history.push("/products")}
 				/>
 				<ListItem
 					value={4}
 					style={style}
 					primaryText="Sales"
 					leftIcon={<Money color="white" />}
-					onClick={() => this.props.handleSelectListItem("sales")}
+					onClick={() => this.props.history.push("/sales")}
 				/>
 				<Subheader style={subheaderStyle}>ACCOUNT</Subheader>
 				<ListItem

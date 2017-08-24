@@ -1,73 +1,23 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { getDINRegistry } from "./utils/contracts";
-import { getAllProducts, getSellerProducts } from "./utils/getProducts";
-import { getPurchases, getSales } from "./utils/getOrders";
-import BuyModal from "./Components/BuyModal";
-import SideMenu from "./Components/SideMenu";
-import HeaderToolbar from "./Components/HeaderToolbar";
-import MarketplaceTable from "./Tables/MarketplaceTable";
-import PurchasesTable from "./Tables/PurchasesTable";
-import SalesTable from "./Tables/SalesTable";
-import Alert from "./Components/Alert";
+import BuyModal from "./components/BuyModal";
+import SideMenu from "./components/SideMenu";
+import HeaderToolbar from "./components/HeaderToolbar";
+import Alert from "./components/Alert";
 
 class Home extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      DINRegistry: null,
-      products: [],
-      orders: [],
       selectedProduct: {},
       selectedListItem: "marketplace",
       showAlert: false
     };
 
     this.handleSelectProduct = this.handleSelectProduct.bind(this);
-    this.handleSelectListItem = this.handleSelectListItem.bind(this);
     this.handleBuyKMTClick = this.handleBuyKMTClick.bind(this);
     this.dismissAlert = this.dismissAlert.bind(this);
-  }
-
-  componentWillMount() {
-    // Get the global DIN registry
-    getDINRegistry(this.context.web3).then(registry => {
-      this.setState({ DINRegistry: registry }, () => {
-        this.getAllProducts();
-      });
-    });
-  }
-
-  getAllProducts() {
-    getAllProducts(this.state.DINRegistry, this.context.web3).then(products => {
-      this.setState({ products: products });
-    });
-  }
-
-  getSellerProducts() {
-    getSellerProducts(
-      this.state.DINRegistry,
-      this.context.web3.eth.accounts[0],
-      this.context.web3
-    ).then(products => {
-      this.setState({ products: products });
-    });
-  }
-
-  getPurchases() {
-    getPurchases(
-      this.context.web3,
-      this.context.web3.eth.accounts[0]
-    ).then(orders => {
-      this.setState({ orders: orders });
-    });
-  }
-
-  getSales() {
-    getSales(this.context.web3, this.context.web3.eth.accounts[0]).then(orders => {
-      this.setState({ orders: orders });
-    });
   }
 
   handleSelectProduct(product) {
@@ -75,34 +25,6 @@ class Home extends Component {
       showBuyModal: true,
       selectedProduct: product
     });
-  }
-
-  handleSelectListItem(item) {
-    if (item !== this.state.selectedListItem) {
-      // Remove all products
-      this.setState({
-        selectedListItem: item,
-        products: [],
-        orders: []
-      });
-
-      switch (item) {
-        case "marketplace":
-          this.getAllProducts();
-          break;
-        case "products":
-          this.getSellerProducts();
-          break;
-        case "purchases":
-          this.getPurchases();
-          break;
-        case "sales":
-          this.getSales();
-          break;
-        default:
-          break;
-      }
-    }
   }
 
   handleBuyKMTClick(event) {
@@ -115,31 +37,11 @@ class Home extends Component {
 
   render() {
     let hideBuyModal = () => this.setState({ showBuyModal: false });
-    let table = null;
-
-    switch (this.state.selectedListItem) {
-      case "marketplace":
-        table = (
-          <MarketplaceTable
-            products={this.state.products}
-            handleBuy={this.handleSelectProduct}
-          />
-        );
-        break;
-      case "purchases":
-        table = <PurchasesTable orders={this.state.orders} />;
-        break;
-      case "sales":
-        table = <SalesTable orders={this.state.orders} />;
-        break;
-      default:
-        console.log(this.state.selectedListItem);
-        break;
-    }
 
     return (
       <div className="home-container">
-        <SideMenu
+        <SideMenu 
+          {...this.props}
           className="side-menu"
           handleSelectListItem={this.handleSelectListItem}
           handleBuyKMTClick={this.handleBuyKMTClick}
@@ -147,8 +49,8 @@ class Home extends Component {
         <div className="header-toolbar">
           <HeaderToolbar web3={this.context.web3} />
         </div>
-        <div className="new-table">
-          {table}
+        <div className="home-table">
+          {this.props.children}
         </div>
         <BuyModal
           show={this.state.showBuyModal}
@@ -168,7 +70,8 @@ class Home extends Component {
 }
 
 Home.contextTypes = {
-  web3: PropTypes.object
+  web3: PropTypes.object,
+  DINRegistry: PropTypes.object
 };
 
 export default Home;

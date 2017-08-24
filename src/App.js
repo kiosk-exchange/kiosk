@@ -1,26 +1,29 @@
 import React, { Component } from "react";
-const PropTypes = require('prop-types');
+const PropTypes = require("prop-types");
 import { Switch, Route } from "react-router-dom";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import getWeb3 from "./utils/getWeb3";
-import Home from "./Home";
-import Market from "./Market";
-import Products from "./Products";
-import Orders from "./Orders";
+import { getDINRegistry } from "./utils/contracts";
+import Marketplace from "./pages/Marketplace";
+import Purchases from "./pages/Purchases";
+import Products from "./pages/Products";
+import Sales from "./pages/Sales";
 
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      web3: null
+      web3: null,
+      DINRegistry: null
     };
   }
 
-  // Theme
+  // TODO: Use Redux
   getChildContext() {
     return {
       web3: this.state.web3,
+      DINRegistry: this.state.DINRegistry,
       kioskRed: "#FC575E",
       kioskGray: "#2C363F",
       kioskLightGray: "#6E7E85",
@@ -31,6 +34,10 @@ class App extends Component {
   componentWillMount() {
     getWeb3.then(results => {
       this.setState({ web3: results.web3 });
+      // Get the global DIN registry
+      getDINRegistry(results.web3).then(registry => {
+        this.setState({ DINRegistry: registry });
+      });
     });
   }
 
@@ -46,30 +53,17 @@ class App extends Component {
 
   render() {
     // Make sure there is always a web3 object available
-    if (this.state.web3) {
+    // Render vs. component: https://github.com/ReactTraining/react-router/issues/4627#issuecomment-284133957}
+    // <Route exact path="/" render={props => <Marketplace {...props}/>} />
+    if (this.state.web3 && this.state.DINRegistry) {
       return (
         <MuiThemeProvider>
           <Switch>
-            <Route
-              exact
-              path="/"
-              // https://github.com/ReactTraining/react-router/issues/4627#issuecomment-284133957
-              render={props => <Home {...props} web3={this.state.web3} />}
-            />
-            <Route
-              exact
-              path="/orders"
-              render={props => <Orders {...props} web3={this.state.web3} />}
-            />
-            <Route
-              exact
-              path="/products"
-              render={props => <Products {...props} web3={this.state.web3} />}
-            />
-            <Route
-              path="/market/:market"
-              render={props => <Market {...props} web3={this.state.web3} />}
-            />
+            <Route exact path="/" component={Marketplace} />
+            <Route exact path="/marketplace" component={Marketplace} />
+            <Route exact path="/purchases" component={Purchases} />
+            <Route exact path="/products" component={Products} />
+            <Route exact path="/sales" component={Sales} />
           </Switch>
         </MuiThemeProvider>
       );
@@ -82,6 +76,7 @@ class App extends Component {
 // Global Variables
 App.childContextTypes = {
   web3: PropTypes.object,
+  DINRegistry: PropTypes.object,
   kioskRed: PropTypes.string,
   kioskGray: PropTypes.string,
   kioskLightGray: PropTypes.string,
