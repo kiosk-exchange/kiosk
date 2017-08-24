@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from 'prop-types';
 import { Toolbar, ToolbarGroup, ToolbarTitle } from "material-ui/Toolbar";
 import blockies from "blockies";
 
@@ -13,8 +14,6 @@ class HeaderToolbar extends Component {
 	}
 
 	componentWillMount() {
-		var network;
-
 		if (this.props.web3.eth.defaultAccount) {
 			this.setState({ account: this.props.web3.eth.defaultAccount });
 		} else {
@@ -116,7 +115,7 @@ class HeaderToolbar extends Component {
 					/>
 				</ToolbarGroup>
 				<ToolbarGroup>
-					<img src={icon.toDataURL()} style={iconStyle} />
+					<img src={icon.toDataURL()} role="presentation" style={iconStyle} />
 					<ToolbarTitle
 						style={accountStyle}
 						text={this.truncated(this.state.account)}
@@ -128,8 +127,8 @@ class HeaderToolbar extends Component {
 }
 
 HeaderToolbar.contextTypes = {
-	kioskGray: React.PropTypes.string,
-	kioskLightGray: React.PropTypes.string
+	kioskGray: PropTypes.string,
+	kioskLightGray: PropTypes.string
 };
 
 export default HeaderToolbar;

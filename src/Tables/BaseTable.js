@@ -4,8 +4,7 @@ import {
   TableBody,
   TableHeader,
   TableHeaderColumn,
-  TableRow,
-  TableRowColumn
+  TableRow
 } from "material-ui/Table";
 
 class BaseTable extends Component {

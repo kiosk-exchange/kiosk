@@ -6,7 +6,6 @@ import Store from "material-ui/svg-icons/action/store";
 import ShoppingCart from "material-ui/svg-icons/action/shopping-cart";
 import Products from "material-ui/svg-icons/action/loyalty";
 import Money from "material-ui/svg-icons/editor/attach-money";
-import Avatar from "material-ui/Avatar";
 
 let SelectableList = makeSelectable(List);
 
