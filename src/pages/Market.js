@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { getMarketProducts } from "../utils/getProducts";
-import ProductsTable from "../tables/ProductsTable";
+import MarketTable from "../tables/MarketTable";
 
 class Market extends Component {
 	constructor(props) {
@@ -26,7 +26,7 @@ class Market extends Component {
 
 	render() {
 		return (
-			<ProductsTable
+			<MarketTable
 				title={this.props.match.params.market.slice(0, 12)}
 				products={this.state.products}
 			/>

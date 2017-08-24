@@ -1,16 +1,15 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import { TableRow, TableRowColumn } from "material-ui/Table";
 import { tableRowStyle, tableColumnStyle } from "./TableStyles";
 import BaseTableContainer from "./BaseTableContainer";
 import BuyColumn from "./BuyColumn";
 
-class MarketplaceTable extends Component {
+class MarketTable extends Component {
   render() {
     return (
       <BaseTableContainer
-        title="All Products"
-        headers={["DIN", "Name", "Price (KMT)", "Market", "Buy"]}
+        title={this.props.title}
+        headers={["DIN", "Name", "Price (KMT)", "Buy"]}
         rows={this.props.products.map(product => {
           return (
             <TableRow style={tableRowStyle} key={product.DIN}>
@@ -23,9 +22,6 @@ class MarketplaceTable extends Component {
               <TableRowColumn>
                 {product.price}
               </TableRowColumn>
-              <TableRowColumn>
-                <Link style={{color: "#32C1FF"}} to={`/market/${product.market}`}>{product.market.slice(0,12)}</Link>
-              </TableRowColumn>
               <BuyColumn product={product} handleBuy={this.props.handleBuy} />
             </TableRow>
           );
@@ -35,4 +31,4 @@ class MarketplaceTable extends Component {
   }
 }
 
-export default MarketplaceTable;
+export default MarketTable;
