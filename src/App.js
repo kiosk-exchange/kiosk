@@ -13,6 +13,42 @@ import Sales from "./pages/Sales";
 import Market from "./pages/Market";
 import EmptyState from "./pages/EmptyState";
 
+const ERROR = {
+  NOT_CONNECTED: 0,
+  CONTRACTS_NOT_FOUND: 1,
+  LOCKED_ACCOUNT: 2
+};
+
+function Content(props) {
+  console.log("1")
+  if (props.web3) {
+    console.log("Yay")
+    return (
+      <Switch>
+        <Route exact path="/" render={props => <Marketplace {...props} />} />
+        <Route
+          exact
+          path="/marketplace"
+          render={props => <Marketplace {...props} />}
+        />
+        <Route
+          exact
+          path="/purchases"
+          render={props => <Purchases {...props} />}
+        />
+        <Route
+          exact
+          path="/products"
+          render={props => <Products {...props} />}
+        />
+        <Route exact path="/sales" render={props => <Sales {...props} />} />
+        <Route path="/market/:market" render={props => <Market {...props} />} />
+      </Switch>
+    );
+  }
+  return null;
+}
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -22,11 +58,10 @@ class App extends Component {
       DINRegistry: null,
       account: undefined,
       network: {},
+      error: null,
       etherMarket: null,
       isMetaMaskLocked: false
     };
-
-    this.isMetaMaskLocked = this.isMetaMaskLocked.bind(this);
   }
 
   // TODO: Use Redux
@@ -54,7 +89,9 @@ class App extends Component {
           web3: results.web3
         },
         () => {
-          if (this.state.web3) {
+          if (!this.state.web3) {
+            this.setState({ error: ERROR.NOT_CONNECTED });
+          } else {
             const web3 = this.state.web3;
 
             // Fetch account and network and listen for changes
@@ -62,14 +99,22 @@ class App extends Component {
             this.getNetwork();
 
             // Get the global DIN registry
-            getDINRegistry(web3).then(registry => {
-              this.setState({ DINRegistry: registry });
-            });
+            getDINRegistry(web3)
+              .then(registry => {
+                this.setState({ DINRegistry: registry });
+              })
+              .catch(err => {
+                this.setState({ error: ERROR.CONTRACTS_NOT_FOUND });
+              });
 
             // Get Ether market
-            getEtherMarket(web3).then(market => {
-              this.setState({ etherMarket: market });
-            });
+            getEtherMarket(web3)
+              .then(market => {
+                this.setState({ etherMarket: market });
+              })
+              .catch(err => {
+                this.setState({ error: ERROR.CONTRACTS_NOT_FOUND });
+              });
           }
         }
       );
@@ -83,7 +128,10 @@ class App extends Component {
         if (accounts[0] !== this.state.account) {
           this.setState({ account: accounts[0] });
           this.setState({ isMetaMaskLocked: false });
-        } else if (this.isMetaMaskLocked() === true && this.state.isMetaMaskLocked === false) {
+        } else if (
+          this.isMetaMaskLocked() === true &&
+          this.state.isMetaMaskLocked === false
+        ) {
           this.setState({ isMetaMaskLocked: true });
         }
       });
@@ -94,6 +142,9 @@ class App extends Component {
     setInterval(() => {
       if (this.state.web3.version.network !== this.state.network.id) {
         const network = getNetwork(this.state.web3.version.network);
+
+        console.log("********** ETHEREUM NETWORK: " + network.id);
+
         this.setState({ network: network });
       }
     }, 1000);
@@ -101,75 +152,63 @@ class App extends Component {
 
   isMetaMaskLocked() {
     // If no account and provider is MetaMask, show locked prompt
-    return (
+    if (
       typeof this.state.account === "undefined" &&
-      this.state.web3.currentProvider.constructor.name.match(/metamask/i)
-    );
+      this.isMetaMask() === true
+    ) {
+      return true;
+    }
+    return false;
   }
 
-  render() {
-    // Make sure there is always a web3 object available
-    // Render vs. component: https://github.com/ReactTraining/react-router/issues/4627#issuecomment-284133957}
-    if (
-      this.state.web3 &&
-      this.state.DINRegistry &&
-      this.state.account &&
-      this.state.network
-    ) {
-      return (
-        <MuiThemeProvider>
-          <Route
-            render={props =>
-              // Inject history into everything
-              <Home {...props}>
-                <Switch>
-                  <Route
-                    exact
-                    path="/"
-                    render={props => <Marketplace {...props} />}
-                  />
-                  <Route
-                    exact
-                    path="/marketplace"
-                    render={props => <Marketplace {...props} />}
-                  />
-                  <Route
-                    exact
-                    path="/purchases"
-                    render={props => <Purchases {...props} />}
-                  />
-                  <Route
-                    exact
-                    path="/products"
-                    render={props => <Products {...props} />}
-                  />
-                  <Route
-                    exact
-                    path="/sales"
-                    render={props => <Sales {...props} />}
-                  />
-                  <Route
-                    path="/market/:market"
-                    render={props => <Market {...props} />}
-                  />
-                </Switch>
-              </Home>}
-          />
-        </MuiThemeProvider>
-      );
-    } else if (this.state.isMetaMaskLocked === true) {
-      return <EmptyState title="You are not logged in to MetaMask" />;
+  isMetaMask() {
+    if (this.state.web3.currentProvider.constructor.name.match(/metamask/i)) {
+      return true;
     }
-    // TODO: Otherwise, show an error message (download MetaMask).
-    return null;
+    return false;
+  }
+
+  // Make sure there is always a web3 object available
+  // Render vs. component: https://github.com/ReactTraining/react-router/issues/4627#issuecomment-284133957}
+  render() {
+    return (
+      <MuiThemeProvider>
+        <Route
+          render={props =>
+            <Home {...props}>
+              <Content web3={this.state.web3} />
+            </Home>}
+        />
+      </MuiThemeProvider>
+    );
   }
 }
+
+// else if (this.state.error) {
+//   switch (this.state.error) {
+//     case ERROR.NOT_CONNECTED:
+//       return (
+//         <EmptyState title="You are not connected to an Ethereum node" />
+//       );
+//     case ERROR.CONTRACTS_NOT_FOUND:
+//       return (
+//         <EmptyState
+//           title="Contracts are not deployed"
+//           message="truffle migrate --reset"
+//         />
+//       );
+//     case ERROR.LOCKED_ACCOUNT:
+//       return <EmptyState title="Your account is locked" />;
+//     default:
+//       return null;
+//   }
+// }
 
 // Global Variables
 App.childContextTypes = {
   web3: PropTypes.object,
   account: PropTypes.string,
-  network: PropTypes.string,
+  network: PropTypes.object,
   DINRegistry: PropTypes.object,
   etherMarket: PropTypes.object,
   theme: PropTypes.object
