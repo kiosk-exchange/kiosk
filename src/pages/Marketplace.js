@@ -10,6 +10,8 @@ class Marketplace extends Component {
 		this.state = {
 			products: []
 		};
+
+		this.handleBuy = this.handleBuy.bind(this);
 	}
 
 	componentWillMount() {
@@ -21,8 +23,17 @@ class Marketplace extends Component {
 		});
 	}
 
+	handleBuy() {
+		console.log("BUY TAPPED");
+	}
+
 	render() {
-		return <MarketplaceTable products={this.state.products} />;
+		return (
+			<MarketplaceTable
+				products={this.state.products}
+				handleBuy={this.handleBuy}
+			/>
+		);
 	}
 }
 

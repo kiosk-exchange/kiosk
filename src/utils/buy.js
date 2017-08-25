@@ -16,3 +16,13 @@ export const buyProduct = (KMT, DIN, quantity, value, buyer) => {
 		}
 	);
 };
+
+export const buyKMT = (etherMarket, value, buyer) => {
+	etherMarket.contribute({ from: buyer, value: value }, (error, result) => {
+		if (!error) {
+			console.log(result);
+		} else {
+			console.log(error);
+		}
+	});
+};

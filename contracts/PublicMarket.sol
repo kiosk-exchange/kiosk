@@ -20,12 +20,6 @@ contract PublicMarket is StandardMarket {
         BuyHandler buyHandler;                  // Returns the address of the contract that handles orders.
     }
 
-    // The address of DIN registry where all DINs are stored.
-    DINRegistry public dinRegistry;
-
-    // The address of the order tracker where all new order events are stored.
-    OrderTracker public orderTracker;
-
     // The address of the Kiosk Market Token contract.
     KioskMarketToken public KMT;
 
@@ -46,23 +40,23 @@ contract PublicMarket is StandardMarket {
     }
 
     modifier only_owner(uint256 DIN) {
-        require (dinRegistry.owner(DIN) == msg.sender);
+        require (KMT.dinRegistry().owner(DIN) == msg.sender);
         _;
     }
 
     modifier only_seller(uint256 orderID) {
-        require (orderTracker.seller(orderID) == msg.sender);
+        require (KMT.orderTracker().seller(orderID) == msg.sender);
         _;
     }
 
     // Allow the owner or the buy handler to modify product details.
     modifier only_trusted(uint256 DIN) {
-        require (dinRegistry.owner(DIN) == msg.sender || buyHandler(DIN) == msg.sender);
+        require (KMT.dinRegistry().owner(DIN) == msg.sender || buyHandler(DIN) == msg.sender);
         _;
     }
 
     modifier only_fulfilled(uint256 orderID) {
-        require (orderTracker.status(orderID) == OrderUtils.Status.Fulfilled);
+        require (KMT.orderTracker().status(orderID) == OrderUtils.Status.Fulfilled);
         _;
     }
 
@@ -72,15 +66,8 @@ contract PublicMarket is StandardMarket {
     }
 
     // Constructor
-    function PublicMarket(
-        DINRegistry _dinRegistry, 
-        OrderTracker _orderTracker,
-        KioskMarketToken _token
-    ) 
-    {
-        dinRegistry = _dinRegistry;
-        orderTracker = _orderTracker;
-        KMT = _token;
+    function PublicMarket(KioskMarketToken _KMT) {
+        KMT = _KMT;
     }
 
     /**
@@ -91,6 +78,8 @@ contract PublicMarket is StandardMarket {
 
     function buy(uint256 orderID) only_token returns (bool) {
         // Add proceeds to pending withdrawals.
+        OrderTracker orderTracker = KMT.orderTracker();
+
         uint256 DIN = orderTracker.DIN(orderID);
         uint256 quantity = orderTracker.quantity(orderID);
         address buyer = orderTracker.buyer(orderID);
@@ -106,7 +95,7 @@ contract PublicMarket is StandardMarket {
         require (isFulfilled(orderID) == true);
 
         // Add the proceeds to the seller's balance.
-        pendingWithdrawals[orderID] += msg.value;
+        pendingWithdrawals[orderID] += orderTracker.value(orderID);
 
         return true;
     }

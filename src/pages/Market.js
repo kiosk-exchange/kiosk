@@ -7,11 +7,11 @@ class Market extends Component {
 	constructor(props) {
 		super(props);
 
-		console.log("HI")
-
 		this.state = {
 			products: []
 		};
+
+		this.handleBuy = this.handleBuy.bind(this);
 	}
 
 	componentWillMount() {
@@ -24,11 +24,16 @@ class Market extends Component {
 		});
 	}
 
+	handleBuy() {
+		console.log("BUY TAPPED")
+	}
+
 	render() {
 		return (
 			<MarketTable
 				title={this.props.match.params.market.slice(0, 12)}
 				products={this.state.products}
+				handleBuy={this.handleBuy}
 			/>
 		);
 	}

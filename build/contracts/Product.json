@@ -73,50 +73,10 @@
       "outputs": [],
       "payable": false,
       "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "registry",
-      "outputs": [
-        {
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "market",
-      "outputs": [
-        {
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "name": "_market",
-          "type": "address"
-        },
-        {
-          "name": "_registry",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "type": "constructor"
     }
   ],
   "unlinked_binary": "0x",
   "networks": {},
   "schema_version": "0.0.5",
-  "updated_at": 1503363672329
+  "updated_at": 1503620632986
 }
