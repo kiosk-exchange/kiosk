@@ -1,9 +1,8 @@
 pragma solidity ^0.4.11;
 
+import "../KioskMarketToken.sol";
 import "../Product.sol";
-import "../DINRegistry.sol";
 import "../Market.sol";
-import "./ENSMarket.sol";
 import "./ENS/ENS.sol";
 
 /**
@@ -11,8 +10,9 @@ import "./ENS/ENS.sol";
 */
 contract ENSPublicProduct is Product {
 
-	ENSMarket public ensMarket;
 	ENS public ens;
+	KioskMarketToken public KMT;
+	Market public market;
 
 	struct ENSNode {
 		string name;
@@ -24,25 +24,27 @@ contract ENSPublicProduct is Product {
 	// DIN => ENS node
 	mapping(uint256 => ENSNode) public nodes;
 
+	modifier only_owner(uint256 DIN) {
+		require (KMT.dinRegistry().owner(DIN) == msg.sender);
+		_;
+	}
+
+	modifier only_market {
+		require (market == msg.sender);
+		_;
+	}
+
 	// Constructor
-	function ENSPublicProduct(
-		DINRegistry _registry,
-		ENSMarket _market,
-		ENS _ens
-	)
-		Product(
-			_market,
-			_registry
-		)
-	{
-		ensMarket = _market;
+	function ENSPublicProduct(KioskMarketToken _KMT, ENS _ens, Market _market) {
+		KMT = _KMT;
 		ens = _ens;
+		market = _market;
 	}
 
 	function addENSDomain(
-		uint256 DIN, 
+		uint256 DIN,
 		string name,
-		bytes32 node, 
+		bytes32 node,
 		uint256 price
 	) only_owner(DIN) {
 		// Store the details of the ENS node.

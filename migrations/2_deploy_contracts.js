@@ -75,9 +75,9 @@ const deployENS = async (deployer, network, accounts) => {
 
   await deployer.deploy(
     ENSPublicProduct,
-    DINRegistry.address,
-    ENSMarket.address,
-    ENS.address
+    KioskMarketToken.address,
+    ENS.address,
+    ENSMarket.address
   );
 };
 
