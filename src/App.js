@@ -3,7 +3,7 @@ const PropTypes = require("prop-types");
 import { Switch, Route } from "react-router-dom";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import getWeb3 from "./utils/getWeb3";
-import { getDINRegistry } from "./utils/contracts";
+import { getDINRegistry, getEtherMarket } from "./utils/contracts";
 import Home from "./Home";
 import Marketplace from "./pages/Marketplace";
 import Purchases from "./pages/Purchases";
@@ -18,6 +18,7 @@ class App extends Component {
     this.state = {
       web3: null,
       DINRegistry: null,
+      etherMarket: null,
       account: null
     };
   }
@@ -27,6 +28,7 @@ class App extends Component {
     return {
       web3: this.state.web3,
       DINRegistry: this.state.DINRegistry,
+      etherMarket: this.state.etherMarket,
       account: this.state.account,
       kioskRed: "#FC575E",
       kioskGray: "#2C363F",
@@ -43,6 +45,10 @@ class App extends Component {
       // Get the global DIN registry
       getDINRegistry(web3).then(registry => {
         this.setState({ DINRegistry: registry });
+      });
+
+      getEtherMarket(web3).then(market => {
+        this.setState({ etherMarket: market })
       });
 
       web3.eth.getAccounts((error, accounts) => {
@@ -108,6 +114,7 @@ App.childContextTypes = {
   web3: PropTypes.object,
   account: PropTypes.string,
   DINRegistry: PropTypes.object,
+  etherMarket: PropTypes.object,
   kioskRed: PropTypes.string,
   kioskGray: PropTypes.string,
   kioskLightGray: PropTypes.string,

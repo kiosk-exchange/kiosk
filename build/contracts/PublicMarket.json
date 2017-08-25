@@ -38,19 +38,6 @@
       "type": "function"
     },
     {
-      "constant": true,
-      "inputs": [],
-      "name": "orderTracker",
-      "outputs": [
-        {
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
       "constant": false,
       "inputs": [
         {
@@ -217,19 +204,6 @@
       "type": "function"
     },
     {
-      "constant": true,
-      "inputs": [],
-      "name": "dinRegistry",
-      "outputs": [
-        {
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
       "constant": false,
       "inputs": [
         {
@@ -341,15 +315,7 @@
     {
       "inputs": [
         {
-          "name": "_dinRegistry",
-          "type": "address"
-        },
-        {
-          "name": "_orderTracker",
-          "type": "address"
-        },
-        {
-          "name": "_token",
+          "name": "_KMT",
           "type": "address"
         }
       ],
@@ -415,5 +381,5 @@
   "unlinked_binary": "0x",
   "networks": {},
   "schema_version": "0.0.5",
-  "updated_at": 1503369786047
+  "updated_at": 1503620632986
 }

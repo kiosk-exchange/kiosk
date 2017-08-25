@@ -1,8 +1,10 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import BuyModal from "./components/BuyModal";
 import SideMenu from "./components/SideMenu";
 import HeaderToolbar from "./components/HeaderToolbar";
 import Alert from "./components/Alert";
+import { buyKMT } from "./utils/buy";
 
 class Home extends Component {
   constructor(props) {
@@ -27,7 +29,9 @@ class Home extends Component {
   }
 
   handleBuyKMTClick(event) {
-    this.setState({ showAlert: true });
+    // Buy one ether worth of KMT
+    const value = this.context.web3.toWei(1, "ether");
+    buyKMT(this.context.etherMarket, value, this.context.account);
   }
 
   dismissAlert() {
@@ -39,14 +43,13 @@ class Home extends Component {
 
     return (
       <div className="home-container">
-        <SideMenu 
+        <SideMenu
           {...this.props}
           className="side-menu"
           handleSelectListItem={this.handleSelectListItem}
-          handleBuyKMTClick={this.handleBuyKMTClick}
         />
         <div className="header-toolbar">
-          <HeaderToolbar web3={this.context.web3} />
+          <HeaderToolbar handleBuyKMTClick={this.handleBuyKMTClick} />
         </div>
         <div className="home-table">
           {this.props.children}
@@ -66,5 +69,12 @@ class Home extends Component {
     );
   }
 }
+
+Home.contextTypes = {
+  web3: PropTypes.object,
+  account: PropTypes.string,
+  DINRegistry: PropTypes.object,
+  etherMarket: PropTypes.object
+};
 
 export default Home;

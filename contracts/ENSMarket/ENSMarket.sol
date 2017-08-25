@@ -2,7 +2,6 @@ pragma solidity ^0.4.11;
 
 import "./ENS/AbstractENS.sol";
 import "../PublicMarket.sol";
-import "../DINRegistry.sol";
 import "../OrderTracker.sol";
 import "../KioskMarketToken.sol";
 
@@ -22,56 +21,45 @@ contract ENSMarket is PublicMarket {
 	mapping(uint256 => ENSDomain) public domains;
 
 	// Constructor
-	function ENSMarket(
-		DINRegistry _dinRegistry,
-		OrderTracker _orderTracker,
-		KioskMarketToken _token,
-		AbstractENS _ens
-	)
-		PublicMarket(
-			_dinRegistry, 
-			_orderTracker,
-			_token
-		)
-	{
+	function ENSMarket(KioskMarketToken _KMT, AbstractENS _ens) PublicMarket(_KMT) {
 		ens = _ens;
 	}
 
-	function orderData(uint256 DIN, address buyer) constant returns (bytes32) {
-		return ENSNode(DIN);
+	function orderData(uint256 _DIN, address _buyer) constant returns (bytes32) {
+		return ENSNode(_DIN);
 	}
 
-	function isFulfilled(uint256 orderID) constant returns (bool) {
+	function isFulfilled(uint256 _orderID) constant returns (bool) {
 		// Get the ENS node from the order
-		bytes32 node = orderTracker.data(orderID);
+		bytes32 node = KMT.orderTracker().data(_orderID);
 
 		// Check that buyer is the owner
-		return (ens.owner(node) == orderTracker.buyer(orderID));
+		return (ens.owner(node) == KMT.orderTracker().buyer(_orderID));
 	}
 
-	function availableForSale(uint256 DIN, uint256 quantity) constant returns (bool) {
+	function availableForSale(uint256 _DIN, uint256 _quantity) constant returns (bool) {
 		// The owner of the node must be able to transfer it during a purchase.
-		if (ens.owner(ENSNode(DIN)) != buyHandler(DIN)) {
+		if (ens.owner(ENSNode(_DIN)) != buyHandler(_DIN)) {
 			return false;
 		}
 
-		return PublicMarket.availableForSale(DIN, quantity);
+		return PublicMarket.availableForSale(_DIN, _quantity);
 	}
 
-	function name(uint256 DIN) constant returns (string) {
-		return domains[DIN].name;
+	function name(uint256 _DIN) constant returns (string) {
+		return domains[_DIN].name;
 	}
 
-	function setName(uint256 DIN, string name) only_trusted(DIN) {
-		domains[DIN].name = name;
+	function setName(uint256 _DIN, string _name) only_trusted(_DIN) {
+		domains[_DIN].name = _name;
 	}
 
-	function ENSNode(uint256 DIN) constant returns (bytes32) {
-		return domains[DIN].node;
+	function ENSNode(uint256 _DIN) constant returns (bytes32) {
+		return domains[_DIN].node;
 	}
 
-	function setENSNode(uint256 DIN, bytes32 node) only_trusted(DIN) {
-		domains[DIN].node = node;
+	function setENSNode(uint256 _DIN, bytes32 _node) only_trusted(_DIN) {
+		domains[_DIN].node = _node;
 	}
 
 }
