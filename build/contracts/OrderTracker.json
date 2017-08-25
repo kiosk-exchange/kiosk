@@ -477,8 +477,62 @@
       "links": {},
       "address": "0x577d43dc57562ccfa6e80cec626b2d50296f75b8",
       "updated_at": 1503675489156
+    },
+    "1503681560376": {
+      "events": {
+        "0x506cb18801692179462f2b7b4b6f10bea763984f94a1f1f3cd858e3a645b2329": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "orderID",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "name": "buyer",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "seller",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "market",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "quantity",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "timestamp",
+              "type": "uint256"
+            }
+          ],
+          "name": "NewOrder",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x31b4c0fe4d82d3080eb9f4722768ae09bfde6044",
+      "updated_at": 1503681589342
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1503675489156
+  "updated_at": 1503681589342
 }

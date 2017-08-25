@@ -2,7 +2,7 @@ import React, { Component } from "react";
 const PropTypes = require("prop-types");
 import { Switch, Route } from "react-router-dom";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import getWeb3 from "./utils/getWeb3";
+import { getWeb3 } from "./utils/getWeb3";
 import { getNetwork } from "./utils/network";
 import { getDINRegistry, getEtherMarket } from "./utils/contracts";
 import Home from "./Home";
@@ -11,6 +11,7 @@ import Purchases from "./pages/Purchases";
 import Products from "./pages/Products";
 import Sales from "./pages/Sales";
 import Market from "./pages/Market";
+import EmptyState from "./pages/EmptyState";
 
 class App extends Component {
   constructor(props) {
@@ -19,13 +20,13 @@ class App extends Component {
     this.state = {
       web3: null,
       DINRegistry: null,
-      account: null,
-      network: null,
+      account: undefined,
+      network: {},
       etherMarket: null,
       isMetaMaskLocked: false
     };
 
-    this.isMetaMaskLocked = this.isMetaMaskLocked.bind(this)
+    this.isMetaMaskLocked = this.isMetaMaskLocked.bind(this);
   }
 
   // TODO: Use Redux
@@ -38,6 +39,7 @@ class App extends Component {
       etherMarket: this.state.etherMarket,
       theme: {
         red: "#FC575E",
+        blue: "#32C1FF",
         gray: "#2C363F",
         lightGray: "#6E7E85",
         white: "#F6F8FF"
@@ -47,31 +49,36 @@ class App extends Component {
 
   componentWillMount() {
     getWeb3.then(results => {
-      this.setState({ web3: results.web3 }, () => {
-        const web3 = this.state.web3;
+      this.setState(
+        {
+          web3: results.web3
+        },
+        () => {
+          if (this.state.web3) {
+            const web3 = this.state.web3;
 
-        // Get the global DIN registry
-        getDINRegistry(web3).then(registry => {
-          this.setState({ DINRegistry: registry });
-        });
+            // Fetch account and network and listen for changes
+            this.getAccount();
+            this.getNetwork();
 
-        getEtherMarket(web3).then(market => {
-          this.setState({ etherMarket: market });
-        });
+            // Get the global DIN registry
+            getDINRegistry(web3).then(registry => {
+              this.setState({ DINRegistry: registry });
+            });
 
-        this.getAccount();
-
-        web3.version.getNetwork((err, networkId) => {
-          const network = getNetwork(networkId);
-          this.setState({ network: network });
-        });
-      });
+            // Get Ether market
+            getEtherMarket(web3).then(market => {
+              this.setState({ etherMarket: market });
+            });
+          }
+        }
+      );
     });
   }
 
   // https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#ear-listening-for-selected-account-changes
   getAccount() {
-    const accountInterval = setInterval(() => {
+    setInterval(() => {
       this.state.web3.eth.getAccounts((error, accounts) => {
         if (accounts[0] !== this.state.account) {
           this.setState({ account: accounts[0] });
@@ -80,19 +87,24 @@ class App extends Component {
           this.setState({ isMetaMaskLocked: true });
         }
       });
-    }, 100);
+    }, 1000);
+  }
+
+  getNetwork() {
+    setInterval(() => {
+      if (this.state.web3.version.network !== this.state.network.id) {
+        const network = getNetwork(this.state.web3.version.network);
+        this.setState({ network: network });
+      }
+    }, 1000);
   }
 
   isMetaMaskLocked() {
     // If no account and provider is MetaMask, show locked prompt
-    if (
-      !this.state.account &&
+    return (
+      typeof this.state.account === "undefined" &&
       this.state.web3.currentProvider.constructor.name.match(/metamask/i)
-    ) {
-      return true;
-    }
-
-    return false;
+    );
   }
 
   render() {
@@ -146,7 +158,7 @@ class App extends Component {
         </MuiThemeProvider>
       );
     } else if (this.state.isMetaMaskLocked === true) {
-      return <h1>Log in to MetaMask, fool</h1>;
+      return <EmptyState title="You are not logged in to MetaMask" />;
     }
     // TODO: Otherwise, show an error message (download MetaMask).
     return null;
@@ -157,7 +169,7 @@ class App extends Component {
 App.childContextTypes = {
   web3: PropTypes.object,
   account: PropTypes.string,
-  network: PropTypes.object,
+  network: PropTypes.string,
   DINRegistry: PropTypes.object,
   etherMarket: PropTypes.object,
   theme: PropTypes.object
