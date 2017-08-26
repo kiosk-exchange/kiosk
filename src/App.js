@@ -1,18 +1,15 @@
 import React, { Component } from "react";
 const PropTypes = require("prop-types");
-import { Switch, Route } from "react-router-dom";
+import { Route } from "react-router-dom";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import { getWeb3 } from "./utils/getWeb3";
 import { getNetwork } from "./utils/network";
 import { getDINRegistry, getEtherMarket } from "./utils/contracts";
+import { getEtherBalance, getKMTBalance } from "./utils/contracts";
 import Home from "./Home";
-import Marketplace from "./pages/Marketplace";
-import Purchases from "./pages/Purchases";
-import Products from "./pages/Products";
-import Sales from "./pages/Sales";
-import Market from "./pages/Market";
-import EmptyState from "./pages/EmptyState";
-import ErrorMessage from "./components/ErrorMessage";
+// import EmptyState from "./pages/EmptyState";
+// import ErrorMessage from "./components/ErrorMessage";
+import ContentContainer from "./components/ContentContainer";
 
 const ERROR = {
   NOT_CONNECTED: 1,
@@ -20,61 +17,6 @@ const ERROR = {
   NETWORK_NOT_SUPPORTED: 3,
   LOCKED_ACCOUNT: 4
 };
-
-function Error(props) {
-  switch (props.error) {
-    case ERROR.NOT_CONNECTED:
-      return <ErrorMessage title="You are not connected to an Ethereum node" />;
-    case ERROR.CONTRACTS_NOT_DEPLOYED:
-      return (
-        <EmptyState
-          title="Contracts are not deployed"
-          message="truffle migrate --reset"
-        />
-      );
-    case ERROR.NETWORK_NOT_SUPPORTED:
-      return (
-        <EmptyState
-          title="Kiosk does not support this network yet. Please connect to Kovan Test Network."
-          message=""
-        />
-      );
-    case ERROR.LOCKED_ACCOUNT:
-      return <EmptyState title="Your account is locked" />;
-    default:
-      return null;
-  }
-}
-
-function Content(props) {
-  if (props.web3 && props.registry && !props.error) {
-    return (
-      <Switch>
-        <Route exact path="/" render={props => <Marketplace {...props} />} />
-        <Route
-          exact
-          path="/marketplace"
-          render={props => <Marketplace {...props} />}
-        />
-        <Route
-          exact
-          path="/purchases"
-          render={props => <Purchases {...props} />}
-        />
-        <Route
-          exact
-          path="/products"
-          render={props => <Products {...props} />}
-        />
-        <Route exact path="/sales" render={props => <Sales {...props} />} />
-        <Route path="/market/:market" render={props => <Market {...props} />} />
-      </Switch>
-    );
-  } else if (props.error > 0) {
-    return <Error error={props.error} />;
-  }
-  return null;
-}
 
 class App extends Component {
   constructor(props) {
@@ -86,6 +28,8 @@ class App extends Component {
       network: {},
       DINRegistry: null,
       etherMarket: null,
+      KMTBalance: null,
+      ETHBalance: null,
       error: null
     };
   }
@@ -133,7 +77,9 @@ class App extends Component {
             this.getNetwork();
 
             // Get contracts and handle errors
-            if (this.isSupportedNetwork(this.state.web3.version.network) === true) {
+            if (
+              this.isSupportedNetwork(this.state.web3.version.network) === true
+            ) {
               this.getContracts(this.state.web3);
             }
           }
@@ -158,9 +104,19 @@ class App extends Component {
     );
   }
 
+  getBalances() {
+    getEtherBalance(this.state.web3, this.state.account).then(result => {
+      this.setState({ ETHBalance: result });
+    });
+
+    getKMTBalance(this.state.web3, this.state.account).then(result => {
+      this.setState({ KMTBalance: result });
+    });
+  }
+
   // https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#ear-listening-for-selected-account-changes
   getAccount() {
-    var accountInterval = setInterval(fetch, 1000);
+    var accountInterval = setInterval(fetch, 100);
     var app = this;
 
     function fetch() {
@@ -177,6 +133,7 @@ class App extends Component {
 
           // If there's a change, just refresh the entire web3 object
           clearInterval(accountInterval);
+          app.getBalances();
           app.refreshWeb3();
         }
       });
@@ -184,7 +141,7 @@ class App extends Component {
   }
 
   getNetwork() {
-    var networkInterval = setInterval(fetch, 1000);
+    var networkInterval = setInterval(fetch, 100);
     var app = this;
 
     function fetch() {
@@ -225,8 +182,12 @@ class App extends Component {
       <MuiThemeProvider>
         <Route
           render={props =>
-            <Home {...props} isError={this.state.error !== null}>
-              <Content
+            <Home
+              {...props}
+              KMTBalance={this.state.KMTBalance}
+              ETHBalance={this.state.ETHBalance}
+            >
+              <ContentContainer
                 web3={this.state.web3}
                 registry={this.state.DINRegistry}
                 error={this.state.error}

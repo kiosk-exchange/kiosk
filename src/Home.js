@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import BuyModal from "./components/BuyModal";
 import SideMenu from "./components/SideMenu";
 import HeaderToolbar from "./components/HeaderToolbar";
-import Alert from "./components/Alert";
 import { buyKMT } from "./utils/buy";
 
 class Home extends Component {
@@ -39,8 +37,6 @@ class Home extends Component {
   }
 
   render() {
-    let hideBuyModal = () => this.setState({ showBuyModal: false });
-
     const hContainerStyle = {
       display: "flex", // 💪
       flexFlow: "row",
@@ -62,6 +58,8 @@ class Home extends Component {
       height: "100%"
     };
 
+    console.log(this.props.balances)
+
     return (
       <div style={hContainerStyle}>
         <div style={sideMenuStyle}>
@@ -78,18 +76,7 @@ class Home extends Component {
           <div style={{ flex: "4", padding: "10px 30px" }}>
             {this.props.children}
           </div>
-          <BuyModal
-            show={this.state.showBuyModal}
-            onHide={hideBuyModal}
-            product={this.state.selectedProduct}
-          />
         </div>
-        <Alert
-          open={this.state.showAlert}
-          title={"Coming Soon"}
-          message={"Coming Soon"}
-          handleClose={this.dismissAlert}
-        />
       </div>
     );
   }

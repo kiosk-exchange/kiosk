@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-// import { getEtherBalance, getKMTBalance } from "../utils/contracts";
 import { List, ListItem, makeSelectable } from "material-ui/List";
 import Subheader from "material-ui/Subheader";
 import Store from "material-ui/svg-icons/action/store";
@@ -8,6 +7,8 @@ import ShoppingCart from "material-ui/svg-icons/action/shopping-cart";
 import Products from "material-ui/svg-icons/action/loyalty";
 import Money from "material-ui/svg-icons/editor/attach-money";
 import Avatar from "material-ui/Avatar";
+import Wallet from "material-ui/svg-icons/action/account-balance-wallet";
+import blockies from "blockies";
 
 let SelectableList = makeSelectable(List);
 
@@ -98,41 +99,55 @@ function SellSection(props) {
 	);
 }
 
-function AccountSection(props) {
-	return null;
+class AccountSection extends Component {
+	render() {
+		if (!this.props.account) {
+			return <div />;
+		}
+
+		const icon = blockies({
+			seed: this.props.account
+		});
+
+		const iconStyle = {
+			width: "30px",
+			height: "30px",
+			borderRadius: "15px"
+		};
+
+		return (
+			<div>
+				<Subheader style={this.props.subheaderStyle}>ACCOUNT</Subheader>
+				<ListItem
+					style={this.props.style}
+					disabled={true}
+					primaryText={this.props.account.slice(0, 12)}
+					leftAvatar={
+						<img
+							src={icon.toDataURL()}
+							role="presentation"
+							style={iconStyle}
+						/>
+					}
+				/>
+				<ListItem
+					style={this.props.style}
+					disabled={true}
+					primaryText={this.props.KMTBalance}
+					leftIcon={<Wallet color="white" />}
+				/>
+				<ListItem
+					style={this.props.style}
+					disabled={true}
+					primaryText={this.props.ETHBalance}
+					leftIcon={<Wallet color="white" />}
+				/>
+			</div>
+		);
+	}
 }
 
-
 class SideMenu extends Component {
-	constructor(props) {
-		super(props);
-
-		this.state = {
-			KMTBalance: null,
-			ETHBalance: null
-		};
-	}
-
-	componentWillMount() {
-		// getEtherBalance(this.context.web3, this.context.account).then(result => {
-		// 	console.log(result)
-		// });
-
-
-		// getKMTBalance(this.context.web3, this.context.account).then(result => {
-		// 	console.log(result)
-		// })
-	}
-
-	formattedBalance(wei) {
-		return this.context.web3
-			.fromWei(wei, "ether")
-			.toNumber()
-			.toFixed(3)
-			.toString()
-			.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-	}
-
 	render() {
 		const style = {
 			color: "white",
@@ -152,6 +167,23 @@ class SideMenu extends Component {
 			letterSpacing: "1px"
 		};
 
+		let accountSection = null;
+
+		if (
+			this.context.account &&
+			this.props.ETHBalance &&
+			this.props.KMTBalance
+		) {
+			accountSection = (
+				<AccountSection
+					{...this.props}
+					account={this.context.account}
+					style={style}
+					subheaderStyle={subheaderStyle}
+				/>
+			);
+		}
+
 		return (
 			<SelectableList defaultValue={1}>
 				<ListItem
@@ -163,9 +195,17 @@ class SideMenu extends Component {
 					}
 				/>
 				<br />
-				<BuySection {...this.props} style={style} subheaderStyle={subheaderStyle} />
-				<SellSection {...this.props} style={style} subheaderStyle={subheaderStyle}/>
-				<AccountSection {...this.props} style={style} subheaderStyle={subheaderStyle} />
+				<BuySection
+					{...this.props}
+					style={style}
+					subheaderStyle={subheaderStyle}
+				/>
+				<SellSection
+					{...this.props}
+					style={style}
+					subheaderStyle={subheaderStyle}
+				/>
+				{accountSection}
 			</SelectableList>
 		);
 	}
@@ -173,7 +213,7 @@ class SideMenu extends Component {
 
 SideMenu.contextTypes = {
 	web3: PropTypes.object,
-	account: PropTypes.string,
+	account: PropTypes.string
 };
 
 export default SideMenu;

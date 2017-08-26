@@ -11,7 +11,7 @@ class Marketplace extends Component {
 			products: []
 		};
 
-		this.handleBuy = this.handleBuy.bind(this);
+		this.handleBuyClick = this.handleBuyClick.bind(this);
 	}
 
 	componentWillMount() {
@@ -25,15 +25,15 @@ class Marketplace extends Component {
 		}
 	}
 
-	handleBuy() {
-		console.log("BUY TAPPED");
+	handleBuyClick(product) {
+		this.props.handleBuyClick(product);
 	}
 
 	render() {
 		return (
 			<MarketplaceTable
 				products={this.state.products}
-				handleBuy={this.handleBuy}
+				handleBuyClick={this.handleBuyClick}
 			/>
 		);
 	}

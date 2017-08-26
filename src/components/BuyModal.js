@@ -1,115 +1,115 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Modal, Button } from "react-bootstrap";
+import Dialog from "material-ui/Dialog";
+import RaisedButton from "material-ui/RaisedButton";
 import QuantityPicker from "./QuantityPicker";
-import MarketJSON from "../../build/contracts/StandardMarket.json";
-import { buyProduct } from "../utils/buy";
-import { getKioskMarketToken } from "../utils/contracts";
+import Subheader from "material-ui/Subheader";
 
+const styles = {
+  radioButton: {
+    marginTop: 16
+  }
+};
+
+/**
+ * Dialog content can be scrollable.
+ */
 class BuyModal extends Component {
-	constructor(props) {
-		super(props);
+  state = {
+    open: false
+  };
 
-		this.state = {
-			KMT: null,
-			quantity: 1
-		};
+  handleOpen = () => {
+    this.setState({ open: true });
+  };
 
-		this.handleBuy = this.handleBuy.bind(this);
-		this.handleQuantityChange = this.handleQuantityChange.bind(this);
-	}
+  handleClose = () => {
+    this.props.handleClose();
+    this.setState({ open: false });
+  };
 
-	componentWillMount() {
-		if (this.context.web3) {
-			getKioskMarketToken(this.context.web3).then(KMT => {
-				this.setState({ KMT: KMT });
-			});
-		}
-	}
+  render() {
+    const contentStyle = {
+      width: "50%",
+      minWidth: "300px",
+      maxWidth: "500px"
+    };
 
-	handleBuy(quantity) {
-		const DIN = this.props.product.DIN;
-		const marketContract = this.context.web3.eth.contract(MarketJSON.abi);
-		const market = marketContract.at(this.props.product.market);
-		market.price(this.props.product.DIN, quantity, (error, price) => {
-			const buyer = this.context.account;
-			buyProduct(this.state.KMT, DIN, quantity, price.toNumber(), buyer);
-		});
-	}
+    const subheaderStyle = {
+      color: "#9CA6AF",
+      letterSpacing: "1px",
+      fontSize: "16px",
+      fontWeight: "medium",
+      padding: "0px"
+    };
 
-	handleQuantityChange(eventKey) {
-		this.setState({ quantity: eventKey });
-	}
+    const actions = [
+      <RaisedButton
+        label="Buy Now"
+        backgroundColor={this.context.theme.blue}
+        labelColor="#FFFFFF"
+        fullWidth={true}
+        onClick={this.handleClose}
+      />
+    ];
 
-	render() {
-		const hidden = { display: "none" };
-		const visible = { display: "block" };
-
-		if (this.context.web3) {
-			return (
-				<Modal
-					{...this.props}
-					animation={false}
-					bsSize="small"
-					aria-labelledby="contained-modal-title-sm"
-					className="buy-modal"
-				>
-					<Modal.Header closeButton />
-					<Modal.Body>
-						<h1 className="buy-modal-name">
-							{this.props.product.name}
-						</h1>
-						<p className="buy-modal-din">
-							{this.props.product.DIN}
-						</p>
-						<div className="buy-modal-subtitle-container">
-							<h4 className="buy-modal-quantity">Quantity</h4>
-							<div className="buy-modal-quantity-picker">
-								<QuantityPicker
-									handleQuantityChange={
-										this.handleQuantityChange
-									}
-								/>
-							</div>
-						</div>
-						<div className="buy-modal-subtitle-container">
-							<h4 className="buy-modal-price-label">Price</h4>
-							<h4 className="buy-modal-price-value">
-								{this.props.product.price + " ETH"}
-							</h4>
-						</div>
-					</Modal.Body>
-					<Button
-						style={
-							this.props.product.available === true
-								? visible
-								: hidden
-						}
-						className="buy-now"
-						onClick={() => this.handleBuy(this.state.quantity)}
-					>
-						Buy Now
-					</Button>
-					<Button
-						style={
-							this.props.product.available === false
-								? visible
-								: hidden
-						}
-						className="not-available"
-					>
-						Not Available
-					</Button>
-				</Modal>
-			);
-		}
-		return null;
-	}
+    return (
+      <div>
+        <Dialog
+          title={
+            <div
+              style={{ textAlign: "center", color: this.context.theme.gray }}
+            >
+              {this.props.product.name}
+              <Subheader style={subheaderStyle}>
+                {this.props.product.DIN}
+              </Subheader>
+            </div>
+          }
+          actions={actions}
+          actionsContainerStyle={{ padding: "20px 10%" }}
+          modal={false}
+          contentStyle={contentStyle}
+          open={this.props.open}
+          onRequestClose={this.props.handleClose}
+          autoScrollBodyContent={true}
+        >
+          <div style={{ color: this.context.theme.gray }}>
+            <div style={{ display: "flex" }}>
+              <h2>Quantity</h2>
+              <div
+                style={{
+                  width: "100%",
+                  padding: "0px 20px",
+                  textAlign: "right"
+                }}
+              >
+                <h2>1</h2>
+              </div>
+            </div>
+            <div style={{ display: "flex" }}>
+              <h2>Total</h2>
+              <div
+                style={{
+                  width: "100%",
+                  padding: "0px 20px",
+                  textAlign: "right"
+                }}
+              >
+                <h2>
+                  {this.props.product.price + " KMT"}
+                </h2>
+              </div>
+            </div>
+          </div>
+        </Dialog>
+      </div>
+    );
+  }
 }
 
 BuyModal.contextTypes = {
-	web3: PropTypes.object,
-	account: PropTypes.string
+  theme: PropTypes.object
 };
 
 export default BuyModal;
