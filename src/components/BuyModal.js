@@ -1,7 +1,7 @@
 import React from 'react';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
+import QuantityPicker from "./QuantityPicker";
 
 const styles = {
   radioButton: {
@@ -22,7 +22,6 @@ export default class DialogExampleScrollable extends React.Component {
   };
 
   handleClose = () => {
-    console.log("close")
     this.props.handleClose()
     this.setState({open: false});
   };
@@ -35,24 +34,12 @@ export default class DialogExampleScrollable extends React.Component {
         onClick={this.handleClose}
       />,
       <FlatButton
-        label="Submit"
+        label="Buy"
         primary={true}
         keyboardFocused={false}
         onClick={this.handleClose}
       />,
     ];
-
-    const radios = [];
-    for (let i = 0; i < 30; i++) {
-      radios.push(
-        <RadioButton
-          key={i}
-          value={`value${i + 1}`}
-          label={`Option ${i + 1}`}
-          style={styles.radioButton}
-        />
-      );
-    }
 
     return (
       <div>
@@ -64,9 +51,9 @@ export default class DialogExampleScrollable extends React.Component {
           onRequestClose={this.props.handleClose}
           autoScrollBodyContent={true}
         >
-          <RadioButtonGroup name="shipSpeed" defaultSelected="not_light">
-            {radios}
-          </RadioButtonGroup>
+        <p>{this.props.product.DIN}</p>
+        <QuantityPicker />
+        <p>{this.props.product.price}</p>
         </Dialog>
       </div>
     )
