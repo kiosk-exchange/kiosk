@@ -73,7 +73,7 @@ class Home extends Component {
         </div>
         <div style={rightContainerStyle}>
           <div style={{ flex: "3" }}>
-            <HeaderToolbar handleBuyKMTClick={this.handleBuyKMTClick} />
+            <HeaderToolbar {...this.props} handleBuyKMTClick={this.handleBuyKMTClick} />
           </div>
           <div style={{ flex: "4", padding: "10px 30px" }}>
             {this.props.children}

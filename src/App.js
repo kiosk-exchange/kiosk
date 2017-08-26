@@ -17,7 +17,8 @@ import ErrorMessage from "./components/ErrorMessage";
 const ERROR = {
   NOT_CONNECTED: 1,
   CONTRACTS_NOT_DEPLOYED: 2,
-  LOCKED_ACCOUNT: 3
+  NETWORK_NOT_SUPPORTED: 3,
+  LOCKED_ACCOUNT: 4
 };
 
 function Error(props) {
@@ -29,6 +30,13 @@ function Error(props) {
         <EmptyState
           title="Contracts are not deployed"
           message="truffle migrate --reset"
+        />
+      );
+    case ERROR.NETWORK_NOT_SUPPORTED:
+      return (
+        <EmptyState
+          title="Kiosk does not support this network yet. Please connect to Kovan Test Network."
+          message=""
         />
       );
     case ERROR.LOCKED_ACCOUNT:
@@ -104,8 +112,6 @@ class App extends Component {
   }
 
   refreshWeb3() {
-    this.setState({ error: null });
-
     getWeb3.then(results => {
       this.setState(
         {
@@ -127,7 +133,9 @@ class App extends Component {
             this.getNetwork();
 
             // Get contracts and handle errors
-            this.getContracts(this.state.web3);
+            if (this.isSupportedNetwork(this.state.web3.version.network) === true) {
+              this.getContracts(this.state.web3);
+            }
           }
         }
       );
@@ -185,11 +193,22 @@ class App extends Component {
         const network = getNetwork(app.state.web3.version.network);
         console.log("********** " + network.name.toUpperCase());
         app.setState({ network: network });
-        // If there's a change, just refresh the entire web3 object
-        clearInterval(networkInterval);
-        app.refreshWeb3();
+
+        // If it's a real network (not TestRPC), and not Kovan, log not supported error.
+        if (parseInt(network.id, 10) < 100 && network.id !== "42") {
+          app.setState({ error: ERROR.NETWORK_NOT_SUPPORTED });
+        } else {
+          // If there's a change, just refresh the entire web3 object
+          clearInterval(networkInterval);
+          app.refreshWeb3();
+        }
       }
     }
+  }
+
+  isSupportedNetwork(network) {
+    // TestRPC or Kovan
+    return parseInt(network, 10) > 100 && network === "42";
   }
 
   isMetaMask() {
@@ -206,7 +225,7 @@ class App extends Component {
       <MuiThemeProvider>
         <Route
           render={props =>
-            <Home {...props}>
+            <Home {...props} isError={this.state.error !== null}>
               <Content
                 web3={this.state.web3}
                 registry={this.state.DINRegistry}

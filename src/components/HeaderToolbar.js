@@ -32,7 +32,7 @@ class HeaderToolbar extends Component {
 					<RaisedButton
 						label="Buy Kiosk Market Token"
 						backgroundColor={this.context.theme.red}
-						disabled={!this.context.web3}
+						disabled={this.props.isError}
 						labelColor="#FFFFFF"
 						onClick={this.props.handleBuyKMTClick}
 					/>
