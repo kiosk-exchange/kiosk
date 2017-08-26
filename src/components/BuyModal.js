@@ -1,115 +1,74 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { Modal, Button } from "react-bootstrap";
-import QuantityPicker from "./QuantityPicker";
-import MarketJSON from "../../build/contracts/StandardMarket.json";
-import { buyProduct } from "../utils/buy";
-import { getKioskMarketToken } from "../utils/contracts";
+import React from 'react';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
+import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 
-class BuyModal extends Component {
-	constructor(props) {
-		super(props);
-
-		this.state = {
-			KMT: null,
-			quantity: 1
-		};
-
-		this.handleBuy = this.handleBuy.bind(this);
-		this.handleQuantityChange = this.handleQuantityChange.bind(this);
-	}
-
-	componentWillMount() {
-		if (this.context.web3) {
-			getKioskMarketToken(this.context.web3).then(KMT => {
-				this.setState({ KMT: KMT });
-			});
-		}
-	}
-
-	handleBuy(quantity) {
-		const DIN = this.props.product.DIN;
-		const marketContract = this.context.web3.eth.contract(MarketJSON.abi);
-		const market = marketContract.at(this.props.product.market);
-		market.price(this.props.product.DIN, quantity, (error, price) => {
-			const buyer = this.context.account;
-			buyProduct(this.state.KMT, DIN, quantity, price.toNumber(), buyer);
-		});
-	}
-
-	handleQuantityChange(eventKey) {
-		this.setState({ quantity: eventKey });
-	}
-
-	render() {
-		const hidden = { display: "none" };
-		const visible = { display: "block" };
-
-		if (this.context.web3) {
-			return (
-				<Modal
-					{...this.props}
-					animation={false}
-					bsSize="small"
-					aria-labelledby="contained-modal-title-sm"
-					className="buy-modal"
-				>
-					<Modal.Header closeButton />
-					<Modal.Body>
-						<h1 className="buy-modal-name">
-							{this.props.product.name}
-						</h1>
-						<p className="buy-modal-din">
-							{this.props.product.DIN}
-						</p>
-						<div className="buy-modal-subtitle-container">
-							<h4 className="buy-modal-quantity">Quantity</h4>
-							<div className="buy-modal-quantity-picker">
-								<QuantityPicker
-									handleQuantityChange={
-										this.handleQuantityChange
-									}
-								/>
-							</div>
-						</div>
-						<div className="buy-modal-subtitle-container">
-							<h4 className="buy-modal-price-label">Price</h4>
-							<h4 className="buy-modal-price-value">
-								{this.props.product.price + " ETH"}
-							</h4>
-						</div>
-					</Modal.Body>
-					<Button
-						style={
-							this.props.product.available === true
-								? visible
-								: hidden
-						}
-						className="buy-now"
-						onClick={() => this.handleBuy(this.state.quantity)}
-					>
-						Buy Now
-					</Button>
-					<Button
-						style={
-							this.props.product.available === false
-								? visible
-								: hidden
-						}
-						className="not-available"
-					>
-						Not Available
-					</Button>
-				</Modal>
-			);
-		}
-		return null;
-	}
-}
-
-BuyModal.contextTypes = {
-	web3: PropTypes.object,
-	account: PropTypes.string
+const styles = {
+  radioButton: {
+    marginTop: 16,
+  },
 };
 
-export default BuyModal;
+/**
+ * Dialog content can be scrollable.
+ */
+export default class DialogExampleScrollable extends React.Component {
+  state = {
+    open: false,
+  };
+
+  handleOpen = () => {
+    this.setState({open: true});
+  };
+
+  handleClose = () => {
+    this.setState({open: false});
+  };
+
+  render() {
+    const actions = [
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onClick={this.handleClose}
+      />,
+      <FlatButton
+        label="Submit"
+        primary={true}
+        keyboardFocused={false}
+        onClick={this.handleClose}
+      />,
+    ];
+
+    const radios = [];
+    for (let i = 0; i < 30; i++) {
+      radios.push(
+        <RadioButton
+          key={i}
+          value={`value${i + 1}`}
+          label={`Option ${i + 1}`}
+          style={styles.radioButton}
+        />
+      );
+    }
+
+    return (
+      <div>
+        <RaisedButton label="Scrollable Dialog" onClick={this.handleOpen} />
+        <Dialog
+          title="Scrollable Dialog"
+          actions={actions}
+          modal={false}
+          open={this.state.open}
+          onRequestClose={this.handleClose}
+          autoScrollBodyContent={true}
+        >
+          <RadioButtonGroup name="shipSpeed" defaultSelected="not_light">
+            {radios}
+          </RadioButtonGroup>
+        </Dialog>
+      </div>
+    );
+  }
+}
