@@ -32,7 +32,7 @@ class BuyModal extends Component {
     const contentStyle = {
       width: "50%",
       minWidth: "300px",
-      maxWidth: "500px"
+      maxWidth: "400px"
     };
 
     const subheaderStyle = {
@@ -84,7 +84,7 @@ class BuyModal extends Component {
                   textAlign: "right"
                 }}
               >
-                <h2>1</h2>
+                <QuantityPicker />
               </div>
             </div>
             <div style={{ display: "flex" }}>
