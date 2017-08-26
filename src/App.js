@@ -60,6 +60,10 @@ class App extends Component {
     this.refreshWeb3();
   }
 
+  fullReset() {
+    // TODO: Figure out how to reload everything.
+  }
+
   refreshWeb3() {
     getWeb3.then(results => {
       this.setState(
@@ -195,9 +199,8 @@ class App extends Component {
               ETHBalance={this.state.ETHBalance}
             >
               <ContentContainer
-                web3={this.state.web3}
-                registry={this.state.DINRegistry}
                 error={this.state.error}
+                handleReset={this.fullReset}
               />
             </Home>}
         />

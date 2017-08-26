@@ -97,13 +97,19 @@ class ContentContainer extends Component {
       this.context.KioskMarketToken,
       product.DIN,
       this.state.selectedQuantity,
-      this.state.totalPrice,
+      this.state.totalPrice * 10 ** 18, // Denominate in KMT wei
       this.context.account
     );
+
+    // Dismiss the modal
+    this.setState({ showModal: false })
+
+    // Reload all balances etc.
+    this.props.handleReset()
   }
 
   render() {
-    if (this.props.web3 && this.props.registry && !this.props.error) {
+    if (this.context.web3 && this.context.DINRegistry && !this.props.error) {
       return (
         <div>
           <Switch>
@@ -165,6 +171,7 @@ ContentContainer.contextTypes = {
   web3: PropTypes.object,
   account: PropTypes.string,
   KioskMarketToken: PropTypes.object,
+  DINRegistry: PropTypes.object,
   KMTBalance: PropTypes.number
 };
 
