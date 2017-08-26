@@ -115,6 +115,13 @@ class AccountSection extends Component {
 			borderRadius: "15px"
 		};
 
+		const formatted = balance => {
+			return balance
+				.toFixed(3)
+				.toString()
+				.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+		};
+
 		return (
 			<div>
 				<Subheader style={this.props.subheaderStyle}>ACCOUNT</Subheader>
@@ -133,13 +140,13 @@ class AccountSection extends Component {
 				<ListItem
 					style={this.props.style}
 					disabled={true}
-					primaryText={this.props.KMTBalance}
+					primaryText={formatted(this.props.KMTBalance) + " KMT"}
 					leftIcon={<Wallet color="white" />}
 				/>
 				<ListItem
 					style={this.props.style}
 					disabled={true}
-					primaryText={this.props.ETHBalance}
+					primaryText={formatted(this.props.ETHBalance) + " ETH"}
 					leftIcon={<Wallet color="white" />}
 				/>
 			</div>
@@ -170,9 +177,9 @@ class SideMenu extends Component {
 		let accountSection = null;
 
 		if (
-			this.context.account &&
-			this.props.ETHBalance &&
-			this.props.KMTBalance
+			this.context.account !== null &&
+			this.props.ETHBalance !== null &&
+			this.props.KMTBalance !== null
 		) {
 			accountSection = (
 				<AccountSection

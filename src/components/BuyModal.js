@@ -7,7 +7,7 @@ import Subheader from "material-ui/Subheader";
 
 class BuyModal extends Component {
   state = {
-    open: false
+    open: false,
   };
 
   handleOpen = () => {
@@ -27,23 +27,40 @@ class BuyModal extends Component {
     };
 
     const subheaderStyle = {
-      color: "#9CA6AF",
+      color: this.context.theme.lightGray,
       letterSpacing: "1px",
       fontSize: "16px",
       fontWeight: "medium",
       padding: "0px"
     };
 
-    const actions = [
+    const errorStyle = {
+      color: this.context.theme.red,
+      fontSize: "12px",
+      fontWeight: "medium",
+      padding: "0px"
+    };
+
+    let actions = [
       <RaisedButton
         label="Buy Now"
-        disabled={!this.props.product.available}
+        disabled={!this.props.product.available || this.props.insufficientFunds}
         backgroundColor={this.context.theme.blue}
         labelColor="#FFFFFF"
         fullWidth={true}
         onClick={this.props.handleBuySelectedProduct}
       />
     ];
+
+    const insufficientFunds = (
+      <Subheader style={errorStyle}>
+        You do not have enough KMT for this purchase
+      </Subheader>
+    );
+
+    if (this.props.insufficientFunds === true) {
+      actions.push(insufficientFunds);
+    }
 
     return (
       <div>
@@ -59,7 +76,7 @@ class BuyModal extends Component {
             </div>
           }
           actions={actions}
-          actionsContainerStyle={{ padding: "20px 10%" }}
+          actionsContainerStyle={{ padding: "20px 10%", textAlign: "center" }}
           modal={false}
           contentStyle={contentStyle}
           open={this.props.open}
@@ -103,7 +120,8 @@ class BuyModal extends Component {
 }
 
 BuyModal.contextTypes = {
-  theme: PropTypes.object
+  theme: PropTypes.object,
+  KMTBalance: PropTypes.number
 };
 
 export default BuyModal;

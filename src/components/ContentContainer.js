@@ -30,7 +30,8 @@ class ContentContainer extends Component {
       selectedProduct: {},
       selectedQuantity: 1,
       totalPrice: null,
-      showModal: false
+      showModal: false,
+      insufficientFunds: false
     };
 
     this.handleBuyClick = this.handleBuyClick.bind(this);
@@ -39,9 +40,19 @@ class ContentContainer extends Component {
     this.handleBuySelectedProduct = this.handleBuySelectedProduct.bind(this);
   }
 
-  handleBuyClick(product) {
+  updateProduct(product, totalPrice) {
     this.setState({ selectedProduct: product });
-    this.setState({ totalPrice: product.price });
+    this.setState({ totalPrice: totalPrice });
+
+    if (totalPrice > this.context.KMTBalance) {
+      this.setState({ insufficientFunds: true })
+    } else {
+      this.setState({ insufficientFunds: false })
+    }
+  }
+
+  handleBuyClick(product) {
+    this.updateProduct(product, product.price);
     this.setState({ showModal: true });
   }
 
@@ -69,33 +80,36 @@ class ContentContainer extends Component {
     );
 
     Promise.all([pricePromise, availablePromise]).then(results => {
-      const price = results[0];
+      const totalPrice = results[0];
       const available = results[1];
 
-      product.price = price;
       product.available = available;
 
-      this.setState({ selectedProduct: product });
+      this.updateProduct(product, totalPrice)
     });
   }
 
   handleBuySelectedProduct() {
     const product = this.state.selectedProduct;
 
-    console.log(this.state.totalPrice)
-
     // Buy the product! This will pop up MetaMask for Chrome users.
     buyProduct(
       this.context.KioskMarketToken,
       product.DIN,
       this.state.selectedQuantity,
-      this.state.totalPrice,
+      this.state.totalPrice * 10 ** 18, // Denominate in KMT wei
       this.context.account
     );
+
+    // Dismiss the modal
+    this.setState({ showModal: false })
+
+    // Reload all balances etc.
+    this.props.handleReset()
   }
 
   render() {
-    if (this.props.web3 && this.props.registry && !this.props.error) {
+    if (this.context.web3 && this.context.DINRegistry && !this.props.error) {
       return (
         <div>
           <Switch>
@@ -140,9 +154,11 @@ class ContentContainer extends Component {
           <BuyModal
             open={this.state.showModal}
             product={this.state.selectedProduct}
+            totalPrice={this.state.totalPrice}
             handleClose={this.handleBuyModalClose}
             handleQuantityChange={this.handleQuantityChange}
             handleBuySelectedProduct={this.handleBuySelectedProduct}
+            insufficientFunds={this.state.insufficientFunds}
           />
         </div>
       );
@@ -154,7 +170,9 @@ class ContentContainer extends Component {
 ContentContainer.contextTypes = {
   web3: PropTypes.object,
   account: PropTypes.string,
-  KioskMarketToken: PropTypes.object
+  KioskMarketToken: PropTypes.object,
+  DINRegistry: PropTypes.object,
+  KMTBalance: PropTypes.number
 };
 
 // function Error(props) {
