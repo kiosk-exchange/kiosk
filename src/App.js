@@ -13,6 +13,7 @@ import Sales from "./pages/Sales";
 import Market from "./pages/Market";
 import EmptyState from "./pages/EmptyState";
 import ErrorMessage from "./components/ErrorMessage";
+import Web3 from "web3";
 
 const ERROR = {
   NOT_CONNECTED: 1,
@@ -100,6 +101,12 @@ class App extends Component {
   }
 
   componentWillMount() {
+    this.refreshWeb3();
+  }
+
+  refreshWeb3() {
+    this.setState({ error: null });
+
     getWeb3.then(results => {
       this.setState(
         {
@@ -140,37 +147,47 @@ class App extends Component {
 
   // https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#ear-listening-for-selected-account-changes
   getAccount() {
-    setInterval(() => {
-      this.state.web3.eth.getAccounts((error, accounts) => {
-        if (!accounts[0] && !this.state.error) {
+    var accountInterval = setInterval(fetch, 1000);
+    var app = this;
+
+    function fetch() {
+      app.state.web3.eth.getAccounts((error, accounts) => {
+        // If there's no accounts, you're not connected to a node
+        if (!accounts) {
+          app.setState({ error: ERROR.NOT_CONNECTED });
+        }
+
+        // If there's an empty account array, you're connected to MetaMask but not logged in
+        else if (!accounts[0] && !app.state.error) {
           console.log("********** ERROR: LOCKED ACCOUNT");
-          this.setState({ error: ERROR.LOCKED_ACCOUNT });
-        } else if (accounts[0] !== this.state.account) {
-          this.setState({ account: accounts[0] });
+          app.setState({ error: ERROR.LOCKED_ACCOUNT });
+        } 
+
+        else if (accounts[0] !== app.state.account) {
+          app.setState({ account: accounts[0] });
+
+          // If there's a change, just refresh the entire web3 object
+          clearInterval(accountInterval);
+          app.refreshWeb3();
         }
       });
-    }, 1000);
+    }
   }
 
   getNetwork() {
-    setInterval(() => {
-      if (this.state.web3.version.network !== this.state.network.id) {
-        const network = getNetwork(this.state.web3.version.network);
-        console.log("********** " + network.name.toUpperCase());
-        this.setState({ network: network });
-      }
-    }, 1000);
-  }
+    var networkInterval = setInterval(fetch, 1000);
+    var app = this;
 
-  isMetaMaskLocked() {
-    // If no account and provider is MetaMask, show locked prompt
-    if (
-      typeof this.state.account === "undefined" &&
-      this.isMetaMask() === true
-    ) {
-      return true;
+    function fetch() {
+      if (app.state.web3.version.network !== app.state.network.id) {
+        const network = getNetwork(app.state.web3.version.network);
+        console.log("********** " + network.name.toUpperCase());
+        app.setState({ network: network });
+        // If there's a change, just refresh the entire web3 object
+        clearInterval(networkInterval);
+        app.refreshWeb3();
+      }
     }
-    return false;
   }
 
   isMetaMask() {
