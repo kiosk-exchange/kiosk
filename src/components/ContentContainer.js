@@ -1,5 +1,7 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Switch, Route } from "react-router-dom";
+import { getPrice, getIsAvailable } from "../utils/getProducts";
 import Marketplace from "../pages/Marketplace";
 import Purchases from "../pages/Purchases";
 import Products from "../pages/Products";
@@ -11,6 +13,18 @@ class ContentContainer extends Component {
   constructor(props) {
     super(props);
 
+    /*
+      ===== PRODUCT =====
+      {
+        DIN: string,
+        name: string,
+        owner: string,
+        market: string,
+        price: string,
+        available: bool
+      }
+    */
+
     this.state = {
       selectedProduct: {},
       showModal: false
@@ -18,6 +32,7 @@ class ContentContainer extends Component {
 
     this.handleBuyClick = this.handleBuyClick.bind(this);
     this.handleBuyModalClose = this.handleBuyModalClose.bind(this);
+    this.handleQuantityChange = this.handleQuantityChange.bind(this);
   }
 
   handleBuyClick(product) {
@@ -27,6 +42,35 @@ class ContentContainer extends Component {
 
   handleBuyModalClose() {
     this.setState({ showModal: false });
+  }
+
+  handleQuantityChange(quantity) {
+    var product = this.state.selectedProduct;
+
+    // Update price and availability based on quantity selection
+    const pricePromise = getPrice(
+      this.context.web3,
+      product.DIN,
+      quantity,
+      product.market
+    );
+
+    const availablePromise = getIsAvailable(
+      this.context.web3,
+      product.DIN,
+      quantity,
+      product.market
+    );
+
+    Promise.all([pricePromise, availablePromise]).then(results => {
+      const price = results[0];
+      const available = results[1];
+
+      product.price = price;
+      product.available = available;
+
+      this.setState({ selectedProduct: product });
+    });
   }
 
   render() {
@@ -74,9 +118,9 @@ class ContentContainer extends Component {
           </Switch>
           <BuyModal
             open={this.state.showModal}
-            onHide={() => {}}
             product={this.state.selectedProduct}
             handleClose={this.handleBuyModalClose}
+            handleQuantityChange={this.handleQuantityChange}
           />
         </div>
       );
@@ -84,6 +128,11 @@ class ContentContainer extends Component {
     return null;
   }
 }
+
+ContentContainer.contextTypes = {
+  web3: PropTypes.object,
+  KioskMarketToken: PropTypes.object
+};
 
 // function Error(props) {
 //   switch (props.error) {

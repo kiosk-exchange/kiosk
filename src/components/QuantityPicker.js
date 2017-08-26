@@ -21,7 +21,10 @@ class QuantityPicker extends Component {
 		this.state = { value: 1 };
 	}
 
-	handleChange = (event, index, value) => this.setState({ value });
+	handleChange = (event, index, value) => {
+		this.props.handleQuantityChange(value)
+		this.setState({ value });
+	}
 
 	render() {
 		return (

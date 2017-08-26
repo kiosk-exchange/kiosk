@@ -1,5 +1,40 @@
 import MarketJSON from "../../build/contracts/StandardMarket.json";
 
+const getPrice = (web3, DIN, quantity, marketAddr) => {
+  return new Promise((resolve, reject) => {
+    // Get the market contract from its address
+    const marketContract = web3.eth.contract(MarketJSON.abi).at(marketAddr);
+    marketContract.price(DIN, quantity, (error, priceInKMTWei) => {
+      const price = web3.fromWei(priceInKMTWei, "ether").toNumber().toFixed(3);
+      resolve(price);
+    });
+  });
+};
+
+const getName = (web3, DIN, marketAddr) => {
+  return new Promise((resolve, reject) => {
+    // Get the market contract from its address
+    const marketContract = web3.eth.contract(MarketJSON.abi).at(marketAddr);
+    marketContract.name(DIN, (error, name) => {
+      if (name) {
+        resolve(name);
+      }
+      // If there's an error just resolve a blank name for now.
+      resolve("");
+    });
+  });
+};
+
+const getIsAvailable = (web3, DIN, quantity, marketAddr) => {
+  return new Promise((resolve, reject) => {
+    // Get the market contract from its address
+    const marketContract = web3.eth.contract(MarketJSON.abi).at(marketAddr);
+    marketContract.availableForSale(DIN, quantity, (error, isAvailable) => {
+      resolve(isAvailable);
+    });
+  });
+};
+
 const productFromDIN = async (DIN, web3, DINRegistry) => {
   return new Promise((resolve, reject) => {
     let product = {
@@ -30,27 +65,9 @@ const productFromDIN = async (DIN, web3, DINRegistry) => {
 
       product.market = marketAddr;
 
-      // Get the market contract from its address
-      const marketContract = web3.eth.contract(MarketJSON.abi).at(marketAddr);
-
-      const name = new Promise((resolve, reject) => {
-        marketContract.name(DIN, (error, name) => {
-          resolve(name);
-        });
-      });
-
-      const price = new Promise((resolve, reject) => {
-        marketContract.price(DIN, 1, (error, priceInWei) => {
-          const price = web3.fromWei(priceInWei, "ether").toNumber().toFixed(3);
-          resolve(price);
-        });
-      });
-
-      const isAvailable = new Promise((resolve, reject) => {
-        marketContract.availableForSale(DIN, 1, (error, isAvailable) => {
-          resolve(isAvailable);
-        });
-      });
+      const name = getName(web3, DIN, marketAddr);
+      const price = getPrice(web3, DIN, 1, marketAddr);
+      const isAvailable = getIsAvailable(web3, DIN, 1, marketAddr);
 
       Promise.all([name, price, isAvailable]).then(results => {
         product.name = results[0];
@@ -106,4 +123,10 @@ const getAllProducts = async (DINRegistry, web3) => {
   return getProducts(event, DINRegistry, web3);
 };
 
-export { getMarketProducts, getOwnerProducts, getAllProducts };
+export {
+  getMarketProducts,
+  getOwnerProducts,
+  getAllProducts,
+  getPrice,
+  getIsAvailable
+};

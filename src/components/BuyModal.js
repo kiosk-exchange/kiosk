@@ -46,6 +46,7 @@ class BuyModal extends Component {
     const actions = [
       <RaisedButton
         label="Buy Now"
+        disabled={!this.props.product.available}
         backgroundColor={this.context.theme.blue}
         labelColor="#FFFFFF"
         fullWidth={true}
@@ -84,7 +85,9 @@ class BuyModal extends Component {
                   textAlign: "right"
                 }}
               >
-                <QuantityPicker />
+                <QuantityPicker
+                  handleQuantityChange={this.props.handleQuantityChange}
+                />
               </div>
             </div>
             <div style={{ display: "flex" }}>
