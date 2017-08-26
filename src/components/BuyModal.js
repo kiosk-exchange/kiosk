@@ -5,15 +5,6 @@ import RaisedButton from "material-ui/RaisedButton";
 import QuantityPicker from "./QuantityPicker";
 import Subheader from "material-ui/Subheader";
 
-const styles = {
-  radioButton: {
-    marginTop: 16
-  }
-};
-
-/**
- * Dialog content can be scrollable.
- */
 class BuyModal extends Component {
   state = {
     open: false
@@ -50,7 +41,7 @@ class BuyModal extends Component {
         backgroundColor={this.context.theme.blue}
         labelColor="#FFFFFF"
         fullWidth={true}
-        onClick={this.handleClose}
+        onClick={this.props.handleBuySelectedProduct}
       />
     ];
 

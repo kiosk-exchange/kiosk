@@ -15,13 +15,13 @@ const getName = (web3, DIN, marketAddr) => {
   return new Promise((resolve, reject) => {
     // Get the market contract from its address
     const marketContract = web3.eth.contract(MarketJSON.abi).at(marketAddr);
-    marketContract.name(DIN, (error, name) => {
-      if (name) {
-        resolve(name);
-      }
-      // If there's an error just resolve a blank name for now.
-      resolve("");
-    });
+    try {
+      const name = marketContract.name(DIN)
+      resolve(name)
+    } catch (error) {
+      // Resolve a blank name if there's a Solidity error
+      resolve("N/A")
+    }
   });
 };
 

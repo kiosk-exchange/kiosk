@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Switch, Route } from "react-router-dom";
 import { getPrice, getIsAvailable } from "../utils/getProducts";
+import { buyProduct } from "../utils/buy";
 import Marketplace from "../pages/Marketplace";
 import Purchases from "../pages/Purchases";
 import Products from "../pages/Products";
@@ -27,16 +28,20 @@ class ContentContainer extends Component {
 
     this.state = {
       selectedProduct: {},
+      selectedQuantity: 1,
+      totalPrice: null,
       showModal: false
     };
 
     this.handleBuyClick = this.handleBuyClick.bind(this);
     this.handleBuyModalClose = this.handleBuyModalClose.bind(this);
     this.handleQuantityChange = this.handleQuantityChange.bind(this);
+    this.handleBuySelectedProduct = this.handleBuySelectedProduct.bind(this);
   }
 
   handleBuyClick(product) {
     this.setState({ selectedProduct: product });
+    this.setState({ totalPrice: product.price });
     this.setState({ showModal: true });
   }
 
@@ -45,7 +50,8 @@ class ContentContainer extends Component {
   }
 
   handleQuantityChange(quantity) {
-    var product = this.state.selectedProduct;
+    this.setState({ selectedQuantity: quantity });
+    let product = this.state.selectedProduct;
 
     // Update price and availability based on quantity selection
     const pricePromise = getPrice(
@@ -71,6 +77,19 @@ class ContentContainer extends Component {
 
       this.setState({ selectedProduct: product });
     });
+  }
+
+  handleBuySelectedProduct() {
+    const product = this.state.selectedProduct;
+
+    // Buy the product! This will pop up MetaMask for Chrome users.
+    buyProduct(
+      this.context.KioskMarketToken,
+      product.DIN,
+      this.state.selectedQuantity,
+      this.state.totalPrice,
+      this.context.account
+    );
   }
 
   render() {
@@ -121,6 +140,7 @@ class ContentContainer extends Component {
             product={this.state.selectedProduct}
             handleClose={this.handleBuyModalClose}
             handleQuantityChange={this.handleQuantityChange}
+            handleBuySelectedProduct={this.handleBuySelectedProduct}
           />
         </div>
       );
@@ -131,6 +151,7 @@ class ContentContainer extends Component {
 
 ContentContainer.contextTypes = {
   web3: PropTypes.object,
+  account: PropTypes.string,
   KioskMarketToken: PropTypes.object
 };
 

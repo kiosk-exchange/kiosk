@@ -38,10 +38,11 @@ class App extends Component {
   getChildContext() {
     return {
       web3: this.state.web3,
-      DINRegistry: this.state.DINRegistry,
       account: this.state.account,
       network: this.state.network,
+      DINRegistry: this.state.DINRegistry,
       etherMarket: this.state.etherMarket,
+      KioskMarketToken: this.state.KioskMarketToken,
       theme: {
         red: "#FC575E",
         blue: "#32C1FF",
@@ -98,6 +99,7 @@ class App extends Component {
       results => {
         this.setState({ DINRegistry: results[0] });
         this.setState({ etherMarket: results[1] });
+        this.setState({ KioskMarketToken: results[2] });
       },
       error => {
         console.log("********** ERROR: CONTRACTS NOT DEPLOYED");
