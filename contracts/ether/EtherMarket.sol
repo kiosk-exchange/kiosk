@@ -44,21 +44,18 @@ contract EtherMarket is PublicMarket, Product {
 
 	function orderData(uint256 DIN, address buyer) constant returns (bytes32) {
 		// You're buying ether in this market.
-		return keccak256("Ether");
+		return keccak256(name(DIN));
 	}
 
+	// TODO: This should implement some logic to prove it is a fair market.
 	function isFulfilled(uint256 orderID) constant returns (bool) {
 		return true;
 	}
 
-	// Override buy to store the buyer's initial ETH balance
-	// function buy(uint256 orderID) returns (bool) {
-	// }
-
 	// Kiosk Protocol
 	function name(uint256 DIN) constant returns (string) {
 		require(DIN == ETH_DIN);
-		return "Ether (ETH), in wei";
+		return "1 Ether (ETH)";
 	}
 
 	// Product

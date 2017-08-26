@@ -35,6 +35,7 @@ class App extends Component {
     };
   }
 
+  // TODO: Use Redux
   getChildContext() {
     return {
       web3: this.state.web3,
@@ -43,6 +44,8 @@ class App extends Component {
       DINRegistry: this.state.DINRegistry,
       etherMarket: this.state.etherMarket,
       KioskMarketToken: this.state.KioskMarketToken,
+      KMTBalance: this.state.KMTBalance,
+      ETHBalance: this.state.ETHBalance,
       theme: {
         red: "#FC575E",
         blue: "#32C1FF",
@@ -211,6 +214,8 @@ App.childContextTypes = {
   DINRegistry: PropTypes.object,
   etherMarket: PropTypes.object,
   KioskMarketToken: PropTypes.object,
+  KMTBalance: PropTypes.number,
+  ETHBalance: PropTypes.number,
   theme: PropTypes.object
 };
 

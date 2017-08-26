@@ -52,20 +52,11 @@ const getEtherMarket = web3 => {
 	return getContract(web3, EtherMarketJSON);
 };
 
-const formattedBalance = (web3, wei) => {
-	return web3
-		.fromWei(wei, "ether")
-		.toNumber()
-		.toFixed(3)
-		.toString()
-		.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-};
-
 const getEtherBalance = (web3, account) =>
 	new Promise((resolve, reject) => {
 		web3.eth.getBalance(account, (err, result) => {
-			const balance = formattedBalance(web3, result) + " ETH"
-			resolve(balance);
+			const balance = web3.fromWei(result, "ether").toNumber()
+			resolve(balance)
 		});
 	});
 
@@ -73,8 +64,8 @@ const getKMTBalance = (web3, account) =>
 	new Promise((resolve, reject) => {
 		getKioskMarketToken(web3).then(KMT => {
 			KMT.balanceOf(account, (err, result) => {
-				const balance = formattedBalance(web3, result) + " KMT"
-				resolve(balance);
+				const balance = web3.fromWei(result, "ether").toNumber()
+				resolve(balance)
 			});
 		});
 	});
