@@ -58,7 +58,7 @@ export default class DialogExampleScrollable extends React.Component {
     return (
       <div>
         <Dialog
-          title="Scrollable Dialog"
+          title={this.props.product.name}
           actions={actions}
           modal={false}
           open={this.props.open}

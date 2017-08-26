@@ -8,6 +8,8 @@ import ShoppingCart from "material-ui/svg-icons/action/shopping-cart";
 import Products from "material-ui/svg-icons/action/loyalty";
 import Money from "material-ui/svg-icons/editor/attach-money";
 import Avatar from "material-ui/Avatar";
+import Wallet from "material-ui/svg-icons/action/account-balance-wallet";
+import blockies from "blockies";
 
 let SelectableList = makeSelectable(List);
 
@@ -98,10 +100,52 @@ function SellSection(props) {
 	);
 }
 
-function AccountSection(props) {
-	return null;
-}
+class AccountSection extends Component {
+	render() {
+		if (this.props.web3) {
+			const icon = blockies({
+				seed: this.props.account
+			});
 
+			const iconStyle = {
+				width: "30px",
+				height: "30px",
+				borderRadius: "15px"
+			};
+
+			return (
+				<div>
+					<Subheader style={this.props.subheaderStyle}>ACCOUNT</Subheader>
+					<ListItem
+						style={this.props.style}
+						disabled={true}
+						primaryText={this.props.account.slice(0, 12)}
+						leftAvatar={
+							<img
+								src={icon.toDataURL()}
+								role="presentation"
+								style={iconStyle}
+							/>
+						}
+					/>
+					<ListItem
+						style={this.props.style}
+						disabled={true}
+						primaryText="0.000 KMT"
+						leftIcon={<Wallet color="white" />}
+					/>
+					<ListItem
+						style={this.props.style}
+						disabled={true}
+						primaryText="0.000 ETH"
+						leftIcon={<Wallet color="white" />}
+					/>
+				</div>
+			);
+		}
+		return null;
+	}
+}
 
 class SideMenu extends Component {
 	constructor(props) {
@@ -165,7 +209,7 @@ class SideMenu extends Component {
 				<br />
 				<BuySection {...this.props} style={style} subheaderStyle={subheaderStyle} />
 				<SellSection {...this.props} style={style} subheaderStyle={subheaderStyle}/>
-				<AccountSection {...this.props} style={style} subheaderStyle={subheaderStyle} />
+				<AccountSection {...this.props} web3={this.context.web3} account={this.context.account} style={style} subheaderStyle={subheaderStyle} />
 			</SelectableList>
 		);
 	}
