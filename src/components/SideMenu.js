@@ -33,9 +33,7 @@ function wrapState(ComposedComponent) {
 		render() {
 			const listStyle = {
 				backgroundColor: "#2C363F",
-				width: "250px",
-				height: "100vh",
-				display: "inline-table"
+				height: "100vh"
 			};
 			return (
 				<ComposedComponent
@@ -138,7 +136,7 @@ class SideMenu extends Component {
 	render() {
 		const style = {
 			color: "white",
-			fontSize: "14px",
+			fontSize: "15px",
 			letterSpacing: "1px"
 		};
 

@@ -8,22 +8,6 @@ html, body {
   padding: 0;
 }
 
-
-.header-toolbar {
-  position: absolute;
-  top: 0px;
-  left: 250px;
-  right: 0px;
-}
-
-.home-table {
-  position: absolute;
-  top: 20px;
-  left: 250px;
-  right: 0px;
-  padding: 30px;
-}
-
 /* Landing Page */
 .welcome-nav {
   padding: 20px;

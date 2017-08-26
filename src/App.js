@@ -38,9 +38,8 @@ function Error(props) {
   }
 }
 
-function Content(props) {  
-  if (props.web3 && !props.error) {
-    console.log("WTF")
+function Content(props) {
+  if (props.web3 && props.registry && !props.error) {
     return (
       <Switch>
         <Route exact path="/" render={props => <Marketplace {...props} />} />
@@ -64,7 +63,7 @@ function Content(props) {
       </Switch>
     );
   } else if (props.error > 0) {
-    return <Error error={props.error} />
+    return <Error error={props.error} />;
   }
   return null;
 }
@@ -75,16 +74,14 @@ class App extends Component {
 
     this.state = {
       web3: null,
-      DINRegistry: null,
       account: undefined,
       network: {},
-      error: null,
+      DINRegistry: null,
       etherMarket: null,
-      isMetaMaskLocked: false
+      error: null
     };
   }
 
-  // TODO: Use Redux
   getChildContext() {
     return {
       web3: this.state.web3,
@@ -110,7 +107,7 @@ class App extends Component {
         },
         () => {
           if (!this.state.web3) {
-            console.log("********** ERROR: NOT CONNECTED")
+            console.log("********** ERROR: NOT CONNECTED");
             this.setState({ error: ERROR.NOT_CONNECTED });
           } else {
             // Get account and network and listen for changes
@@ -126,16 +123,19 @@ class App extends Component {
   }
 
   getContracts(web3) {
-    let DINRegistryPromise = getDINRegistry(web3)
-    let EtherMarketPromise = getEtherMarket(web3)
+    let DINRegistryPromise = getDINRegistry(web3);
+    let EtherMarketPromise = getEtherMarket(web3);
 
-    Promise.all([DINRegistryPromise, EtherMarketPromise]).then(results => {
-      this.setState({ DINRegistry: results[0] });
-      this.setState({ etherMarket: results[1] });
-    }, error => {
-      console.log("********** ERROR: CONTRACTS NOT DEPLOYED")
-      this.setState({ error: ERROR.CONTRACTS_NOT_DEPLOYED });
-    })
+    Promise.all([DINRegistryPromise, EtherMarketPromise]).then(
+      results => {
+        this.setState({ DINRegistry: results[0] });
+        this.setState({ etherMarket: results[1] });
+      },
+      error => {
+        console.log("********** ERROR: CONTRACTS NOT DEPLOYED");
+        this.setState({ error: ERROR.CONTRACTS_NOT_DEPLOYED });
+      }
+    );
   }
 
   // https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#ear-listening-for-selected-account-changes
@@ -143,16 +143,10 @@ class App extends Component {
     setInterval(() => {
       this.state.web3.eth.getAccounts((error, accounts) => {
         if (!accounts[0] && !this.state.error) {
-          console.log("********** ERROR: LOCKED ACCOUNT")
-          this.setState({ error: ERROR.LOCKED_ACCOUNT })
+          console.log("********** ERROR: LOCKED ACCOUNT");
+          this.setState({ error: ERROR.LOCKED_ACCOUNT });
         } else if (accounts[0] !== this.state.account) {
           this.setState({ account: accounts[0] });
-          this.setState({ isMetaMaskLocked: false });
-        // } else if (
-          // this.isMetaMaskLocked() === true &&
-          // this.state.isMetaMaskLocked === false
-        // ) {
-          // this.setState({ isMetaMaskLocked: true });
         }
       });
     }, 1000);
@@ -196,7 +190,7 @@ class App extends Component {
             <Home {...props}>
               <Content
                 web3={this.state.web3}
-                show={false}
+                registry={this.state.DINRegistry}
                 error={this.state.error}
               />
             </Home>}
