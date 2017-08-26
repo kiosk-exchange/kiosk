@@ -528,8 +528,704 @@
       "links": {},
       "address": "0xec5fb74ed1fae8c6295abdb39140e97cbc55435f",
       "updated_at": 1503636265795
+    },
+    "1503675431937": {
+      "events": {
+        "0xbb149403dd59f804bf118e10cb0c0aae972a16642ded6856332ee7e367b89260": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "PriceResolver",
+              "type": "address"
+            }
+          ],
+          "name": "PriceResolverChanged",
+          "type": "event"
+        },
+        "0xaa1008fae5d94d249c5f60ec663ca9de121fd1e06e4cff01db98455be7723d78": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "InventoryResolver",
+              "type": "address"
+            }
+          ],
+          "name": "InventoryResolverChanged",
+          "type": "event"
+        },
+        "0x3efc76a4f8a9516ee16ef93406e7399ba23e25beb5d4dc9d6e727dde3746488a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "BuyHandler",
+              "type": "address"
+            }
+          ],
+          "name": "BuyHandlerChanged",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x3a3c79fa43d49b8efd997fc69ca7bfcbec70c95e",
+      "updated_at": 1503675489159
+    },
+    "1503681560376": {
+      "events": {
+        "0xbb149403dd59f804bf118e10cb0c0aae972a16642ded6856332ee7e367b89260": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "PriceResolver",
+              "type": "address"
+            }
+          ],
+          "name": "PriceResolverChanged",
+          "type": "event"
+        },
+        "0xaa1008fae5d94d249c5f60ec663ca9de121fd1e06e4cff01db98455be7723d78": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "InventoryResolver",
+              "type": "address"
+            }
+          ],
+          "name": "InventoryResolverChanged",
+          "type": "event"
+        },
+        "0x3efc76a4f8a9516ee16ef93406e7399ba23e25beb5d4dc9d6e727dde3746488a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "BuyHandler",
+              "type": "address"
+            }
+          ],
+          "name": "BuyHandlerChanged",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x8face56392302d7c02f9aceca4dffefb77ff055c",
+      "updated_at": 1503681589343
+    },
+    "1503694532892": {
+      "events": {
+        "0xbb149403dd59f804bf118e10cb0c0aae972a16642ded6856332ee7e367b89260": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "PriceResolver",
+              "type": "address"
+            }
+          ],
+          "name": "PriceResolverChanged",
+          "type": "event"
+        },
+        "0xaa1008fae5d94d249c5f60ec663ca9de121fd1e06e4cff01db98455be7723d78": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "InventoryResolver",
+              "type": "address"
+            }
+          ],
+          "name": "InventoryResolverChanged",
+          "type": "event"
+        },
+        "0x3efc76a4f8a9516ee16ef93406e7399ba23e25beb5d4dc9d6e727dde3746488a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "BuyHandler",
+              "type": "address"
+            }
+          ],
+          "name": "BuyHandlerChanged",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0xb570376da82c56ee61173c87ebc8fb043de7035d",
+      "updated_at": 1503696935992
+    },
+    "1503702405472": {
+      "events": {
+        "0xbb149403dd59f804bf118e10cb0c0aae972a16642ded6856332ee7e367b89260": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "PriceResolver",
+              "type": "address"
+            }
+          ],
+          "name": "PriceResolverChanged",
+          "type": "event"
+        },
+        "0xaa1008fae5d94d249c5f60ec663ca9de121fd1e06e4cff01db98455be7723d78": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "InventoryResolver",
+              "type": "address"
+            }
+          ],
+          "name": "InventoryResolverChanged",
+          "type": "event"
+        },
+        "0x3efc76a4f8a9516ee16ef93406e7399ba23e25beb5d4dc9d6e727dde3746488a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "BuyHandler",
+              "type": "address"
+            }
+          ],
+          "name": "BuyHandlerChanged",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x827d367c4fdd05c3f4918ae6c2eea4b02ac40896",
+      "updated_at": 1503702443154
+    },
+    "1503712582257": {
+      "events": {
+        "0xbb149403dd59f804bf118e10cb0c0aae972a16642ded6856332ee7e367b89260": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "PriceResolver",
+              "type": "address"
+            }
+          ],
+          "name": "PriceResolverChanged",
+          "type": "event"
+        },
+        "0xaa1008fae5d94d249c5f60ec663ca9de121fd1e06e4cff01db98455be7723d78": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "InventoryResolver",
+              "type": "address"
+            }
+          ],
+          "name": "InventoryResolverChanged",
+          "type": "event"
+        },
+        "0x3efc76a4f8a9516ee16ef93406e7399ba23e25beb5d4dc9d6e727dde3746488a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "BuyHandler",
+              "type": "address"
+            }
+          ],
+          "name": "BuyHandlerChanged",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0xeeffc58e7cc80d2fc8b6a82122fec4a618aa5413",
+      "updated_at": 1503712612632
+    },
+    "1503713781900": {
+      "events": {
+        "0xbb149403dd59f804bf118e10cb0c0aae972a16642ded6856332ee7e367b89260": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "PriceResolver",
+              "type": "address"
+            }
+          ],
+          "name": "PriceResolverChanged",
+          "type": "event"
+        },
+        "0xaa1008fae5d94d249c5f60ec663ca9de121fd1e06e4cff01db98455be7723d78": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "InventoryResolver",
+              "type": "address"
+            }
+          ],
+          "name": "InventoryResolverChanged",
+          "type": "event"
+        },
+        "0x3efc76a4f8a9516ee16ef93406e7399ba23e25beb5d4dc9d6e727dde3746488a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "BuyHandler",
+              "type": "address"
+            }
+          ],
+          "name": "BuyHandlerChanged",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x02bb11ff0d914c717fc98775843c033e279163a8",
+      "updated_at": 1503713802083
+    },
+    "1503717542455": {
+      "events": {
+        "0xbb149403dd59f804bf118e10cb0c0aae972a16642ded6856332ee7e367b89260": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "PriceResolver",
+              "type": "address"
+            }
+          ],
+          "name": "PriceResolverChanged",
+          "type": "event"
+        },
+        "0xaa1008fae5d94d249c5f60ec663ca9de121fd1e06e4cff01db98455be7723d78": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "InventoryResolver",
+              "type": "address"
+            }
+          ],
+          "name": "InventoryResolverChanged",
+          "type": "event"
+        },
+        "0x3efc76a4f8a9516ee16ef93406e7399ba23e25beb5d4dc9d6e727dde3746488a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "BuyHandler",
+              "type": "address"
+            }
+          ],
+          "name": "BuyHandlerChanged",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x37f5e32a4d90258ee213238bc187384dd4ffd3fd",
+      "updated_at": 1503717570030
+    },
+    "1503717856368": {
+      "events": {
+        "0xbb149403dd59f804bf118e10cb0c0aae972a16642ded6856332ee7e367b89260": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "PriceResolver",
+              "type": "address"
+            }
+          ],
+          "name": "PriceResolverChanged",
+          "type": "event"
+        },
+        "0xaa1008fae5d94d249c5f60ec663ca9de121fd1e06e4cff01db98455be7723d78": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "InventoryResolver",
+              "type": "address"
+            }
+          ],
+          "name": "InventoryResolverChanged",
+          "type": "event"
+        },
+        "0x3efc76a4f8a9516ee16ef93406e7399ba23e25beb5d4dc9d6e727dde3746488a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "BuyHandler",
+              "type": "address"
+            }
+          ],
+          "name": "BuyHandlerChanged",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x8f94a2b4dfbf2bf45848f8e2e4decb17eff60bb0",
+      "updated_at": 1503720144242
+    },
+    "1503720735988": {
+      "events": {
+        "0xbb149403dd59f804bf118e10cb0c0aae972a16642ded6856332ee7e367b89260": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "PriceResolver",
+              "type": "address"
+            }
+          ],
+          "name": "PriceResolverChanged",
+          "type": "event"
+        },
+        "0xaa1008fae5d94d249c5f60ec663ca9de121fd1e06e4cff01db98455be7723d78": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "InventoryResolver",
+              "type": "address"
+            }
+          ],
+          "name": "InventoryResolverChanged",
+          "type": "event"
+        },
+        "0x3efc76a4f8a9516ee16ef93406e7399ba23e25beb5d4dc9d6e727dde3746488a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "BuyHandler",
+              "type": "address"
+            }
+          ],
+          "name": "BuyHandlerChanged",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0xe8298570a18f9441ba560c810cc40fb9f17afbbd",
+      "updated_at": 1503721066692
+    },
+    "1503721510575": {
+      "events": {
+        "0xbb149403dd59f804bf118e10cb0c0aae972a16642ded6856332ee7e367b89260": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "PriceResolver",
+              "type": "address"
+            }
+          ],
+          "name": "PriceResolverChanged",
+          "type": "event"
+        },
+        "0xaa1008fae5d94d249c5f60ec663ca9de121fd1e06e4cff01db98455be7723d78": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "InventoryResolver",
+              "type": "address"
+            }
+          ],
+          "name": "InventoryResolverChanged",
+          "type": "event"
+        },
+        "0x3efc76a4f8a9516ee16ef93406e7399ba23e25beb5d4dc9d6e727dde3746488a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "BuyHandler",
+              "type": "address"
+            }
+          ],
+          "name": "BuyHandlerChanged",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0xaf1fa74856ca26eb3e646106ed7c79e1b6ea59d0",
+      "updated_at": 1503721531875
+    },
+    "1503721624402": {
+      "events": {
+        "0xbb149403dd59f804bf118e10cb0c0aae972a16642ded6856332ee7e367b89260": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "PriceResolver",
+              "type": "address"
+            }
+          ],
+          "name": "PriceResolverChanged",
+          "type": "event"
+        },
+        "0xaa1008fae5d94d249c5f60ec663ca9de121fd1e06e4cff01db98455be7723d78": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "InventoryResolver",
+              "type": "address"
+            }
+          ],
+          "name": "InventoryResolverChanged",
+          "type": "event"
+        },
+        "0x3efc76a4f8a9516ee16ef93406e7399ba23e25beb5d4dc9d6e727dde3746488a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "BuyHandler",
+              "type": "address"
+            }
+          ],
+          "name": "BuyHandlerChanged",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x0674435b4667306e438f3abca3a05426ddaf0555",
+      "updated_at": 1503721639958
+    },
+    "1503721798019": {
+      "events": {
+        "0xbb149403dd59f804bf118e10cb0c0aae972a16642ded6856332ee7e367b89260": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "PriceResolver",
+              "type": "address"
+            }
+          ],
+          "name": "PriceResolverChanged",
+          "type": "event"
+        },
+        "0xaa1008fae5d94d249c5f60ec663ca9de121fd1e06e4cff01db98455be7723d78": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "InventoryResolver",
+              "type": "address"
+            }
+          ],
+          "name": "InventoryResolverChanged",
+          "type": "event"
+        },
+        "0x3efc76a4f8a9516ee16ef93406e7399ba23e25beb5d4dc9d6e727dde3746488a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "BuyHandler",
+              "type": "address"
+            }
+          ],
+          "name": "BuyHandlerChanged",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x16672bdcfe0caa43bc52971d2b93c6039a64d9b7",
+      "updated_at": 1503721833217
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1503636265795
+  "updated_at": 1503721833217
 }

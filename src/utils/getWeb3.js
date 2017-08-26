@@ -1,38 +1,40 @@
-import Web3 from 'web3'
+import Web3 from "web3";
 
-var IS_DEBUG = true
+const IS_DEBUG = true;
 
-let getWeb3 = new Promise(function(resolve, reject) {
-  // Wait for loading completion to avoid race conditions with web3 injection timing.
-  window.addEventListener('load', function() {
-    var results
-    var web3 = window.web3
+let getWeb3 = new Promise((resolve, reject) => {
+  // Check for a local connection first
+  const provider = new Web3.providers.HttpProvider("http://localhost:8545");
+  const web3 = new Web3(provider);
 
-    // Checking if Web3 has been injected by the browser (Mist/MetaMask)
-    if (typeof web3 !== 'undefined' && IS_DEBUG === false) {
-      // Use Mist/MetaMask's provider.
-      web3 = new Web3(web3.currentProvider)
+  if (web3.isConnected() === true) {
+    if (IS_DEBUG) console.log("********** USING LOCAL WEB3");
+    const results = {
+      web3: web3
+    };
 
-      results = {
-        web3: web3
+    resolve(results);
+  } else {
+    window.addEventListener("load", () => {
+      let web3 = window.web3;
+
+      // See if web3 has been injected by the browser (Mist, Parity, MetaMask)
+      if (typeof web3 !== "undefined") {
+        web3 = new Web3(web3.currentProvider);
+
+        if (IS_DEBUG) console.log("********** USING INJECTED WEB3");
+      } else {
+        web3 = null;
+        if (IS_DEBUG) console.log("********** NO WEB3");
       }
 
-      resolve(results)
-    } else {
-      // Fallback to localhost if no web3 injection.
-      var provider = new Web3.providers.HttpProvider('http://localhost:8545')
-
-      web3 = new Web3(provider)
-
-      results = {
+      const results = {
         web3: web3
-      }
+      };
 
-      console.log('No web3 instance injected, using Local web3.');
+      resolve(results);
+    });
+  }
+});
 
-      resolve(results)
-    }
-  })
-})
-
-export default getWeb3
+export { getWeb3 };

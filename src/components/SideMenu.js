@@ -1,15 +1,13 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { getKioskMarketToken } from "../utils/contracts";
+// import { getEtherBalance, getKMTBalance } from "../utils/contracts";
 import { List, ListItem, makeSelectable } from "material-ui/List";
 import Subheader from "material-ui/Subheader";
 import Store from "material-ui/svg-icons/action/store";
 import ShoppingCart from "material-ui/svg-icons/action/shopping-cart";
 import Products from "material-ui/svg-icons/action/loyalty";
 import Money from "material-ui/svg-icons/editor/attach-money";
-import Wallet from "material-ui/svg-icons/action/account-balance-wallet";
 import Avatar from "material-ui/Avatar";
-import blockies from "blockies";
 
 let SelectableList = makeSelectable(List);
 
@@ -35,9 +33,7 @@ function wrapState(ComposedComponent) {
 		render() {
 			const listStyle = {
 				backgroundColor: "#2C363F",
-				width: "250px",
-				height: "100vh",
-				display: "inline-table"
+				height: "100vh"
 			};
 			return (
 				<ComposedComponent
@@ -54,6 +50,59 @@ function wrapState(ComposedComponent) {
 
 SelectableList = wrapState(SelectableList);
 
+function BuySection(props) {
+	return (
+		<div>
+			<Subheader style={props.subheaderStyle}>BUY</Subheader>
+			<ListItem
+				value={1}
+				style={props.style}
+				hoverColor="#32C1FF"
+				primaryText="Markets"
+				leftIcon={<Store color="white" />}
+				onClick={() => props.history.push("/marketplace")}
+			/>
+			<ListItem
+				value={2}
+				style={props.style}
+				hoverColor="#32C1FF"
+				primaryText="Purchases"
+				leftIcon={<ShoppingCart color="white" />}
+				onClick={() => props.history.push("/purchases")}
+			/>
+		</div>
+	);
+}
+
+function SellSection(props) {
+	return (
+		<div>
+			<Subheader style={props.subheaderStyle}>SELL</Subheader>
+			<ListItem
+				value={3}
+				style={props.style}
+				hoverColor="#32C1FF"
+				primaryText="Products"
+				leftIcon={<Products color="white" />}
+				onClick={() => props.history.push("/products")}
+			/>
+			<ListItem
+				value={4}
+				style={props.style}
+				hoverColor="#32C1FF"
+				primaryText="Sales"
+				leftIcon={<Money color="white" />}
+				onClick={() => props.history.push("/sales")}
+			/>
+		</div>
+	);
+}
+
+function AccountSection(props) {
+	return null;
+}
+
+
 class SideMenu extends Component {
 	constructor(props) {
 		super(props);
@@ -65,27 +114,14 @@ class SideMenu extends Component {
 	}
 
 	componentWillMount() {
-		this.getEtherBalance();
-		this.getKMTBalance();
-	}
+		// getEtherBalance(this.context.web3, this.context.account).then(result => {
+		// 	console.log(result)
+		// });
 
-	getEtherBalance() {
-		this.context.web3.eth.getBalance(
-			this.context.account,
-			(err, result) => {
-				const formattedBalance = this.formattedBalance(result) + " ETH";
-				this.setState({ ETHBalance: formattedBalance });
-			}
-		);
-	}
 
-	getKMTBalance() {
-		getKioskMarketToken(this.context.web3).then(KMT => {
-			KMT.balanceOf(this.context.account, (err, result) => {
-				const formattedBalance = this.formattedBalance(result) + " KMT";
-				this.setState({ KMTBalance: formattedBalance });
-			});
-		});
+		// getKMTBalance(this.context.web3, this.context.account).then(result => {
+		// 	console.log(result)
+		// })
 	}
 
 	formattedBalance(wei) {
@@ -98,19 +134,9 @@ class SideMenu extends Component {
 	}
 
 	render() {
-		const icon = blockies({
-			seed: this.context.account
-		});
-
-		const iconStyle = {
-			width: "30px",
-			height: "30px",
-			borderRadius: "15px"
-		};
-
 		const style = {
 			color: "white",
-			fontSize: "14px",
+			fontSize: "15px",
 			letterSpacing: "1px"
 		};
 
@@ -137,65 +163,9 @@ class SideMenu extends Component {
 					}
 				/>
 				<br />
-				<Subheader style={subheaderStyle}>BUY</Subheader>
-				<ListItem
-					value={1}
-					style={style}
-					hoverColor="#32C1FF"
-					primaryText="Markets"
-					leftIcon={<Store color="white" />}
-					onClick={() => this.props.history.push("/marketplace")}
-				/>
-				<ListItem
-					value={2}
-					style={style}
-					hoverColor="#32C1FF"
-					primaryText="Purchases"
-					leftIcon={<ShoppingCart color="white" />}
-					onClick={() => this.props.history.push("/purchases")}
-				/>
-				<Subheader style={subheaderStyle}>SELL</Subheader>
-				<ListItem
-					value={3}
-					style={style}
-					hoverColor="#32C1FF"
-					primaryText="Products"
-					leftIcon={<Products color="white" />}
-					onClick={() => this.props.history.push("/products")}
-				/>
-				<ListItem
-					value={4}
-					style={style}
-					hoverColor="#32C1FF"
-					primaryText="Sales"
-					leftIcon={<Money color="white" />}
-					onClick={() => this.props.history.push("/sales")}
-				/>
-				<Subheader style={subheaderStyle}>ACCOUNT</Subheader>
-				<ListItem
-					style={style}
-					disabled={true}
-					primaryText={this.context.account.slice(0, 12)}
-					leftAvatar={
-						<img
-							src={icon.toDataURL()}
-							role="presentation"
-							style={iconStyle}
-						/>
-					}
-				/>
-				<ListItem
-					style={style}
-					disabled={true}
-					primaryText={this.state.KMTBalance}
-					leftIcon={<Wallet color="white" />}
-				/>
-				<ListItem
-					style={style}
-					disabled={true}
-					primaryText={this.state.ETHBalance}
-					leftIcon={<Wallet color="white" />}
-				/>
+				<BuySection {...this.props} style={style} subheaderStyle={subheaderStyle} />
+				<SellSection {...this.props} style={style} subheaderStyle={subheaderStyle}/>
+				<AccountSection {...this.props} style={style} subheaderStyle={subheaderStyle} />
 			</SelectableList>
 		);
 	}
@@ -204,7 +174,6 @@ class SideMenu extends Component {
 SideMenu.contextTypes = {
 	web3: PropTypes.object,
 	account: PropTypes.string,
-	kioskRed: PropTypes.string
 };
 
 export default SideMenu;

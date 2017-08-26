@@ -41,24 +41,49 @@ class Home extends Component {
   render() {
     let hideBuyModal = () => this.setState({ showBuyModal: false });
 
+    const hContainerStyle = {
+      display: "flex", // 💪
+      flexFlow: "row",
+      width: "100%",
+      height: "100%",
+    };
+
+    const sideMenuStyle = {
+      flex: "1",
+      minWidth: "220px",
+      maxWidth: "220px",
+      height: "100vh"
+    };
+
+    const rightContainerStyle = {
+      display: "flex",
+      flex: "2",
+      flexFlow: "column",
+      height: "100%"
+    };
+
     return (
-      <div className="home-container">
-        <SideMenu
-          {...this.props}
-          className="side-menu"
-          handleSelectListItem={this.handleSelectListItem}
-        />
-        <div className="header-toolbar">
-          <HeaderToolbar handleBuyKMTClick={this.handleBuyKMTClick} />
+      <div style={hContainerStyle}>
+        <div style={sideMenuStyle}>
+          <SideMenu
+            {...this.props}
+            className="side-menu"
+            handleSelectListItem={this.handleSelectListItem}
+          />
         </div>
-        <div className="home-table">
-          {this.props.children}
+        <div style={rightContainerStyle}>
+          <div style={{ flex: "3" }}>
+            <HeaderToolbar {...this.props} handleBuyKMTClick={this.handleBuyKMTClick} />
+          </div>
+          <div style={{ flex: "4", padding: "10px 30px" }}>
+            {this.props.children}
+          </div>
+          <BuyModal
+            show={this.state.showBuyModal}
+            onHide={hideBuyModal}
+            product={this.state.selectedProduct}
+          />
         </div>
-        <BuyModal
-          show={this.state.showBuyModal}
-          onHide={hideBuyModal}
-          product={this.state.selectedProduct}
-        />
         <Alert
           open={this.state.showAlert}
           title={"Coming Soon"}

@@ -5,11 +5,9 @@ import BaseTable from "./BaseTable";
 class BaseTableContainer extends Component {
 	render() {
 		const headerStyle = {
-			color: this.context.kioskGray,
+			color: this.context.theme.gray,
 			fontWeight: "medium",
-			padding: "20px 0px"
 		}
-
 		return (
 			<div>
 				<h1 style={headerStyle}>{this.props.title}</h1>
@@ -20,7 +18,7 @@ class BaseTableContainer extends Component {
 }
 
 BaseTableContainer.contextTypes = {
-	kioskGray: PropTypes.string
+	theme: PropTypes.object
 }
 
 export default BaseTableContainer;

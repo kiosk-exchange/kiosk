@@ -15,12 +15,14 @@ class Marketplace extends Component {
 	}
 
 	componentWillMount() {
-		getAllProducts(
-			this.context.DINRegistry,
-			this.context.web3
-		).then(products => {
-			this.setState({ products: products });
-		});
+		if (this.context.web3) {
+			getAllProducts(
+				this.context.DINRegistry,
+				this.context.web3
+			).then(products => {
+				this.setState({ products: products });
+			});
+		}
 	}
 
 	handleBuy() {
@@ -28,12 +30,15 @@ class Marketplace extends Component {
 	}
 
 	render() {
-		return (
-			<MarketplaceTable
-				products={this.state.products}
-				handleBuy={this.handleBuy}
-			/>
-		);
+		if (this.context.web3) {
+			return (
+				<MarketplaceTable
+					products={this.state.products}
+					handleBuy={this.handleBuy}
+				/>
+			);
+		}
+		return null;
 	}
 }
 
