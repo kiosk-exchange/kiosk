@@ -208,7 +208,7 @@ class App extends Component {
 
   isSupportedNetwork(network) {
     // TestRPC or Kovan
-    return parseInt(network, 10) > 100 && network === "42";
+    return parseInt(network, 10) > 100 || network === "42";
   }
 
   isMetaMask() {

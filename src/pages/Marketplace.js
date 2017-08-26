@@ -30,15 +30,12 @@ class Marketplace extends Component {
 	}
 
 	render() {
-		if (this.context.web3) {
-			return (
-				<MarketplaceTable
-					products={this.state.products}
-					handleBuy={this.handleBuy}
-				/>
-			);
-		}
-		return null;
+		return (
+			<MarketplaceTable
+				products={this.state.products}
+				handleBuy={this.handleBuy}
+			/>
+		);
 	}
 }
 
