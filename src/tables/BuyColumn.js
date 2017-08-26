@@ -8,6 +8,7 @@ class BuyColumn extends Component {
 			<TableRowColumn>
 				<RaisedButton
 					label="Buy"
+					disabled={!this.props.product.available}
 					backgroundColor="#32C1FF"
 					labelColor="#FFFFFF"
 					onClick={() => this.props.handleBuy(this.props.product)}

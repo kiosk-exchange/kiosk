@@ -82,6 +82,8 @@ class ContentContainer extends Component {
   handleBuySelectedProduct() {
     const product = this.state.selectedProduct;
 
+    console.log(this.state.totalPrice)
+
     // Buy the product! This will pop up MetaMask for Chrome users.
     buyProduct(
       this.context.KioskMarketToken,
