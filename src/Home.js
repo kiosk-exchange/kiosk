@@ -14,26 +14,13 @@ class Home extends Component {
       showAlert: false
     };
 
-    this.handleSelectProduct = this.handleSelectProduct.bind(this);
     this.handleBuyKMTClick = this.handleBuyKMTClick.bind(this);
-    this.dismissAlert = this.dismissAlert.bind(this);
   }
 
-  handleSelectProduct(product) {
-    this.setState({
-      showBuyModal: true,
-      selectedProduct: product
-    });
-  }
-
-  handleBuyKMTClick(event) {
+  handleBuyKMTClick() {
     // Buy one ether worth of KMT
     const value = this.context.web3.toWei(1, "ether");
     buyKMT(this.context.etherMarket, value, this.context.account);
-  }
-
-  dismissAlert() {
-    this.setState({ showAlert: false });
   }
 
   render() {
@@ -57,8 +44,6 @@ class Home extends Component {
       flexFlow: "column",
       height: "100%"
     };
-
-    console.log(this.props.balances)
 
     return (
       <div style={hContainerStyle}>
@@ -86,7 +71,8 @@ Home.contextTypes = {
   web3: PropTypes.object,
   account: PropTypes.string,
   DINRegistry: PropTypes.object,
-  etherMarket: PropTypes.object
+  etherMarket: PropTypes.object,
+  KioskMarketToken: PropTypes.object,
 };
 
 export default Home;

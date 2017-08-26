@@ -1,5 +1,8 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Switch, Route } from "react-router-dom";
+import { getPrice, getIsAvailable } from "../utils/getProducts";
+import { buyProduct } from "../utils/buy";
 import Marketplace from "../pages/Marketplace";
 import Purchases from "../pages/Purchases";
 import Products from "../pages/Products";
@@ -11,22 +14,84 @@ class ContentContainer extends Component {
   constructor(props) {
     super(props);
 
+    /*
+      ===== PRODUCT =====
+      {
+        DIN: string,
+        name: string,
+        owner: string,
+        market: string,
+        price: string,
+        available: bool
+      }
+    */
+
     this.state = {
       selectedProduct: {},
+      selectedQuantity: 1,
+      totalPrice: null,
       showModal: false
     };
 
     this.handleBuyClick = this.handleBuyClick.bind(this);
     this.handleBuyModalClose = this.handleBuyModalClose.bind(this);
+    this.handleQuantityChange = this.handleQuantityChange.bind(this);
+    this.handleBuySelectedProduct = this.handleBuySelectedProduct.bind(this);
   }
 
   handleBuyClick(product) {
     this.setState({ selectedProduct: product });
+    this.setState({ totalPrice: product.price });
     this.setState({ showModal: true });
   }
 
   handleBuyModalClose() {
     this.setState({ showModal: false });
+  }
+
+  handleQuantityChange(quantity) {
+    this.setState({ selectedQuantity: quantity });
+    let product = this.state.selectedProduct;
+
+    // Update price and availability based on quantity selection
+    const pricePromise = getPrice(
+      this.context.web3,
+      product.DIN,
+      quantity,
+      product.market
+    );
+
+    const availablePromise = getIsAvailable(
+      this.context.web3,
+      product.DIN,
+      quantity,
+      product.market
+    );
+
+    Promise.all([pricePromise, availablePromise]).then(results => {
+      const price = results[0];
+      const available = results[1];
+
+      product.price = price;
+      product.available = available;
+
+      this.setState({ selectedProduct: product });
+    });
+  }
+
+  handleBuySelectedProduct() {
+    const product = this.state.selectedProduct;
+
+    console.log(this.state.totalPrice)
+
+    // Buy the product! This will pop up MetaMask for Chrome users.
+    buyProduct(
+      this.context.KioskMarketToken,
+      product.DIN,
+      this.state.selectedQuantity,
+      this.state.totalPrice,
+      this.context.account
+    );
   }
 
   render() {
@@ -74,9 +139,10 @@ class ContentContainer extends Component {
           </Switch>
           <BuyModal
             open={this.state.showModal}
-            onHide={() => {}}
             product={this.state.selectedProduct}
             handleClose={this.handleBuyModalClose}
+            handleQuantityChange={this.handleQuantityChange}
+            handleBuySelectedProduct={this.handleBuySelectedProduct}
           />
         </div>
       );
@@ -84,6 +150,12 @@ class ContentContainer extends Component {
     return null;
   }
 }
+
+ContentContainer.contextTypes = {
+  web3: PropTypes.object,
+  account: PropTypes.string,
+  KioskMarketToken: PropTypes.object
+};
 
 // function Error(props) {
 //   switch (props.error) {

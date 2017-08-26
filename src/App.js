@@ -4,7 +4,7 @@ import { Route } from "react-router-dom";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import { getWeb3 } from "./utils/getWeb3";
 import { getNetwork } from "./utils/network";
-import { getDINRegistry, getEtherMarket } from "./utils/contracts";
+import { getDINRegistry, getEtherMarket, getKioskMarketToken } from "./utils/contracts";
 import { getEtherBalance, getKMTBalance } from "./utils/contracts";
 import Home from "./Home";
 // import EmptyState from "./pages/EmptyState";
@@ -28,6 +28,7 @@ class App extends Component {
       network: {},
       DINRegistry: null,
       etherMarket: null,
+      KioskMarketToken: null,
       KMTBalance: null,
       ETHBalance: null,
       error: null
@@ -37,10 +38,11 @@ class App extends Component {
   getChildContext() {
     return {
       web3: this.state.web3,
-      DINRegistry: this.state.DINRegistry,
       account: this.state.account,
       network: this.state.network,
+      DINRegistry: this.state.DINRegistry,
       etherMarket: this.state.etherMarket,
+      KioskMarketToken: this.state.KioskMarketToken,
       theme: {
         red: "#FC575E",
         blue: "#32C1FF",
@@ -91,11 +93,13 @@ class App extends Component {
   getContracts(web3) {
     let DINRegistryPromise = getDINRegistry(web3);
     let EtherMarketPromise = getEtherMarket(web3);
+    let KioskMarketTokenPromise = getKioskMarketToken(web3)
 
-    Promise.all([DINRegistryPromise, EtherMarketPromise]).then(
+    Promise.all([DINRegistryPromise, EtherMarketPromise, KioskMarketTokenPromise]).then(
       results => {
         this.setState({ DINRegistry: results[0] });
         this.setState({ etherMarket: results[1] });
+        this.setState({ KioskMarketToken: results[2] });
       },
       error => {
         console.log("********** ERROR: CONTRACTS NOT DEPLOYED");
@@ -206,6 +210,7 @@ App.childContextTypes = {
   network: PropTypes.object,
   DINRegistry: PropTypes.object,
   etherMarket: PropTypes.object,
+  KioskMarketToken: PropTypes.object,
   theme: PropTypes.object
 };
 
