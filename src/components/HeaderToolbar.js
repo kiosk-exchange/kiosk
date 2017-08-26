@@ -25,7 +25,7 @@ class HeaderToolbar extends Component {
 				<ToolbarGroup>
 					<ToolbarTitle
 						style={networkStyle}
-						text={this.context.network.name ? this.context.network.name : "NOT CONNECTED"}
+						text={this.context.network.name ? this.context.network.name : ""}
 					/>
 				</ToolbarGroup>
 				<ToolbarGroup>

@@ -13,7 +13,6 @@ import Sales from "./pages/Sales";
 import Market from "./pages/Market";
 import EmptyState from "./pages/EmptyState";
 import ErrorMessage from "./components/ErrorMessage";
-import Web3 from "web3";
 
 const ERROR = {
   NOT_CONNECTED: 1,
@@ -116,6 +115,12 @@ class App extends Component {
           if (!this.state.web3) {
             console.log("********** ERROR: NOT CONNECTED");
             this.setState({ error: ERROR.NOT_CONNECTED });
+            this.setState({
+              network: {
+                name: "Not Connected",
+                color: "#6E7E85"
+              }
+            });
           } else {
             // Get account and network and listen for changes
             this.getAccount();
@@ -155,15 +160,11 @@ class App extends Component {
         // If there's no accounts, you're not connected to a node
         if (!accounts) {
           app.setState({ error: ERROR.NOT_CONNECTED });
-        }
-
-        // If there's an empty account array, you're connected to MetaMask but not logged in
-        else if (!accounts[0] && !app.state.error) {
+        } else if (!accounts[0] && !app.state.error) {
+          // If there's an empty account array, you're connected to MetaMask but not logged in
           console.log("********** ERROR: LOCKED ACCOUNT");
           app.setState({ error: ERROR.LOCKED_ACCOUNT });
-        } 
-
-        else if (accounts[0] !== app.state.account) {
+        } else if (accounts[0] !== app.state.account) {
           app.setState({ account: accounts[0] });
 
           // If there's a change, just refresh the entire web3 object
@@ -179,6 +180,7 @@ class App extends Component {
     var app = this;
 
     function fetch() {
+      // TODO: Handle dropped connection
       if (app.state.web3.version.network !== app.state.network.id) {
         const network = getNetwork(app.state.web3.version.network);
         console.log("********** " + network.name.toUpperCase());
