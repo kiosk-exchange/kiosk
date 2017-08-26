@@ -23,6 +23,8 @@ export default class DialogExampleScrollable extends React.Component {
   };
 
   handleClose = () => {
+    console.log("close")
+    this.props.handleClose()
     this.setState({open: false});
   };
 
@@ -53,14 +55,15 @@ export default class DialogExampleScrollable extends React.Component {
       );
     }
 
+    return null;
+
     return (
       <div>
-        <RaisedButton label="Scrollable Dialog" onClick={this.handleOpen} />
         <Dialog
           title="Scrollable Dialog"
           actions={actions}
           modal={false}
-          open={this.state.open}
+          open={this.props.open}
           onRequestClose={this.handleClose}
           autoScrollBodyContent={true}
         >
@@ -69,6 +72,6 @@ export default class DialogExampleScrollable extends React.Component {
           </RadioButtonGroup>
         </Dialog>
       </div>
-    );
+    )
   }
 }

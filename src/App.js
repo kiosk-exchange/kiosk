@@ -6,13 +6,9 @@ import { getWeb3 } from "./utils/getWeb3";
 import { getNetwork } from "./utils/network";
 import { getDINRegistry, getEtherMarket } from "./utils/contracts";
 import Home from "./Home";
-import Marketplace from "./pages/Marketplace";
-import Purchases from "./pages/Purchases";
-import Products from "./pages/Products";
-import Sales from "./pages/Sales";
-import Market from "./pages/Market";
 import EmptyState from "./pages/EmptyState";
 import ErrorMessage from "./components/ErrorMessage";
+import ContentContainer from "./components/ContentContainer";
 
 const ERROR = {
   NOT_CONNECTED: 1,
@@ -20,61 +16,6 @@ const ERROR = {
   NETWORK_NOT_SUPPORTED: 3,
   LOCKED_ACCOUNT: 4
 };
-
-function Error(props) {
-  switch (props.error) {
-    case ERROR.NOT_CONNECTED:
-      return <ErrorMessage title="You are not connected to an Ethereum node" />;
-    case ERROR.CONTRACTS_NOT_DEPLOYED:
-      return (
-        <EmptyState
-          title="Contracts are not deployed"
-          message="truffle migrate --reset"
-        />
-      );
-    case ERROR.NETWORK_NOT_SUPPORTED:
-      return (
-        <EmptyState
-          title="Kiosk does not support this network yet. Please connect to Kovan Test Network."
-          message=""
-        />
-      );
-    case ERROR.LOCKED_ACCOUNT:
-      return <EmptyState title="Your account is locked" />;
-    default:
-      return null;
-  }
-}
-
-function Content(props) {
-  if (props.web3 && props.registry && !props.error) {
-    return (
-      <Switch>
-        <Route exact path="/" render={props => <Marketplace {...props} />} />
-        <Route
-          exact
-          path="/marketplace"
-          render={props => <Marketplace {...props} />}
-        />
-        <Route
-          exact
-          path="/purchases"
-          render={props => <Purchases {...props} />}
-        />
-        <Route
-          exact
-          path="/products"
-          render={props => <Products {...props} />}
-        />
-        <Route exact path="/sales" render={props => <Sales {...props} />} />
-        <Route path="/market/:market" render={props => <Market {...props} />} />
-      </Switch>
-    );
-  } else if (props.error > 0) {
-    return <Error error={props.error} />;
-  }
-  return null;
-}
 
 class App extends Component {
   constructor(props) {
@@ -133,7 +74,9 @@ class App extends Component {
             this.getNetwork();
 
             // Get contracts and handle errors
-            if (this.isSupportedNetwork(this.state.web3.version.network) === true) {
+            if (
+              this.isSupportedNetwork(this.state.web3.version.network) === true
+            ) {
               this.getContracts(this.state.web3);
             }
           }
@@ -226,7 +169,7 @@ class App extends Component {
         <Route
           render={props =>
             <Home {...props} isError={this.state.error !== null}>
-              <Content
+              <ContentContainer
                 web3={this.state.web3}
                 registry={this.state.DINRegistry}
                 error={this.state.error}
@@ -234,7 +177,7 @@ class App extends Component {
             </Home>}
         />
       </MuiThemeProvider>
-    );
+    )
   }
 }
 
