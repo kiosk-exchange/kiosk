@@ -52,19 +52,21 @@ const getEtherMarket = web3 => {
 	return getContract(web3, EtherMarketJSON);
 };
 
-const getEtherBalance = (web3, account) => {
-	web3.eth.getBalance(account, (err, result) => {
-		return result
-	});
-};
-
-const getKMTBalance = (web3, account) => {
-	getKioskMarketToken(web3).then(KMT => {
-		KMT.balanceOf(account, (err, result) => {
-			return result;
+const getEtherBalance = (web3, account) =>
+	new Promise((resolve, reject) => {
+		web3.eth.getBalance(account, (err, result) => {
+			resolve(result);
 		});
 	});
-};
+
+const getKMTBalance = (web3, account) =>
+	new Promise((resolve, reject) => {
+		getKioskMarketToken(web3).then(KMT => {
+			KMT.balanceOf(account, (err, result) => {
+				resolve(result);
+			});
+		});
+	});
 
 export {
 	getKioskMarketToken,
@@ -75,5 +77,7 @@ export {
 	getENSMarket,
 	getENSPublicProduct,
 	getOrderTracker,
-	getEtherMarket
+	getEtherMarket,
+	getEtherBalance,
+	getKMTBalance
 };

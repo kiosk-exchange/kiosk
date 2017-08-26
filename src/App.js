@@ -11,7 +11,7 @@ import Purchases from "./pages/Purchases";
 import Products from "./pages/Products";
 import Sales from "./pages/Sales";
 import Market from "./pages/Market";
-import EmptyState from "./pages/EmptyState";
+// import EmptyState from "./pages/EmptyState";
 
 const ERROR = {
   NOT_CONNECTED: 0,
@@ -20,9 +20,7 @@ const ERROR = {
 };
 
 function Content(props) {
-  console.log("1")
   if (props.web3) {
-    console.log("Yay")
     return (
       <Switch>
         <Route exact path="/" render={props => <Marketplace {...props} />} />

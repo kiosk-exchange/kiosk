@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { getEtherBalance, getKMTBalance } from "../utils/contracts";
+// import { getEtherBalance, getKMTBalance } from "../utils/contracts";
 import { List, ListItem, makeSelectable } from "material-ui/List";
 import Subheader from "material-ui/Subheader";
 import Store from "material-ui/svg-icons/action/store";

@@ -25,13 +25,14 @@ class HeaderToolbar extends Component {
 				<ToolbarGroup>
 					<ToolbarTitle
 						style={networkStyle}
-						text={this.context.network.name}
+						text={this.context.network.name ? this.context.network.name : "NOT CONNECTED"}
 					/>
 				</ToolbarGroup>
 				<ToolbarGroup>
 					<RaisedButton
 						label="Buy Kiosk Market Token"
 						backgroundColor={this.context.theme.red}
+						disabled={!this.context.web3}
 						labelColor="#FFFFFF"
 						onClick={this.props.handleBuyKMTClick}
 					/>

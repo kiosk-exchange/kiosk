@@ -20,9 +20,11 @@ class BuyModal extends Component {
 	}
 
 	componentWillMount() {
-		getKioskMarketToken(this.context.web3).then(KMT => {
-			this.setState({ KMT: KMT });
-		});
+		if (this.context.web3) {
+			getKioskMarketToken(this.context.web3).then(KMT => {
+				this.setState({ KMT: KMT });
+			});
+		}
 	}
 
 	handleBuy(quantity) {
@@ -43,64 +45,71 @@ class BuyModal extends Component {
 		const hidden = { display: "none" };
 		const visible = { display: "block" };
 
-		return (
-			<Modal
-				{...this.props}
-				animation={false}
-				bsSize="small"
-				aria-labelledby="contained-modal-title-sm"
-				className="buy-modal"
-			>
-				<Modal.Header closeButton />
-				<Modal.Body>
-					<h1 className="buy-modal-name">
-						{this.props.product.name}
-					</h1>
-					<p className="buy-modal-din">
-						{this.props.product.DIN}
-					</p>
-					<div className="buy-modal-subtitle-container">
-						<h4 className="buy-modal-quantity">Quantity</h4>
-						<div className="buy-modal-quantity-picker">
-							<QuantityPicker
-								handleQuantityChange={this.handleQuantityChange}
-							/>
+		if (this.context.web3) {
+			return (
+				<Modal
+					{...this.props}
+					animation={false}
+					bsSize="small"
+					aria-labelledby="contained-modal-title-sm"
+					className="buy-modal"
+				>
+					<Modal.Header closeButton />
+					<Modal.Body>
+						<h1 className="buy-modal-name">
+							{this.props.product.name}
+						</h1>
+						<p className="buy-modal-din">
+							{this.props.product.DIN}
+						</p>
+						<div className="buy-modal-subtitle-container">
+							<h4 className="buy-modal-quantity">Quantity</h4>
+							<div className="buy-modal-quantity-picker">
+								<QuantityPicker
+									handleQuantityChange={
+										this.handleQuantityChange
+									}
+								/>
+							</div>
 						</div>
-					</div>
-					<div className="buy-modal-subtitle-container">
-						<h4 className="buy-modal-price-label">Price</h4>
-						<h4 className="buy-modal-price-value">
-							{this.props.product.price + " ETH"}
-						</h4>
-					</div>
-				</Modal.Body>
-				<Button
-					style={
-						this.props.product.available === true ? visible : hidden
-					}
-					className="buy-now"
-					onClick={() => this.handleBuy(this.state.quantity)}
-				>
-					Buy Now
-				</Button>
-				<Button
-					style={
-						this.props.product.available === false
-							? visible
-							: hidden
-					}
-					className="not-available"
-				>
-					Not Available
-				</Button>
-			</Modal>
-		);
+						<div className="buy-modal-subtitle-container">
+							<h4 className="buy-modal-price-label">Price</h4>
+							<h4 className="buy-modal-price-value">
+								{this.props.product.price + " ETH"}
+							</h4>
+						</div>
+					</Modal.Body>
+					<Button
+						style={
+							this.props.product.available === true
+								? visible
+								: hidden
+						}
+						className="buy-now"
+						onClick={() => this.handleBuy(this.state.quantity)}
+					>
+						Buy Now
+					</Button>
+					<Button
+						style={
+							this.props.product.available === false
+								? visible
+								: hidden
+						}
+						className="not-available"
+					>
+						Not Available
+					</Button>
+				</Modal>
+			);
+		}
+		return null;
 	}
 }
 
 BuyModal.contextTypes = {
 	web3: PropTypes.object,
-	account: PropTypes.string,
+	account: PropTypes.string
 };
 
 export default BuyModal;
