@@ -11,16 +11,36 @@ import Purchases from "./pages/Purchases";
 import Products from "./pages/Products";
 import Sales from "./pages/Sales";
 import Market from "./pages/Market";
-// import EmptyState from "./pages/EmptyState";
+import EmptyState from "./pages/EmptyState";
+import ErrorMessage from "./components/ErrorMessage";
 
 const ERROR = {
-  NOT_CONNECTED: 0,
-  CONTRACTS_NOT_FOUND: 1,
-  LOCKED_ACCOUNT: 2
+  NOT_CONNECTED: 1,
+  CONTRACTS_NOT_DEPLOYED: 2,
+  LOCKED_ACCOUNT: 3
 };
 
-function Content(props) {
-  if (props.web3) {
+function Error(props) {
+  switch (props.error) {
+    case ERROR.NOT_CONNECTED:
+      return <ErrorMessage title="You are not connected to an Ethereum node" />;
+    case ERROR.CONTRACTS_NOT_DEPLOYED:
+      return (
+        <EmptyState
+          title="Contracts are not deployed"
+          message="truffle migrate --reset"
+        />
+      );
+    case ERROR.LOCKED_ACCOUNT:
+      return <EmptyState title="Your account is locked" />;
+    default:
+      return null;
+  }
+}
+
+function Content(props) {  
+  if (props.web3 && !props.error) {
+    console.log("WTF")
     return (
       <Switch>
         <Route exact path="/" render={props => <Marketplace {...props} />} />
@@ -43,6 +63,8 @@ function Content(props) {
         <Route path="/market/:market" render={props => <Market {...props} />} />
       </Switch>
     );
+  } else if (props.error > 0) {
+    return <Error error={props.error} />
   }
   return null;
 }
@@ -88,49 +110,49 @@ class App extends Component {
         },
         () => {
           if (!this.state.web3) {
+            console.log("********** ERROR: NOT CONNECTED")
             this.setState({ error: ERROR.NOT_CONNECTED });
           } else {
-            const web3 = this.state.web3;
-
-            // Fetch account and network and listen for changes
+            // Get account and network and listen for changes
             this.getAccount();
             this.getNetwork();
 
-            // Get the global DIN registry
-            getDINRegistry(web3)
-              .then(registry => {
-                this.setState({ DINRegistry: registry });
-              })
-              .catch(err => {
-                this.setState({ error: ERROR.CONTRACTS_NOT_FOUND });
-              });
-
-            // Get Ether market
-            getEtherMarket(web3)
-              .then(market => {
-                this.setState({ etherMarket: market });
-              })
-              .catch(err => {
-                this.setState({ error: ERROR.CONTRACTS_NOT_FOUND });
-              });
+            // Get contracts and handle errors
+            this.getContracts(this.state.web3);
           }
         }
       );
     });
   }
 
+  getContracts(web3) {
+    let DINRegistryPromise = getDINRegistry(web3)
+    let EtherMarketPromise = getEtherMarket(web3)
+
+    Promise.all([DINRegistryPromise, EtherMarketPromise]).then(results => {
+      this.setState({ DINRegistry: results[0] });
+      this.setState({ etherMarket: results[1] });
+    }, error => {
+      console.log("********** ERROR: CONTRACTS NOT DEPLOYED")
+      this.setState({ error: ERROR.CONTRACTS_NOT_DEPLOYED });
+    })
+  }
+
   // https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#ear-listening-for-selected-account-changes
   getAccount() {
     setInterval(() => {
       this.state.web3.eth.getAccounts((error, accounts) => {
-        if (accounts[0] !== this.state.account) {
+        if (!accounts[0] && !this.state.error) {
+          console.log("********** ERROR: LOCKED ACCOUNT")
+          this.setState({ error: ERROR.LOCKED_ACCOUNT })
+        } else if (accounts[0] !== this.state.account) {
           this.setState({ account: accounts[0] });
           this.setState({ isMetaMaskLocked: false });
-        } else if (
-          this.isMetaMaskLocked() === true &&
-          this.state.isMetaMaskLocked === false
-        ) {
-          this.setState({ isMetaMaskLocked: true });
+        // } else if (
+          // this.isMetaMaskLocked() === true &&
+          // this.state.isMetaMaskLocked === false
+        // ) {
+          // this.setState({ isMetaMaskLocked: true });
         }
       });
     }, 1000);
@@ -140,9 +162,7 @@ class App extends Component {
     setInterval(() => {
       if (this.state.web3.version.network !== this.state.network.id) {
         const network = getNetwork(this.state.web3.version.network);
-
-        console.log("********** ETHEREUM NETWORK: " + network.id);
-
+        console.log("********** " + network.name.toUpperCase());
         this.setState({ network: network });
       }
     }, 1000);
@@ -174,33 +194,17 @@ class App extends Component {
         <Route
           render={props =>
             <Home {...props}>
-              <Content web3={this.state.web3} />
+              <Content
+                web3={this.state.web3}
+                show={false}
+                error={this.state.error}
+              />
             </Home>}
         />
       </MuiThemeProvider>
     );
   }
 }
-
-// else if (this.state.error) {
-//   switch (this.state.error) {
-//     case ERROR.NOT_CONNECTED:
-//       return (
-//         <EmptyState title="You are not connected to an Ethereum node" />
-//       );
-//     case ERROR.CONTRACTS_NOT_FOUND:
-//       return (
-//         <EmptyState
-//           title="Contracts are not deployed"
-//           message="truffle migrate --reset"
-//         />
-//       );
-//     case ERROR.LOCKED_ACCOUNT:
-//       return <EmptyState title="Your account is locked" />;
-//     default:
-//       return null;
-//   }
-// }
 
 // Global Variables
 App.childContextTypes = {
