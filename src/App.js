@@ -174,7 +174,8 @@ class App extends Component {
                 registry={this.state.DINRegistry}
                 error={this.state.error}
               />
-            </Home>}
+            </Home>
+          }
         />
       </MuiThemeProvider>
     )

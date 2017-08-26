@@ -7,31 +7,6 @@ import Sales from "../pages/Sales";
 import Market from "../pages/Market";
 import BuyModal from "./BuyModal";
 
-// function Error(props) {
-//   switch (props.error) {
-//     case ERROR.NOT_CONNECTED:
-//       return <ErrorMessage title="You are not connected to an Ethereum node" />;
-//     case ERROR.CONTRACTS_NOT_DEPLOYED:
-//       return (
-//         <EmptyState
-//           title="Contracts are not deployed"
-//           message="truffle migrate --reset"
-//         />
-//       );
-//     case ERROR.NETWORK_NOT_SUPPORTED:
-//       return (
-//         <EmptyState
-//           title="Kiosk does not support this network yet. Please connect to Kovan Test Network."
-//           message=""
-//         />
-//       );
-//     case ERROR.LOCKED_ACCOUNT:
-//       return <EmptyState title="Your account is locked" />;
-//     default:
-//       return null;
-//   }
-// }
-
 class ContentContainer extends Component {
   constructor(props) {
     super(props);
@@ -102,12 +77,37 @@ class ContentContainer extends Component {
             onHide={() => {}}
             product={this.state.selectedProduct}
             handleClose={this.handleBuyModalClose}
-          />;
+          />
         </div>
       );
     }
     return null;
   }
 }
+
+// function Error(props) {
+//   switch (props.error) {
+//     case ERROR.NOT_CONNECTED:
+//       return <ErrorMessage title="You are not connected to an Ethereum node" />;
+//     case ERROR.CONTRACTS_NOT_DEPLOYED:
+//       return (
+//         <EmptyState
+//           title="Contracts are not deployed"
+//           message="truffle migrate --reset"
+//         />
+//       );
+//     case ERROR.NETWORK_NOT_SUPPORTED:
+//       return (
+//         <EmptyState
+//           title="Kiosk does not support this network yet. Please connect to Kovan Test Network."
+//           message=""
+//         />
+//       );
+//     case ERROR.LOCKED_ACCOUNT:
+//       return <EmptyState title="Your account is locked" />;
+//     default:
+//       return null;
+//   }
+// }
 
 export default ContentContainer;

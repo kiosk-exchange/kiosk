@@ -55,8 +55,6 @@ export default class DialogExampleScrollable extends React.Component {
       );
     }
 
-    return null;
-
     return (
       <div>
         <Dialog
@@ -64,7 +62,7 @@ export default class DialogExampleScrollable extends React.Component {
           actions={actions}
           modal={false}
           open={this.props.open}
-          onRequestClose={this.handleClose}
+          onRequestClose={this.props.handleClose}
           autoScrollBodyContent={true}
         >
           <RadioButtonGroup name="shipSpeed" defaultSelected="not_light">
