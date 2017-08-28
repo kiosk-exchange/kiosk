@@ -36,8 +36,7 @@ contract DINRegistrar {
      */
     function registerDINForOwner(address owner) only_market returns (uint256) {
         index++;
-        records[index].owner = owner;
-
+        registry.register(index, owner);
         return index;
     }
 

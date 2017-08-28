@@ -92,7 +92,7 @@ contract DINRegistry {
      * Register a new DIN.
      * @param owner The account that will own the DIN.
      */
-    function registerDINForOwner(uint256 DIN, address owner) only_registrar {
+    function register(uint256 DIN, address owner) only_registrar {
         records[DIN].owner = owner;
         NewRegistration(DIN, owner);
     }

@@ -38,22 +38,18 @@ contract Buyer {
 		require (KMT.balanceOf(msg.sender) >= value);
 
 		// The requested quantity must be available for sale.
-		require(market.availableForSale(DIN, quantity) == true);
+		require(market.availableForSale(DIN, quantity, msg.sender) == true);
 
 		// The value must match the market price. 
 		require(market.totalPrice(DIN, quantity, msg.sender) == value);
 
-		// Get the address of the seller.
-		address seller = registry.owner(DIN);
-
-		address buyer = msg.sender;
-
 		// Add the order to the order tracker and get the order ID.
 		uint256 orderID = orderMaker.addOrder(
-			buyer,
-			seller,
+			msg.sender, // Buyer
+			registry.owner(DIN), // Seller
 			market,
 			DIN,
+			market.metadata(DIN),
 			value,
 			quantity,
 			block.timestamp
@@ -66,8 +62,8 @@ contract Buyer {
 		// Right now, Buyer only supports transactions that can be settled immediately (e.g., instant delivery).
 		require(market.isFulfilled(orderID) == true);
 			
-		// Transfer the value of the order to the market.
-		KMT.transferFrom(buyer, market, value);
+		// Transfer the value of the order from the buyer to the market.
+		KMT.transferFrom(msg.sender, market, value);
 
 		// Mark the order fulfilled.
 		orderMaker.setStatus(orderID, OrderUtils.Status.Fulfilled);

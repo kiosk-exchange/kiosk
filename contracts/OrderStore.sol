@@ -16,13 +16,13 @@ contract OrderStore {
 	struct Order {
 		address buyer;
 		address seller;
-		uint256 market;
+		address market;
 		uint256 DIN;
 		bytes32 metadata;
 		uint256 value;                          
 		uint256 quantity;
 		uint256 timestamp;
-		uint status;
+		OrderUtils.Status status;
 	}
 
 	event NewOrder(
@@ -31,13 +31,13 @@ contract OrderStore {
 		address indexed seller,
 		address market,
 		uint256 indexed DIN,
-		bytes metadata,
+		bytes32 metadata,
 		uint256 value,
 		uint256 quantity,
 		uint256 timestamp
 	);
 
-	event StatusChanged(uint256 indexed orderID, uint8 indexed status);
+	event StatusChanged(uint256 indexed orderID, OrderUtils.Status indexed status);
 
 	modifier only_maker {
 		require (orderMakerAddr == msg.sender);
@@ -56,7 +56,7 @@ contract OrderStore {
 		address seller,
 		address market,
 		uint256 DIN,
-		bytes metadata,
+		bytes32 metadata,
 		uint256 value,
 		uint256 quantity,
 		uint256 timestamp
@@ -64,7 +64,7 @@ contract OrderStore {
 		only_maker
 	{
 		// Add the order details to internal storage.
-		Order order = Order(
+		orders[orderId] = Order(
 			buyer, 
 			seller, 
 			market,
@@ -75,7 +75,6 @@ contract OrderStore {
 			timestamp,
 			OrderUtils.Status.Pending
 		);
-		orders[orderId] = order;
 
 		// Record a new order event.
 		NewOrder(
@@ -84,6 +83,7 @@ contract OrderStore {
 			seller,
 			market,
 			DIN,
+			metadata,
 			value,
 			quantity,
 			timestamp
@@ -91,7 +91,7 @@ contract OrderStore {
 	}
 
 	// Let the OrderMaker update the status of the order.
-	function setStatus(uint256 orderID, uint status) only_maker {
+	function setStatus(uint256 orderID, OrderUtils.Status status) only_maker {
 		orders[orderID].status = status;
 		StatusChanged(orderID, status);
 	}
@@ -124,7 +124,7 @@ contract OrderStore {
 		return orders[orderID].DIN;
 	}
 
-	function metadata(uint256 orderID) constant returns (bytes) {
+	function metadata(uint256 orderID) constant returns (bytes32) {
 		return orders[orderID].metadata;
 	}
 
@@ -140,7 +140,7 @@ contract OrderStore {
 		return orders[orderID].timestamp;
 	}
 
-	function status(uint256 orderID) constant returns (uint) {
+	function status(uint256 orderID) constant returns (OrderUtils.Status) {
 		return orders[orderID].status;
 	}
 

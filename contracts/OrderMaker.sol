@@ -2,6 +2,7 @@ pragma solidity ^0.4.11;
 
 import "./KioskMarketToken.sol";
 import "./OrderStore.sol";
+import "./OrderUtils.sol";
 
 contract OrderMaker {
 	// The Kiosk Market Token contract.
@@ -32,7 +33,7 @@ contract OrderMaker {
 		address seller,
 		address market,
 		uint256 DIN,
-		bytes metadata,
+		bytes32 metadata,
 		uint256 value,
 		uint256 quantity,
 		uint256 timestamp
@@ -43,7 +44,7 @@ contract OrderMaker {
 		// Increment the order index for a new order.
 		orderIndex++;
 
-		OrderStore.addOrder(
+		orderStore.addOrder(
 			orderIndex,
 			buyer,
 			seller,
@@ -60,8 +61,8 @@ contract OrderMaker {
 	}
 
 	// Let the OrderMaker update the status of the order.
-	function setStatus(uint256 orderID, uint8 status) only_buyer {
-		OrderStore.setStatus(orderID, status);
+	function setStatus(uint256 orderID, OrderUtils.Status status) only_buyer {
+		orderStore.setStatus(orderID, status);
 	}
 
     // Update Kiosk protocol contracts if they change on Kiosk Market Token

@@ -33,9 +33,9 @@ contract DINMarket is PublicMarket {
 		return (registry.owner(expectedDIN) == buyer);
 	}
 
-	function metadata(uint256 DIN) constant returns (bytes) {
-		uint256 nextDIN = registry.index() + 1;
-		return bytes(nextDIN);
+	function metadata(uint256 DIN) constant returns (bytes32) {
+		uint256 nextDIN = registrar.index() + 1;
+		return bytes32(nextDIN);
 	}
 
 	function nameOf(uint256 DIN) constant returns (string) {

@@ -79,7 +79,9 @@ contract PublicMarket is Market {
         address buyer = orderStore.buyer(orderID);
 
         // Ask the seller to fulfill the order.
-        products[DIN].fulfill(orderID);
+        address productAddr = products[DIN];
+        Product product = Product(productAddr);
+        product.fulfill(orderID);
 
         // Throw an error if the order is not fulfilled.
         require (isFulfilled(orderID) == true);
@@ -108,19 +110,19 @@ contract PublicMarket is Market {
     // Get total price from the relevant Product contract.
     function totalPrice(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256) {
         address productAddr = products[DIN];
-        Product memory product = Product(productAddr); // Not trusted
+        Product product = Product(productAddr); // Not trusted
         return product.productTotalPrice(DIN, quantity, buyer);
     }
 
     // Get availability from the relevant Product contract.
     function availableForSale(uint256 DIN, uint256 quantity, address buyer) constant returns (bool) {
         address productAddr = products[DIN];
-        Product memory product = Product(productAddr); // Not trusted
+        Product product = Product(productAddr); // Not trusted
         return product.productAvailableForSale(DIN, quantity, buyer); // Not trusted
     }
 
     function setProduct(uint256 DIN, address product) only_owner(DIN) {
-        products[DIN].product = product;
+        products[DIN] = product;
     }
 
     // Update Kiosk protocol contracts if they change on Kiosk Market Token
@@ -141,7 +143,7 @@ contract PublicMarket is Market {
         address orderMakerAddr = KMT.orderMaker();
         orderMaker = OrderMaker(orderMakerAddr);
 
-        address orderStoreAddr = KMT.orderStoreAddr();
+        address orderStoreAddr = KMT.orderStore();
         orderStore = OrderStore(orderStoreAddr);
     }
 
