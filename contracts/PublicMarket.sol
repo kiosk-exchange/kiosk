@@ -81,7 +81,7 @@ contract PublicMarket is Market {
         // Ask the seller to fulfill the order.
         address productAddr = products[DIN];
         Product product = Product(productAddr);
-        product.fulfill(orderID);
+        product.fulfill(orderID, DIN, quantity, buyer);
 
         // Throw an error if the order is not fulfilled.
         require (isFulfilled(orderID) == true);

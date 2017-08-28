@@ -35,6 +35,10 @@ contract ENSMarket is PublicMarket {
 		expected[buyer] = getNode(DIN);
 
 		super.buy(orderID);
+
+		// Clear storage.
+		domains[DIN].name = "";
+		domains[DIN].node = 0x0;
 	}
 
 	function metadata(uint256 DIN, address buyer) constant returns (bytes32) {
@@ -49,7 +53,7 @@ contract ENSMarket is PublicMarket {
 		return (ens.owner(node) == buyer);
 	}
 
-	function availableForSale(uint256 DIN, uint256 quantity) constant returns (bool) {
+	function availableForSale(uint256 DIN, uint256 quantity, address buyer) constant returns (bool) {
 		// The owner of the domain must be able to transfer it during a purchase.
 		// This means the product must hold the domain for the transaction to succeed.
 		bytes32 node = getNode(DIN);
@@ -59,7 +63,7 @@ contract ENSMarket is PublicMarket {
 			return false;
 		}
 
-		return super.availableForSale(DIN, quantity);
+		return super.availableForSale(DIN, quantity, buyer);
 	}
 
 	function nameOf(uint256 DIN) constant returns (string) {
@@ -73,6 +77,7 @@ contract ENSMarket is PublicMarket {
 	}
 
 	function setName(uint256 DIN, string name) only_owner(DIN) {
+		// TODO: Add validation
 		domains[DIN].name = name;
 	}
 
@@ -81,6 +86,7 @@ contract ENSMarket is PublicMarket {
 	}
 
 	function setNode(uint256 DIN, bytes32 node) only_owner(DIN) {
+		// TODO: Add validation
 		domains[DIN].node = node;
 	}
 

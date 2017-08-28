@@ -1,5 +1,6 @@
 const web3 = new (require("web3"))();
 const KioskMarketToken = artifacts.require("KioskMarketToken.sol");
+const Buyer = artifacts.require("Buyer.sol");
 const DINRegistry = artifacts.require("DINRegistry.sol");
 const DINRegistrar = artifacts.require("DINRegistrar.sol");
 const OrderMaker = artifacts.require("OrderMaker.sol");
@@ -36,10 +37,20 @@ function getRootNodeFromTLD(tld) {
 
 const deployKiosk = async (deployer, network, accounts) => {
   // Deploy the Kiosk protocol contracts.
-  await deployer.deployer(Buyer, KioskMarketToken.address);
-  await deployer.deploy(DINRegistry, KioskMarketToken.address, genesis); // Intitialize DINRegistry with a genesis DIN of 10000000000.
-  await deployer.deployer(DINRegistrar, KioskMarketToken.address);
-  await deployer.deployer(OrderStore, KioskMarketToken.address);
+  await deployer.deploy(Buyer, KioskMarketToken.address);
+
+  // Intitialize DINRegistry with a genesis DIN of 10000000000 and bind it to KMT.
+  await deployer.deploy(DINRegistry, KioskMarketToken.address, genesis);
+  await KioskMarketToken.at(KioskMarketToken.address).setRegistry(DINRegistry.address);
+
+  // await deployer.deploy(DINMarket, KioskMarketToken.address);
+
+  // Initialize DINProduct, allowing 5 free registrations, then a price of 1 KMT.
+  // await deployer.deploy(DINProduct, KioskMarketToken.address, DINMarket.address, 1, 5)
+
+  await deployer.deploy(DINRegistrar, KioskMarketToken.address);
+
+  await deployer.deploy(OrderStore, KioskMarketToken.address);
   await deployer.deploy(OrderMaker, KioskMarketToken.address);
 
   // Bind the Kiosk protocol contracts to each other.

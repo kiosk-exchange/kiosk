@@ -2,55 +2,52 @@ pragma solidity ^0.4.11;
 
 import "../KioskMarketToken.sol";
 import "../Product.sol";
-import "../Buyer.sol";
-import "../Market.sol";
-import "../ENSMarket.sol";
+import "./ENSMarket.sol";
 import "./ENS/ENS.sol";
 
 /**
 *  This is an example of how to sell an ENS domain.
 */
 contract ENSProduct is Product {
+	// The ENS contract.
 	ENS public ens;
 
-	struct ENSNode {
-		string name;
+	struct Domain {
 		bytes32 node;
 		uint256 price;
 	}
 
-	// DIN => ENS node
-	mapping(uint256 => ENSNode) public nodes;
+	// DIN => ENS Domain
+	mapping (uint256 => Domain) domains;
+
+	// ENS node => Seller
+	mapping (bytes32 => address) sellers;
 
 	// Constructor
 	function ENSProduct(
 		KioskMarketToken _KMT, 
 		address _market,
-		ENS _ens, 
+		ENS _ens
 	) Product(_KMT, _market) {
 		ens = _ens;
 	}
 
-	// Before calling this method, you need to approve this contract to spend enough of your KMT to purchase a DIN.
-	function addENSDomain(string name, bytes32 node) {
-		// Register a new DIN.
-		uint256 genesis = registry.genesis();
-		address buyerAddr = registry.buyer();
-		Buyer buyer = Buyer(buyerAddr);
+	// You need to approve this contract to spend enough KMT to purchase a DIN before calling this.
+	// AFTER you call this method, transfer ownership of the domain to this contract.
+	function addENSDomain(string name, bytes32 node, uint256 price) returns (uint256) {
+		// Make sure this contract doesn't already own the domain.
+		// This protects sellers against someone stealing their product.
+		require(ens.owner(node) != address(this));
 
-		// Get the price of a new DIN.
-		uint256 price = buyer.totalPrice(genesis, 1, address(this));
+		// Make sure another seller has not tried to misrepresent that they own this domain already.
+		require(sellers[node] == 0x0);
 
-		// Take enough KMT from the buyer to purchase a new DIN.
-		KMT.transferFrom(msg.sender, address(this), price);
-
-		// Buy one DIN.
-		buyer.buy(genesis, 1, price);
+		// Buy a new DIN with KMT that the seller transferred to this contract.
+		uint256 DIN = registerDIN();
 
 		// Store the details of the ENS domain.
-		nodes[DIN].name = name;
-		nodes[DIN].node = node;
-		nodes[DIN].price = price;
+		domains[DIN].node = node;
+		domains[DIN].price = price;
 
 		// Add the domain to ENS Market.
 		ENSMarket ensMarket = ENSMarket(market);
@@ -58,50 +55,32 @@ contract ENSProduct is Product {
 
 		// Transfer ownership of the DIN to the seller.
 		registry.setOwner(DIN, msg.sender);
+
+		// Return the registered DIN.
+		return DIN;
 	}
 
-	function name(uint256 DIN) constant returns (string) {
-		require (nodes[DIN].price != 0);
-
-		return nodes[DIN].name;
-	}
-
-	function setName(uint256 DIN, string name) only_owner(DIN) {
-		nodes[DIN].name = name;
-	}
-
-	function node(uint256 DIN) constant returns (bytes32) {
-		require (nodes[DIN].price != 0);
-
-		return nodes[DIN].node;
-	}
-
-	function setNode(uint256 DIN, bytes32 node) only_owner(DIN) {
-		nodes[DIN].node = node;
-	}
-
-	// Quantity is irrelevant here. We're only ever selling one ENS domain at a time
 	function totalPrice(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256) {
-		require (nodes[DIN].price != 0);
+		// Each DIN represents a single domain.
+		require (quantity == 1);
 
-		return nodes[DIN].price;
+		return domains[DIN].price;
 	}
 
 	function setPrice(uint256 DIN, uint256 price) only_owner(DIN) {
-		nodes[DIN].price = price;
+		domains[DIN].price = price;
 	}
 
 	function isAvailableForSale(uint256 DIN, uint256 quantity) constant returns (bool) {
-		return nodes[DIN].price > 0;
+		return domains[DIN].price > 0;
 	}
 
 	function fulfill(uint256 orderID, uint256 DIN, uint256 quantity, address buyer) only_market {
-		// The buyer is only getting a single domain.
+		// Each DIN represents a single domain.
 		require(quantity == 1);
 
 		// Give ownership of the node to the buyer.
-		// Make sure to set the owner of the node to this contract first.
-		ens.setOwner(nodes[DIN].node, buyer);
+		ens.setOwner(domains[DIN].node, buyer);
 	}
 
 }

@@ -2,6 +2,7 @@ pragma solidity ^0.4.11;
 
 import "../KioskMarketToken.sol";
 import "../PublicMarket.sol";
+import "./DINProduct.sol";
 
 contract DINMarket is PublicMarket {
 
@@ -10,11 +11,10 @@ contract DINMarket is PublicMarket {
 	// Buyer => Expected DIN to be registered.
 	mapping (address => uint256) public expected;
 
-	function DINMarket(KioskMarketToken _KMT, address _DINProduct) PublicMarket(_KMT) {
-		uint256 genesis = registry.genesis();
+	uint256 public genesisDIN;
 
-		// The DIN product is represented by the genesis identifier.
-		products[genesis] = _DINProduct;
+	function DINMarket(KioskMarketToken _KMT) PublicMarket(_KMT) {
+		genesisDIN = registry.genesis();
 	}
 
 	function buy(uint256 orderID) returns (bool) {
@@ -34,6 +34,8 @@ contract DINMarket is PublicMarket {
 	}
 
 	function metadata(uint256 DIN) constant returns (bytes32) {
+		require(DIN == genesisDIN);
+
 		uint256 nextDIN = registrar.index() + 1;
 		return bytes32(nextDIN);
 	}

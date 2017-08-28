@@ -2,6 +2,7 @@ pragma solidity ^0.4.11;
 
 import "./Market.sol";
 import "./KioskMarketToken.sol";
+import "./DIN/DINMarket.sol";
 
 /**
 *  This is the Decentralized Identification Number (DIN) registry.
@@ -39,8 +40,10 @@ contract DINRegistry {
         KMT = _KMT;
         genesis = _genesis;
 
-        // Register the genesis DIN to Kiosk. This will represent a DIN product.
+        // Register the genesis DIN to Kiosk. This represents a DIN product.
         records[genesis].owner = msg.sender;
+        // Deploy DIN market and set it as the market for the DIN product.
+        records[genesis].market = new DINMarket(_KMT);
 
         updateKiosk();
     }

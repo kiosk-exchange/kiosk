@@ -29,7 +29,7 @@ contract Buyer {
 	* @param quantity The quantity to buy.
 	* @param value The total price of the product(s).
 	*/
-	function buy(uint256 DIN, uint256 quantity, uint256 value) returns (bool) {
+	function buy(uint256 DIN, uint256 quantity, uint256 value) returns (uint256) {
 		// Get the Market.
 		address marketAddr = registry.market(DIN);
 		Market market = Market(marketAddr);
@@ -68,8 +68,8 @@ contract Buyer {
 		// Mark the order fulfilled.
 		orderMaker.setStatus(orderID, OrderUtils.Status.Fulfilled);
 
-		// Return true for transaction success.
-		return true;
+		// Return the order ID.
+		return orderID;
 	}
 
 	/**
@@ -78,11 +78,8 @@ contract Buyer {
 	*	==============================
 	*/
 
-	// The name of a product.
-	function nameOf(uint256 DIN) constant returns (string) {
-		Market market = getMarket(DIN);
-		return market.nameOf(DIN);
-	}
+	// To get the name of the product, you have to go to the market directly.
+	// This is a Solidity limitation with strings.
 
 	// A hash representation of a product's metadata that is added to the order.
 	function metadata(uint256 DIN) constant returns (bytes32) {
@@ -103,7 +100,7 @@ contract Buyer {
 	}
 
 	// Convenience
-	function getMarket(DIN) returns (Market) {
+	function getMarket(uint256 DIN) private returns (Market) {
 		address marketAddr = registry.market(DIN);
 		return Market(marketAddr);
 	}

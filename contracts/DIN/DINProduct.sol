@@ -1,7 +1,6 @@
 pragma solidity ^0.4.11;
 
 import "../KioskMarketToken.sol";
-import "../Market.sol";
 import "../DINRegistrar.sol";
 import "../Product.sol";
 import "zeppelin-solidity/contracts/math/SafeMath.sol";
@@ -13,7 +12,7 @@ contract DINProduct is Product {
 	mapping (address => uint256) owned;			// The number of DINs owned by a given account.
 	uint256 public free; 						// The number of DINs that can be registered for free.
 	uint256 public price; 						// Nominal price to discourage excessive / unused DIN registrations.
-	uint256 public supportedDIN;
+	uint256 public genesisDIN;
 
 	// Constructor
 	function DINProduct(
@@ -22,13 +21,13 @@ contract DINProduct is Product {
 		uint256 _price, 
 		uint256 _free
 	) Product(_KMT, _market) {
-		supportedDIN = registry.genesis();
+		genesisDIN = registry.genesis();
 		price = _price;
 		free = _free;
 	}
 
 	function productTotalPrice(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256) {
-		require(DIN == supportedDIN);
+		require(DIN == genesisDIN);
 
 		uint256 freeCount = 0;
 
@@ -47,24 +46,24 @@ contract DINProduct is Product {
 	}
 
 	function productAvailableForSale(uint256 DIN, uint256 quantity, address buyer) constant returns (bool) {
-		require(DIN == supportedDIN);
+		require(DIN == genesisDIN);
 
 		return true;
 	}
 
 	function fulfill(uint256 orderID, uint256 DIN, uint256 quantity, address buyer) only_market {
-		require(DIN == supportedDIN);
+		require(DIN == genesisDIN);
 
 		// Increment the number of DINs the buyer owns.
 		owned[buyer] = owned[buyer].add(quantity);
 		registrar.registerDINsForOwner(quantity, buyer);
 	}
 
-	function setPrice(uint256 _price) only_owner(DIN) {
+	function setPrice(uint256 _price) only_owner(genesisDIN) {
 		price = _price;
 	}
 
-	function setFree(uint256 _free) only_owner(DIN) {
+	function setFree(uint256 _free) only_owner(genesisDIN) {
 		free = _free;
 	}
 
