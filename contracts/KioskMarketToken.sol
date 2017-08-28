@@ -66,7 +66,7 @@ contract KioskMarketToken is StandardToken {
 	}
 
 	function setOrderMaker(address _orderMaker) only_owner {
-		orderMaker = _orderMaker
+		orderMaker = _orderMaker;
 	}
 
 	function setBuyer(address _buyer) only_owner {
@@ -81,21 +81,21 @@ contract KioskMarketToken is StandardToken {
 	
 	function allowance(address _owner, address _spender) constant returns (uint256 remaining) {
 		// The Buyer contract has full discretion to spend a user's balance.
-		if (spender == buyer) {
+		if (_spender == buyer) {
 			return totalSupply;
 		}
-		return super.allowance(owner, spender);
+		return super.allowance(_owner, _spender);
 	}
 
 	function transfer(address _to, uint256 _value) returns (bool) {
 		// Do not allow transfers to this contract or the null address.
-		require(_to != this && _to != 0x0);
+		require(_to != address(this) && _to != 0x0);
 		return super.transfer(_to, _value);
 	}
 
 	function transferFrom(address _from, address _to, uint256 _value) returns (bool) {
 		// Do not allow transfers to this contract or the null address.
-		require(_to != this && _to != 0x0);
+		require(_to != address(this) && _to != 0x0);
 		return super.transferFrom(_from, _to, _value);
 	}
 

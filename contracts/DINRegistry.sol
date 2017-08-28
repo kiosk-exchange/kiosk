@@ -7,6 +7,9 @@ import "./KioskMarketToken.sol";
 *  This is the Decentralized Identification Number (DIN) registry.
 */
 contract DINRegistry {
+    // The Kiosk Market Token contract.
+    KioskMarketToken public KMT;
+
     struct Record {
         address owner; // Address that owns the DIN.
         address market; // Address of the market associated with the DIN.
@@ -20,8 +23,6 @@ contract DINRegistry {
 
     // The first DIN registered.
     uint256 public genesis;
-
-    KioskMarketToken public KMT;
 
     modifier only_registrar {
         require(registrarAddr == msg.sender);
@@ -67,7 +68,7 @@ contract DINRegistry {
      */
     function setOwner(uint256 DIN, address owner) only_owner(DIN) {
         records[DIN].owner = owner;
-        NewOwner(DIN, owner, msg.sender);
+        NewOwner(DIN, owner);
     }
 
     /**
@@ -91,12 +92,9 @@ contract DINRegistry {
      * Register a new DIN.
      * @param owner The account that will own the DIN.
      */
-    function registerDINForOwner(address owner) only_registrar {
-        // Only allow unregistered DINs to be registered.
-        require(records[DIN].owner == 0x0);
-
-        records[index].owner = owner;
-        NewRegistration(index, owner);
+    function registerDINForOwner(uint256 DIN, address owner) only_registrar {
+        records[DIN].owner = owner;
+        NewRegistration(DIN, owner);
     }
 
     // Update Kiosk protocol contracts if they change on Kiosk Market Token

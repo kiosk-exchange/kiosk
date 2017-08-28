@@ -3,6 +3,7 @@ pragma solidity ^0.4.11;
 import "./KioskMarketToken.sol";
 import "./DINRegistry.sol";
 import "./OrderMaker.sol";
+import "./OrderStore.sol";
 import "./Market.sol";
 import "./OrderUtils.sol";
 
@@ -31,7 +32,7 @@ contract Buyer {
 	function buy(uint256 DIN, uint256 quantity, uint256 value) returns (bool) {
 		// Get the address of the market.
 		address marketAddr = registry.market(DIN);
-		Market memory market = Market(marketAddr);
+		Market market = Market(marketAddr);
 
 		// The buyer must have enough tokens for the purchase.
 		require (KMT.balanceOf(msg.sender) >= value);
@@ -45,9 +46,11 @@ contract Buyer {
 		// Get the address of the seller.
 		address seller = registry.owner(DIN);
 
+		address buyer = msg.sender;
+
 		// Add the order to the order tracker and get the order ID.
-		uint256 orderID = orderTracker.addOrder(
-			msg.sender,
+		uint256 orderID = orderMaker.addOrder(
+			buyer,
 			seller,
 			market,
 			DIN,
@@ -61,16 +64,16 @@ contract Buyer {
 
 		// Throw if the market does not fulfill the order.
 		// Right now, Buyer only supports transactions that can be settled immediately (e.g., instant delivery).
-		require(market.isFulfilled(orderID) == true) {
-			// Transfer the value of the order to the market.
-			KMT.transferFrom(buyer, market, value);
+		require(market.isFulfilled(orderID) == true);
+			
+		// Transfer the value of the order to the market.
+		KMT.transferFrom(buyer, market, value);
 
-			// Mark the order fulfilled.
-			orderTracker.setStatus(orderID, OrderUtils.Status.Fulfilled);
+		// Mark the order fulfilled.
+		orderMaker.setStatus(orderID, OrderUtils.Status.Fulfilled);
 
-			// Return true for transaction success.
-			return true;
-		}
+		// Return true for transaction success.
+		return true;
 	}
 
     // Update Kiosk protocol contracts if they change on Kiosk Market Token

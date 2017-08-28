@@ -22,7 +22,7 @@ contract DINProduct is Product {
 
 		// Find out how many free DINs the buyer has remaining.
 		if (free > owned[buyer]) {
-			freeCount = free.sub.(owned[buyer]);
+			freeCount = free.sub(owned[buyer]);
 		}
 
 		return price.mul(quantity.sub(freeCount));		

@@ -61,7 +61,7 @@ contract PublicMarket is Market {
     }
 
     // This contract does not accept Ether payments.
-    function payable () {
+    function () {
         throw;
     }
 

@@ -34,10 +34,7 @@ contract DINRegistrar {
      * Register a new DIN.
      * @param owner The account that will own the DIN.
      */
-    function registerDINForOwner(address owner) 
-        only_market(genesis) 
-        returns (uint256)
-    {
+    function registerDINForOwner(address owner) only_market returns (uint256) {
         index++;
         records[index].owner = owner;
 
@@ -45,7 +42,7 @@ contract DINRegistrar {
     }
 
     // Convenience method
-    function registerDIN() {
+    function registerDIN() only_market {
         registerDINForOwner(msg.sender);
     }
 
@@ -61,7 +58,7 @@ contract DINRegistrar {
     }
 
     // Convenience method
-    function registerDINs(uint256 quantity) {
+    function registerDINs(uint256 quantity) only_market {
         registerDINsForOwner(quantity, msg.sender);
     }
 

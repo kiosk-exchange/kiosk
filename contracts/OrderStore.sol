@@ -4,6 +4,9 @@ import "./KioskMarketToken.sol";
 import "./OrderUtils.sol";
 
 contract OrderStore {
+	// The Kiosk Market Token contract.
+    KioskMarketToken public KMT;
+
 	// Order ID => Order
 	mapping (uint256 => Order) public orders;
 
@@ -34,7 +37,7 @@ contract OrderStore {
 		uint256 timestamp
 	);
 
-	event StatusChanged(uint256 indexed orderID, indexed uint8 status);
+	event StatusChanged(uint256 indexed orderID, uint8 indexed status);
 
 	modifier only_maker {
 		require (orderMakerAddr == msg.sender);
@@ -71,7 +74,7 @@ contract OrderStore {
 			quantity,
 			timestamp,
 			OrderUtils.Status.Pending
-		)
+		);
 		orders[orderId] = order;
 
 		// Record a new order event.
