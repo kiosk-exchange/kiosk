@@ -41,16 +41,20 @@ contract ENSMarket is PublicMarket {
 		domains[DIN].node = 0x0;
 	}
 
-	function metadata(uint256 DIN, address buyer) constant returns (bytes32) {
-		return getNode(DIN);
-	}
-
 	function isFulfilled(uint256 orderID) constant returns (bool) {
 		address buyer = orderStore.buyer(orderID);
 		bytes32 node = expected[buyer];
 
 		// Check that buyer is the owner of the domain.
 		return (ens.owner(node) == buyer);
+	}
+
+	function nameOf(uint256 DIN) constant returns (string) {
+		return domains[DIN].name;
+	}
+
+	function metadata(uint256 DIN) constant returns (bytes32) {
+		return getNode(DIN);
 	}
 
 	function availableForSale(uint256 DIN, uint256 quantity, address buyer) constant returns (bool) {
@@ -64,10 +68,6 @@ contract ENSMarket is PublicMarket {
 		}
 
 		return super.availableForSale(DIN, quantity, buyer);
-	}
-
-	function nameOf(uint256 DIN) constant returns (string) {
-		return domains[DIN].name;
 	}
 
 	function addDomain(uint256 DIN, string name, bytes32 node) only_owner(DIN) {

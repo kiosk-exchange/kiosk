@@ -42,8 +42,6 @@ contract DINRegistry {
 
         // Register the genesis DIN to Kiosk. This represents a DIN product.
         records[genesis].owner = msg.sender;
-        // Deploy DIN market and set it as the market for the DIN product.
-        records[genesis].market = new DINMarket(_KMT);
 
         updateKiosk();
     }

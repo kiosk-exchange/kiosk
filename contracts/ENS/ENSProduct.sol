@@ -60,7 +60,7 @@ contract ENSProduct is Product {
 		return DIN;
 	}
 
-	function totalPrice(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256) {
+	function productTotalPrice(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256) {
 		// Each DIN represents a single domain.
 		require (quantity == 1);
 
@@ -71,7 +71,7 @@ contract ENSProduct is Product {
 		domains[DIN].price = price;
 	}
 
-	function isAvailableForSale(uint256 DIN, uint256 quantity) constant returns (bool) {
+	function productAvailableForSale(uint256 DIN, uint256 quantity, address buyer) constant returns (bool) {
 		return domains[DIN].price > 0;
 	}
 
