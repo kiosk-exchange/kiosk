@@ -6,7 +6,7 @@ import "./OrderUtils.sol";
 
 contract OrderTracker {
 	// The address of the DIN Registry contract.
-	DINRegistry public dinRegistry;
+	DINRegistry public registry;
 
 	// The address of the Kiosk Market Token contract.
 	KioskMarketToken public KMT;
@@ -20,8 +20,9 @@ contract OrderTracker {
 	struct Order {
 		address buyer;
 		address seller;
+		uint256 market;
 		uint256 DIN;
-		bytes32 data;					// Used by Markets to confirm order fulfillment.
+		bytes32 metadata;
 		uint256 value;                          
 		uint256 quantity;
 		uint256 timestamp;
@@ -34,13 +35,14 @@ contract OrderTracker {
 		address indexed seller,
 		address market,
 		uint256 indexed DIN,
+		bytes32 metadata,
 		uint256 value,
 		uint256 quantity,
 		uint256 timestamp
 	);
 
 	modifier only_market(uint256 DIN) {
-		require (dinRegistry.market(DIN) == msg.sender);
+		require (registry.market(DIN) == msg.sender);
 		_;
 	}
 
@@ -50,8 +52,8 @@ contract OrderTracker {
 	}
 
 	// Constructor
-	function OrderTracker(DINRegistry _dinRegistry, KioskMarketToken _token) {
-		dinRegistry = _dinRegistry;
+	function OrderTracker(DINRegistry _registry, KioskMarketToken _token) {
+		registry = _registry;
 		KMT = _token;
 	}
 
@@ -60,6 +62,7 @@ contract OrderTracker {
 		address seller,
 		address market,
 		uint256 DIN,
+		bytes32 metadata,
 		uint256 value,
 		uint256 quantity,
 		uint256 timestamp
@@ -71,13 +74,18 @@ contract OrderTracker {
 		orderIndex++;
 
 		// Add the order details to internal storage.
-		orders[orderIndex].buyer = buyer;
-		orders[orderIndex].seller = seller;
-		orders[orderIndex].DIN = DIN;
-		orders[orderIndex].value = value;
-		orders[orderIndex].quantity = quantity;
-		orders[orderIndex].timestamp = timestamp;
-		orders[orderIndex].status = OrderUtils.Status.Pending;
+		Order order = Order(
+			buyer, 
+			seller, 
+			market,
+			DIN,
+			metadata,
+			value,
+			quantity,
+			timestamp,
+			OrderUtils.Status.Pending
+		)
+		orders[orderIndex] = order;
 
 		// Record a new order event.
 		NewOrder(
@@ -93,11 +101,6 @@ contract OrderTracker {
 
 		// Return the order ID to the token.
 		return orderIndex;
-	}
-
-	// Let the market add data to the order to later verify that a seller fulfilled the order.
-	function setData(uint256 orderID, bytes32 data) only_market(orders[orderID].DIN) {
-		orders[orderID].data = data;
 	}
 
 	// Let the token update the status of the order to Fulfilled or Canceled.
@@ -121,6 +124,10 @@ contract OrderTracker {
 
 	function DIN(uint256 orderID) constant returns (uint256) {
 		return orders[orderID].DIN;
+	}
+
+	function metadata(uint256 orderID) constant returns (bytes32) {
+		return orders[orderID].metadata;
 	}
 
 	function value(uint256 orderID) constant returns (uint256) {

@@ -50,7 +50,7 @@ contract DINMarket is PublicMarket, Product {
 	}
 
 	// Inventory Resolver
-	function isAvailableForSale(uint256 DIN, uint256 quantity) constant returns (bool) {
+	function isAvailableForSale(uint256 DIN, uint256 quantity, address buyer) constant returns (bool) {
 		return true;
 	}
 

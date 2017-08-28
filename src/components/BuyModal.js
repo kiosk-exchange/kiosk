@@ -108,7 +108,7 @@ class BuyModal extends Component {
                 }}
               >
                 <h2>
-                  {this.props.product.price + " KMT"}
+                  {this.props.totalPrice + " KMT"}
                 </h2>
               </div>
             </div>

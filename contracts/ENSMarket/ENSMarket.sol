@@ -25,41 +25,41 @@ contract ENSMarket is PublicMarket {
 		ens = _ens;
 	}
 
-	function orderData(uint256 _DIN, address _buyer) constant returns (bytes32) {
-		return ENSNode(_DIN);
+	function orderData(uint256 DIN, address buyer) constant returns (bytes32) {
+		return ENSNode(DIN);
 	}
 
-	function isFulfilled(uint256 _orderID) constant returns (bool) {
+	function isFulfilled(uint256 orderID) constant returns (bool) {
 		// Get the ENS node from the order
-		bytes32 node = KMT.orderTracker().data(_orderID);
+		bytes32 node = KMT.orderTracker().data(orderID);
 
 		// Check that buyer is the owner
-		return (ens.owner(node) == KMT.orderTracker().buyer(_orderID));
+		return (ens.owner(node) == KMT.orderTracker().buyer(orderID));
 	}
 
-	function availableForSale(uint256 _DIN, uint256 _quantity) constant returns (bool) {
+	function availableForSale(uint256 DIN, uint256 quantity) constant returns (bool) {
 		// The owner of the node must be able to transfer it during a purchase.
-		if (ens.owner(ENSNode(_DIN)) != buyHandler(_DIN)) {
+		if (ens.owner(ENSNode(DIN)) != buyHandler(DIN)) {
 			return false;
 		}
 
-		return PublicMarket.availableForSale(_DIN, _quantity);
+		return PublicMarket.availableForSale(DIN, quantity);
 	}
 
-	function name(uint256 _DIN) constant returns (string) {
-		return domains[_DIN].name;
+	function name(uint256 DIN) constant returns (string) {
+		return domains[DIN].name;
 	}
 
-	function setName(uint256 _DIN, string _name) only_trusted(_DIN) {
-		domains[_DIN].name = _name;
+	function setName(uint256 DIN, string name) only_trusted(DIN) {
+		domains[DIN].name = name;
 	}
 
-	function ENSNode(uint256 _DIN) constant returns (bytes32) {
-		return domains[_DIN].node;
+	function ENSNode(uint256 DIN) constant returns (bytes32) {
+		return domains[DIN].node;
 	}
 
-	function setENSNode(uint256 _DIN, bytes32 _node) only_trusted(_DIN) {
-		domains[_DIN].node = _node;
+	function setENSNode(uint256 DIN, bytes32 node) only_trusted(DIN) {
+		domains[DIN].node = node;
 	}
 
 }

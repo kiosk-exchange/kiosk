@@ -54,23 +54,23 @@ contract EtherMarket is PublicMarket, Product {
 
 	// Kiosk Protocol
 	function name(uint256 DIN) constant returns (string) {
-		// require(DIN == ETH_DIN);
+		require(DIN == ETH_DIN);
 		return "1 Ether (ETH)";
 	}
 
 	// Product
 	function totalPrice(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256) {
-		// require(DIN == ETH_DIN);
+		require(DIN == ETH_DIN);
 		return quantity * rate * 10**18; // 10^18 wei per ether
 	}
 
-	function isAvailableForSale(uint256 DIN, uint256 quantity) constant returns (bool) {
-		// require(DIN == ETH_DIN);
+	function isAvailableForSale(uint256 DIN, uint256 quantity, address buyer) constant returns (bool) {
+		require(DIN == ETH_DIN);
 		return (this.balance >= quantity);
 	}
 
 	function handleOrder(uint256 orderID, uint256 DIN, uint256 quantity, address buyer) {
-		// require(DIN == ETH_DIN);
+		require(DIN == ETH_DIN);
 
 		uint256 etherQuantity = quantity * 10**18;
 
