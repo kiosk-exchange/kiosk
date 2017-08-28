@@ -1,13 +1,16 @@
 const web3 = new (require("web3"))();
 const KioskMarketToken = artifacts.require("KioskMarketToken.sol");
 const DINRegistry = artifacts.require("DINRegistry.sol");
-const OrderTracker = artifacts.require("OrderTracker.sol");
+const DINRegistrar = artifacts.require("DINRegistrar.sol");
+const OrderMaker = artifacts.require("OrderMaker.sol");
+const OrderStore = artifacts.require("OrderStore.sol");
 const DINMarket = artifacts.require("DIN/DINMarket.sol");
+const DINProduct = artifacts.require("DIN/DINProduct.sol");
 const EtherMarket = artifacts.require("ether/EtherMarket.sol");
-const ENSMarket = artifacts.require("ENSMarket/ENSMarket.sol");
-const ENSPublicProduct = artifacts.require("ENSMarket/ENSPublicProduct.sol");
-const ENS = artifacts.require("ENSMarket/ENS/ENS.sol");
-const FIFSRegistrar = artifacts.require("ENSMarket/ENS/FIFSRegistrar.sol");
+const ENSMarket = artifacts.require("ENS/ENSMarket.sol");
+const ENSPublicProduct = artifacts.require("ENS/ENSProduct.sol");
+const ENS = artifacts.require("ENS/ENS/ENS.sol");
+const FIFSRegistrar = artifacts.require("ENS/ENS/FIFSRegistrar.sol");
 const namehash = require("../node_modules/eth-ens-namehash");
 const tld = "eth";
 const rootNode = getRootNodeFromTLD(tld);
@@ -32,25 +35,19 @@ function getRootNodeFromTLD(tld) {
 }
 
 const deployKiosk = async (deployer, network, accounts) => {
-  // Deploy DINRegistry with a genesis DIN of 10000000000.
-  await deployer.deploy(DINRegistry, genesis);
+  // Deploy the Kiosk protocol contracts.
+  await deployer.deployer(Buyer, KioskMarketToken.address);
+  await deployer.deploy(DINRegistry, KioskMarketToken.address, genesis); // Intitialize DINRegistry with a genesis DIN of 10000000000.
+  await deployer.deployer(DINRegistrar, KioskMarketToken.address);
+  await deployer.deployer(OrderStore, KioskMarketToken.address);
+  await deployer.deploy(OrderMaker, KioskMarketToken.address);
 
-  // Deploy OrderTracker and bind it with DINRegistry and Kiosk Market Token.
-  await deployer.deploy(
-    OrderTracker,
-    DINRegistry.address,
-    KioskMarketToken.address
-  );
-
-  // Add DINRegistry to Kiosk Market Token.
-  await KioskMarketToken.at(KioskMarketToken.address).setDINRegistry(
-    DINRegistry.address
-  );
-
-  // Add OrderTracker to Kiosk Market Token.
-  await KioskMarketToken.at(KioskMarketToken.address).setOrderTracker(
-    OrderTracker.address
-  );
+  // Bind the Kiosk protocol contracts to each other.
+  await Buyer.at(Buyer.address).updateKiosk();
+  await DINRegistry.at(DINRegistry.address).updateKiosk();
+  await DINRegistrar.at(DINRegistrar.address).updateKiosk();
+  await OrderStore.at(OrderStore.address).updateKiosk();
+  await OrderMaker.at(OrderMaker.address).updateKiosk();
 };
 
 const deployENS = async (deployer, network, accounts) => {
@@ -74,7 +71,7 @@ const deployENS = async (deployer, network, accounts) => {
   await deployer.deploy(ENSMarket, KioskMarketToken.address, ENS.address);
 
   await deployer.deploy(
-    ENSPublicProduct,
+    ENSProduct,
     KioskMarketToken.address,
     ENS.address,
     ENSMarket.address
@@ -150,9 +147,9 @@ const deployENSMarket = async (deployer, network, accounts) => {
 module.exports = async (deployer, network, accounts) => {
   deployer.deploy(KioskMarketToken, initialSupply).then(async () => {
     await deployKiosk(deployer, network, accounts);
-    await deployENS(deployer, network, accounts);
-    await deployDINMarket(deployer, network, accounts);
-    await deployEtherMarket(deployer, network, accounts);
-    await deployENSMarket(deployer, network, accounts);
+    // await deployENS(deployer, network, accounts);
+    // await deployDINMarket(deployer, network, accounts);
+    // await deployEtherMarket(deployer, network, accounts);
+    // await deployENSMarket(deployer, network, accounts);
   });
 };

@@ -60,7 +60,7 @@ contract PublicMarket is Market {
         _;
     }
 
-    // This contract does not accept Ether payments.
+    // This contract does not accept Ether transfers.
     function () {
         throw;
     }
@@ -71,7 +71,7 @@ contract PublicMarket is Market {
         updateKiosk();
     }
 
-    // Process buy requests from Kiosk Market Token.
+    // Process buy requests from Buyer.
     function buy(uint256 orderID) only_buyer returns (bool) {
         // Add proceeds to pending withdrawals.
         uint256 DIN = orderStore.DIN(orderID);

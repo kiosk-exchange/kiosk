@@ -8,7 +8,6 @@ import "./Market.sol";
 import "./OrderUtils.sol";
 
 contract Buyer {
-
 	// The Kiosk Market Token contract.
 	KioskMarketToken public KMT;
 
@@ -18,6 +17,7 @@ contract Buyer {
 	// The Order Maker contract.
 	OrderMaker public orderMaker;
 
+	// Constructor
 	function Buyer(KioskMarketToken _KMT) {
 		KMT = _KMT;
 		updateKiosk();
@@ -28,9 +28,9 @@ contract Buyer {
 	* @param DIN The DIN of the product to buy.
 	* @param quantity The quantity to buy.
 	* @param value The total price of the product(s).
-	*/   
+	*/
 	function buy(uint256 DIN, uint256 quantity, uint256 value) returns (bool) {
-		// Get the address of the market.
+		// Get the Market.
 		address marketAddr = registry.market(DIN);
 		Market market = Market(marketAddr);
 
@@ -70,6 +70,42 @@ contract Buyer {
 
 		// Return true for transaction success.
 		return true;
+	}
+
+	/**
+	*	==============================
+	*	         Kiosk Client
+	*	==============================
+	*/
+
+	// The name of a product.
+	function nameOf(uint256 DIN) constant returns (string) {
+		Market market = getMarket(DIN);
+		return market.nameOf(DIN);
+	}
+
+	// A hash representation of a product's metadata that is added to the order.
+	function metadata(uint256 DIN) constant returns (bytes32) {
+		Market market = getMarket(DIN);
+		return market.metadata(DIN);
+	}
+
+	// The total price of a product for a given quantity and buyer.
+	function totalPrice(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256) {
+		Market market = getMarket(DIN);
+		return market.totalPrice(DIN, quantity, buyer);
+	}
+
+	// Returns true if a given quantity of a product is available for purchase.
+	function availableForSale(uint256 DIN, uint256 quantity, address buyer) constant returns (bool) {
+		Market market = getMarket(DIN);
+		return market.availableForSale(DIN, quantity, buyer);
+	}
+
+	// Convenience
+	function getMarket(DIN) returns (Market) {
+		address marketAddr = registry.market(DIN);
+		return Market(marketAddr);
 	}
 
     // Update Kiosk protocol contracts if they change on Kiosk Market Token

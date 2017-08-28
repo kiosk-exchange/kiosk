@@ -4,7 +4,6 @@ import "./Market.sol";
 import "zeppelin-solidity/contracts/token/StandardToken.sol";
 
 contract KioskMarketToken is StandardToken {
-
 	string public name = "Kiosk Market Token";      // Set the name for display purposes
 	string public symbol = "KMT";                   // Set the symbol for display purposes
 	uint256 public decimals = 18;                   // Amount of decimals for display purposes
@@ -18,6 +17,9 @@ contract KioskMarketToken is StandardToken {
 	*	==============================
 	*/
 
+	// The address of the Buyer contract.
+	address public buyer;
+
 	// The address of the DINRegistry contract.
 	address public registry;							
 
@@ -29,9 +31,6 @@ contract KioskMarketToken is StandardToken {
 
 	// The address of the OrderMaker contract.
 	address public orderMaker;
-
-	// The address of the Buyer contract.
-	address public buyer;
 
 	modifier only_owner {
 		require (owner == msg.sender);
@@ -53,6 +52,10 @@ contract KioskMarketToken is StandardToken {
 		owner = _owner;
 	}
 
+	function setBuyer(address _buyer) only_owner {
+		buyer = _buyer;
+	}
+
 	function setRegistry(address _registry) only_owner {
 		registry = _registry;
 	}
@@ -67,10 +70,6 @@ contract KioskMarketToken is StandardToken {
 
 	function setOrderMaker(address _orderMaker) only_owner {
 		orderMaker = _orderMaker;
-	}
-
-	function setBuyer(address _buyer) only_owner {
-		buyer = _buyer;
 	}
 
 	/**
