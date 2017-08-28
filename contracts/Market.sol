@@ -17,7 +17,7 @@ contract Market {
 	function nameOf(uint256 DIN) constant returns (string);
 
 	// A hash representation of a product's metadata that is added to the order.
-	function metadata(uint256 DIN) constant returns (bytes32);
+	function metadata(uint256 DIN) constant returns (bytes);
 
 	// The total price of a product for a given quantity and buyer.
 	function totalPrice(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256);

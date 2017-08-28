@@ -1,93 +1,57 @@
 pragma solidity ^0.4.11;
 
 import "./Market.sol";
+import "./KioskMarketToken.sol";
 
 /**
-*  This contract is the Decentralized Identification Number (DIN) registry.
+*  This is the Decentralized Identification Number (DIN) registry.
 */
 contract DINRegistry {
-
     struct Record {
         address owner; // Address that owns the DIN.
-        Market market; // Address of the market associated with the DIN.
+        address market; // Address of the market associated with the DIN.
     }
 
     // DIN => Record
     mapping (uint256 => Record) records;
 
+    // The address of DIN Registrar.
+    address public registrarAddr;
+
     // The first DIN registered.
     uint256 public genesis;
 
-    // The current DIN index.
-    uint256 public index;
+    KioskMarketToken public KMT;
 
-    // Logged when the owner of a DIN transfers ownership to a new account.
-    event NewOwner(uint256 indexed DIN, address indexed newOwner, address indexed oldOwner);
-
-    // Logged when the market associated with a DIN changes.
-    event NewMarket(uint256 indexed DIN, address indexed market);
-
-    // Logged when a new DIN is registered.
-    event NewRegistration(uint256 indexed DIN, address indexed owner);
+    modifier only_registrar {
+        require(registrarAddr == msg.sender);
+        _;
+    }
 
     modifier only_owner(uint256 DIN) {
         require(records[DIN].owner == msg.sender);
         _;
     }
 
-    modifier only_market(uint256 DIN) {
-        require (market(DIN) == msg.sender);
-        _;
-    }
-
-    /**
-     * Constructs a new DIN registry.
-     * @param _genesis The start index for DIN numbering.
-     */
-    function DINRegistry(uint256 _genesis) {
+    // Constructor
+    function DINRegistry(KioskMarketToken _KMT, uint256 _genesis) {
+        KMT = _KMT;
         genesis = _genesis;
-        index = _genesis;
 
         // Register the genesis DIN to Kiosk. This will represent a DIN product.
         records[genesis].owner = msg.sender;
-        NewRegistration(genesis, msg.sender);
+
+        updateKiosk();
     }
 
-    /**
-     * Register a new DIN.
-     * @param owner The account that will own the DIN.
-     */
-    function registerDINForOwner(address owner) 
-        only_market(genesis) 
-        returns (uint256)
-    {
-        index++;
-        records[index].owner = owner;
-        NewRegistration(index, owner);
+    // Logged when the owner of a DIN transfers ownership to a new account.
+    event NewOwner(uint256 indexed DIN, address indexed owner);
 
-        return index;
-    }
+    // Logged when the market associated with a DIN changes.
+    event NewMarket(uint256 indexed DIN, address indexed market);
 
-    // Convenience method
-    function registerDIN() {
-        registerDINForOwner(msg.sender);
-    }
-
-    /**
-     * Register multiple new DINs.
-     * @param quantity The number of DINs to register.
-     * @param owner The account that will own the registered DINs.
-     */
-    function registerDINsForOwner(uint256 quantity, address owner) only_market(genesis) {
-        for (uint i = 0; i < quantity; i++) {
-            registerDINForOwner(owner);
-        }
-    }
-
-    // Convenience method
-    function registerDINs(uint256 quantity) {
-        registerDINsForOwner(quantity, msg.sender);
-    }
+    // Logged when a new DIN is registered.
+    event NewRegistration(uint256 indexed DIN, address indexed owner);
 
     /**
      * Returns the address that owns the specified DIN.
@@ -109,7 +73,7 @@ contract DINRegistry {
     /**
     * Returns the address of the market for the specified DIN.
     */
-    function market(uint256 DIN) constant returns (Market) {
+    function market(uint256 DIN) constant returns (address) {
         return records[DIN].market;
     }
 
@@ -118,9 +82,27 @@ contract DINRegistry {
      * @param DIN The DIN to update.
      * @param market The address of the market.
      */
-    function setMarket(uint256 DIN, Market market) only_owner(DIN) {
+    function setMarket(uint256 DIN, address market) only_owner(DIN) {
         records[DIN].market = market;
         NewMarket(DIN, market);
+    }
+
+    /**
+     * Register a new DIN.
+     * @param owner The account that will own the DIN.
+     */
+    function registerDINForOwner(address owner) only_registrar {
+        // Only allow unregistered DINs to be registered.
+        require(records[DIN].owner == 0x0);
+
+        records[index].owner = owner;
+        NewRegistration(index, owner);
+    }
+
+    // Update Kiosk protocol contracts if they change on Kiosk Market Token
+    function updateKiosk() {
+        // Update DIN Registrar
+        registrarAddr = KMT.registrar();
     }
 
 }

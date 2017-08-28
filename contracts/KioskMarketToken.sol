@@ -1,10 +1,6 @@
 pragma solidity ^0.4.11;
 
-import "./DINRegistry.sol";
-import "./OrderTracker.sol";
-import "./Buy.sol";
 import "./Market.sol";
-import "./OrderUtils.sol";
 import "zeppelin-solidity/contracts/token/StandardToken.sol";
 
 contract KioskMarketToken is StandardToken {
@@ -13,18 +9,29 @@ contract KioskMarketToken is StandardToken {
 	string public symbol = "KMT";                   // Set the symbol for display purposes
 	uint256 public decimals = 18;                   // Amount of decimals for display purposes
 	
-	// The owner has the power to upgrade DINRegistry, OrderTracker, and Buy contracts.
-	// Owner will eventually contain a decentralized voting mechanism to approve upgrades.
-	address public owner;							
+	// Owner is a DAO that manages Kiosk protocol contract upgrades.
+	address public owner;
 
-	// The address of DIN registry where all DINs are stored.
-	DINRegistry public registry;
+	/**
+	*	==============================
+	*	   Kiosk Protocol Contracts
+	*	==============================
+	*/
 
-	// The address of the order tracker where all new order events are stored.
-	OrderTracker public orderTracker;
+	// The address of the DINRegistry contract.
+	address public registry;							
 
-	// The address of the contract containing buy business logic.
-	Buy public buy;
+	// The address of DINRegistrar contract.
+	address public registrar;
+
+	// The address of the OrderStore contract.
+	address public orderStore;
+
+	// The address of the OrderMaker contract.
+	address public orderMaker;
+
+	// The address of the Buyer contract.
+	address public buyer;
 
 	modifier only_owner {
 		require (owner == msg.sender);
@@ -38,29 +45,58 @@ contract KioskMarketToken is StandardToken {
 
 	function KioskMarketToken(uint256 _totalSupply) {
 		owner = msg.sender;
-		balances[msg.sender] = _totalSupply * 10**decimals;   // Give the creator all initial tokens
-		totalSupply = _totalSupply * 10**decimals;            // Update total supply
+		balances[msg.sender] = _totalSupply;   // Give the creator all initial tokens
+		totalSupply = _totalSupply;            // Update total supply
 	}
 
 	function setOwner(address _owner) only_owner {
 		owner = _owner;
 	}
 
-	function setDINRegistry(DINRegistry _registry) only_owner {
+	function setRegistry(address _registry) only_owner {
 		registry = _registry;
 	}
 
-	function setOrderTracker(OrderTracker _orderTracker) only_owner {
-		orderTracker = _orderTracker;
+	function setRegistrar(address _registrar) only_owner {
+		registrar = _registrar;
 	}
 
-	function setBuy(Buy _buy) only_owner {
-		buy = _buy;
+	function setOrderStore(address _orderStore) only_owner {
+		orderStore = _orderStore;
 	}
 
+	function setOrderMaker(address _orderMaker) only_owner {
+		orderMaker = _orderMaker
+	}
+
+	function setBuyer(address _buyer) only_owner {
+		buyer = _buyer;
+	}
+
+	/**
+	*	==============================
+	*	       ERC20 Overrides
+	*	==============================
+	*/
+	
 	function allowance(address _owner, address _spender) constant returns (uint256 remaining) {
-		// if ()
+		// The Buyer contract has full discretion to spend a user's balance.
+		if (spender == buyer) {
+			return totalSupply;
+		}
 		return super.allowance(owner, spender);
+	}
+
+	function transfer(address _to, uint256 _value) returns (bool) {
+		// Do not allow transfers to this contract or the null address.
+		require(_to != this && _to != 0x0);
+		return super.transfer(_to, _value);
+	}
+
+	function transferFrom(address _from, address _to, uint256 _value) returns (bool) {
+		// Do not allow transfers to this contract or the null address.
+		require(_to != this && _to != 0x0);
+		return super.transferFrom(_from, _to, _value);
 	}
 
 }

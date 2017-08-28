@@ -1,64 +1,82 @@
 pragma solidity ^0.4.11;
 
-import "./DINRegistry.sol";
-import "./OrderTracker.sol";
 import "./KioskMarketToken.sol";
+import "./Buyer.sol";
+import "./DINRegistry.sol";
+import "./DINRegistrar.sol";
+import "./OrderMaker.sol";
+import "./OrderStore.sol";
 import "./Market.sol";
 import "./Product.sol";
 import "./OrderUtils.sol";
 
 /**
 *  This is a base implementation of a Market that is used by Kiosk's market contracts (DINMarket, EtherMarket, ENSMarket, etc.).
+*  Subclasses must implement name, nameOf, isFulfilled, and metadata.
 */
 contract PublicMarket is Market {
 
-    // The address of the Kiosk Market Token contract.
+    // The Kiosk Market Token contract.
     KioskMarketToken public KMT;
 
-    // DIN => Product
-    mapping (uint256 => Product) products;
+    // The Buyer contract from the Kiosk protocol.
+    Buyer public buyer;
+
+    // The DINRegistry contract from the Kiosk protocol.
+    DINRegistry public registry;
+
+    // The DINRegistrar contract from the Kiosk protocol.
+    DINRegistrar public registrar;
+
+    // The OrderMaker contract from the Kiosk protocl.
+    OrderMaker public orderMaker;
+
+    // The OrderStore contract from the Kiosk protocl.
+    OrderStore public orderStore;
+
+    // DIN => Product address
+    mapping (uint256 => address) products;
 
     // Order ID => Amount paid
     mapping (uint256 => uint256) public pendingWithdrawals;
 
-    modifier only_token {
-        require (KMT == msg.sender);
+    modifier only_buyer {
+        require (buyer == msg.sender);
         _;
     }
 
     modifier only_owner(uint256 DIN) {
-        require (KMT.dinRegistry().owner(DIN) == msg.sender);
+        require (registry.owner(DIN) == msg.sender);
         _;
     }
 
     modifier only_seller(uint256 orderID) {
-        require (KMT.orderTracker().seller(orderID) == msg.sender);
+        require (orderStore.seller(orderID) == msg.sender);
         _;
     }
 
     modifier only_fulfilled(uint256 orderID) {
-        require (KMT.orderTracker().status(orderID) == OrderUtils.Status.Fulfilled);
+        require (orderStore.status(orderID) == OrderUtils.Status.Fulfilled);
         _;
     }
 
-    // This contract does not accept direct payments. Use the "buy" function to buy a product.
-    function () {
+    // This contract does not accept Ether payments.
+    function payable () {
         throw;
     }
 
     // Constructor
     function PublicMarket(KioskMarketToken _KMT) {
         KMT = _KMT;
+        updateKiosk();
     }
 
     // Process buy requests from Kiosk Market Token.
-    function buy(uint256 orderID) only_token returns (bool) {
+    function buy(uint256 orderID) only_buyer returns (bool) {
         // Add proceeds to pending withdrawals.
-        OrderTracker orderTracker = KMT.orderTracker();
-
-        uint256 DIN = orderTracker.DIN(orderID);
-        uint256 quantity = orderTracker.quantity(orderID);
-        address buyer = orderTracker.buyer(orderID);
+        uint256 DIN = orderStore.DIN(orderID);
+        uint256 quantity = orderStore.quantity(orderID);
+        address buyer = orderStore.buyer(orderID);
 
         // Ask the seller to fulfill the order.
         products[DIN].fulfill(orderID);
@@ -67,7 +85,7 @@ contract PublicMarket is Market {
         require (isFulfilled(orderID) == true);
 
         // Add the proceeds to the seller's balance.
-        pendingWithdrawals[orderID] += orderTracker.value(orderID);
+        pendingWithdrawals[orderID] += orderStore.value(orderID);
 
         return true;
     }
@@ -89,16 +107,42 @@ contract PublicMarket is Market {
 
     // Get total price from the relevant Product contract.
     function totalPrice(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256) {
-        return products[DIN].productTotalPrice(DIN, quantity, buyer); // Not trusted
+        address productAddr = products[DIN];
+        Product memory product = Product(productAddr); // Not trusted
+        return product.productTotalPrice(DIN, quantity, buyer);
     }
 
     // Get availability from the relevant Product contract.
     function availableForSale(uint256 DIN, uint256 quantity, address buyer) constant returns (bool) {
-        return products[DIN].productAvailableForSale(DIN, quantity, buyer); // Not trusted
+        address productAddr = products[DIN];
+        Product memory product = Product(productAddr); // Not trusted
+        return product.productAvailableForSale(DIN, quantity, buyer); // Not trusted
     }
 
-    function setProduct(uint256 DIN, Product product) only_owner(DIN) {
+    function setProduct(uint256 DIN, address product) only_owner(DIN) {
         products[DIN].product = product;
+    }
+
+    // Update Kiosk protocol contracts if they change on Kiosk Market Token
+    function updateKiosk() {
+        // Update Buyer
+        address buyerAddr = KMT.buyer();
+        buyer = Buyer(buyerAddr);
+
+        // Update DINRegistry
+        address registryAddr = KMT.registry();
+        registry = DINRegistry(registryAddr);
+
+        // Update DINRegistrar
+        address registrarAddr = KMT.registrar();
+        registrar = DINRegistrar(registrarAddr);
+
+        // Update OrderMaker
+        address orderMakerAddr = KMT.orderMaker();
+        orderMaker = OrderMaker(orderMakerAddr);
+
+        address orderStoreAddr = KMT.orderStoreAddr();
+        orderStore = OrderStore(orderStoreAddr);
     }
 
 }
