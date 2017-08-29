@@ -103,10 +103,6 @@ contract PublicMarket is Market {
         KMT.transfer(msg.sender, amount);
     }
 
-    function product(uint256 DIN) constant returns (address) {
-        return products[DIN];
-    }
-
     // Get total price from the relevant Product contract.
     function totalPrice(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256) {
         address productAddr = products[DIN];
@@ -119,6 +115,10 @@ contract PublicMarket is Market {
         address productAddr = products[DIN];
         Product product = Product(productAddr); // Not trusted
         return product.productAvailableForSale(DIN, quantity, buyer); // Not trusted
+    }
+
+    function product(uint256 DIN) constant returns (address) {
+        return products[DIN];
     }
 
     function setProduct(uint256 DIN, address product) only_owner(DIN) {

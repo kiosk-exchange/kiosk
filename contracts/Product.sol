@@ -29,6 +29,9 @@ contract Product is ProductInterface {
 	// The OrderStore contract.
 	OrderStore public orderStore;
 
+	// The Buyer contract.
+	Buyer public buyer;
+
 	// Only the owner of a DIN (the seller) can modify product details.
 	modifier only_owner(uint256 DIN) {
 		require (registry.owner(DIN) == msg.sender);
@@ -42,31 +45,27 @@ contract Product is ProductInterface {
 	}
 
 	// Allows for multiple inheritance for contracts that act as both Market and Product
-	function configureProduct(KioskMarketToken _KMT, address _market) internal {
-		if (address(KMT) == 0x0 && market == 0x0) {
-			KMT = _KMT;
-			market = _market;
-			updateKiosk();
-		}
+	function Product(KioskMarketToken _KMT, address _market) {
+		KMT = _KMT;
+		market = _market;
+		updateKiosk();
 	}
 
 	// Buy a DIN. Sometimes it is necessary for a product to be able to do this.
 	function registerDIN() returns (uint256) {
 		// Register a new DIN.
 		uint256 genesis = registry.genesis();
-		address buyerAddr = KMT.buyer();
-		Buyer buyer = Buyer(buyerAddr);
 
-		// Get the price of a new DIN.
-		uint256 price = buyer.totalPrice(genesis, 1, address(this));
+		// // Get the price of a new DIN.
+		// uint256 price = buyer.totalPrice(genesis, 1, this);
 
-		// Take enough KMT from the buyer to purchase a new DIN.
-		if (price > 0) {
-			KMT.transferFrom(msg.sender, address(this), price);
-		}
+		// // Take enough KMT from the buyer to purchase a new DIN.
+		// if (price > 0) {
+		// 	KMT.transferFrom(msg.sender, this, price);
+		// }
 
 		// Buy one DIN.
-		uint256 orderID = buyer.buy(genesis, 1, price);
+		uint256 orderID = buyer.buy(genesis, 1, 0);
 		
 		// Convert the order metadata to the registered DIN.
 		return uint256(orderStore.metadata(orderID));
@@ -79,6 +78,9 @@ contract Product is ProductInterface {
 
 		address orderStoreAddr = KMT.orderStore();
 		orderStore = OrderStore(orderStoreAddr);
+
+		address buyerAddr = KMT.buyer();
+		buyer = Buyer(buyerAddr);
 	}
 
 }

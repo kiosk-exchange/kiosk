@@ -2,6 +2,7 @@ pragma solidity ^0.4.11;
 
 import "./KioskMarketToken.sol";
 import "./DINRegistry.sol";
+import "./Market.sol";
 
 /**
 *  This contract manages new DIN registrations. It is invoked by DINMarket and changes DINRegistry.
@@ -16,7 +17,7 @@ contract DINRegistrar {
     // The current DIN index.
     uint256 public index;
 
-    // The address of DINMarket, where DINs can be purchased.
+    // The address of DINMarket.
     address public marketAddr;
 
     modifier only_market {
@@ -27,7 +28,9 @@ contract DINRegistrar {
     // Constructor
     function DINRegistrar(KioskMarketToken _KMT) {
         KMT = _KMT;
-        updateKiosk();
+
+        address registryAddr = KMT.registry();
+        registry = DINRegistry(registryAddr);
         index = registry.genesis();
     }
 
@@ -36,7 +39,9 @@ contract DINRegistrar {
      * @param owner The account that will own the DIN.
      */
     function registerDINForOwner(address owner) only_market returns (uint256) {
+        // Increment the index
         index++;
+        // Register a new DIN.
         registry.register(index, owner);
         return index;
     }
@@ -51,7 +56,7 @@ contract DINRegistrar {
      * @param quantity The number of DINs to register.
      * @param owner The account that will own the registered DINs.
      */
-    function registerDINsForOwner(uint256 quantity, address owner) only_market {
+    function registerDINsForOwner(address owner, uint256 quantity) only_market {
         for (uint i = 0; i < quantity; i++) {
             registerDINForOwner(owner);
         }
@@ -59,7 +64,7 @@ contract DINRegistrar {
 
     // Convenience method
     function registerDINs(uint256 quantity) only_market {
-        registerDINsForOwner(quantity, msg.sender);
+        registerDINsForOwner(msg.sender, quantity);
     }
 
     // Update Kiosk protocol contracts if they change on Kiosk Market Token

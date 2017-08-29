@@ -24,15 +24,15 @@ contract EtherMarket is PublicMarket {
 
 	// Constructor
 	function EtherMarket(KioskMarketToken _KMT) PublicMarket(_KMT) {
-		// // Register a DIN to this contract. 
-		// // Any exchange from KMT back into Ether will exist on this contract and can be resold.
+		// Register a DIN to this contract. 
+		// Any exchange from KMT back into Ether will exist on this contract and can be resold.
 		uint256 DIN = registerDIN();
 
 		// Set the market for the newly registered DIN to this contract.
-		// registry.setMarket(DIN, address(this));
+		// registry.setMarket(DIN, this);
 
 		// ethDIN = DIN;
-		// products[DIN] = address(this);
+		// products[DIN] = this;
 	}
 
 	// Get KMT
@@ -52,6 +52,7 @@ contract EtherMarket is PublicMarket {
 	*	          Market
 	*	==============================
 	*/
+
 	function buy(uint256 orderID) only_buyer returns (bool) {
         // Add proceeds to pending withdrawals.
         uint256 DIN = orderStore.DIN(orderID);
@@ -105,10 +106,8 @@ contract EtherMarket is PublicMarket {
 		// Buy one DIN.
 		uint256 orderID = buyer.buy(genesis, 1, 0);
 
-		return 0;
-		
 		// Convert the order metadata to the registered DIN.
-		// return uint256(orderStore.metadata(orderID));
+		return uint256(orderStore.metadata(orderID));
 	}
 
 }

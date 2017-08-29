@@ -24,14 +24,13 @@ contract ENSProduct is Product {
 	mapping (bytes32 => address) sellers;
 
 	// Constructor
-	function ENSProduct(KioskMarketToken _KMT, address _market, ENS _ens) {
-		configureProduct(_KMT, _market);
+	function ENSProduct(KioskMarketToken _KMT, address _market, ENS _ens) Product(_KMT, _market) {
 		ens = _ens;
 	}
 
 	// You need to approve this contract to spend enough KMT to purchase a DIN before calling this.
 	// AFTER you call this method, transfer ownership of the domain to this contract.
-	function addENSDomain(string name, bytes32 node, uint256 price) returns (uint256) {
+	function addENSDomain(string name, bytes32 node, uint256 price) constant returns (uint256) {
 		// Make sure this contract doesn't already own the domain.
 		// This protects sellers against someone stealing their product.
 		require(ens.owner(node) != address(this));
@@ -46,8 +45,10 @@ contract ENSProduct is Product {
 		domains[DIN].node = node;
 		domains[DIN].price = price;
 
-		// Add the domain to ENS Market.
 		ENSMarket ensMarket = ENSMarket(market);
+		// Set the market of the new DIN to ENSMarket.
+		registry.setMarket(DIN, market);
+		// Add the domain to ENS Market.
 		ensMarket.addDomain(DIN, name, node);
 
 		// Transfer ownership of the DIN to the seller.

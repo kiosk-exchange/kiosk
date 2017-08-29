@@ -24,4 +24,7 @@ contract Market {
 
 	// Returns true if a given quantity of a product is available for purchase.
 	function availableForSale(uint256 DIN, uint256 quantity, address buyer) constant returns (bool);
+
+	// Returns the address of the product contract for a given DIN.
+	function product(uint256 DIN) constant returns (address);
 }
