@@ -23,15 +23,14 @@ contract DINMarket is PublicMarket {
 		// Expect the next DIN on the registrar to be registered.
 		expected[buyer] = registrar.index() + 1;
 
-		super.buy(orderID);
+		return super.buy(orderID);
 	}
 
 	function isFulfilled(uint256 orderID) constant returns (bool) {
-		return true;
-		// address buyer = orderStore.buyer(orderID);
-		// uint256 expectedDIN = expected[buyer];
+		address buyer = orderStore.buyer(orderID);
+		uint256 expectedDIN = expected[buyer];
 
-		// return (registry.owner(expectedDIN) == buyer);
+		return (registry.owner(expectedDIN) == buyer);
 	}
 
 	function metadata(uint256 DIN) constant returns (bytes32) {

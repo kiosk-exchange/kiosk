@@ -104,6 +104,8 @@ contract EtherMarket is PublicMarket {
 
 		// Buy one DIN.
 		uint256 orderID = buyer.buy(genesis, 1, 0);
+
+		return 0;
 		
 		// Convert the order metadata to the registered DIN.
 		// return uint256(orderStore.metadata(orderID));

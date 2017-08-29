@@ -71,7 +71,8 @@ contract Buyer {
 		orderMaker.setStatus(orderID, OrderUtils.Status.Fulfilled);
 
 		// Return the order ID.
-		return orderID;
+		return 0;
+		// return orderID;
 	}
 
 	/**

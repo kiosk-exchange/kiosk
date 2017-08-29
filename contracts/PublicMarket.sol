@@ -72,7 +72,7 @@ contract PublicMarket is Market {
     }
 
     // Process buy requests from Buyer.
-    function buy(uint256 orderID) only_buyer returns (bool) {
+    function buy(uint256 orderID) returns (bool) {
         // Add proceeds to pending withdrawals.
         uint256 DIN = orderStore.DIN(orderID);
         uint256 quantity = orderStore.quantity(orderID);
@@ -87,7 +87,7 @@ contract PublicMarket is Market {
         require (isFulfilled(orderID) == true);
 
         // Add the proceeds to the seller's balance.
-        pendingWithdrawals[orderID] += orderStore.value(orderID);
+        pendingWithdrawals[orderID] = orderStore.value(orderID);
 
         return true;
     }

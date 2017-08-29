@@ -45,7 +45,8 @@ const deployKiosk = async (deployer, network, accounts) => {
   await deployer.deploy(DINMarket, KioskMarketToken.address);
 
   // Initialize DINProduct, allowing 5 free registrations, then a price of 1 KMT.
-  await deployer.deploy(DINProduct, KioskMarketToken.address, DINMarket.address, 1, 5)
+  await deployer.deploy(DINProduct, KioskMarketToken.address, DINMarket.address, 1, 5);
+  await DINMarket.at(DINMarket.address).setProduct(genesis, DINProduct.address);
 
   await deployer.deploy(DINRegistrar, KioskMarketToken.address);
   await KioskMarketToken.at(KioskMarketToken.address).setRegistrar(DINRegistrar.address);
@@ -102,10 +103,15 @@ const deployEtherMarket = async (deployer, network, accounts) => {
   const registry = await EtherMarket.at(EtherMarket.address).registry();
   console.log(registry);
 
+  const buyer = await EtherMarket.at(EtherMarket.address).buyer();
+  console.log(buyer);
+
+
+
   console.log(EtherMarket.address);
 
-  const owner = await DINRegistry.at(DINRegistry.address).owner(1000000001);
-  console.log(owner);
+  const market = await DINRegistry.at(DINRegistry.address).market(1000000000);
+  console.log(market);
 
   // const KMTBalance = web3.toWei(initialSupply);
 

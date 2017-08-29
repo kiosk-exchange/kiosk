@@ -24,6 +24,8 @@ contract DINProduct is Product {
 	}
 
 	function productTotalPrice(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256) {
+		return 0;
+
 		require(DIN == genesisDIN);
 
 		uint256 freeCount = 0;
