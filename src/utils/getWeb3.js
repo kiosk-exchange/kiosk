@@ -4,17 +4,17 @@ const IS_DEBUG = true;
 
 let getWeb3 = new Promise((resolve, reject) => {
   // Check for a local connection first
-  const provider = new Web3.providers.HttpProvider("http://localhost:8545");
-  const web3 = new Web3(provider);
+  // const provider = new Web3.providers.HttpProvider("http://localhost:8545");
+  // const web3 = new Web3(provider);
 
-  if (web3.isConnected() === true) {
-    if (IS_DEBUG) console.log("********** USING LOCAL WEB3");
-    const results = {
-      web3: web3
-    };
+  // if (web3.isConnected() === true) {
+  //   if (IS_DEBUG) console.log("********** USING LOCAL WEB3");
+  //   const results = {
+  //     web3: web3
+  //   };
 
-    resolve(results);
-  } else {
+  //   resolve(results);
+  // } else {
     window.addEventListener("load", () => {
       let web3 = window.web3;
 
@@ -34,7 +34,7 @@ let getWeb3 = new Promise((resolve, reject) => {
 
       resolve(results);
     });
-  }
+  // }
 });
 
 export { getWeb3 };
