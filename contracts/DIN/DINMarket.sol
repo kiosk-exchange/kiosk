@@ -1,10 +1,10 @@
 pragma solidity ^0.4.11;
 
 import "../KioskMarketToken.sol";
-import "../PublicMarket.sol";
+import "../StandardMarket.sol";
 import "./DINProduct.sol";
 
-contract DINMarket is PublicMarket {
+contract DINMarket is StandardMarket {
 
 	string public name = "DIN Market";
 

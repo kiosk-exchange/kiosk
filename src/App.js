@@ -7,8 +7,6 @@ import { getNetwork } from "./utils/network";
 import { getBuyer, getDINRegistry, getEtherMarket, getKioskMarketToken } from "./utils/contracts";
 import { getEtherBalance, getKMTBalance } from "./utils/contracts";
 import Home from "./Home";
-// import EmptyState from "./pages/EmptyState";
-// import ErrorMessage from "./components/ErrorMessage";
 import ContentContainer from "./components/ContentContainer";
 
 const ERROR = {
@@ -32,8 +30,11 @@ class App extends Component {
       KioskMarketToken: null,
       KMTBalance: null,
       ETHBalance: null,
-      error: null
+      error: null,
+      refresh: false
     };
+
+    this.fullReset = this.fullReset.bind(this);
   }
 
   // TODO: Use Redux
@@ -63,7 +64,7 @@ class App extends Component {
   }
 
   fullReset() {
-    // TODO: Figure out how to reload everything.
+    this.setState({ refresh: true });
   }
 
   refreshWeb3() {
@@ -93,6 +94,8 @@ class App extends Component {
             ) {
               this.getContracts(this.state.web3);
             }
+
+            this.setState({ refresh: false });
           }
         }
       );
@@ -143,7 +146,7 @@ class App extends Component {
           // If there's an empty account array, you're connected to MetaMask but not logged in
           console.log("********** ERROR: LOCKED ACCOUNT");
           app.setState({ error: ERROR.LOCKED_ACCOUNT });
-        } else if (accounts[0] !== app.state.account) {
+        } else if (accounts[0] !== app.state.account || app.state.refresh === true) {
           app.setState({ account: accounts[0] });
 
           // If there's a change, just refresh the entire web3 object

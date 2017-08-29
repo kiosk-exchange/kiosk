@@ -28,7 +28,7 @@ class Market extends Component {
 		const path = this.props.location.pathname;
 		const n = path.lastIndexOf("/");
 		return path.substring(n + 1);
-	}
+	}	
 
 	handleBuy() {
 		console.log("BUY TAPPED")

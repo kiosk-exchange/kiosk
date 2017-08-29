@@ -24,16 +24,16 @@ class ContentContainer extends Component {
     super(props);
 
     /*
-      ===== PRODUCT =====
-      {
-        DIN: string,
-        name: string,
-        owner: string,
-        market: string,
-        price: string,
-        available: bool
-      }
-    */
+        ===== PRODUCT =====
+        {
+          DIN: string,
+          name: string,
+          owner: string,
+          market: string,
+          price: string,
+          available: bool
+        }
+      */
 
     this.state = {
       selectedProduct: {},
@@ -108,13 +108,16 @@ class ContentContainer extends Component {
       this.state.selectedQuantity,
       this.state.totalPrice * 10 ** 18, // Denominate in KMT wei
       this.context.account
-    );
+    ).then(result => {
+      console.log(result);
+
+      // Reload all balances etc.
+      console.log(this.props);
+      this.props.handleReset();
+    });
 
     // Dismiss the modal
     this.setState({ showModal: false });
-
-    // Reload all balances etc.
-    this.props.handleReset();
   }
 
   render() {
@@ -179,12 +182,12 @@ class ContentContainer extends Component {
           );
         case ERROR.CONTRACTS_NOT_DEPLOYED:
           return null;
-          // return (
-          //   <EmptyState
-          //     title="Contracts are not deployed"
-          //     message="truffle migrate --reset"
-          //   />
-          // );
+        // return (
+        //   <EmptyState
+        //     title="Contracts are not deployed"
+        //     message="truffle migrate --reset"
+        //   />
+        // );
         case ERROR.NETWORK_NOT_SUPPORTED:
           return (
             <EmptyState

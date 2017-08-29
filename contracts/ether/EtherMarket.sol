@@ -1,6 +1,6 @@
 pragma solidity ^0.4.11;
 
-import "../PublicMarket.sol";
+import "../StandardMarket.sol";
 import "../Product.sol";
 import "../Buyer.sol";
 import "../OrderStore.sol";
@@ -9,7 +9,7 @@ import "../KioskMarketToken.sol";
 /**
 *  EtherMarket exchanges KMT for ETH. It also sells ETH as a Kiosk Product.
 */
-contract EtherMarket is PublicMarket {
+contract EtherMarket is StandardMarket {
 
 	string public name = "Ether Market";
 

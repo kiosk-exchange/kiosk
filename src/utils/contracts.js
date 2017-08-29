@@ -25,66 +25,51 @@ const getContract = (web3, json) =>
 			});
 	});
 
-const getKioskMarketToken = web3 => {
+export const getKioskMarketToken = web3 => {
 	return getContract(web3, KioskMarketTokenJSON);
 };
-const getBuyer = web3 => {
+export const getBuyer = web3 => {
 	return getContract(web3, BuyerJSON);
 };
-const getDINRegistry = web3 => {
+export const getDINRegistry = web3 => {
 	return getContract(web3, DINRegistryJSON);
 };
-const getDINMarket = web3 => {
+export const getDINMarket = web3 => {
 	return getContract(web3, DINMarketJSON);
 };
-const getPublicMarket = web3 => {
+export const getPublicMarket = web3 => {
 	return getContract(web3, PublicMarketJSON);
 };
-const getENS = web3 => {
+export const getENS = web3 => {
 	return getContract(web3, ENSJSON);
 };
-const getENSMarket = web3 => {
+export const getENSMarket = web3 => {
 	return getContract(web3, ENSMarketJSON);
 };
-const getENSProduct = web3 => {
+export const getENSProduct = web3 => {
 	return getContract(web3, ENSProductJSON);
 };
-const getOrderStore = web3 => {
+export const getOrderStore = web3 => {
 	return getContract(web3, OrderStoreJSON);
 };
-const getEtherMarket = web3 => {
+export const getEtherMarket = web3 => {
 	return getContract(web3, EtherMarketJSON);
 };
 
-const getEtherBalance = (web3, account) =>
+export const getEtherBalance = (web3, account) =>
 	new Promise((resolve, reject) => {
 		web3.eth.getBalance(account, (err, result) => {
-			const balance = web3.fromWei(result, "ether").toNumber()
-			resolve(balance)
+			const balance = web3.fromWei(result, "ether").toNumber();
+			resolve(balance);
 		});
 	});
 
-const getKMTBalance = (web3, account) =>
+export const getKMTBalance = (web3, account) =>
 	new Promise((resolve, reject) => {
 		getKioskMarketToken(web3).then(KMT => {
 			KMT.balanceOf(account, (err, result) => {
-				const balance = web3.fromWei(result, "ether").toNumber()
-				resolve(balance)
+				const balance = web3.fromWei(result, "ether").toNumber();
+				resolve(balance);
 			});
 		});
 	});
-
-export {
-	getKioskMarketToken,
-	getBuyer,
-	getDINRegistry,
-	getDINMarket,
-	getPublicMarket,
-	getENS,
-	getENSMarket,
-	getENSProduct,
-	getOrderStore,
-	getEtherMarket,
-	getEtherBalance,
-	getKMTBalance
-};

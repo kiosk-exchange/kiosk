@@ -34,14 +34,14 @@ contract Buyer {
 		address marketAddr = registry.market(DIN);
 		Market market = Market(marketAddr);
 
-		// The buyer must have enough tokens for the purchase.
-		require (KMT.balanceOf(msg.sender) >= value);
+		// // The buyer must have enough tokens for the purchase.
+		// require (KMT.balanceOf(msg.sender) >= value);
 
-		// The requested quantity must be available for sale.
-		require(market.availableForSale(DIN, quantity, msg.sender) == true);
+		// // The requested quantity must be available for sale.
+		// require(market.availableForSale(DIN, quantity, msg.sender) == true);
 
-		// The value must match the market price. 
-		require(market.totalPrice(DIN, quantity, msg.sender) == value);
+		// // The value must match the market price. 
+		// require(market.totalPrice(DIN, quantity, msg.sender) == value);
 
 		// Add the order to the order tracker and get the order ID.
 		uint256 orderID = orderMaker.addOrder(
@@ -60,7 +60,7 @@ contract Buyer {
 
 		// Throw if the market does not fulfill the order.
 		// Right now, Buyer only supports transactions that can be settled immediately (e.g., instant delivery).
-		require(market.isFulfilled(orderID) == true);
+		// require(market.isFulfilled(orderID) == true);
 			
 		// Transfer the value of the order from the buyer to the market.
 		if (value > 0) {
