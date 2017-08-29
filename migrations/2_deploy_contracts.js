@@ -105,12 +105,6 @@ const deployENS = async (deployer, network, accounts) => {
 
   await ENSProduct.at(ENSProduct.address).addENSDomain(subnodeName, subnodeNameHash, subnodePrice);
 
-  const product = await ENSMarket.at(ENSMarket.address).product(1000000002);
-  console.log(product);
-
-  const price = await ENSMarket.at(ENSMarket.address).totalPrice(1000000002, 1, accounts[0]);
-  console.log(price.toNumber());
-
   // Transfer ownership of "example.eth" to the ENSPublicProduct
   await ENS.at(ENS.address).setOwner(subnodeNameHash, ENSProduct.address);
 };
