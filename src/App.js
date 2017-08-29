@@ -4,7 +4,12 @@ import { Route } from "react-router-dom";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import { getWeb3 } from "./utils/getWeb3";
 import { getNetwork } from "./utils/network";
-import { getBuyer, getDINRegistry, getEtherMarket, getKioskMarketToken } from "./utils/contracts";
+import {
+  getBuyer,
+  getDINRegistry,
+  getEtherMarket,
+  getKioskMarketToken
+} from "./utils/contracts";
 import { getEtherBalance, getKMTBalance } from "./utils/contracts";
 import Home from "./Home";
 import ContentContainer from "./components/ContentContainer";
@@ -35,6 +40,8 @@ class App extends Component {
     };
 
     this.fullReset = this.fullReset.bind(this);
+    // this.fetchAccount = this.fetchAccount.bind(this);
+    // this.fetchNetwork = this.fetchNetwork
   }
 
   // TODO: Use Redux
@@ -86,8 +93,10 @@ class App extends Component {
             });
           } else {
             // Get account and network and listen for changes
-            this.getAccount();
-            this.getNetwork();
+            // this.getAccount();
+            // this.getNetwork();
+
+            this.fetchAccount();
 
             // Get contracts and handle errors
             if (
@@ -106,10 +115,15 @@ class App extends Component {
   getContracts(web3) {
     let DINRegistryPromise = getDINRegistry(web3);
     let EtherMarketPromise = getEtherMarket(web3);
-    let KioskMarketTokenPromise = getKioskMarketToken(web3)
+    let KioskMarketTokenPromise = getKioskMarketToken(web3);
     let BuyerPromise = getBuyer(web3);
 
-    Promise.all([DINRegistryPromise, EtherMarketPromise, KioskMarketTokenPromise, BuyerPromise]).then(
+    Promise.all([
+      DINRegistryPromise,
+      EtherMarketPromise,
+      KioskMarketTokenPromise,
+      BuyerPromise
+    ]).then(
       results => {
         this.setState({ DINRegistry: results[0] });
         this.setState({ etherMarket: results[1] });
@@ -133,51 +147,38 @@ class App extends Component {
     });
   }
 
-  // https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#ear-listening-for-selected-account-changes
-  getAccount() {
-    var accountInterval = setInterval(fetch, 10000);
-    var app = this;
+  // TODO: Add listener https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#ear-listening-for-selected-account-changes
+  fetchAccount() {
+    this.state.web3.eth.getAccounts((error, accounts) => {
+      // If there's no accounts, you're not connected to a node
+      if (!accounts) {
+        this.setState({ error: ERROR.NOT_CONNECTED });
+      } else if (!accounts[0] && !this.state.error) {
+        // If there's an empty account array, you're connected to MetaMask but not logged in
+        console.log("********** ERROR: LOCKED ACCOUNT");
+        this.setState({ error: ERROR.LOCKED_ACCOUNT });
+      } else if (
+        accounts[0] !== this.state.account ||
+        this.state.refresh === true
+      ) {
+        this.setState({ account: accounts[0] });
 
-    function fetch() {
-      app.state.web3.eth.getAccounts((error, accounts) => {
-        // If there's no accounts, you're not connected to a node
-        if (!accounts) {
-          app.setState({ error: ERROR.NOT_CONNECTED });
-        } else if (!accounts[0] && !app.state.error) {
-          // If there's an empty account array, you're connected to MetaMask but not logged in
-          console.log("********** ERROR: LOCKED ACCOUNT");
-          app.setState({ error: ERROR.LOCKED_ACCOUNT });
-        } else if (accounts[0] !== app.state.account || app.state.refresh === true) {
-          app.setState({ account: accounts[0] });
-
-          // If there's a change, just refresh the entire web3 object
-          clearInterval(accountInterval);
-          app.getBalances();
-          app.refreshWeb3();
-        }
-      });
-    }
+        // If there's a change, just refresh the entire web3 object
+        this.getBalances();
+      }
+    });
   }
 
-  getNetwork() {
-    var networkInterval = setInterval(fetch, 10000);
-    var app = this;
+  fetchNetwork() {
+    // TODO: Handle dropped connection
+    if (this.state.web3.version.network !== this.state.network.id) {
+      const network = getNetwork(this.state.web3.version.network);
+      console.log("********** " + network.name.toUpperCase());
+      this.setState({ network: network });
 
-    function fetch() {
-      // TODO: Handle dropped connection
-      if (app.state.web3.version.network !== app.state.network.id) {
-        const network = getNetwork(app.state.web3.version.network);
-        console.log("********** " + network.name.toUpperCase());
-        app.setState({ network: network });
-
-        // If it's a real network (not TestRPC), and not Kovan, log not supported error.
-        if (parseInt(network.id, 10) < 100 && network.id !== "42") {
-          app.setState({ error: ERROR.NETWORK_NOT_SUPPORTED });
-        } else {
-          // If there's a change, just refresh the entire web3 object
-          clearInterval(networkInterval);
-          app.refreshWeb3();
-        }
+      // If it's a real network (not TestRPC), and not Kovan, log not supported error.
+      if (parseInt(network.id, 10) < 100 && network.id !== "42") {
+        this.setState({ error: ERROR.NETWORK_NOT_SUPPORTED });
       }
     }
   }

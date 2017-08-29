@@ -9,18 +9,33 @@ class BaseTableContainer extends Component {
 			color: this.context.theme.gray,
 			fontWeight: "medium"
 		};
+
+		let loader = null;
+
+		if (this.props.loading === true) {
+			loader = (
+				<CircularProgress
+					style={{ marginLeft: "auto", paddingRight: "20px" }}
+					size={40}
+					thickness={6}
+					color={this.context.theme.blue}
+				/>
+			);
+		}
+
 		return (
 			<div style={{ display: "flex", flexDirection: "column" }}>
-				<div style={{ display: "flex", width: "100%", alignItems: "center" }}>
+				<div
+					style={{
+						display: "flex",
+						width: "100%",
+						alignItems: "center"
+					}}
+				>
 					<h1 style={headerStyle}>
 						{this.props.title}
 					</h1>
-					<CircularProgress
-						style={{ marginLeft: "auto", paddingRight: "20px" }}
-						size={40}
-						thickness={6}
-						color={this.context.theme.blue}
-					/>
+					{loader}
 				</div>
 				<BaseTable {...this.props} />
 			</div>

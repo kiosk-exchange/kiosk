@@ -7,10 +7,16 @@ import BuyColumn from "./BuyColumn";
 
 class MarketplaceTable extends Component {
   render() {
+    let loading = false;
+    if (this.props.products.length === 0) {
+      loading = true;
+    }
+
     return (
       <BaseTableContainer
         title="All Products"
         headers={["DIN", "Name", "Price (KMT)", "Market", "Buy"]}
+        loading={loading}
         rows={this.props.products.map(product => {
           return (
             <TableRow style={tableRowStyle} key={product.DIN}>
