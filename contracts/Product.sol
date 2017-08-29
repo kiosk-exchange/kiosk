@@ -7,9 +7,9 @@ import "./OrderStore.sol";
 import "./Buyer.sol";
 
 contract ProductInterface {
-	function fulfill(uint256 orderID, uint256 DIN, uint256 quantity, address buyer);
-	function productAvailableForSale(uint256 DIN, uint256 quantity, address buyer) constant returns (bool);
 	function productTotalPrice(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256);
+	function productAvailableForSale(uint256 DIN, uint256 quantity, address buyer) constant returns (bool);
+	function fulfill(uint256 orderID, uint256 DIN, uint256 quantity, address buyer);
 }
 
 /**
@@ -41,11 +41,13 @@ contract Product is ProductInterface {
 		_;
 	}
 
-	// Constructor
-	function Product(KioskMarketToken _KMT, address _market) {
-		KMT = _KMT;
-		market = _market;
-		updateKiosk();
+	// Allows for multiple inheritance for contracts that act as both Market and Product
+	function configureProduct(KioskMarketToken _KMT, address _market) internal {
+		if (address(KMT) == 0x0 && market == 0x0) {
+			KMT = _KMT;
+			market = _market;
+			updateKiosk();
+		}
 	}
 
 	// Buy a DIN. Sometimes it is necessary for a product to be able to do this.
@@ -59,7 +61,9 @@ contract Product is ProductInterface {
 		uint256 price = buyer.totalPrice(genesis, 1, address(this));
 
 		// Take enough KMT from the buyer to purchase a new DIN.
-		KMT.transferFrom(msg.sender, address(this), price);
+		if (price > 0) {
+			KMT.transferFrom(msg.sender, address(this), price);
+		}
 
 		// Buy one DIN.
 		uint256 orderID = buyer.buy(genesis, 1, price);

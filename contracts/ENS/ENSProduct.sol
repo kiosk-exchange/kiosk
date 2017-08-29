@@ -24,11 +24,8 @@ contract ENSProduct is Product {
 	mapping (bytes32 => address) sellers;
 
 	// Constructor
-	function ENSProduct(
-		KioskMarketToken _KMT, 
-		address _market,
-		ENS _ens
-	) Product(_KMT, _market) {
+	function ENSProduct(KioskMarketToken _KMT, address _market, ENS _ens) {
+		configureProduct(_KMT, _market);
 		ens = _ens;
 	}
 

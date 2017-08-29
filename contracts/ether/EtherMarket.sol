@@ -2,16 +2,19 @@ pragma solidity ^0.4.11;
 
 import "../PublicMarket.sol";
 import "../Product.sol";
+import "../Buyer.sol";
+import "../OrderStore.sol";
 import "../KioskMarketToken.sol";
-import "../OrderTracker.sol";
 
 /**
 *  EtherMarket exchanges KMT for ETH. It also sells ETH as a Kiosk Product.
 */
-contract EtherMarket is PublicMarket, Product {
+contract EtherMarket is PublicMarket {
+
+	string public name = "Ether Market";
 
 	// The DIN for ETH
-	uint256 public ETH_DIN;
+	uint256 public ethDIN;
 
 	// How many KMT a buyer gets per wei.
 	uint256 public rate = 300;
@@ -20,11 +23,16 @@ contract EtherMarket is PublicMarket, Product {
 	mapping (uint256 => uint256) public initialBalances;
 
 	// Constructor
-	function EtherMarket(KioskMarketToken _KMT, uint256 _DIN) PublicMarket(_KMT) {
-		ETH_DIN = _DIN;
-		products[_DIN].priceResolver = this;
-		products[_DIN].inventoryResolver = this;
-		products[_DIN].buyHandler = this;
+	function EtherMarket(KioskMarketToken _KMT) PublicMarket(_KMT) {
+		// // Register a DIN to this contract. 
+		// // Any exchange from KMT back into Ether will exist on this contract and can be resold.
+		uint256 DIN = registerDIN();
+
+		// Set the market for the newly registered DIN to this contract.
+		// registry.setMarket(DIN, address(this));
+
+		// ethDIN = DIN;
+		// products[DIN] = address(this);
 	}
 
 	// Get KMT
@@ -39,12 +47,35 @@ contract EtherMarket is PublicMarket, Product {
 		KMT.transfer(msg.sender, issuableKMT);
 	}
 
-	// TODO: Add withdraw logic
-	function withdraw() {}
+	/**
+	*	==============================
+	*	          Market
+	*	==============================
+	*/
+	function buy(uint256 orderID) only_buyer returns (bool) {
+        // Add proceeds to pending withdrawals.
+        uint256 DIN = orderStore.DIN(orderID);
 
-	function orderData(uint256 DIN, address buyer) constant returns (bytes32) {
+        require (DIN == ethDIN);
+
+        uint256 quantity = orderStore.quantity(orderID);
+        address buyer = orderStore.buyer(orderID);
+
+        uint256 etherQuantity = quantity * 10**18;
+
+		// Throw if this contract doesn't have enough ETH
+		require (this.balance >= etherQuantity);
+
+		// Transfer ETH to the buyer
+		buyer.transfer(etherQuantity);
+
+        return true;
+    }
+
+	function metadata(uint256 DIN) constant returns (bytes32) {
+		require (DIN == ethDIN);
 		// You're buying ether in this market.
-		return keccak256(name(DIN));
+		return keccak256(nameOf(DIN));
 	}
 
 	// TODO: This should implement some logic to prove it is a fair market.
@@ -52,32 +83,30 @@ contract EtherMarket is PublicMarket, Product {
 		return true;
 	}
 
-	// Kiosk Protocol
-	function name(uint256 DIN) constant returns (string) {
-		require(DIN == ETH_DIN);
+	function nameOf(uint256 DIN) constant returns (string) {
+		require(DIN == ethDIN);
 		return "1 Ether (ETH)";
 	}
 
-	// Product
 	function totalPrice(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256) {
-		require(DIN == ETH_DIN);
+		require(DIN == ethDIN);
 		return quantity * rate * 10**18; // 10^18 wei per ether
 	}
 
-	function isAvailableForSale(uint256 DIN, uint256 quantity, address buyer) constant returns (bool) {
-		require(DIN == ETH_DIN);
+	function availableForSale(uint256 DIN, uint256 quantity, address buyer) constant returns (bool) {
+		require(DIN == ethDIN);
 		return (this.balance >= quantity);
 	}
 
-	function handleOrder(uint256 orderID, uint256 DIN, uint256 quantity, address buyer) {
-		require(DIN == ETH_DIN);
+	function registerDIN() private returns (uint256) {
+		// Register a new DIN.
+		uint256 genesis = registry.genesis();
 
-		uint256 etherQuantity = quantity * 10**18;
-
-		// Throw if this contract doesn't have enough ETH
-		require (this.balance >= etherQuantity);
-		// Transfer ETH to the buyer
-		buyer.transfer(etherQuantity);
+		// Buy one DIN.
+		uint256 orderID = buyer.buy(genesis, 1, 0);
+		
+		// Convert the order metadata to the registered DIN.
+		// return uint256(orderStore.metadata(orderID));
 	}
 
 }

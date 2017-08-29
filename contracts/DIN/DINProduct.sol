@@ -15,12 +15,9 @@ contract DINProduct is Product {
 	uint256 public genesisDIN;
 
 	// Constructor
-	function DINProduct(
-		KioskMarketToken _KMT,
-		address _market, 
-		uint256 _price, 
-		uint256 _free
-	) Product(_KMT, _market) {
+	function DINProduct(KioskMarketToken _KMT, address _market, uint256 _price, uint256 _free) {
+		configureProduct(_KMT, _market);
+
 		genesisDIN = registry.genesis();
 		price = _price;
 		free = _free;

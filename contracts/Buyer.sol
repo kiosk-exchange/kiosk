@@ -63,7 +63,9 @@ contract Buyer {
 		require(market.isFulfilled(orderID) == true);
 			
 		// Transfer the value of the order from the buyer to the market.
-		KMT.transferFrom(msg.sender, market, value);
+		if (value > 0) {
+			KMT.transferFrom(msg.sender, market, value);
+		}
 
 		// Mark the order fulfilled.
 		orderMaker.setStatus(orderID, OrderUtils.Status.Fulfilled);

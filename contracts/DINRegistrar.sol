@@ -28,6 +28,7 @@ contract DINRegistrar {
     function DINRegistrar(KioskMarketToken _KMT) {
         KMT = _KMT;
         updateKiosk();
+        index = registry.genesis();
     }
 
     /**

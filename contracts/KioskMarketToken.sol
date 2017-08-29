@@ -1,6 +1,5 @@
 pragma solidity ^0.4.11;
 
-import "./Market.sol";
 import "zeppelin-solidity/contracts/token/StandardToken.sol";
 
 contract KioskMarketToken is StandardToken {
@@ -44,8 +43,9 @@ contract KioskMarketToken is StandardToken {
 
 	function KioskMarketToken(uint256 _totalSupply) {
 		owner = msg.sender;
-		balances[msg.sender] = _totalSupply;   // Give the creator all initial tokens
-		totalSupply = _totalSupply;            // Update total supply
+
+		balances[msg.sender] = _totalSupply;	// Give the creator all initial tokens
+		totalSupply = _totalSupply;				// Update total supply
 	}
 
 	function setOwner(address _owner) only_owner {

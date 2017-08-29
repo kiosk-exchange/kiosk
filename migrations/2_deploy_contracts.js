@@ -21,8 +21,6 @@ const subnodeNameHash = namehash(subnodeName);
 const price = web3.toWei(2, "ether");
 const initialSupply = 1000000; // Initialize KMT with 1 million tokens
 const genesis = 1000000000; // The genesis DIN (used for DIN product)
-const etherDIN = 1000000001; // The first DIN registered (used for Ether product)
-const ENSDIN = 1000000002; // The second DIN registered (used for demo ENS domain product)
 
 /**
  * Calculate root node hashes given the top level domain(tld)
@@ -38,6 +36,7 @@ function getRootNodeFromTLD(tld) {
 const deployKiosk = async (deployer, network, accounts) => {
   // Deploy the Kiosk protocol contracts.
   await deployer.deploy(Buyer, KioskMarketToken.address);
+  await KioskMarketToken.at(KioskMarketToken.address).setBuyer(Buyer.address);
 
   // Intitialize DINRegistry with a genesis DIN of 10000000000 and bind it to KMT.
   await deployer.deploy(DINRegistry, KioskMarketToken.address, genesis);
@@ -63,6 +62,9 @@ const deployKiosk = async (deployer, network, accounts) => {
   await DINRegistrar.at(DINRegistrar.address).updateKiosk();
   await OrderStore.at(OrderStore.address).updateKiosk();
   await OrderMaker.at(OrderMaker.address).updateKiosk();
+  await DINMarket.at(DINMarket.address).updateKiosk();
+
+  await DINRegistry.at(DINRegistry.address).setMarket(genesis, DINMarket.address);
 };
 
 const deployENS = async (deployer, network, accounts) => {
@@ -95,21 +97,24 @@ const deployENS = async (deployer, network, accounts) => {
 
 const deployEtherMarket = async (deployer, network, accounts) => {
   // Deploy Ether Market contract (KMT crowdsale / ETH product)
-  await deployer.deploy(EtherMarket, KioskMarketToken.address, etherDIN);
+  await deployer.deploy(EtherMarket, KioskMarketToken.address);
 
-  // Set the market for the ether DIN to the Ether Market
-  await DINRegistry.at(DINRegistry.address).setMarket(
-    etherDIN,
-    EtherMarket.address
-  );
+  const registry = await EtherMarket.at(EtherMarket.address).registry();
+  console.log(registry);
 
-  const KMTBalance = web3.toWei(initialSupply);
+  console.log(EtherMarket.address);
 
-  // Transfer the entire KMT balance to EtherMarket.
-  await KioskMarketToken.at(KioskMarketToken.address).transfer(
-    EtherMarket.address,
-    KMTBalance
-  );
+  const owner = await DINRegistry.at(DINRegistry.address).owner(1000000001);
+  console.log(owner);
+
+  // const KMTBalance = web3.toWei(initialSupply);
+
+  // // Transfer the entire KMT balance to EtherMarket.
+  // await KioskMarketToken.at(KioskMarketToken.address).transfer(
+  //   EtherMarket.address,
+  //   KMTBalance
+  // );
+  
 };
 
 const deployENSMarket = async (deployer, network, accounts) => {
@@ -149,7 +154,7 @@ module.exports = async (deployer, network, accounts) => {
   deployer.deploy(KioskMarketToken, initialSupply).then(async () => {
     await deployKiosk(deployer, network, accounts);
     await deployENS(deployer, network, accounts);
-    // await deployEtherMarket(deployer, network, accounts);
+    await deployEtherMarket(deployer, network, accounts);
     // await deployENSMarket(deployer, network, accounts);
   });
 };

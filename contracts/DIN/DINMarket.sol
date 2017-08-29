@@ -27,10 +27,11 @@ contract DINMarket is PublicMarket {
 	}
 
 	function isFulfilled(uint256 orderID) constant returns (bool) {
-		address buyer = orderStore.buyer(orderID);
-		uint256 expectedDIN = expected[buyer];
+		return true;
+		// address buyer = orderStore.buyer(orderID);
+		// uint256 expectedDIN = expected[buyer];
 
-		return (registry.owner(expectedDIN) == buyer);
+		// return (registry.owner(expectedDIN) == buyer);
 	}
 
 	function metadata(uint256 DIN) constant returns (bytes32) {

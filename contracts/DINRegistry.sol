@@ -2,7 +2,6 @@ pragma solidity ^0.4.11;
 
 import "./Market.sol";
 import "./KioskMarketToken.sol";
-import "./DIN/DINMarket.sol";
 
 /**
 *  This is the Decentralized Identification Number (DIN) registry.
