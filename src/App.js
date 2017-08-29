@@ -135,7 +135,7 @@ class App extends Component {
 
   // https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#ear-listening-for-selected-account-changes
   getAccount() {
-    var accountInterval = setInterval(fetch, 100);
+    var accountInterval = setInterval(fetch, 10000);
     var app = this;
 
     function fetch() {
@@ -160,7 +160,7 @@ class App extends Component {
   }
 
   getNetwork() {
-    var networkInterval = setInterval(fetch, 100);
+    var networkInterval = setInterval(fetch, 10000);
     var app = this;
 
     function fetch() {
