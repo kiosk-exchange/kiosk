@@ -39,7 +39,7 @@ class Market extends Component {
 	}
 
 	render() {
-		if (this.context.refresh == true) {
+		if (this.context.refresh === true) {
 			this.getData();
 		}
 
