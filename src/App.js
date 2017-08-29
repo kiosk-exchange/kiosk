@@ -173,14 +173,16 @@ class App extends Component {
   fetchNetwork() {
     // TODO: Handle dropped connection
     if (this.state.web3.version.network !== this.state.network.id) {
-      const network = getNetwork(this.state.web3.version.network);
-      console.log("********** " + network.name.toUpperCase());
-      this.setState({ network: network });
+      this.state.web3.version.getNetwork((error, result) => {
+        const network = getNetwork(result);
+        console.log("********** " + network.name.toUpperCase());
+        this.setState({ network: network });
 
-      // If it's a real network (not TestRPC), and not Kovan, log not supported error.
-      if (parseInt(network.id, 10) < 100 && network.id !== "42") {
-        this.setState({ error: ERROR.NETWORK_NOT_SUPPORTED });
-      }
+        // If it's a real network (not TestRPC), and not Kovan, log not supported error.
+        if (parseInt(network.id, 10) < 100 && network.id !== "42") {
+          this.setState({ error: ERROR.NETWORK_NOT_SUPPORTED });
+        }
+      });
     }
   }
 
