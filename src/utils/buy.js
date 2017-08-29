@@ -1,5 +1,5 @@
-export const buyProduct = (KMT, DIN, quantity, value, buyer) => {
-	KMT.buy(
+export const buyProduct = (Buyer, DIN, quantity, value, buyer) => {
+	Buyer.buy(
 		DIN,
 		quantity,
 		value,

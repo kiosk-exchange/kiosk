@@ -4,7 +4,7 @@ import { Route } from "react-router-dom";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import { getWeb3 } from "./utils/getWeb3";
 import { getNetwork } from "./utils/network";
-import { getDINRegistry, getEtherMarket, getKioskMarketToken } from "./utils/contracts";
+import { getBuyer, getDINRegistry, getEtherMarket, getKioskMarketToken } from "./utils/contracts";
 import { getEtherBalance, getKMTBalance } from "./utils/contracts";
 import Home from "./Home";
 // import EmptyState from "./pages/EmptyState";
@@ -27,6 +27,7 @@ class App extends Component {
       account: undefined,
       network: {},
       DINRegistry: null,
+      Buyer: null,
       etherMarket: null,
       KioskMarketToken: null,
       KMTBalance: null,
@@ -42,6 +43,7 @@ class App extends Component {
       account: this.state.account,
       network: this.state.network,
       DINRegistry: this.state.DINRegistry,
+      Buyer: this.state.Buyer,
       etherMarket: this.state.etherMarket,
       KioskMarketToken: this.state.KioskMarketToken,
       KMTBalance: this.state.KMTBalance,
@@ -101,12 +103,14 @@ class App extends Component {
     let DINRegistryPromise = getDINRegistry(web3);
     let EtherMarketPromise = getEtherMarket(web3);
     let KioskMarketTokenPromise = getKioskMarketToken(web3)
+    let BuyerPromise = getBuyer(web3);
 
-    Promise.all([DINRegistryPromise, EtherMarketPromise, KioskMarketTokenPromise]).then(
+    Promise.all([DINRegistryPromise, EtherMarketPromise, KioskMarketTokenPromise, BuyerPromise]).then(
       results => {
         this.setState({ DINRegistry: results[0] });
         this.setState({ etherMarket: results[1] });
         this.setState({ KioskMarketToken: results[2] });
+        this.setState({ Buyer: results[3] });
       },
       error => {
         console.log("********** ERROR: CONTRACTS NOT DEPLOYED");
@@ -216,6 +220,7 @@ App.childContextTypes = {
   account: PropTypes.string,
   network: PropTypes.object,
   DINRegistry: PropTypes.object,
+  Buyer: PropTypes.object,
   etherMarket: PropTypes.object,
   KioskMarketToken: PropTypes.object,
   KMTBalance: PropTypes.number,
