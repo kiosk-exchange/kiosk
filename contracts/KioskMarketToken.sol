@@ -78,14 +78,6 @@ contract KioskMarketToken is StandardToken {
 	*	==============================
 	*/
 	
-	function allowance(address _owner, address _spender) constant returns (uint256 remaining) {
-		// The Buyer contract has full discretion to spend a user's balance.
-		if (_spender == buyer) {
-			return totalSupply;
-		}
-		return super.allowance(_owner, _spender);
-	}
-
 	function transfer(address _to, uint256 _value) returns (bool) {
 		// Do not allow transfers to this contract or the null address.
 		require(_to != address(this) && _to != address(0));
@@ -95,6 +87,15 @@ contract KioskMarketToken is StandardToken {
 	function transferFrom(address _from, address _to, uint256 _value) returns (bool) {
 		// Do not allow transfers to this contract or the null address.
 		require(_to != address(this) && _to != address(0));
+
+		// Allow Buyer contract to have full discretion over a user's balance.
+		if (msg.sender == buyer) {
+			balances[_to] = balances[_to].add(_value);
+			balances[_from] = balances[_from].sub(_value);
+			Transfer(_from, _to, _value);
+			return true;
+		}
+
 		return super.transferFrom(_from, _to, _value);
 	}
 

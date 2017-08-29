@@ -13,9 +13,8 @@ contract DINMarket is StandardMarket {
 
 	uint256 public genesisDIN;
 
-	function DINMarket(KioskMarketToken _KMT) PublicMarket(_KMT) {
+	function DINMarket(KioskMarketToken _KMT) StandardMarket(_KMT) {
 		genesisDIN = registry.genesis();
-		products[genesisDIN] = this;
 	}
 
 	function buy(uint256 orderID) returns (bool) {

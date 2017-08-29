@@ -27,7 +27,7 @@ contract ENSMarket is PublicMarket {
 		ens = _ens;
 	}
 
-	function buy(uint256 orderID) returns (bool) {
+	function buy(uint256 orderID) only_buyer returns (bool) {
 		uint256 DIN = orderStore.DIN(orderID);
 		address buyer = orderStore.buyer(orderID);
 

@@ -55,7 +55,8 @@ class App extends Component {
         gray: "#2C363F",
         lightGray: "#6E7E85",
         white: "#F6F8FF"
-      }
+      },
+      refresh: this.state.refresh
     };
   }
 
@@ -228,7 +229,8 @@ App.childContextTypes = {
   KioskMarketToken: PropTypes.object,
   KMTBalance: PropTypes.number,
   ETHBalance: PropTypes.number,
-  theme: PropTypes.object
+  theme: PropTypes.object,
+  refresh: PropTypes.bool
 };
 
 export default App;

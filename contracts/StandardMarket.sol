@@ -14,7 +14,7 @@ import "./OrderUtils.sol";
 *  This is a base implementation of a Market that is used by Kiosk's market contracts (DINMarket, EtherMarket, ENSMarket, etc.).
 *  Subclasses must implement name, nameOf, isFulfilled, and metadata.
 */
-contract KioskMarket is Market {
+contract StandardMarket is Market {
 
     // The Kiosk Market Token contract.
     KioskMarketToken public KMT;
@@ -33,6 +33,12 @@ contract KioskMarket is Market {
 
     // The OrderStore contract from the Kiosk protocl.
     OrderStore public orderStore;
+
+    // Only let the Buyer contract call "buy"
+    modifier only_buyer {
+        require (buyer == msg.sender);
+        _;
+    }
 
     // This contract does not accept Ether transfers.
     function () {

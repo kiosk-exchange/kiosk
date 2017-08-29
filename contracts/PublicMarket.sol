@@ -22,11 +22,6 @@ contract PublicMarket is StandardMarket {
     // Order ID => Amount paid
     mapping (uint256 => uint256) public pendingWithdrawals;
 
-    modifier only_buyer {
-        require (buyer == msg.sender);
-        _;
-    }
-
     modifier only_owner(uint256 DIN) {
         require (registry.owner(DIN) == msg.sender);
         _;
@@ -48,7 +43,7 @@ contract PublicMarket is StandardMarket {
     }
 
     // Constructor
-    function PublicMarket(KioskMarketToken _KMT) {
+    function PublicMarket(KioskMarketToken _KMT) StandardMarket(_KMT) {
         KMT = _KMT;
         updateKiosk();
     }

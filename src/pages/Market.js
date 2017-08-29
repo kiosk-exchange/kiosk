@@ -15,6 +15,10 @@ class Market extends Component {
 	}
 
 	componentWillMount() {
+		this.getData();
+	}
+
+	getData() {
 		getMarketProducts(
 			this.context.DINRegistry,
 			this.getMarket(),
@@ -24,17 +28,21 @@ class Market extends Component {
 		});
 	}
 
+	handleBuyClick(product) {
+		this.props.handleBuyClick(product);
+	}
+
 	getMarket() {
 		const path = this.props.location.pathname;
 		const n = path.lastIndexOf("/");
 		return path.substring(n + 1);
-	}	
-
-	handleBuy() {
-		console.log("BUY TAPPED")
 	}
 
 	render() {
+		if (this.context.refresh == true) {
+			this.getData();
+		}
+
 		return (
 			<MarketTable
 				title={this.getMarket().slice(0, 12)}
@@ -48,7 +56,8 @@ class Market extends Component {
 Market.contextTypes = {
 	web3: PropTypes.object,
 	account: PropTypes.string,
-	DINRegistry: PropTypes.object
+	DINRegistry: PropTypes.object,
+	refresh: PropTypes.bool
 };
 
 export default Market;

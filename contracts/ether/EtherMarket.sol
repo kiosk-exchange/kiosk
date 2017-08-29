@@ -10,7 +10,6 @@ import "../KioskMarketToken.sol";
 *  EtherMarket exchanges KMT for ETH. It also sells ETH as a Kiosk Product.
 */
 contract EtherMarket is StandardMarket {
-
 	string public name = "Ether Market";
 
 	// The DIN for ETH
@@ -23,7 +22,7 @@ contract EtherMarket is StandardMarket {
 	mapping (uint256 => uint256) public initialBalances;
 
 	// Constructor
-	function EtherMarket(KioskMarketToken _KMT) PublicMarket(_KMT) {
+	function EtherMarket(KioskMarketToken _KMT) StandardMarket(_KMT) {
 		// Register a DIN to this contract. 
 		// Any exchange from KMT back into Ether will exist on this contract and can be resold.
 		uint256 DIN = registerDIN();
@@ -32,7 +31,6 @@ contract EtherMarket is StandardMarket {
 		registry.setMarket(DIN, this);
 
 		ethDIN = DIN;
-		products[DIN] = this;
 	}
 
 	// Get KMT
@@ -54,7 +52,6 @@ contract EtherMarket is StandardMarket {
 	*/
 
 	function buy(uint256 orderID) only_buyer returns (bool) {
-        // Add proceeds to pending withdrawals.
         uint256 DIN = orderStore.DIN(orderID);
 
         require (DIN == ethDIN);
