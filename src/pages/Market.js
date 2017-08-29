@@ -17,11 +17,17 @@ class Market extends Component {
 	componentWillMount() {
 		getMarketProducts(
 			this.context.DINRegistry,
-			this.props.match.params.market,
+			this.getMarket(),
 			this.context.web3
 		).then(products => {
 			this.setState({ products: products });
 		});
+	}
+
+	getMarket() {
+		const path = this.props.location.pathname;
+		const n = path.lastIndexOf("/");
+		return path.substring(n + 1);
 	}
 
 	handleBuy() {
@@ -31,7 +37,7 @@ class Market extends Component {
 	render() {
 		return (
 			<MarketTable
-				title={this.props.match.params.market.slice(0, 12)}
+				title={this.getMarket().slice(0, 12)}
 				products={this.state.products}
 				handleBuy={this.handleBuy}
 			/>

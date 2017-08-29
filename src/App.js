@@ -199,6 +199,7 @@ class App extends Component {
               ETHBalance={this.state.ETHBalance}
             >
               <ContentContainer
+                {...props}
                 error={this.state.error}
                 handleReset={this.fullReset}
               />
