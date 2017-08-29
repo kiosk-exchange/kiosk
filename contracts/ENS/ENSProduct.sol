@@ -30,7 +30,7 @@ contract ENSProduct is Product {
 
 	// You need to approve this contract to spend enough KMT to purchase a DIN before calling this.
 	// AFTER you call this method, transfer ownership of the domain to this contract.
-	function addENSDomain(string name, bytes32 node, uint256 price) constant returns (uint256) {
+	function addENSDomain(string name, bytes32 node, uint256 price) returns (uint256) {
 		// Make sure this contract doesn't already own the domain.
 		// This protects sellers against someone stealing their product.
 		require(ens.owner(node) != address(this));
@@ -50,6 +50,7 @@ contract ENSProduct is Product {
 		registry.setMarket(DIN, market);
 		// Add the domain to ENS Market.
 		ensMarket.addDomain(DIN, name, node);
+		ensMarket.setProduct(DIN, this);
 
 		// Transfer ownership of the DIN to the seller.
 		registry.setOwner(DIN, msg.sender);

@@ -36,9 +36,9 @@ contract ENSMarket is PublicMarket {
 
 		super.buy(orderID);
 
-		// Clear storage.
-		domains[DIN].name = "";
-		domains[DIN].node = 0x0;
+		// TODO: Clear storage.
+		// domains[DIN].name = "";
+		// domains[DIN].node = 0x0;
 	}
 
 	function isFulfilled(uint256 orderID) constant returns (bool) {

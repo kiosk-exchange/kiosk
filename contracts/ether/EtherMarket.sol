@@ -29,10 +29,10 @@ contract EtherMarket is PublicMarket {
 		uint256 DIN = registerDIN();
 
 		// Set the market for the newly registered DIN to this contract.
-		// registry.setMarket(DIN, this);
+		registry.setMarket(DIN, this);
 
-		// ethDIN = DIN;
-		// products[DIN] = this;
+		ethDIN = DIN;
+		products[DIN] = this;
 	}
 
 	// Get KMT

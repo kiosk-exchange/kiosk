@@ -52,20 +52,20 @@ contract Product is ProductInterface {
 	}
 
 	// Buy a DIN. Sometimes it is necessary for a product to be able to do this.
-	function registerDIN() returns (uint256) {
+	function registerDIN() constant returns (uint256) {
 		// Register a new DIN.
 		uint256 genesis = registry.genesis();
 
-		// // Get the price of a new DIN.
-		// uint256 price = buyer.totalPrice(genesis, 1, this);
+		// Get the price of a new DIN.
+		uint256 price = buyer.totalPrice(genesis, 1, this);
 
-		// // Take enough KMT from the buyer to purchase a new DIN.
-		// if (price > 0) {
-		// 	KMT.transferFrom(msg.sender, this, price);
-		// }
+		// Take enough KMT from the buyer to purchase a new DIN.
+		if (price > 0) {
+			KMT.transferFrom(msg.sender, this, price);
+		}
 
 		// Buy one DIN.
-		uint256 orderID = buyer.buy(genesis, 1, 0);
+		uint256 orderID = buyer.buy(genesis, 1, price);
 		
 		// Convert the order metadata to the registered DIN.
 		return uint256(orderStore.metadata(orderID));

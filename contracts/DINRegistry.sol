@@ -41,6 +41,7 @@ contract DINRegistry {
 
         // Register the genesis DIN to Kiosk. This represents a DIN product.
         records[genesis].owner = msg.sender;
+        NewRegistration(genesis, msg.sender);
 
         updateKiosk();
     }

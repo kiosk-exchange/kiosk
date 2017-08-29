@@ -88,13 +88,13 @@ contract KioskMarketToken is StandardToken {
 
 	function transfer(address _to, uint256 _value) returns (bool) {
 		// Do not allow transfers to this contract or the null address.
-		require(_to != address(this) && _to != 0x0);
+		require(_to != address(this) && _to != address(0));
 		return super.transfer(_to, _value);
 	}
 
 	function transferFrom(address _from, address _to, uint256 _value) returns (bool) {
 		// Do not allow transfers to this contract or the null address.
-		require(_to != address(this) && _to != 0x0);
+		require(_to != address(this) && _to != address(0));
 		return super.transferFrom(_from, _to, _value);
 	}
 

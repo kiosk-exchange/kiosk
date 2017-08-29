@@ -16,7 +16,7 @@ const getName = (web3, DIN, marketAddr) => {
     // Get the market contract from its address
     const marketContract = web3.eth.contract(MarketJSON.abi).at(marketAddr);
     try {
-      const name = marketContract.name(DIN)
+      const name = marketContract.nameOf(DIN)
       resolve(name)
     } catch (error) {
       // Resolve a blank name if there's a Solidity error

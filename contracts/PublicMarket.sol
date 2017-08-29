@@ -106,6 +106,11 @@ contract PublicMarket is Market {
     // Get total price from the relevant Product contract.
     function totalPrice(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256) {
         address productAddr = products[DIN];
+
+        if (productAddr == address(0)) {
+            return 0;
+        }
+
         Product product = Product(productAddr); // Not trusted
         return product.productTotalPrice(DIN, quantity, buyer);
     }
@@ -113,6 +118,11 @@ contract PublicMarket is Market {
     // Get availability from the relevant Product contract.
     function availableForSale(uint256 DIN, uint256 quantity, address buyer) constant returns (bool) {
         address productAddr = products[DIN];
+
+        if (productAddr == address(0)) {
+            return false;
+        }
+
         Product product = Product(productAddr); // Not trusted
         return product.productAvailableForSale(DIN, quantity, buyer); // Not trusted
     }
