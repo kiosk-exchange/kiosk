@@ -1,10 +1,10 @@
-import MarketJSON from "../../build/contracts/StandardMarket.json";
+import MarketJSON from "../../build/contracts/Market.json";
 
 const getPrice = (web3, DIN, quantity, marketAddr) => {
   return new Promise((resolve, reject) => {
     // Get the market contract from its address
     const marketContract = web3.eth.contract(MarketJSON.abi).at(marketAddr);
-    marketContract.price(DIN, quantity, (error, priceInKMTWei) => {
+    marketContract.totalPrice(DIN, quantity, (error, priceInKMTWei) => {
       const price = web3.fromWei(priceInKMTWei, "ether").toNumber().toFixed(3);
       resolve(price);
     });

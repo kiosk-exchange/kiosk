@@ -3,8 +3,8 @@ import DINMarketJSON from "../../build/contracts/DINMarket.json";
 import PublicMarketJSON from "../../build/contracts/PublicMarket.json";
 import ENSJSON from "../../build/contracts/ENS.json";
 import ENSMarketJSON from "../../build/contracts/ENSMarket.json";
-import ENSPublicProductJSON from "../../build/contracts/ENSPublicProduct.json";
-import OrderTrackerJSON from "../../build/contracts/OrderTracker.json";
+import ENSProductJSON from "../../build/contracts/ENSProduct.json";
+import OrderStoreJSON from "../../build/contracts/OrderStore.json";
 import KioskMarketTokenJSON from "../../build/contracts/KioskMarketToken.json";
 import EtherMarketJSON from "../../build/contracts/EtherMarket.json";
 
@@ -42,11 +42,11 @@ const getENS = web3 => {
 const getENSMarket = web3 => {
 	return getContract(web3, ENSMarketJSON);
 };
-const getENSPublicProduct = web3 => {
-	return getContract(web3, ENSPublicProductJSON);
+const getENSProduct = web3 => {
+	return getContract(web3, ENSProductJSON);
 };
-const getOrderTracker = web3 => {
-	return getContract(web3, OrderTrackerJSON);
+const getOrderStore = web3 => {
+	return getContract(web3, OrderStoreJSON);
 };
 const getEtherMarket = web3 => {
 	return getContract(web3, EtherMarketJSON);
@@ -77,8 +77,8 @@ export {
 	getPublicMarket,
 	getENS,
 	getENSMarket,
-	getENSPublicProduct,
-	getOrderTracker,
+	getENSProduct,
+	getOrderStore,
 	getEtherMarket,
 	getEtherBalance,
 	getKMTBalance
