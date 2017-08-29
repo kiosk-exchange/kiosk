@@ -97,6 +97,7 @@ class App extends Component {
             // this.getNetwork();
 
             this.fetchAccount();
+            this.fetchNetwork();
 
             // Get contracts and handle errors
             if (

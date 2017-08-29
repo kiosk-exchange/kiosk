@@ -160,7 +160,8 @@ class ContentContainer extends Component {
             />
             <Route
               path="/market/:market"
-              render={props => <Market {...this.props} />}
+              render={props =>
+                <Market {...this.props} handleBuyClick={this.handleBuyClick} />}
             />
           </Switch>
           <BuyModal

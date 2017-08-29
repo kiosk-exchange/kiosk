@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { getMarketProducts } from "../utils/getProducts";
+import { getMarketProducts, getMarketName } from "../utils/getProducts";
 import MarketTable from "../tables/MarketTable";
 
 class Market extends Component {
@@ -8,14 +8,20 @@ class Market extends Component {
 		super(props);
 
 		this.state = {
+			name: "",
 			products: []
 		};
 
-		this.handleBuy = this.handleBuy.bind(this);
+		this.handleBuyClick = this.handleBuyClick.bind(this);
 	}
 
 	componentWillMount() {
 		this.getData();
+
+		const market = this.getMarket();
+		getMarketName(this.context.web3, market).then(name => {
+			this.setState({ name: name })
+		})
 	}
 
 	getData() {
@@ -45,9 +51,9 @@ class Market extends Component {
 
 		return (
 			<MarketTable
-				title={this.getMarket().slice(0, 12)}
+				title={this.state.name}
 				products={this.state.products}
-				handleBuy={this.handleBuy}
+				handleBuyClick={this.handleBuyClick}
 			/>
 		);
 	}
