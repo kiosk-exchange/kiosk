@@ -24,7 +24,7 @@ class MarketplaceTable extends Component {
                 {product.price}
               </TableRowColumn>
               <TableRowColumn>
-                <Link style={{color: "#32C1FF"}} to={`/market/${product.market}`}>{product.market.slice(0,12)}</Link>
+                <Link style={{color: "#32C1FF", textDecoration: "none"}} to={`/market/${product.market}`}>{product.market.slice(0,12)}</Link>
               </TableRowColumn>
               <BuyColumn product={product} handleBuy={() => this.props.handleBuyClick(product)} />
             </TableRow>
