@@ -6,7 +6,6 @@ const DINRegistrar = artifacts.require("DINRegistrar.sol");
 const OrderMaker = artifacts.require("OrderMaker.sol");
 const OrderStore = artifacts.require("OrderStore.sol");
 const DINMarket = artifacts.require("DIN/DINMarket.sol");
-const DINProduct = artifacts.require("DIN/DINProduct.sol");
 const EtherMarket = artifacts.require("ether/EtherMarket.sol");
 const ENSMarket = artifacts.require("ENS/ENSMarket.sol");
 const ENSProduct = artifacts.require("ENS/ENSProduct.sol");

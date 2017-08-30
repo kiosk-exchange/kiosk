@@ -92,10 +92,6 @@ class App extends Component {
               }
             });
           } else {
-            // Get account and network and listen for changes
-            // this.getAccount();
-            // this.getNetwork();
-
             this.fetchAccount();
             this.fetchNetwork();
 

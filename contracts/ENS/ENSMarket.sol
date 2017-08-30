@@ -1,10 +1,10 @@
 pragma solidity ^0.4.11;
 
 import "./ENS/AbstractENS.sol";
-import "../PublicMarket.sol";
+import "../ProductMarket.sol";
 import "../KioskMarketToken.sol";
 
-contract ENSMarket is PublicMarket {
+contract ENSMarket is ProductMarket {
 
 	string public name = "ENS Market";
 
@@ -24,7 +24,7 @@ contract ENSMarket is PublicMarket {
 	mapping(address => bytes32) public expected;
 
 	// Constructor
-	function ENSMarket(KioskMarketToken _KMT, AbstractENS _ens) PublicMarket(_KMT) {
+	function ENSMarket(KioskMarketToken _KMT, AbstractENS _ens) ProductMarket(_KMT) {
 		ens = _ens;
 	}
 

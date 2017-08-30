@@ -12,10 +12,10 @@ import "./Product.sol";
 import "./OrderUtils.sol";
 
 /**
-*  This is a base implementation of a Market that is used by Kiosk's market contracts (DINMarket, EtherMarket, ENSMarket, etc.).
+*  Market that delegates price, availability, and fulfill to a separate Product class.
 *  Subclasses must implement name, nameOf, isFulfilled, and metadata.
 */
-contract PublicMarket is StandardMarket {
+contract ProductMarket is StandardMarket {
     // DIN => Product address
     mapping (uint256 => address) products;
 
@@ -43,7 +43,7 @@ contract PublicMarket is StandardMarket {
     }
 
     // Constructor
-    function PublicMarket(KioskMarketToken _KMT) StandardMarket(_KMT) {
+    function ProductMarket(KioskMarketToken _KMT) StandardMarket(_KMT) {
         KMT = _KMT;
         updateKiosk();
     }

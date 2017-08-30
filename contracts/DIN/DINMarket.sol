@@ -2,7 +2,6 @@ pragma solidity ^0.4.11;
 
 import "../KioskMarketToken.sol";
 import "../StandardMarket.sol";
-import "./DINProduct.sol";
 
 contract DINMarket is StandardMarket {
 

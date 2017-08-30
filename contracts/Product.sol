@@ -13,8 +13,7 @@ contract ProductInterface {
 }
 
 /**
-*  This is a base implementation of a Product that is used by Kiosk's product contracts (DINProduct, EtherProduct, ENSProduct, etc.).
-*  This is not a formal part of the Kiosk protocol, but makes the code more modular and upgradable.
+*  This is a base implementation of a Product that can be used on a ProductMarket.
 */
 contract Product is ProductInterface {
 	// The Kiosk Market Token contract.
