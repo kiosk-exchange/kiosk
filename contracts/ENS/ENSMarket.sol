@@ -9,7 +9,8 @@ contract ENSMarket is PublicMarket {
 	string public name = "ENS Market";
 
 	// ENS Registry
-	AbstractENS public ens;
+	AbstractENS public 
+	ens;
 
 	struct Domain {
 		string name;

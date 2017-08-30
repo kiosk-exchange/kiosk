@@ -2,12 +2,12 @@ import MarketJSON from "../../build/contracts/Market.json";
 
 export const getMarketName = (web3, marketAddr) => {
   return new Promise((resolve, reject) => {
-        const marketContract = web3.eth.contract(MarketJSON.abi).at(marketAddr);
-        marketContract.name((error, name) => {
-          resolve(name);
-        })
+    const marketContract = web3.eth.contract(MarketJSON.abi).at(marketAddr);
+    marketContract.name((error, name) => {
+      resolve(name);
     });
-}
+  });
+};
 
 export const getPrice = (web3, DIN, quantity, marketAddr) => {
   return new Promise((resolve, reject) => {
@@ -24,14 +24,18 @@ export const getName = (web3, DIN, marketAddr) => {
   return new Promise((resolve, reject) => {
     // Get the market contract from its address
     const marketContract = web3.eth.contract(MarketJSON.abi).at(marketAddr);
-    try {
-      marketContract.nameOf(DIN, (error, name) => {
-        resolve(name)
-      })
-    } catch (error) {
-      console.log(error)
-      // Resolve a blank name if there's a Solidity error
-      resolve("N/A")
+    if (DIN <= 1000000002) {
+      try {
+        marketContract.nameOf(DIN, (error, name) => {
+          resolve(name);
+        });
+      } catch (error) {
+        console.log(error);
+        // Resolve a blank name if there's a Solidity error
+        resolve("N/A");
+      }
+    } else {
+      resolve("N/A");
     }
   });
 };
