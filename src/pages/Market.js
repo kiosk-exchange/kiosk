@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { getMarketProducts } from "../utils/getProducts";
+import { getMarketProducts, getMarketName } from "../utils/getProducts";
 import MarketTable from "../tables/MarketTable";
 
 class Market extends Component {
@@ -8,32 +8,52 @@ class Market extends Component {
 		super(props);
 
 		this.state = {
+			name: "",
 			products: []
 		};
 
-		this.handleBuy = this.handleBuy.bind(this);
+		this.handleBuyClick = this.handleBuyClick.bind(this);
 	}
 
 	componentWillMount() {
+		this.getData();
+
+		const market = this.getMarket();
+		getMarketName(this.context.web3, market).then(name => {
+			this.setState({ name: name })
+		})
+	}
+
+	getData() {
 		getMarketProducts(
 			this.context.DINRegistry,
-			this.props.match.params.market,
+			this.getMarket(),
 			this.context.web3
 		).then(products => {
 			this.setState({ products: products });
 		});
 	}
 
-	handleBuy() {
-		console.log("BUY TAPPED")
+	handleBuyClick(product) {
+		this.props.handleBuyClick(product);
+	}
+
+	getMarket() {
+		const path = this.props.location.pathname;
+		const n = path.lastIndexOf("/");
+		return path.substring(n + 1);
 	}
 
 	render() {
+		if (this.context.refresh === true) {
+			this.getData();
+		}
+
 		return (
 			<MarketTable
-				title={this.props.match.params.market.slice(0, 12)}
+				title={this.state.name}
 				products={this.state.products}
-				handleBuy={this.handleBuy}
+				handleBuyClick={this.handleBuyClick}
 			/>
 		);
 	}
@@ -42,7 +62,8 @@ class Market extends Component {
 Market.contextTypes = {
 	web3: PropTypes.object,
 	account: PropTypes.string,
-	DINRegistry: PropTypes.object
+	DINRegistry: PropTypes.object,
+	refresh: PropTypes.bool
 };
 
 export default Market;

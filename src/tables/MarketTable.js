@@ -22,7 +22,7 @@ class MarketTable extends Component {
               <TableRowColumn>
                 {product.price}
               </TableRowColumn>
-              <BuyColumn product={product} handleBuy={this.props.handleBuy} />
+              <BuyColumn product={product} handleBuyClick={this.props.handleBuyClick} />
             </TableRow>
           );
         })}

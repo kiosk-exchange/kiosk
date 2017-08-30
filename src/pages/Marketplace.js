@@ -15,6 +15,10 @@ class Marketplace extends Component {
 	}
 
 	componentWillMount() {
+		this.getData();
+	}
+
+	getData() {
 		if (this.context.web3) {
 			getAllProducts(
 				this.context.DINRegistry,
@@ -30,6 +34,10 @@ class Marketplace extends Component {
 	}
 
 	render() {
+		if (this.context.refresh === true) {
+			this.getData();
+		}
+
 		return (
 			<MarketplaceTable
 				products={this.state.products}
@@ -41,7 +49,8 @@ class Marketplace extends Component {
 
 Marketplace.contextTypes = {
 	web3: PropTypes.object,
-	DINRegistry: PropTypes.object
+	DINRegistry: PropTypes.object,
+	refresh: PropTypes.bool
 };
 
 export default Marketplace;

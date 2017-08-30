@@ -1,24 +1,26 @@
 const web3 = new (require("web3"))();
 const KioskMarketToken = artifacts.require("KioskMarketToken.sol");
+const Buyer = artifacts.require("Buyer.sol");
 const DINRegistry = artifacts.require("DINRegistry.sol");
-const OrderTracker = artifacts.require("OrderTracker.sol");
+const DINRegistrar = artifacts.require("DINRegistrar.sol");
+const OrderMaker = artifacts.require("OrderMaker.sol");
+const OrderStore = artifacts.require("OrderStore.sol");
 const DINMarket = artifacts.require("DIN/DINMarket.sol");
+const DINProduct = artifacts.require("DIN/DINProduct.sol");
 const EtherMarket = artifacts.require("ether/EtherMarket.sol");
-const ENSMarket = artifacts.require("ENSMarket/ENSMarket.sol");
-const ENSPublicProduct = artifacts.require("ENSMarket/ENSPublicProduct.sol");
-const ENS = artifacts.require("ENSMarket/ENS/ENS.sol");
-const FIFSRegistrar = artifacts.require("ENSMarket/ENS/FIFSRegistrar.sol");
+const ENSMarket = artifacts.require("ENS/ENSMarket.sol");
+const ENSProduct = artifacts.require("ENS/ENSProduct.sol");
+const ENS = artifacts.require("ENS/ENS/ENS.sol");
+const FIFSRegistrar = artifacts.require("ENS/ENS/FIFSRegistrar.sol");
 const namehash = require("../node_modules/eth-ens-namehash");
 const tld = "eth";
 const rootNode = getRootNodeFromTLD(tld);
 const subnodeSHA3 = web3.sha3("example");
 const subnodeName = "example.eth";
 const subnodeNameHash = namehash(subnodeName);
-const price = web3.toWei(2, "ether");
-const initialSupply = 1000000; // Initialize KMT with 1 million tokens
+const subnodePrice = web3.toWei(2, "ether");
+const initialSupply = 1000000 * 10 ** 18; // Initialize KMT with 1 million tokens
 const genesis = 1000000000; // The genesis DIN (used for DIN product)
-const etherDIN = 1000000001; // The first DIN registered (used for Ether product)
-const ENSDIN = 1000000002; // The second DIN registered (used for demo ENS domain product)
 
 /**
  * Calculate root node hashes given the top level domain(tld)
@@ -32,25 +34,45 @@ function getRootNodeFromTLD(tld) {
 }
 
 const deployKiosk = async (deployer, network, accounts) => {
-  // Deploy DINRegistry with a genesis DIN of 10000000000.
-  await deployer.deploy(DINRegistry, genesis);
+  // Deploy the Kiosk protocol contracts.
+  await deployer.deploy(Buyer, KioskMarketToken.address);
+  await KioskMarketToken.at(KioskMarketToken.address).setBuyer(Buyer.address);
 
-  // Deploy OrderTracker and bind it with DINRegistry and Kiosk Market Token.
-  await deployer.deploy(
-    OrderTracker,
-    DINRegistry.address,
-    KioskMarketToken.address
-  );
+  // Intitialize DINRegistry with a genesis DIN of 10000000000 and bind it to KMT.
+  await deployer.deploy(DINRegistry, KioskMarketToken.address, genesis);
+  await KioskMarketToken.at(KioskMarketToken.address).setRegistry(DINRegistry.address);
 
-  // Add DINRegistry to Kiosk Market Token.
-  await KioskMarketToken.at(KioskMarketToken.address).setDINRegistry(
-    DINRegistry.address
-  );
+  await deployer.deploy(DINMarket, KioskMarketToken.address);
+  await DINRegistry.at(DINRegistry.address).setMarket(genesis, DINMarket.address);
 
-  // Add OrderTracker to Kiosk Market Token.
-  await KioskMarketToken.at(KioskMarketToken.address).setOrderTracker(
-    OrderTracker.address
-  );
+  await deployer.deploy(DINRegistrar, KioskMarketToken.address);
+  await KioskMarketToken.at(KioskMarketToken.address).setRegistrar(DINRegistrar.address);
+
+  await deployer.deploy(OrderStore, KioskMarketToken.address);
+  await KioskMarketToken.at(KioskMarketToken.address).setOrderStore(OrderStore.address);
+
+  await deployer.deploy(OrderMaker, KioskMarketToken.address);
+  await KioskMarketToken.at(KioskMarketToken.address).setOrderMaker(OrderMaker.address);
+
+  // Bind the Kiosk protocol contracts to each other.
+  await Buyer.at(Buyer.address).updateKiosk();
+  await DINRegistry.at(DINRegistry.address).updateKiosk();
+  await DINRegistrar.at(DINRegistrar.address).updateKiosk();
+  await OrderStore.at(OrderStore.address).updateKiosk();
+  await OrderMaker.at(OrderMaker.address).updateKiosk();
+  await DINMarket.at(DINMarket.address).updateKiosk();
+};
+
+const deployEtherMarket = async (deployer, network, accounts) => {
+  // Deploy Ether Market contract (KMT crowdsale / ETH product)
+  await deployer.deploy(EtherMarket, KioskMarketToken.address);
+
+  // Transfer the entire KMT balance to EtherMarket.
+  await KioskMarketToken.at(KioskMarketToken.address).transfer(
+    EtherMarket.address,
+    initialSupply
+  )
+  
 };
 
 const deployENS = async (deployer, network, accounts) => {
@@ -74,85 +96,23 @@ const deployENS = async (deployer, network, accounts) => {
   await deployer.deploy(ENSMarket, KioskMarketToken.address, ENS.address);
 
   await deployer.deploy(
-    ENSPublicProduct,
+    ENSProduct,
     KioskMarketToken.address,
-    ENS.address,
-    ENSMarket.address
-  );
-};
-
-const deployDINMarket = async (deployer, network, accounts) => {
-  // Deploy the DINMarket
-  await deployer.deploy(DINMarket, KioskMarketToken.address);
-
-  // Set the market for the genesis DIN to the DINMarket
-  await DINRegistry.at(DINRegistry.address).setMarket(
-    genesis,
-    DINMarket.address
+    ENSMarket.address,
+    ENS.address
   );
 
-  // Register two new DINs (one for Ether and one for demo ENS domain).
-  await KioskMarketToken.at(KioskMarketToken.address).buy(genesis, 2, 0);
-};
 
-const deployEtherMarket = async (deployer, network, accounts) => {
-  // Deploy Ether Market contract (KMT crowdsale / ETH product)
-  await deployer.deploy(EtherMarket, KioskMarketToken.address, etherDIN);
-
-  // Set the market for the ether DIN to the Ether Market
-  await DINRegistry.at(DINRegistry.address).setMarket(
-    etherDIN,
-    EtherMarket.address
-  );
-
-  const KMTBalance = web3.toWei(initialSupply);
-
-  // Transfer the entire KMT balance to EtherMarket.
-  await KioskMarketToken.at(KioskMarketToken.address).transfer(
-    EtherMarket.address,
-    KMTBalance
-  );
-};
-
-const deployENSMarket = async (deployer, network, accounts) => {
-  // Set the market for the ENS DIN to the ENSMarket
-  await DINRegistry.at(DINRegistry.address).setMarket(
-    ENSDIN,
-    ENSMarket.address
-  );
-
-  // Add resolvers for ENS DIN to ENSMarket
-  await ENSMarket.at(ENSMarket.address).setProduct(
-    ENSDIN,
-    ENSPublicProduct.address,
-    ENSPublicProduct.address,
-    ENSPublicProduct.address
-  );
-
-  // Set market specific information for ENS
-  await ENSMarket.at(ENSMarket.address).setName(ENSDIN, subnodeName);
-
-  // Set market specific information for ENS
-  await ENSMarket.at(ENSMarket.address).setENSNode(ENSDIN, subnodeNameHash);
-
-  // List "example.eth" on ENSMarket
-  await ENSPublicProduct.at(ENSPublicProduct.address).addENSDomain(
-    ENSDIN,
-    subnodeName,
-    subnodeNameHash,
-    price
-  );
+  await ENSProduct.at(ENSProduct.address).addENSDomain(subnodeName, subnodeNameHash, subnodePrice);
 
   // Transfer ownership of "example.eth" to the ENSPublicProduct
-  await ENS.at(ENS.address).setOwner(subnodeNameHash, ENSPublicProduct.address);
+  await ENS.at(ENS.address).setOwner(subnodeNameHash, ENSProduct.address);
 };
 
 module.exports = async (deployer, network, accounts) => {
   deployer.deploy(KioskMarketToken, initialSupply).then(async () => {
     await deployKiosk(deployer, network, accounts);
-    await deployENS(deployer, network, accounts);
-    await deployDINMarket(deployer, network, accounts);
     await deployEtherMarket(deployer, network, accounts);
-    await deployENSMarket(deployer, network, accounts);
+    await deployENS(deployer, network, accounts);
   });
 };

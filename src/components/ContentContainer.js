@@ -9,22 +9,31 @@ import Products from "../pages/Products";
 import Sales from "../pages/Sales";
 import Market from "../pages/Market";
 import BuyModal from "./BuyModal";
+import EmptyState from "../pages/EmptyState";
+import ErrorMessage from "../components/ErrorMessage";
+
+const ERROR = {
+  NOT_CONNECTED: 1,
+  CONTRACTS_NOT_DEPLOYED: 2,
+  NETWORK_NOT_SUPPORTED: 3,
+  LOCKED_ACCOUNT: 4
+};
 
 class ContentContainer extends Component {
   constructor(props) {
     super(props);
 
     /*
-      ===== PRODUCT =====
-      {
-        DIN: string,
-        name: string,
-        owner: string,
-        market: string,
-        price: string,
-        available: bool
-      }
-    */
+        ===== PRODUCT =====
+        {
+          DIN: string,
+          name: string,
+          owner: string,
+          market: string,
+          price: string,
+          available: bool
+        }
+      */
 
     this.state = {
       selectedProduct: {},
@@ -45,9 +54,9 @@ class ContentContainer extends Component {
     this.setState({ totalPrice: totalPrice });
 
     if (totalPrice > this.context.KMTBalance) {
-      this.setState({ insufficientFunds: true })
+      this.setState({ insufficientFunds: true });
     } else {
-      this.setState({ insufficientFunds: false })
+      this.setState({ insufficientFunds: false });
     }
   }
 
@@ -85,7 +94,7 @@ class ContentContainer extends Component {
 
       product.available = available;
 
-      this.updateProduct(product, totalPrice)
+      this.updateProduct(product, totalPrice);
     });
   }
 
@@ -94,18 +103,21 @@ class ContentContainer extends Component {
 
     // Buy the product! This will pop up MetaMask for Chrome users.
     buyProduct(
-      this.context.KioskMarketToken,
+      this.context.Buyer,
       product.DIN,
       this.state.selectedQuantity,
       this.state.totalPrice * 10 ** 18, // Denominate in KMT wei
       this.context.account
-    );
+    ).then(result => {
+      console.log(result);
+
+      // Reload all balances etc.
+      console.log(this.props);
+      this.props.handleReset();
+    });
 
     // Dismiss the modal
-    this.setState({ showModal: false })
-
-    // Reload all balances etc.
-    this.props.handleReset()
+    this.setState({ showModal: false });
   }
 
   render() {
@@ -148,7 +160,8 @@ class ContentContainer extends Component {
             />
             <Route
               path="/market/:market"
-              render={props => <Market {...this.props} />}
+              render={props =>
+                <Market {...this.props} handleBuyClick={this.handleBuyClick} />}
             />
           </Switch>
           <BuyModal
@@ -162,6 +175,32 @@ class ContentContainer extends Component {
           />
         </div>
       );
+    } else if (this.props.error !== null) {
+      switch (this.props.error) {
+        case ERROR.NOT_CONNECTED:
+          return (
+            <ErrorMessage title="You are not connected to an Ethereum node" />
+          );
+        case ERROR.CONTRACTS_NOT_DEPLOYED:
+          return null;
+        // return (
+        //   <EmptyState
+        //     title="Contracts are not deployed"
+        //     message="truffle migrate --reset"
+        //   />
+        // );
+        case ERROR.NETWORK_NOT_SUPPORTED:
+          return (
+            <EmptyState
+              title="Kiosk does not support this network yet. Please connect to Kovan Test Network."
+              message=""
+            />
+          );
+        case ERROR.LOCKED_ACCOUNT:
+          return <EmptyState title="Your account is locked" />;
+        default:
+          return null;
+      }
     }
     return null;
   }
@@ -171,33 +210,9 @@ ContentContainer.contextTypes = {
   web3: PropTypes.object,
   account: PropTypes.string,
   KioskMarketToken: PropTypes.object,
+  Buyer: PropTypes.object,
   DINRegistry: PropTypes.object,
   KMTBalance: PropTypes.number
 };
-
-// function Error(props) {
-//   switch (props.error) {
-//     case ERROR.NOT_CONNECTED:
-//       return <ErrorMessage title="You are not connected to an Ethereum node" />;
-//     case ERROR.CONTRACTS_NOT_DEPLOYED:
-//       return (
-//         <EmptyState
-//           title="Contracts are not deployed"
-//           message="truffle migrate --reset"
-//         />
-//       );
-//     case ERROR.NETWORK_NOT_SUPPORTED:
-//       return (
-//         <EmptyState
-//           title="Kiosk does not support this network yet. Please connect to Kovan Test Network."
-//           message=""
-//         />
-//       );
-//     case ERROR.LOCKED_ACCOUNT:
-//       return <EmptyState title="Your account is locked" />;
-//     default:
-//       return null;
-//   }
-// }
 
 export default ContentContainer;

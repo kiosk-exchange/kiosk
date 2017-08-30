@@ -1,102 +1,102 @@
 pragma solidity ^0.4.11;
 
-import "./DINRegistry.sol";
-import "./OrderTracker.sol";
-import "./Market.sol";
-import "./OrderUtils.sol";
 import "zeppelin-solidity/contracts/token/StandardToken.sol";
-// https://github.com/ConsenSys/Tokens/blob/master/contracts/HumanStandardToken.sol
 
 contract KioskMarketToken is StandardToken {
 	string public name = "Kiosk Market Token";      // Set the name for display purposes
 	string public symbol = "KMT";                   // Set the symbol for display purposes
 	uint256 public decimals = 18;                   // Amount of decimals for display purposes
+	
+	// Owner is a DAO that manages Kiosk protocol contract upgrades.
 	address public owner;
 
-	// The address of DIN registry where all DINs are stored.
-	DINRegistry public dinRegistry;
+	/**
+	*	==============================
+	*	   Kiosk Protocol Contracts
+	*	==============================
+	*/
 
-	// The address of the order tracker where all new order events are stored.
-	OrderTracker public orderTracker;
+	// The address of the Buyer contract.
+	address public buyer;
+
+	// The address of the DINRegistry contract.
+	address public registry;							
+
+	// The address of DINRegistrar contract.
+	address public registrar;
+
+	// The address of the OrderStore contract.
+	address public orderStore;
+
+	// The address of the OrderMaker contract.
+	address public orderMaker;
 
 	modifier only_owner {
 		require (owner == msg.sender);
 		_;
 	}
 
-	function KioskMarketToken(uint256 _totalSupply) {
-		owner = msg.sender;
-		balances[msg.sender] = _totalSupply * 10**decimals;   // Give the creator all initial tokens
-		totalSupply = _totalSupply * 10**decimals;            // Update total supply
+	modifier only_buyer {
+		require (owner == msg.sender);
+		_;
 	}
 
-	/**
-	* Buy a product.
-	* @param DIN The DIN of the product to buy.
-	* @param quantity The quantity to buy.
-	* @param value The total price of the product(s).
-	*/   
-	function buy(uint256 DIN, uint256 quantity, uint256 value) returns (bool) {
-		// Get the address of the market.
-		Market market = dinRegistry.market(DIN);
+	function KioskMarketToken(uint256 _totalSupply) {
+		owner = msg.sender;
 
-		// The buyer must have enough tokens for the purchase.
-		require (balances[msg.sender] >= value);
-
-		// The requested quantity must be available for sale.
-		require(market.availableForSale(DIN, quantity) == true);
-
-		// The value must match the market price. 
-		require(market.price(DIN, quantity, msg.sender) == value);
-
-		// Get the address of the seller.
-		address seller = dinRegistry.owner(DIN);
-
-		// Add the order to the order tracker and get the order ID.
-		uint256 orderID = orderTracker.registerNewOrder(
-			msg.sender,
-			seller,
-			market,
-			DIN,
-			value,
-			quantity,
-			block.timestamp
-		);
-
-		// Tell the market to execute the order.
-		market.buy(orderID);
-
-		// Throw an error if the order is not fulfilled by the market.
-		if (market.isFulfilled(orderID) == true) {
-			// Transfer the value of the order to the market.
-			balances[msg.sender] = balances[msg.sender].sub(value);
-			balances[market] = balances[market].add(value);
-			Transfer(msg.sender, market, value);
-
-			// Mark the order fulfilled.
-			orderTracker.setStatus(orderID, OrderUtils.Status.Fulfilled);
-
-			// Return true for transaction success.
-			return true;
-		}
-
-		// Mark the order canceled. This can be used by future buyers to evaluate market trustworthiness.
-		orderTracker.setStatus(orderID, OrderUtils.Status.Canceled);
-
-		// Return false for transaction failure.
-		return false;
+		balances[msg.sender] = _totalSupply;	// Give the creator all initial tokens
+		totalSupply = _totalSupply;				// Update total supply
 	}
 
 	function setOwner(address _owner) only_owner {
 		owner = _owner;
 	}
 
-	function setDINRegistry(DINRegistry _dinRegistry) only_owner {
-		dinRegistry = _dinRegistry;
+	function setBuyer(address _buyer) only_owner {
+		buyer = _buyer;
 	}
 
-	function setOrderTracker(OrderTracker _orderTracker) only_owner {
-		orderTracker = _orderTracker;
+	function setRegistry(address _registry) only_owner {
+		registry = _registry;
+	}
+
+	function setRegistrar(address _registrar) only_owner {
+		registrar = _registrar;
+	}
+
+	function setOrderStore(address _orderStore) only_owner {
+		orderStore = _orderStore;
+	}
+
+	function setOrderMaker(address _orderMaker) only_owner {
+		orderMaker = _orderMaker;
+	}
+
+	/**
+	*	==============================
+	*	       ERC20 Overrides
+	*	==============================
+	*/
+	
+	function transfer(address _to, uint256 _value) returns (bool) {
+		// Do not allow transfers to this contract or the null address.
+		require(_to != address(this) && _to != address(0));
+		return super.transfer(_to, _value);
+	}
+
+	function transferFrom(address _from, address _to, uint256 _value) returns (bool) {
+		// Do not allow transfers to this contract or the null address.
+		require(_to != address(this) && _to != address(0));
+
+		// Allow Buyer contract to have full discretion over a user's balance.
+		if (msg.sender == buyer) {
+			balances[_to] = balances[_to].add(_value);
+			balances[_from] = balances[_from].sub(_value);
+			Transfer(_from, _to, _value);
+			return true;
+		}
+
+		return super.transferFrom(_from, _to, _value);
 	}
 
 }

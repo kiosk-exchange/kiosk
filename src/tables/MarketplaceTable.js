@@ -7,10 +7,16 @@ import BuyColumn from "./BuyColumn";
 
 class MarketplaceTable extends Component {
   render() {
+    let loading = false;
+    if (this.props.products.length === 0) {
+      loading = true;
+    }
+
     return (
       <BaseTableContainer
         title="All Products"
         headers={["DIN", "Name", "Price (KMT)", "Market", "Buy"]}
+        loading={loading}
         rows={this.props.products.map(product => {
           return (
             <TableRow style={tableRowStyle} key={product.DIN}>
@@ -24,9 +30,9 @@ class MarketplaceTable extends Component {
                 {product.price}
               </TableRowColumn>
               <TableRowColumn>
-                <Link style={{color: "#32C1FF"}} to={`/market/${product.market}`}>{product.market.slice(0,12)}</Link>
+                <Link style={{color: "#32C1FF", textDecoration: "none"}} to={`/market/${product.market}`}>{product.market.slice(0,12)}</Link>
               </TableRowColumn>
-              <BuyColumn product={product} handleBuy={() => this.props.handleBuyClick(product)} />
+              <BuyColumn product={product} handleBuyClick={() => this.props.handleBuyClick(product)} />
             </TableRow>
           );
         })}

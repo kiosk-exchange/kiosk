@@ -51,54 +51,6 @@ function wrapState(ComposedComponent) {
 
 SelectableList = wrapState(SelectableList);
 
-function BuySection(props) {
-	return (
-		<div>
-			<Subheader style={props.subheaderStyle}>BUY</Subheader>
-			<ListItem
-				value={1}
-				style={props.style}
-				hoverColor="#32C1FF"
-				primaryText="Markets"
-				leftIcon={<Store color="white" />}
-				onClick={() => props.history.push("/marketplace")}
-			/>
-			<ListItem
-				value={2}
-				style={props.style}
-				hoverColor="#32C1FF"
-				primaryText="Purchases"
-				leftIcon={<ShoppingCart color="white" />}
-				onClick={() => props.history.push("/purchases")}
-			/>
-		</div>
-	);
-}
-
-function SellSection(props) {
-	return (
-		<div>
-			<Subheader style={props.subheaderStyle}>SELL</Subheader>
-			<ListItem
-				value={3}
-				style={props.style}
-				hoverColor="#32C1FF"
-				primaryText="Products"
-				leftIcon={<Products color="white" />}
-				onClick={() => props.history.push("/products")}
-			/>
-			<ListItem
-				value={4}
-				style={props.style}
-				hoverColor="#32C1FF"
-				primaryText="Sales"
-				leftIcon={<Money color="white" />}
-				onClick={() => props.history.push("/sales")}
-			/>
-		</div>
-	);
-}
-
 class AccountSection extends Component {
 	render() {
 		if (!this.props.account) {
@@ -202,15 +154,39 @@ class SideMenu extends Component {
 					}
 				/>
 				<br />
-				<BuySection
-					{...this.props}
+				<Subheader style={subheaderStyle}>BUY</Subheader>
+				<ListItem
+					value={1}
 					style={style}
-					subheaderStyle={subheaderStyle}
+					hoverColor="#32C1FF"
+					primaryText="Markets"
+					leftIcon={<Store color="white" />}
+					onClick={() => this.props.history.push("/marketplace")}
 				/>
-				<SellSection
-					{...this.props}
+				<ListItem
+					value={2}
 					style={style}
-					subheaderStyle={subheaderStyle}
+					hoverColor="#32C1FF"
+					primaryText="Purchases"
+					leftIcon={<ShoppingCart color="white" />}
+					onClick={() => this.props.history.push("/purchases")}
+				/>
+				<Subheader style={subheaderStyle}>SELL</Subheader>
+				<ListItem
+					value={3}
+					style={style}
+					hoverColor="#32C1FF"
+					primaryText="Products"
+					leftIcon={<Products color="white" />}
+					onClick={() => this.props.history.push("/products")}
+				/>
+				<ListItem
+					value={4}
+					style={style}
+					hoverColor="#32C1FF"
+					primaryText="Sales"
+					leftIcon={<Money color="white" />}
+					onClick={() => this.props.history.push("/sales")}
 				/>
 				{accountSection}
 			</SelectableList>

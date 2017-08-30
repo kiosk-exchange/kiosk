@@ -1,4 +1,4 @@
-import { getOrderTracker } from "../utils/contracts";
+import { getOrderStore} from "../utils/contracts";
 
 function date(timestamp) {
   var date = new Date(timestamp * 1000);
@@ -42,7 +42,7 @@ const orderFromLog = (result, web3) => {
 
 const getOrders = async (web3, args) => {
   return new Promise(resolve => {
-    getOrderTracker(web3).then(contract => {
+    getOrderStore(web3).then(contract => {
       var event = contract.NewOrder(args, {
         fromBlock: 0,
         toBlock: "latest"

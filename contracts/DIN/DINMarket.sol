@@ -1,62 +1,63 @@
 pragma solidity ^0.4.11;
 
-import "../PublicMarket.sol";
-import "../DINRegistry.sol";
-import "../OrderTracker.sol";
 import "../KioskMarketToken.sol";
-import "../Product.sol";
+import "../StandardMarket.sol";
+import "./DINProduct.sol";
 
-contract DINMarket is PublicMarket, Product {
+contract DINMarket is StandardMarket {
 
-	string public title = "DIN Market";
+	string public name = "DIN Market";
 
-	function DINMarket(KioskMarketToken _KMT) PublicMarket(_KMT) {
-		uint256 genesis = _KMT.dinRegistry().genesis();
-		products[genesis].priceResolver = this;
-		products[genesis].inventoryResolver = this;
-		products[genesis].buyHandler = this;
+	// Buyer => Expected DIN to be registered.
+	mapping (address => uint256) public expected;
+
+	uint256 public genesisDIN;
+
+	function DINMarket(KioskMarketToken _KMT) StandardMarket(_KMT) {
+		genesisDIN = registry.genesis();
 	}
 
-	function orderData(uint256 DIN, address buyer) constant returns (bytes32) {
-		uint256 nextDIN = KMT.dinRegistry().index() + 1;
-		return bytes32(nextDIN);
+	function buy(uint256 orderID) returns (bool) {
+		address buyer = orderStore.buyer(orderID);
+		uint256 quantity = orderStore.quantity(orderID);
+
+		// Expect the next DIN on the registrar to be registered.
+		expected[buyer] = registrar.index() + 1;
+
+		registrar.registerDINsForOwner(buyer, quantity);
 	}
 
 	function isFulfilled(uint256 orderID) constant returns (bool) {
-		uint256 firstDIN = uint256(KMT.orderTracker().data(orderID));
-		uint256 quantity = KMT.orderTracker().quantity(orderID);
+		address buyer = orderStore.buyer(orderID);
+		uint256 expectedDIN = expected[buyer];
 
-		// If only one DIN was registered, check that it is owned by the buyer.
-		if (quantity == 1) {
-			return (KMT.dinRegistry().owner(firstDIN) == KMT.orderTracker().buyer(orderID));
-		}
-
-		uint256 lastDIN = firstDIN + quantity - 1;
-
-		// If more than one DIN was registered, check that the first and last DIN are owned by the buyer.
-		return (
-			(KMT.dinRegistry().owner(firstDIN) == KMT.orderTracker().buyer(orderID)) &&
-			(KMT.dinRegistry().owner(lastDIN) == KMT.orderTracker().buyer(orderID))
-		);
+		return (registry.owner(expectedDIN) == buyer);
 	}
 
-	function name(uint256 DIN) constant returns (string) {
+	function nameOf(uint256 DIN) constant returns (string) {
+		require(DIN == genesisDIN);
+
 		return "Decentralized Identification Number (DIN)";
 	}
 
-	// Price Resolver
+	function metadata(uint256 DIN) constant returns (bytes32) {
+		require(DIN == genesisDIN);
+
+		uint256 nextDIN = registrar.index() + 1;
+		return bytes32(nextDIN);
+	}
+
 	function totalPrice(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256) {
+		require(DIN == genesisDIN);
+
 		return 0;
 	}
 
-	// Inventory Resolver
-	function isAvailableForSale(uint256 DIN, uint256 quantity) constant returns (bool) {
+	function availableForSale(uint256 DIN, uint256 quantity, address buyer) constant returns (bool) {
+		require(DIN == genesisDIN);
+
 		return true;
 	}
 
-	// Buy Handler
-	function handleOrder(uint256 orderID, uint256 DIN, uint256 quantity, address buyer) {
-		KMT.dinRegistry().registerDINsForOwner(quantity, buyer);
-	}
 
 }
