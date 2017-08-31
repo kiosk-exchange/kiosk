@@ -107,6 +107,28 @@ class AccountSection extends Component {
 }
 
 class SideMenu extends Component {
+	constructor(props) {
+		super(props)
+	}
+
+	calculateSelectedIndex = () => {
+		try {
+			switch(this.props.location.pathname) {
+				case "/":
+				case "/marketplace":
+					return 1
+				case "/purchases":
+					return 2
+				case "/products":
+					return 3
+				case "/sales":
+					return 4
+			}
+		} catch (e) {
+			return 1
+		}
+	}
+
 	render() {
 		const style = {
 			color: "white",
@@ -144,7 +166,7 @@ class SideMenu extends Component {
 		}
 
 		return (
-			<SelectableList defaultValue={1}>
+			<SelectableList defaultValue={this.calculateSelectedIndex()}>
 				<ListItem
 					style={logoStyle}
 					disabled={true}

@@ -1,6 +1,6 @@
 import DINRegistryJSON from "../../build/contracts/DINRegistry.json";
 import DINMarketJSON from "../../build/contracts/DINMarket.json";
-import PublicMarketJSON from "../../build/contracts/PublicMarket.json";
+import ProductMarketJSON from "../../build/contracts/ProductMarket.json";
 import ENSJSON from "../../build/contracts/ENS.json";
 import ENSMarketJSON from "../../build/contracts/ENSMarket.json";
 import ENSProductJSON from "../../build/contracts/ENSProduct.json";
@@ -37,8 +37,8 @@ export const getDINRegistry = web3 => {
 export const getDINMarket = web3 => {
 	return getContract(web3, DINMarketJSON);
 };
-export const getPublicMarket = web3 => {
-	return getContract(web3, PublicMarketJSON);
+export const getProductMarket = web3 => {
+	return getContract(web3, ProductMarketJSON);
 };
 export const getENS = web3 => {
 	return getContract(web3, ENSJSON);
