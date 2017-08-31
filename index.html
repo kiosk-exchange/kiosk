@@ -1,0 +1,292 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Introduction · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="kiosk/gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="kiosk/gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="kiosk/gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="kiosk/gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="kiosk/gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="kiosk/gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="kiosk/intro/kiosk_market_token.html" />
+    
+    
+    <link rel="prev" href="kiosk/" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="kiosk/">
+            
+                <a href="kiosk/">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.2" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="kiosk/intro/kiosk_market_token.html">
+            
+                <a href="kiosk/intro/kiosk_market_token.html">
+            
+                    
+                    Kiosk Market Token
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="kiosk" >Introduction</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="kiosk">Kiosk</h1>
+<p>Kiosk is a protocol for buying and selling products on the Ethereum blockchain.</p>
+<h2 id="project-overview">Project Overview</h2>
+<p>The blockchain has the potential to transform how we exchange goods and services. Early projects have shown innovative approaches for how buy and trade items in a trustless way. But most rely on application-specific smart contracts that are difficult to upgrade and reuse.</p>
+<p>Kiosk provides a framework for creating decentralized marketplaces. Its smart contracts are building blocks that can be swapped in and out and reconfigured for many different markets.</p>
+<h2 id="quick-start">Quick Start</h2>
+<p>Download the project.</p>
+<pre><code>git clone https://github.com/kioskprotocol/kiosk.git
+</code></pre><p>In the root directory, install project dependencies.</p>
+<pre><code>yarn install
+</code></pre><p>In a separate terminal tab, start TestRPC.</p>
+<pre><code>testrpc
+</code></pre><p>Compile and deploy the Solidity contracts using <a href="http://truffleframework.com/" target="_blank">Truffle</a>.</p>
+<pre><code>truffle compile
+truffle migrate
+</code></pre><p>Then, start the React project and open <a href="http://localhost:3000/" target="_blank">http://localhost:3000/</a> to see the app.</p>
+<pre><code>yarn start
+</code></pre><h2 id="how-it-works">How It Works</h2>
+<p>For documentation (work-in-progress), visit: <a href="http://kiosk.readthedocs.io/" target="_blank">http://kiosk.readthedocs.io/</a></p>
+<p><img src="kiosk/kioskprotocol.jpg?raw=true" alt="kiosk protocol"></p>
+<p>The Kiosk protocol has four main components: <code>DIN</code>, <code>Market</code>, <code>Product</code>, and <code>Order</code>.</p>
+<h3 id="din">DIN</h3>
+<p>A Decentralized Identification Number (DIN), is a unique, 10-digit product identifier. A client can look up a <code>DIN</code> on the global <code>DINRegistry</code> contract to find its corresponding <code>Market</code>.</p>
+<h3 id="market">Market</h3>
+<p>A <code>Market</code> is an interface that buyers can use to purchase a product based on its <code>DIN</code>.</p>
+<h3 id="product">Product</h3>
+<p>A <code>Product</code> tells a <code>Market</code> its price and availability.</p>
+<h3 id="order">Order</h3>
+<p>An <code>Order</code> contains information about a purchase.</p>
+<h2 id="testing">Testing</h2>
+<pre><code>truffle test
+</code></pre><h2 id="contact-us">Contact Us</h2>
+<p>The best way to get in touch is to join our public <a href="https://join.slack.com/t/kioskprotocol/shared_invite/MjI3NzAwMzMyMTYyLTE1MDI5MjYyNzItM2FiMjA1NWIxZg" target="_blank">Slack channel</a>.</p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="kiosk/" class="navigation navigation-prev " aria-label="Previous page: Introduction">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="kiosk/intro/kiosk_market_token.html" class="navigation navigation-next " aria-label="Next page: Kiosk Market Token">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Introduction","level":"1.2","depth":1,"next":{"title":"Kiosk Market Token","level":"1.3","depth":1,"path":"intro/kiosk_market_token.md","ref":"intro/kiosk_market_token.md","articles":[]},"previous":{"title":"Introduction","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"dir":"ltr"},"config":{"plugins":["livereload"],"root":"./docs","styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"gitbook":"*"},"file":{"path":"../README.md","mtime":"2017-08-29T14:37:30.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2017-08-31T17:49:24.202Z"},"basePath":"kiosk","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="kiosk/gitbook/gitbook.js"></script>
+    <script src="kiosk/gitbook/theme.js"></script>
+    
+        
+        <script src="kiosk/gitbook/gitbook-plugin-livereload/plugin.js"></script>
+        
+    
+        
+        <script src="kiosk/gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="kiosk/gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="kiosk/gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="kiosk/gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="kiosk/gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="kiosk/gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
