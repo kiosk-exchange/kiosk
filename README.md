@@ -43,8 +43,6 @@ yarn start
 
 ## How It Works
 
-For documentation (work-in-progress), visit: http://kiosk.readthedocs.io/
-
 ![kiosk protocol](/kioskprotocol.jpg?raw=true)
 
 The Kiosk protocol has four main components: `DIN`, `Market`, `Product`, and `Order`.
