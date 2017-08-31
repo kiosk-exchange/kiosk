@@ -43,7 +43,7 @@ yarn start
 
 ## How It Works
 
-For documentation (work-in-progress), visit: http://kiosk.readthedocs.io/
+For documentation (work-in-progress), visit: https://kioskprotocol.gitbooks.io/kiosk/
 
 ![kiosk protocol](/kioskprotocol.jpg?raw=true)
 
