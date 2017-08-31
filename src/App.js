@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+import { createStore } from "redux";
+import { Provider } from "react-redux";
+import { reducer } from "./reducer";
 const PropTypes = require("prop-types");
 import { Route } from "react-router-dom";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
@@ -197,6 +200,9 @@ class App extends Component {
   // Make sure there is always a web3 object available
   // Render vs. component: https://github.com/ReactTraining/react-router/issues/4627#issuecomment-284133957}
   render() {
+
+    let store = createStore(reducer);
+
     return (
       <MuiThemeProvider>
         <Route
