@@ -20,9 +20,9 @@ export const KMT_BALANCE = "KMT_BALANCE";
 export const ETH_BALANCE = "ETH_BALANCE";
 
 // Helper function
-const action = (type, value) => ({
+const action = (type, data) => ({
   type: type,
-  ...value
+  ...data
 });
 
 export const web3IsLoading = data => action(WEB_3_LOADING, { data });

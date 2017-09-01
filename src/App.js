@@ -7,7 +7,7 @@ import SideMenu from "./components/SideMenu";
 
 // Redux
 import { connect } from "react-redux";
-import { initKiosk } from "./actions/kiosk";
+import { initKiosk } from "./redux/actions";
 
 const mapStateToProps = state => ({
   web3: state.web3,
