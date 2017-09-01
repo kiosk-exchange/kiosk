@@ -1,22 +1,21 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { List, ListItem, makeSelectable } from "material-ui/List";
+import AccountSection from "./AccountSection";
 import Subheader from "material-ui/Subheader";
 import Store from "material-ui/svg-icons/action/store";
 import ShoppingCart from "material-ui/svg-icons/action/shopping-cart";
 import Products from "material-ui/svg-icons/action/loyalty";
 import Money from "material-ui/svg-icons/editor/attach-money";
 import Avatar from "material-ui/Avatar";
-import Wallet from "material-ui/svg-icons/action/account-balance-wallet";
-import blockies from "blockies";
+import { connect } from "react-redux";
 
 let SelectableList = makeSelectable(List);
 
 function wrapState(ComposedComponent) {
 	return class SelectableList extends Component {
 		static propTypes = {
-			children: PropTypes.node.isRequired,
-			defaultValue: PropTypes.number.isRequired
+			children: React.PropTypes.node.isRequired,
+			defaultValue: React.PropTypes.number.isRequired
 		};
 
 		componentWillMount() {
@@ -51,63 +50,15 @@ function wrapState(ComposedComponent) {
 
 SelectableList = wrapState(SelectableList);
 
-class AccountSection extends Component {
-	render() {
-		if (!this.props.account) {
-			return <div />;
-		}
-
-		const icon = blockies({
-			seed: this.props.account
-		});
-
-		const iconStyle = {
-			width: "30px",
-			height: "30px",
-			borderRadius: "15px"
-		};
-
-		const formatted = balance => {
-			return balance
-				.toFixed(3)
-				.toString()
-				.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-		};
-
-		return (
-			<div>
-				<Subheader style={this.props.subheaderStyle}>ACCOUNT</Subheader>
-				<ListItem
-					style={this.props.style}
-					disabled={true}
-					primaryText={this.props.account.slice(0, 12)}
-					leftAvatar={
-						<img
-							src={icon.toDataURL()}
-							role="presentation"
-							style={iconStyle}
-						/>
-					}
-				/>
-				<ListItem
-					style={this.props.style}
-					disabled={true}
-					primaryText={formatted(this.props.KMTBalance) + " KMT"}
-					leftIcon={<Wallet color="white" />}
-				/>
-				<ListItem
-					style={this.props.style}
-					disabled={true}
-					primaryText={formatted(this.props.ETHBalance) + " ETH"}
-					leftIcon={<Wallet color="white" />}
-				/>
-			</div>
-		);
-	}
-}
+const mapStateToProps = state => ({
+	account: state.account
+});
 
 class SideMenu extends Component {
 	render() {
+
+		console.log(this.props.account)
+
 		const style = {
 			color: "white",
 			fontSize: "15px",
@@ -125,23 +76,6 @@ class SideMenu extends Component {
 			color: "#9CA6AF",
 			letterSpacing: "1px"
 		};
-
-		let accountSection = null;
-
-		if (
-			this.context.account !== null &&
-			this.props.ETHBalance !== null &&
-			this.props.KMTBalance !== null
-		) {
-			accountSection = (
-				<AccountSection
-					{...this.props}
-					account={this.context.account}
-					style={style}
-					subheaderStyle={subheaderStyle}
-				/>
-			);
-		}
 
 		return (
 			<SelectableList defaultValue={1}>
@@ -188,15 +122,10 @@ class SideMenu extends Component {
 					leftIcon={<Money color="white" />}
 					onClick={() => this.props.history.push("/sales")}
 				/>
-				{accountSection}
+				<AccountSection account={this.props.account}/>
 			</SelectableList>
 		);
 	}
 }
 
-SideMenu.contextTypes = {
-	web3: PropTypes.object,
-	account: PropTypes.string
-};
-
-export default SideMenu;
+export default connect(mapStateToProps)(SideMenu);
