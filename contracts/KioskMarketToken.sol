@@ -1,6 +1,7 @@
 pragma solidity ^0.4.11;
 
 import "zeppelin-solidity/contracts/token/StandardToken.sol";
+import "./Buyer.sol";
 
 contract KioskMarketToken is StandardToken {
 	string public name = "Kiosk Market Token";      // Set the name for display purposes
@@ -36,17 +37,43 @@ contract KioskMarketToken is StandardToken {
 		_;
 	}
 
-	modifier only_buyer {
-		require (owner == msg.sender);
-		_;
-	}
-
+	// Constructor
 	function KioskMarketToken(uint256 _totalSupply) {
 		owner = msg.sender;
 
 		balances[msg.sender] = _totalSupply;	// Give the creator all initial tokens
 		totalSupply = _totalSupply;				// Update total supply
 	}
+
+	/**
+	*	==============================
+	*	            Core
+	*	==============================
+	*/
+
+	function buy(uint256 DIN, uint256 quantity, uint256 totalValue) returns (uint256) {
+		return Buyer(buyer).buy(DIN, quantity, totalValue, msg.sender);
+	}
+
+	// Buy multiple products.
+	function buyCart(uint256[] DINs, uint256[] quantities, uint256[] subtotalValues) returns (uint256) {
+		return Buyer(buyer).buyCart(DINs, quantities, subtotalValues, msg.sender);
+	}
+
+	function totalPrice(uint256 DIN, uint256 quantity) constant returns (uint256) {
+		return Buyer(buyer).totalPrice(DIN, quantity, msg.sender);
+	}
+
+	// Returns true if a given quantity of a product is available for purchase.
+	function availableForSale(uint256 DIN, uint256 quantity) constant returns (bool) {
+		return Buyer(buyer).availableForSale(DIN, quantity, msg.sender);
+	}
+
+	/**
+	*	==============================
+	*	           Upgrade
+	*	==============================
+	*/
 
 	function setOwner(address _owner) only_owner {
 		owner = _owner;

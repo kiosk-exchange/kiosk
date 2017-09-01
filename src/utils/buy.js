@@ -1,6 +1,6 @@
-export const buyProduct = (Buyer, DIN, quantity, value, buyer) => {
+export const buyProduct = (KMT, DIN, quantity, value, buyer) => {
 	return new Promise((resolve, reject) => {
-		Buyer.buy(
+		KMT.buy(
 			DIN,
 			quantity,
 			value,

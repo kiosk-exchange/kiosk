@@ -101,7 +101,7 @@ contract EtherMarket is StandardMarket {
 		uint256 genesis = registry.genesis();
 
 		// Buy one DIN.
-		uint256 orderID = buyer.buy(genesis, 1, 0);
+		uint256 orderID = KMT.buy(genesis, 1, 0);
 
 		// Convert the order metadata to the registered DIN.
 		return uint256(orderStore.metadata(orderID));

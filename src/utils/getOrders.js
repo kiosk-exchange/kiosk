@@ -40,7 +40,7 @@ const orderFromLog = (result, web3) => {
   return order;
 };
 
-const getOrders = async (web3, args) => {
+const getOrders = (web3, args) => {
   return new Promise(resolve => {
     getOrderStore(web3).then(contract => {
       var event = contract.NewOrder(args, {
@@ -60,7 +60,7 @@ const getOrders = async (web3, args) => {
   });
 };
 
-const getPurchases = async (web3, buyer) => {
+const getPurchases = (web3, buyer) => {
   return getOrders(web3, { buyer: buyer });
 };
 
