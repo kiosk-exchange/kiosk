@@ -6,7 +6,8 @@ import {
 	accountHasError,
 	account,
 	networkHasError,
-	network
+	network,
+	KMTContract
 } from "./kiosk";
 
 const rootReducer = combineReducers({
@@ -16,7 +17,8 @@ const rootReducer = combineReducers({
 	accountHasError,
 	account,
 	networkHasError,
-	network
+	network,
+	KMTContract
 });
 
 export default rootReducer;

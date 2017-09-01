@@ -2,7 +2,9 @@
 import {
   loadWeb3,
   getAccountsAsync,
-  getNetworkAsync
+  getNetworkAsync,
+  getKMTBalanceAsync,
+  getETHBalanceAsync
 } from "../utils/kioskWeb3";
 import { getKioskMarketToken } from "../utils/contracts";
 
@@ -11,92 +13,97 @@ export const WEB_3_ERROR = "WEB_3_ERROR";
 export const WEB_3_SUCCESS = "WEB_3_SUCCESS";
 export const ACCOUNT_ERROR = "ACCOUNT_ERROR";
 export const ACCOUNT_SUCCESS = "ACCOUNT_SUCCESS";
+export const ACCOUNT_BALANCES = "ACCOUNT_BALANCES";
 export const NETWORK_ERROR = "NETWORK_ERROR";
 export const NETWORK_SUCCESS = "NETWORK_SUCCESS";
+export const KMT_CONTRACT = "KMT_CONTRACT";
 
-export const web3IsLoading = bool => ({
-  type: WEB_3_LOADING,
-  bool
+// Helper function
+const action = (type, value) => ({
+  type: type,
+  ...value
 });
 
-export const web3HasError = bool => ({
-  type: WEB_3_ERROR,
-  bool
-});
+export const web3IsLoading = bool => action(WEB_3_LOADING, { bool });
+export const web3HasError = bool => action(WEB_3_ERROR, { bool });
+export const web3Success = web3 => action(WEB_3_SUCCESS, { web3 });
+export const accountHasError = bool => action(ACCOUNT_ERROR, { bool });
+export const accountSuccess = account => action(ACCOUNT_SUCCESS, { account });
+export const networkHasError = bool => action(NETWORK_ERROR, { bool });
+export const networkSuccess = network => action(NETWORK_SUCCESS, { network });
+export const KMTContract = contract => action(KMT_CONTRACT, { contract });
+export const accountBalances = balances =>
+  action(ACCOUNT_BALANCES, { balances });
 
-export const web3Success = web3 => ({
-  type: WEB_3_SUCCESS,
-  web3
-});
-
-export const accountHasError = bool => ({
-  type: ACCOUNT_ERROR,
-  bool
-});
-
-export const accountSuccess = account => ({
-  type: ACCOUNT_SUCCESS,
-  account
-});
-
-export const networkHasError = bool => ({
-  type: NETWORK_ERROR,
-  bool
-})
-
-export const networkSuccess = network => ({
-  type: NETWORK_SUCCESS,
-  network
-})
-
-const getAccount = async (web3, dispatch) => {
-  const accounts = await getAccountsAsync(web3);
-  if (accounts.length > 0) {
-    const account = accounts[0];
-    dispatch(accountSuccess(account));
-  } else {
-    dispatch(accountHasError(true));
-  }
+const getAccount = web3 => {
+  return async dispatch => {
+    const accounts = await getAccountsAsync(web3);
+    if (accounts.length > 0) {
+      const account = accounts[0];
+      dispatch(accountSuccess(account));
+    } else {
+      dispatch(accountHasError(true));
+    }
+  };
 };
 
-const getNetwork = async (web3, dispatch) => {
-  const network = await getNetworkAsync(web3);
-  if (network !== null) {
-    dispatch(networkSuccess(network));
-  } else {
-    dispatch(networkHasError(true));
-  }
+const getNetwork = web3 => {
+  return async dispatch => {
+    const network = await getNetworkAsync(web3);
+    if (network) {
+      dispatch(networkSuccess(network));
+    } else {
+      dispatch(networkHasError(true));
+    }
+  };
 };
 
-const getContracts = async (web3, dispatch) => {
-  //
+const getContracts = web3 => {
+  return async dispatch => {
+    const KMT = await getKioskMarketToken(web3);
+    if (KMT) {
+      dispatch(KMTContract(KMT));
+    }
+  };
 };
+
+// const getBalances = async (KMT, account, web3, dispatch) => {
+//   const KMTBalance = await getKMTBalanceAsync(web3, KMT, account);
+//   const ETHBalance = await getETHBalanceAsync(web3, account);
+
+//   if (KMTBalance !== null && ETHBalance !== null) {
+//     dispatch(
+//       accountBalances({
+//         balances: {
+//           KMT: KMTBalance,
+//           ETH: ETHBalance
+//         }
+//       })
+//     );
+//   }
+// };
 
 // Fetch web3, contracts, account and dispatch to store
 export const initKiosk = () => {
-  return dispatch => {
+  return async dispatch => {
     dispatch(web3IsLoading(true));
+    try {
+      const results = await loadWeb3();
+      const web3 = results.web3;
+      dispatch(web3Success(web3));
 
-    loadWeb3()
-      .then(results => {
-        const web3 = results.web3;
+      // Get account
+      dispatch(getAccount(web3));
 
-        // Dispatch web3
-        dispatch(web3Success(web3));
+      // Get network
+      dispatch(getNetwork(web3));
 
-        // Get accounts
-        dispatch(getAccount(web3, dispatch));
-
-        // Get network
-        dispatch(getNetwork(web3, dispatch));
-
-        // // Get contracts
-        // dispatch(getContracts(results.web3, dispatch));
-      })
-      .catch(() => {
-        // Dispatch an error if web3 doesn't load correctly
-        dispatch(web3HasError(true));
-      });
+      // Get contracts
+      dispatch(getContracts(web3));
+    } catch (err) {
+      // Dispatch an error if web3 doesn't load correctly
+      dispatch(web3HasError(true));
+    }
   };
 };
 
@@ -110,7 +117,6 @@ export const initKiosk = () => {
 // getContracts(web3) {
 //   let DINRegistryPromise = getDINRegistry(web3);
 //   let EtherMarketPromise = getEtherMarket(web3);
-//   let KioskMarketTokenPromise = getKioskMarketToken(web3);
 //   let BuyerPromise = getBuyer(web3);
 
 //   Promise.all([
@@ -130,27 +136,4 @@ export const initKiosk = () => {
 //       this.setState({ error: ERROR.CONTRACTS_NOT_DEPLOYED });
 //     }
 //   );
-// }
-
-// export const getEtherBalance = (web3, account) =>
-//   new Promise((resolve, reject) => {
-//     web3.eth.getBalance(account, (err, result) => {
-//       const balance = web3.fromWei(result, "ether").toNumber();
-//       resolve(balance);
-//     });
-//   });
-
-// export const getKMTBalance = (web3, account, KMT) =>
-//   new Promise((resolve, reject) => {
-//     KMT.balanceOf(account, (err, result) => {
-//       const balance = web3.fromWei(result, "ether").toNumber();
-//       resolve(balance);
-//     });
-//   });
-
-// // TODO: Add listener https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#ear-listening-for-selected-account-changes
-
-// fetchNetwork() {
-// TODO: Handle dropped connection
-
 // }

@@ -11,18 +11,32 @@ export const getNetworkAsync = async web3 => {
   return network;
 }
 
-  //   if (this.state.web3.version.network !== this.state.network.id) {
-  //   this.state.web3.version.getNetwork((error, result) => {
-  //     const network = getNetwork(result);
-  //     console.log("********** " + network.name.toUpperCase());
-  //     this.setState({ network: network });
-  //     // If it's a real network (not TestRPC), and not Kovan, log not supported error.
-  //     if (parseInt(network.id, 10) < 100 && network.id !== "42") {
-  //       this.setState({ error: ERROR.NETWORK_NOT_SUPPORTED });
-  //     }
-  //   });
-  // }
-  //
+const formattedBalance = (balance, web3) => {
+  return web3.fromWei(balance, "ether").toNumber();
+}
+
+export const getKMTBalanceAsync = async (web3, KMT, account) => {
+  const balance = await Promise.promisify(KMT.balanceOf(account))();
+  return formattedBalance(balance, web3);
+}
+
+export const getETHBalanceAsync = async (web3, account) => {
+  const balance = await Promise.promisify(web3.eth.getBalance)();
+  return formattedBalance(balance, web3);
+}
+
+//   if (this.state.web3.version.network !== this.state.network.id) {
+//   this.state.web3.version.getNetwork((error, result) => {
+//     const network = getNetwork(result);
+//     console.log("********** " + network.name.toUpperCase());
+//     this.setState({ network: network });
+//     // If it's a real network (not TestRPC), and not Kovan, log not supported error.
+//     if (parseInt(network.id, 10) < 100 && network.id !== "42") {
+//       this.setState({ error: ERROR.NETWORK_NOT_SUPPORTED });
+//     }
+//   });
+// }
+//
 
 
 export const loadWeb3 = () => {
