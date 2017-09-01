@@ -1,0 +1,59 @@
+/* Main */
+html, body {
+  width: 100%;
+  height: 100%;
+  font-family: 'Roboto', sans-serif;
+  background-color: #f6f8ff;
+  margin: 0;
+  padding: 0;
+}
+
+/* Landing Page */
+.welcome-nav {
+  padding: 20px;
+  float: right;
+  text-transform: uppercase;
+}
+
+.welcome {
+  padding-top: 130px;
+  text-align: center;
+}
+
+.welcome h1 {
+  color: #2c363f;
+  letter-spacing: 3px;
+  font-size: 100px;
+  font-weight: bolder;
+}
+
+.welcome h3 {
+  padding: 10px;
+  color: #6e7e85;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.alpha,
+.welcome-nav button {
+  text-transform: uppercase;
+  font-size: 18px;
+  font-weight: bold;
+  letter-spacing: 3px;
+}
+
+.welcome-nav button {
+  color: #2c363f;
+  background-color: transparent;
+}
+
+.alpha {
+  padding: 0px 50px;
+  margin-top: 50px;
+  color: white;
+  background-color: #fc575e;
+  font-weight: medium;
+  height: 60px;
+}
