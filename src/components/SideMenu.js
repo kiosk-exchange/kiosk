@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from 'prop-types';
 import { List, ListItem, makeSelectable } from "material-ui/List";
 import AccountSection from "./AccountSection";
 import Subheader from "material-ui/Subheader";
@@ -14,8 +15,8 @@ let SelectableList = makeSelectable(List);
 function wrapState(ComposedComponent) {
 	return class SelectableList extends Component {
 		static propTypes = {
-			children: React.PropTypes.node.isRequired,
-			defaultValue: React.PropTypes.number.isRequired
+			children: PropTypes.node.isRequired,
+			defaultValue: PropTypes.number.isRequired
 		};
 
 		componentWillMount() {
@@ -51,7 +52,9 @@ function wrapState(ComposedComponent) {
 SelectableList = wrapState(SelectableList);
 
 const mapStateToProps = state => ({
-	account: state.account
+	account: state.account,
+	KMT: state.KMTBalance,
+	ETH: state.ETHBalance
 });
 
 class SideMenu extends Component {
@@ -119,7 +122,7 @@ class SideMenu extends Component {
 					leftIcon={<Money color="white" />}
 					onClick={() => this.props.history.push("/sales")}
 				/>
-				<AccountSection account={this.props.account}/>
+				<AccountSection account={this.props.account} KMT={this.props.KMT} ETH={this.props.ETH} />
 			</SelectableList>
 		);
 	}

@@ -7,7 +7,9 @@ import {
 	account,
 	networkHasError,
 	network,
-	KMTContract
+	KMTContract,
+	KMTBalance,
+	ETHBalance
 } from "./kiosk";
 
 const rootReducer = combineReducers({
@@ -18,7 +20,9 @@ const rootReducer = combineReducers({
 	account,
 	networkHasError,
 	network,
-	KMTContract
+	KMTContract,
+	KMTBalance,
+	ETHBalance
 });
 
 export default rootReducer;

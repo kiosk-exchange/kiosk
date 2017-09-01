@@ -11,18 +11,22 @@ export const getNetworkAsync = async web3 => {
   return network;
 }
 
-const formattedBalance = (balance, web3) => {
+const numberBalance = (balance, web3) => {
   return web3.fromWei(balance, "ether").toNumber();
 }
 
 export const getKMTBalanceAsync = async (web3, KMT, account) => {
-  const balance = await Promise.promisify(KMT.balanceOf(account))();
-  return formattedBalance(balance, web3);
+  const getBalance = Promise.promisify(KMT.balanceOf);
+  const balance = await getBalance(account);
+  const formattedBalance = numberBalance(balance, web3);
+  return formattedBalance;
 }
 
 export const getETHBalanceAsync = async (web3, account) => {
-  const balance = await Promise.promisify(web3.eth.getBalance)();
-  return formattedBalance(balance, web3);
+  const getBalance = Promise.promisify(web3.eth.getBalance);
+  const balance = await getBalance(account);
+  const formattedBalance = numberBalance(balance, web3);
+  return formattedBalance;
 }
 
 //   if (this.state.web3.version.network !== this.state.network.id) {

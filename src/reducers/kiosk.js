@@ -6,7 +6,9 @@ import {
 	ACCOUNT_SUCCESS,
 	NETWORK_ERROR,
 	NETWORK_SUCCESS,
-	KMT_CONTRACT
+	KMT_CONTRACT,
+	KMT_BALANCE,
+	ETH_BALANCE
 } from "../actions/kiosk";
 
 /*
@@ -15,10 +17,10 @@ import {
 *  @param { string } type - The relevant action type (e.g., WEB_3_LOADING)
 *  @param { string } prop - The relevant action prop (e.g., "bool")
 */
-const reducer = (state, action, type, prop) => {
+const reducer = (state, action, type) => {
 	switch (action.type) {
 		case type:
-			return action[prop];
+			return action.data;
 		default:
 			return state;
 	}
@@ -29,25 +31,32 @@ const reducer = (state, action, type, prop) => {
 *  Use a separate reducer for each top-level object in the state tree.
 */
 export const web3IsLoading = (state = false, action) =>
-	reducer(state, action, WEB_3_LOADING, "bool");
+	reducer(state, action, WEB_3_LOADING);
 
 export const web3HasError = (state = false, action) =>
-	reducer(state, action, WEB_3_ERROR, "bool");
+	reducer(state, action, WEB_3_ERROR);
 
 export const web3 = (state = null, action) =>
-	reducer(state, action, WEB_3_SUCCESS, "web3");
+	reducer(state, action, WEB_3_SUCCESS);
 
 export const accountHasError = (state = false, action) =>
-	reducer(state, action, ACCOUNT_ERROR, "bool");
+	reducer(state, action, ACCOUNT_ERROR);
 
 export const account = (state = null, action) =>
-	reducer(state, action, ACCOUNT_SUCCESS, "account");
+	reducer(state, action, ACCOUNT_SUCCESS);
 
 export const networkHasError = (state = false, action) =>
-	reducer(state, action, NETWORK_ERROR, "bool");
+	reducer(state, action, NETWORK_ERROR);
 
 export const network = (state = null, action) =>
-	reducer(state, action, NETWORK_SUCCESS, "network");
+	reducer(state, action, NETWORK_SUCCESS);
 
 export const KMTContract = (state = null, action) =>
-	reducer(state, action, KMT_CONTRACT, "contract");
+	reducer(state, action, KMT_CONTRACT);
+
+export const KMTBalance = (state = null, action) => 
+	reducer(state, action, KMT_BALANCE);
+
+export const ETHBalance = (state = null, action) =>
+	reducer(state, action, ETH_BALANCE);
+

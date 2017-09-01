@@ -43,11 +43,11 @@ class App extends Component {
       height: "100vh"
     };
 
-    const rightContainerStyle = {
-      display: "flex",
-      flexFlow: "column",
-      height: "100%"
-    };
+    // const rightContainerStyle = {
+    //   display: "flex",
+    //   flexFlow: "column",
+    //   height: "100%"
+    // };
 
     if (web3) {
       return (
@@ -57,10 +57,11 @@ class App extends Component {
           </div>
         </div>
       );
-    } else {
+    } else if (isLoading) {
       // Loading & Handle Error
       return <div />
     }
+    return null;
   }
 }
 
