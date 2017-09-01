@@ -32,9 +32,19 @@ export const accountSuccess = account => ({
   account
 });
 
-export const getAccount = (web3, dispatch) => {
+const getAccount = (web3, dispatch) => {
   return dispatch => {
-    console.log("1");
+    console.log("1")
+    web3.eth.getAccounts((err, accounts) => {
+      console.log("WORK");
+      if (!err && accounts.length > 0) {
+        const account = accounts[0];
+        dispatch(accountSuccess(account));
+        // Get balance
+      } else {
+        dispatch(accountHasError(true));
+      }
+    })
   };
 };
 
@@ -44,22 +54,11 @@ export const initKiosk = () => {
     dispatch(web3IsLoading(true));
     loadWeb3()
       .then(web3 => {
-        // Get account
-        getAccount(web3, dispatch);
-
         // Dispatch web3
         dispatch(web3Success(web3));
 
-        web3.eth.getAccounts((err, accounts) => {
-          console.log("WORK")
-          if (!err && accounts.length > 0) {
-            const account = accounts[0];
-            dispatch(accountSuccess(account));
-            // Get balance
-          } else {
-            dispatch(accountHasError(true));
-          }
-        });
+        // Get accounts
+        dispatch(getAccount(web3, dispatch));
 
         // Get contracts
       })

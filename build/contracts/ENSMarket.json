@@ -448,8 +448,14 @@
       "links": {},
       "address": "0x468278d2bddc415f3a8e7b43812b9fd45bdf28ce",
       "updated_at": 1504218649736
+    },
+    "1504284907326": {
+      "events": {},
+      "links": {},
+      "address": "0x9ed087d6ad29570f20abfbc24f194157029278ee",
+      "updated_at": 1504284930252
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1504218649736
+  "updated_at": 1504284930252
 }
