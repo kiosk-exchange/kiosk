@@ -1,10 +1,6 @@
 import React, { Component } from "react";
-import { createStore } from "redux";
-import { Provider } from "react-redux";
-import { reducer } from "./reducer";
 const PropTypes = require("prop-types");
 import { Route } from "react-router-dom";
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import { getWeb3 } from "./utils/getWeb3";
 import { getNetwork } from "./utils/network";
 import {
@@ -15,7 +11,8 @@ import {
 } from "./utils/contracts";
 import { getEtherBalance, getKMTBalance } from "./utils/contracts";
 import Home from "./Home";
-import ContentContainer from "./components/ContentContainer";
+import WrappedContentContainer from "./components/ContentContainer";
+import { connect } from "react-redux";
 
 const ERROR = {
   NOT_CONNECTED: 1,
@@ -24,60 +21,12 @@ const ERROR = {
   LOCKED_ACCOUNT: 4
 };
 
+const getWeb3 = web3 => ({
+  type: GET_WEB_3,
+  web3
+});
+
 class App extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      web3: null,
-      account: undefined,
-      network: {},
-      DINRegistry: null,
-      Buyer: null,
-      etherMarket: null,
-      KioskMarketToken: null,
-      KMTBalance: null,
-      ETHBalance: null,
-      error: null,
-      refresh: false
-    };
-
-    this.fullReset = this.fullReset.bind(this);
-    // this.fetchAccount = this.fetchAccount.bind(this);
-    // this.fetchNetwork = this.fetchNetwork
-  }
-
-  // TODO: Use Redux
-  getChildContext() {
-    return {
-      web3: this.state.web3,
-      account: this.state.account,
-      network: this.state.network,
-      DINRegistry: this.state.DINRegistry,
-      Buyer: this.state.Buyer,
-      etherMarket: this.state.etherMarket,
-      KioskMarketToken: this.state.KioskMarketToken,
-      KMTBalance: this.state.KMTBalance,
-      ETHBalance: this.state.ETHBalance,
-      theme: {
-        red: "#FC575E",
-        blue: "#32C1FF",
-        gray: "#2C363F",
-        lightGray: "#6E7E85",
-        white: "#F6F8FF"
-      },
-      refresh: this.state.refresh
-    };
-  }
-
-  componentWillMount() {
-    this.refreshWeb3();
-  }
-
-  fullReset() {
-    this.setState({ refresh: true });
-  }
-
   refreshWeb3() {
     getWeb3.then(results => {
       this.setState(
@@ -190,53 +139,50 @@ class App extends Component {
     return parseInt(network, 10) > 100 || network === "42";
   }
 
-  isMetaMask() {
-    if (this.state.web3.currentProvider.constructor.name.match(/metamask/i)) {
-      return true;
-    }
-    return false;
-  }
-
   // Make sure there is always a web3 object available
   // Render vs. component: https://github.com/ReactTraining/react-router/issues/4627#issuecomment-284133957}
   render() {
-
-    let store = createStore(reducer);
-
     return (
-      <MuiThemeProvider>
-        <Route
-          render={props =>
-            <Home
+      <Route
+        render={props =>
+          <Home
+            {...props}
+            KMTBalance={this.state.KMTBalance}
+            ETHBalance={this.state.ETHBalance}
+          >
+            <WrappedContentContainer
               {...props}
-              KMTBalance={this.state.KMTBalance}
-              ETHBalance={this.state.ETHBalance}
-            >
-              <ContentContainer
-                {...props}
-                error={this.state.error}
-                handleReset={this.fullReset}
-              />
-            </Home>}
-        />
-      </MuiThemeProvider>
+              error={this.state.error}
+              handleReset={this.fullReset}
+            />
+          </Home>}
+      />
     );
   }
 }
 
-// Global Variables
-App.childContextTypes = {
-  web3: PropTypes.object,
-  account: PropTypes.string,
-  network: PropTypes.object,
-  DINRegistry: PropTypes.object,
-  Buyer: PropTypes.object,
-  etherMarket: PropTypes.object,
-  KioskMarketToken: PropTypes.object,
-  KMTBalance: PropTypes.number,
-  ETHBalance: PropTypes.number,
-  theme: PropTypes.object,
-  refresh: PropTypes.bool
+const mapStateToProps = (state, ownProps) => {
+  return {
+    web3: state.web3,
+    account: state.account,
+    network: state.network,
+    DINRegistry: state.DINRegistry,
+    Buyer: state.Buyer,
+    etherMarket: state.etherMarket,
+    KioskMarketToken: state.KioskMarketToken,
+    KMTBalance: state.KMTBalance,
+    ETHBalance: state.ETHBalance,
+    error: state.error,
+    refresh: state.refresh
+  };
 };
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    onWeb3: dispatch()
+  };
+};
+
+App = connect(mapStateToProps)(App);
 
 export default App;

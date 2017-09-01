@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { getAllProducts } from "../utils/getProducts";
-import MarketplaceTable from "../tables/MarketplaceTable";
+import WrappedMarketplaceTable from "../tables/WrappedMarketplaceTable";
 
 class Marketplace extends Component {
 	constructor(props) {
@@ -39,7 +39,7 @@ class Marketplace extends Component {
 		}
 
 		return (
-			<MarketplaceTable
+			<WrappedMarketplaceTable
 				products={this.state.products}
 				handleBuyClick={this.handleBuyClick}
 			/>

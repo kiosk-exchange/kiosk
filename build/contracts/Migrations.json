@@ -64,10 +64,16 @@
     "1504214202845": {
       "events": {},
       "links": {},
-      "address": "0x4466a94ca992171632dc55cce34ca514ad1c02d1",
-      "updated_at": 1504215502881
+      "address": "0xda3e046a2150df0378c8c01b9eb34985ab5b471b",
+      "updated_at": 1504218551989
+    },
+    "1504218627402": {
+      "events": {},
+      "links": {},
+      "address": "0xb45fd3fc5fd998a7d2b5e2ad974de8c4bb377cce",
+      "updated_at": 1504218649736
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1504215502881
+  "updated_at": 1504218649736
 }

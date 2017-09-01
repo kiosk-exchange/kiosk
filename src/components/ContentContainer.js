@@ -39,12 +39,10 @@ class ContentContainer extends Component {
       selectedProduct: {},
       selectedQuantity: 1,
       totalPrice: null,
-      showModal: false,
       insufficientFunds: false
     };
 
     this.handleBuyClick = this.handleBuyClick.bind(this);
-    this.handleBuyModalClose = this.handleBuyModalClose.bind(this);
     this.handleQuantityChange = this.handleQuantityChange.bind(this);
     this.handleBuySelectedProduct = this.handleBuySelectedProduct.bind(this);
   }
@@ -62,11 +60,6 @@ class ContentContainer extends Component {
 
   handleBuyClick(product) {
     this.updateProduct(product, product.price);
-    this.setState({ showModal: true });
-  }
-
-  handleBuyModalClose() {
-    this.setState({ showModal: false });
   }
 
   handleQuantityChange(quantity) {
@@ -112,7 +105,6 @@ class ContentContainer extends Component {
       console.log(result);
 
       // Reload all balances etc.
-      console.log(this.props);
       this.props.handleReset();
     });
 

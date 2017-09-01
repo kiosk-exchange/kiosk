@@ -1,6 +1,6 @@
 import DINRegistryJSON from "../../build/contracts/DINRegistry.json";
 import DINMarketJSON from "../../build/contracts/DINMarket.json";
-import PublicMarketJSON from "../../build/contracts/PublicMarket.json";
+import PublicMarketJSON from "../../build/contracts/ProductMarket.json";
 import ENSJSON from "../../build/contracts/ENS.json";
 import ENSMarketJSON from "../../build/contracts/ENSMarket.json";
 import ENSProductJSON from "../../build/contracts/ENSProduct.json";
