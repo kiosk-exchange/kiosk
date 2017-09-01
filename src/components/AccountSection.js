@@ -4,13 +4,13 @@ import Subheader from "material-ui/Subheader";
 import Wallet from "material-ui/svg-icons/action/account-balance-wallet";
 import blockies from "blockies";
 
-const AccountSection = ({ account }) => {
+const AccountSection = ({ account, KMT, ETH }) => {
 	if (!account) {
 		return <div />;
 	}
 
 	const icon = blockies({
-		seed: account.address
+		seed: account
 	});
 
 	const iconStyle = {
@@ -43,7 +43,7 @@ const AccountSection = ({ account }) => {
 			<ListItem
 				style={style}
 				disabled={true}
-				primaryText={account.address.slice(0, 12)}
+				primaryText={account.slice(0, 12)}
 				leftAvatar={
 					<img
 						src={icon.toDataURL()}
@@ -55,13 +55,13 @@ const AccountSection = ({ account }) => {
 			<ListItem
 				style={style}
 				disabled={true}
-				primaryText={formatted(account.KMT) + " KMT"}
+				primaryText={KMT ? formatted(account.KMT) + " KMT" : ""}
 				leftIcon={<Wallet color="white" />}
 			/>
 			<ListItem
 				style={style}
 				disabled={true}
-				primaryText={formatted(account.ETH) + " ETH"}
+				primaryText={ETH ? formatted(account.ETH) + " ETH" : ""}
 				leftIcon={<Wallet color="white" />}
 			/>
 		</div>

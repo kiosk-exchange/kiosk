@@ -56,9 +56,6 @@ const mapStateToProps = state => ({
 
 class SideMenu extends Component {
 	render() {
-
-		console.log(this.props.account)
-
 		const style = {
 			color: "white",
 			fontSize: "15px",

@@ -1,11 +1,18 @@
 // This will contain all actions related to web3 / kiosk
-import { loadWeb3 } from "../utils/loadWeb3";
+import {
+  loadWeb3,
+  getAccountsAsync,
+  getNetworkAsync
+} from "../utils/kioskWeb3";
+import { getKioskMarketToken } from "../utils/contracts";
 
 export const WEB_3_LOADING = "WEB_3_LOADING";
 export const WEB_3_ERROR = "WEB_3_ERROR";
 export const WEB_3_SUCCESS = "WEB_3_SUCCESS";
 export const ACCOUNT_ERROR = "ACCOUNT_ERROR";
 export const ACCOUNT_SUCCESS = "ACCOUNT_SUCCESS";
+export const NETWORK_ERROR = "NETWORK_ERROR";
+export const NETWORK_SUCCESS = "NETWORK_SUCCESS";
 
 export const web3IsLoading = bool => ({
   type: WEB_3_LOADING,
@@ -32,37 +39,62 @@ export const accountSuccess = account => ({
   account
 });
 
-const getAccount = (web3, dispatch) => {
-  return dispatch => {
-    console.log("1")
-    web3.eth.getAccounts((err, accounts) => {
-      console.log("WORK");
-      if (!err && accounts.length > 0) {
-        const account = accounts[0];
-        dispatch(accountSuccess(account));
-        // Get balance
-      } else {
-        dispatch(accountHasError(true));
-      }
-    })
-  };
+export const networkHasError = bool => ({
+  type: NETWORK_ERROR,
+  bool
+})
+
+export const networkSuccess = network => ({
+  type: NETWORK_SUCCESS,
+  network
+})
+
+const getAccount = async (web3, dispatch) => {
+  const accounts = await getAccountsAsync(web3);
+  if (accounts.length > 0) {
+    const account = accounts[0];
+    dispatch(accountSuccess(account));
+  } else {
+    dispatch(accountHasError(true));
+  }
 };
 
-// Fetch web3, contracts, account and dispatch to state
+const getNetwork = async (web3, dispatch) => {
+  const network = await getNetworkAsync(web3);
+  if (network !== null) {
+    dispatch(networkSuccess(network));
+  } else {
+    dispatch(networkHasError(true));
+  }
+};
+
+const getContracts = async (web3, dispatch) => {
+  //
+};
+
+// Fetch web3, contracts, account and dispatch to store
 export const initKiosk = () => {
   return dispatch => {
     dispatch(web3IsLoading(true));
+
     loadWeb3()
-      .then(web3 => {
+      .then(results => {
+        const web3 = results.web3;
+
         // Dispatch web3
         dispatch(web3Success(web3));
 
         // Get accounts
         dispatch(getAccount(web3, dispatch));
 
-        // Get contracts
+        // Get network
+        dispatch(getNetwork(web3, dispatch));
+
+        // // Get contracts
+        // dispatch(getContracts(results.web3, dispatch));
       })
       .catch(() => {
+        // Dispatch an error if web3 doesn't load correctly
         dispatch(web3HasError(true));
       });
   };
@@ -100,30 +132,25 @@ export const initKiosk = () => {
 //   );
 // }
 
-// getBalances() {
-//   getEtherBalance(this.state.web3, this.state.account).then(result => {
-//     this.setState({ ETHBalance: result });
+// export const getEtherBalance = (web3, account) =>
+//   new Promise((resolve, reject) => {
+//     web3.eth.getBalance(account, (err, result) => {
+//       const balance = web3.fromWei(result, "ether").toNumber();
+//       resolve(balance);
+//     });
 //   });
 
-//   getKMTBalance(this.state.web3, this.state.account).then(result => {
-//     this.setState({ KMTBalance: result });
+// export const getKMTBalance = (web3, account, KMT) =>
+//   new Promise((resolve, reject) => {
+//     KMT.balanceOf(account, (err, result) => {
+//       const balance = web3.fromWei(result, "ether").toNumber();
+//       resolve(balance);
+//     });
 //   });
-// }
 
 // // TODO: Add listener https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#ear-listening-for-selected-account-changes
 
 // fetchNetwork() {
-//   // TODO: Handle dropped connection
-//   if (this.state.web3.version.network !== this.state.network.id) {
-//     this.state.web3.version.getNetwork((error, result) => {
-//       const network = getNetwork(result);
-//       console.log("********** " + network.name.toUpperCase());
-//       this.setState({ network: network });
+// TODO: Handle dropped connection
 
-//       // If it's a real network (not TestRPC), and not Kovan, log not supported error.
-//       if (parseInt(network.id, 10) < 100 && network.id !== "42") {
-//         this.setState({ error: ERROR.NETWORK_NOT_SUPPORTED });
-//       }
-//     });
-//   }
 // }

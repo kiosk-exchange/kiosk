@@ -4,7 +4,9 @@ import {
 	web3HasError,
 	web3,
 	accountHasError,
-	account
+	account,
+	networkHasError,
+	network
 } from "./kiosk";
 
 const rootReducer = combineReducers({
@@ -12,7 +14,9 @@ const rootReducer = combineReducers({
 	web3HasError,
 	web3,
 	accountHasError,
-	account
+	account,
+	networkHasError,
+	network
 });
 
 export default rootReducer;
