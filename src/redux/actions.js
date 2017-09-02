@@ -12,7 +12,7 @@ import {
   getOrderStore,
   getEtherMarket
 } from "../utils/contracts";
-import { getAllProducts, getOwnerProducts } from "../utils/products";
+import { getAllProducts, getOwnerProducts, getPrice } from "../utils/products";
 import { getPurchases, getSales } from "../utils/orders";
 import { buyProduct, buyKMT } from "../utils/buy";
 
@@ -35,13 +35,14 @@ export const RECEIVED_ALL_PRODUCTS = "RECEIVED_ALL_PRODUCTS";
 export const RECEIVED_OWNER_PRODUCTS = "RECEIVED_OWNER_PRODUCTS";
 export const RECEIVED_PURCHASES = "RECEIVED_PURCHASES";
 export const RECEIVED_SALES = "RECEIVED_SALES";
-export const SELECTED_PRODUCT = "SELECTED_PRODUCT";
+
+// Buy Modal
 export const SHOW_BUY_MODAL = "SHOW_BUY_MODAL";
-export const PENDING_PURCHASES = "PENDING_PURCHASES";
+export const SELECTED_PRODUCT = "SELECTED_PRODUCT";
+export const SELECTED_QUANTITY = "QUANTITY";
+export const TOTAL_PRICE_CALCULATING = "TOTAL_PRICE_CALCULATING";
+export const TOTAL_PRICE = "TOTAL_PRICE";
 export const PURCHASE_IS_PENDING = "PURCHASE_IS_PENDING";
-export const SELECTED_QUANTITY = "SELECTED_QUANTITY";
-// export const PURCHASE_FAILED = "PURCHASE_FAILED";
-// export const PURCHASE_SUCCEEDED = "PURCHASE_SUCCEEDED";
 
 // Helper function
 const action = (type, data) => ({
@@ -76,12 +77,10 @@ export const receivedPurchases = data => action(RECEIVED_PURCHASES, { data });
 export const receivedSales = data => action(RECEIVED_SALES, { data });
 export const selectedProduct = data => action(SELECTED_PRODUCT, { data });
 export const showBuyModal = data => action(SHOW_BUY_MODAL, { data });
-export const selectedQuantity = data => action(SELECTED_QUANTITY, { data });
-
-// Purchase
 export const purchaseIsPending = data => action(PURCHASE_IS_PENDING, { data });
-
-// TODO: Refresh ETHBalance, KMTBalance, receivedPurchases after a purchase
+export const selectedQuantity = data => action(SELECTED_QUANTITY, { data });
+export const totalPriceIsCalculating = data => action(TOTAL_PRICE_CALCULATING, { data });
+export const totalPrice = data => action(TOTAL_PRICE, { data });
 
 const getAccount = () => {
   return async (dispatch, getState) => {
@@ -131,7 +130,7 @@ const getNetwork = () => {
 const getBalances = () => {
   return async (dispatch, getState) => {
     const web3 = getState().config.web3;
-    const KMTContract = getState().config.KMTContract;
+    const KMTContract = getState().contracts.KMTContract;
     const account = getState().config.account;
 
     if (web3 && KMTContract && account) {
@@ -146,7 +145,7 @@ const getBalances = () => {
 
 const fetchProducts = filter => {
   return async (dispatch, getState) => {
-    const DINRegistry = getState().config.DINRegistry;
+    const DINRegistry = getState().contracts.DINRegistry;
     const web3 = getState().config.web3;
     const account = getState().config.account;
 
@@ -164,7 +163,7 @@ const fetchProducts = filter => {
 
 const fetchOrders = type => {
   return async (dispatch, getState) => {
-    const orderStore = getState().config.OrderStore;
+    const orderStore = getState().contracts.OrderStore;
     const web3 = getState().config.web3;
     const account = getState().config.account;
 
@@ -199,7 +198,7 @@ const getContracts = () => {
       dispatch(fetchProducts(PRODUCT_FILTER.ALL));
       dispatch(getBalances());
     } catch (err) {
-      // TODO: Handle error
+      console.log("ERROR: GET CONTRACTS")
     }
   };
 };
@@ -286,9 +285,9 @@ export const buyNow = product => {
     dispatch(purchaseIsPending(true));
     dispatch(showBuyModal(false));
     try {
-      const KMT = getState().config.KMTContract;
+      const KMT = getState().contracts.KMTContract;
       const DIN = product.DIN;
-      const quantity = 1; // TODO: Selected quantity
+      const quantity = getState().buyModal.selectedQuantity;
       const value = product.value;
       const buyer = getState().config.account;
 
@@ -306,12 +305,9 @@ export const buyNow = product => {
 export const buyKioskMarketToken = () => {
   return async (dispatch, getState) => {
     try {
-      const EtherMarket = getState().config.EtherMarket;
+      const EtherMarket = getState().contracts.EtherMarket;
       const value = getState().config.web3.toWei(1, "ether"); // Hardcode for now
       const buyer = getState().config.account;
-
-      console.log(value);
-      console.log(buyer);
 
       const txId = await buyKMT(EtherMarket, value, buyer);
       console.log(txId);
@@ -322,6 +318,17 @@ export const buyKioskMarketToken = () => {
     }
   };
 };
+
+export const changedQuantity = quantity => {
+  return dispatch => {
+    dispatch(selectedQuantity(quantity))
+
+
+  }
+} 
+
+// action(SELECTED_QUANTITY, { data });
+
 
 // const ERROR = {
 //   NOT_CONNECTED: 1,

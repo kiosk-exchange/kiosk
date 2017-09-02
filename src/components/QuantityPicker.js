@@ -1,16 +1,16 @@
 import React from "react";
 import DropDownMenu from "material-ui/DropDownMenu";
 import MenuItem from "material-ui/MenuItem";
-import { selectedQuantity } from "../redux/actions";
+import { changedQuantity } from "../redux/actions";
 import { connect } from "react-redux";
 
 const mapStateToProps = state => ({
-	selectedQuantity: state.buyModal.selectedQuantity
+	selectedQuantity: state.buyModal.quantity
 });
 
 const mapDispatchToProps = dispatch => ({
 	onQuantityChange: quantity => {
-		dispatch(selectedQuantity(quantity));
+		dispatch(changedQuantity(quantity));
 	}
 });
 

@@ -68,8 +68,8 @@ const purchases = (state = null, action) => reducer(state, action, RECEIVED_PURC
 const sales = (state = null, action) => reducer(state, action, RECEIVED_SALES);
 
 const buyModalDefaultState = {
-	selectedProduct: null,
-	selectedQuantity: 1,
+	product: null,
+	quantity: 1,
 	isOpen: false
 }
 
@@ -81,18 +81,18 @@ const buyModal = (state = buyModalDefaultState, action) => {
 			}
 			return {
 				...state,
-				selectedQuantity: 1,
+				quantity: 1,
 				isOpen: true
 			};
 		case SELECTED_PRODUCT:
 			return {
 				...state,
-				selectedProduct: action.data
+				product: action.data
 			}
 		case SELECTED_QUANTITY:
 			return {
 				...state,
-				selectedQuantity: action.data
+				quantity: action.data
 			}
 		default:
 			return state;
@@ -111,13 +111,16 @@ const config = combineReducers({
 	account,
 	networkHasError,
 	network,
-	KMTContract,
-	DINRegistry,
-	OrderStore,
-	EtherMarket,
 	KMTBalance,
 	ETHBalance
 });
+
+const contracts = combineReducers({
+	KMTContract,
+	DINRegistry,
+	OrderStore,
+	EtherMarket
+})
 
 const results = combineReducers({
 	allProducts,
@@ -128,6 +131,7 @@ const results = combineReducers({
 
 export const rootReducer = combineReducers({
 	config,
+	contracts,
 	results,
 	selectedMenuItemId,
 	buyModal,
