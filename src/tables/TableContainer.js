@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import CircularProgress from "material-ui/CircularProgress";
+// import CircularProgress from "material-ui/CircularProgress";
 import { connect } from "react-redux";
 import {
 	MarketplaceTable,
@@ -12,7 +12,7 @@ import {
 const mapStateToProps = state => ({
 	title: state.config.menuItems[state.selectedMenuItemId],
 	theme: state.config.theme,
-	isLoading: false,
+	isLoading: state.results.isLoading,
 	allProducts: state.results.allProducts,
 	ownerProducts: state.results.ownerProducts,
 	purchases: state.results.purchases,
@@ -32,7 +32,7 @@ class TableContainer extends Component {
 			sales,
 			selectedMenuItemId
 		} = this.props;
-
+		
 		const headerStyle = {
 			color: theme.gray,
 			fontWeight: "medium"
@@ -40,16 +40,16 @@ class TableContainer extends Component {
 
 		let loader = null;
 
-		if (isLoading === true) {
-			loader = (
-				<CircularProgress
-					style={{ marginLeft: "auto", paddingRight: "20px" }}
-					size={40}
-					thickness={6}
-					color={theme.blue}
-				/>
-			);
-		}
+		// if (isLoading === true) {
+		// 	loader = (
+		// 		<CircularProgress
+		// 			style={{ marginLeft: "auto", paddingRight: "20px" }}
+		// 			size={40}
+		// 			thickness={6}
+		// 			color={theme.blue}
+		// 		/>
+		// 	);
+		// }
 
 		const titleSection = (
 			<div style={{ display: "flex", flexDirection: "column" }}>
@@ -68,29 +68,55 @@ class TableContainer extends Component {
 			</div>
 		);
 
-		let table = null;
+		let dataSource = null;
 
 		switch (selectedMenuItemId) {
 			case 0:
-				table = <MarketplaceTable products={allProducts} />;
+				dataSource = allProducts;
 				break;
 			case 1:
-				table = <PurchasesTable orders={purchases} />;
+				dataSource = purchases;
 				break;
 			case 2:
-				table = <ProductsTable products={ownerProducts} />;
+				dataSource = ownerProducts;
 				break;
 			case 3:
-				table = <SalesTable orders={sales} />;
+				dataSource = sales;
 				break;
 			default:
 				break;
 		}
 
+		let table = null;
+		let emptyState = null;
+
+		if (dataSource !== null && dataSource.length > 0) {
+			switch (selectedMenuItemId) {
+				case 0:
+					table = <MarketplaceTable products={dataSource} />;
+					break;
+				case 1:
+					table = <PurchasesTable orders={dataSource} />;
+					break;
+				case 2:
+					table = <ProductsTable products={dataSource} />;
+					break;
+				case 3:
+					table = <SalesTable orders={dataSource} />;
+					break;
+				default:
+					break;
+			}
+		} else if (isLoading === false) {
+			emptyState = <h1>There's nothing to see here</h1>
+		}
+
+
 		return (
 			<div>
 				{titleSection}
 				{table}
+				{emptyState}
 			</div>
 		);
 	}

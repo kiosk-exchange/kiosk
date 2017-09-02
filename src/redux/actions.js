@@ -12,8 +12,8 @@ import {
   getOrderStore,
   getEtherMarket
 } from "../utils/contracts";
-import { getAllProducts, getOwnerProducts, getPrice } from "../utils/products";
-import { getPurchases, getSales } from "../utils/orders";
+import { getAllProducts, getOwnerProducts } from "../utils/products";
+import { getPurchases, getSales, getValue } from "../utils/orders";
 import { buyProduct, buyKMT } from "../utils/buy";
 
 // Action stubs
@@ -31,6 +31,8 @@ export const ETHER_MARKET_CONTRACT = "ETHER_MARKET_CONTRACT";
 export const KMT_BALANCE = "KMT_BALANCE";
 export const ETH_BALANCE = "ETH_BALANCE";
 export const SELECTED_MENU_ITEM_ID = "SELECTED_MENU_ITEM_ID";
+export const REQUEST_LOADING = "REQUEST_LOADING";
+export const REQUEST_ERROR = "REQUEST_ERROR";
 export const RECEIVED_ALL_PRODUCTS = "RECEIVED_ALL_PRODUCTS";
 export const RECEIVED_OWNER_PRODUCTS = "RECEIVED_OWNER_PRODUCTS";
 export const RECEIVED_PURCHASES = "RECEIVED_PURCHASES";
@@ -41,6 +43,7 @@ export const SHOW_BUY_MODAL = "SHOW_BUY_MODAL";
 export const SELECTED_PRODUCT = "SELECTED_PRODUCT";
 export const SELECTED_QUANTITY = "QUANTITY";
 export const TOTAL_PRICE_CALCULATING = "TOTAL_PRICE_CALCULATING";
+export const TOTAL_PRICE_ERROR = "TOTAL_PRICE_ERROR";
 export const TOTAL_PRICE = "TOTAL_PRICE";
 export const PURCHASE_IS_PENDING = "PURCHASE_IS_PENDING";
 
@@ -69,6 +72,8 @@ export const KMTBalance = data => action(KMT_BALANCE, { data });
 export const ETHBalance = data => action(ETH_BALANCE, { data });
 export const selectedMenuItemId = data =>
   action(SELECTED_MENU_ITEM_ID, { data });
+export const requestLoading = data => action(REQUEST_LOADING, { data });
+export const requestError = data => action(REQUEST_ERROR, { data });
 export const receivedAllProducts = data =>
   action(RECEIVED_ALL_PRODUCTS, { data });
 export const receivedOwnerProducts = data =>
@@ -79,8 +84,10 @@ export const selectedProduct = data => action(SELECTED_PRODUCT, { data });
 export const showBuyModal = data => action(SHOW_BUY_MODAL, { data });
 export const purchaseIsPending = data => action(PURCHASE_IS_PENDING, { data });
 export const selectedQuantity = data => action(SELECTED_QUANTITY, { data });
-export const totalPriceIsCalculating = data => action(TOTAL_PRICE_CALCULATING, { data });
+export const totalPriceIsCalculating = data =>
+  action(TOTAL_PRICE_CALCULATING, { data });
 export const totalPrice = data => action(TOTAL_PRICE, { data });
+export const totalPriceError = data => action(TOTAL_PRICE_ERROR, { data });
 
 const getAccount = () => {
   return async (dispatch, getState) => {
@@ -120,15 +127,15 @@ const PRODUCT_FILTER = {
 const getContext = (getState, args) => {
   const state = getState();
 
-  let context = {}
+  let context = {};
 
-  args.map(arg => {
+  for (let i = 0; i < args.length; i ++) {
+    const arg = args[i];
     context[arg] = state.config[arg];
-  })
+  }
 
   return context;
-
-}
+};
 
 const getNetwork = () => {
   return async (dispatch, getState) => {
@@ -143,7 +150,11 @@ const getNetwork = () => {
 
 const getBalances = () => {
   return async (dispatch, getState) => {
-    const { web3, KMTContract, account } = getContext(getState, ["web3", "account", "KMTContract"]);
+    const { web3, KMTContract, account } = getContext(getState, [
+      "web3",
+      "account",
+      "KMTContract"
+    ]);
 
     if (web3 && KMTContract && account) {
       const KMT = await getKMTBalanceAsync(web3, KMTContract, account);
@@ -157,14 +168,18 @@ const getBalances = () => {
 
 const fetchProducts = filter => {
   return async (dispatch, getState) => {
-    const { web3, DINRegistry, account } = getContext(getState, ["web3", "DINRegistry", "account"])
+    const { web3, DINRegistry, account } = getContext(getState, [
+      "web3",
+      "DINRegistry",
+      "account"
+    ]);
 
     if (DINRegistry && web3 && account) {
       if (filter === PRODUCT_FILTER.ALL) {
-        const products = await getAllProducts(DINRegistry, web3);
+        const products = await getAllProducts(DINRegistry, web3, account);
         dispatch(receivedAllProducts(products));
       } else if (filter === PRODUCT_FILTER.OWNER) {
-        const products = await getOwnerProducts(DINRegistry, web3, account);
+        const products = await getOwnerProducts(DINRegistry, web3, account, account);
         dispatch(receivedOwnerProducts(products));
       }
     }
@@ -173,18 +188,54 @@ const fetchProducts = filter => {
 
 const fetchOrders = type => {
   return async (dispatch, getState) => {
-    const { web3, orderStore, account } = getContext(getState, ["web3", "OrderStore", "account"])
+    const { web3, OrderStore, account } = getContext(getState, [
+      "web3",
+      "OrderStore",
+      "account"
+    ]);
 
-    if (orderStore && web3 && account) {
+    if (OrderStore && web3 && account) {
       if (type === ORDER_TYPE.PURCHASES) {
-        const purchases = await getPurchases(orderStore, web3, account);
+        const purchases = await getPurchases(OrderStore, web3, account);
         dispatch(receivedPurchases(purchases));
       } else if (type === ORDER_TYPE.SALES) {
-        const sales = await getSales(orderStore, web3, account);
+        const sales = await getSales(OrderStore, web3, account);
 
         dispatch(receivedSales(sales));
       }
     }
+  };
+};
+
+export const fetchDataForMenuItem = id => {
+  return async dispatch => {
+    dispatch(selectedMenuItemId(id));
+
+    dispatch(requestError(false));
+    dispatch(requestLoading(true));
+
+    try {
+      switch (id) {
+        case MENU_ITEM.MARKETPLACE:
+          await dispatch(fetchProducts(PRODUCT_FILTER.ALL));
+          break;
+        case MENU_ITEM.PURCHASES:
+          await dispatch(fetchOrders(ORDER_TYPE.PURCHASES));
+          break;
+        case MENU_ITEM.PRODUCTS:
+          await dispatch(fetchProducts(PRODUCT_FILTER.OWNER));
+          break;
+        case MENU_ITEM.SALES:
+          await dispatch(fetchOrders(ORDER_TYPE.SALES));
+          break;
+        default:
+          break;
+      }
+    } catch (err) {
+      dispatch(requestError(true));
+    }
+
+    dispatch(requestLoading(false));
   };
 };
 
@@ -203,10 +254,10 @@ const getContracts = () => {
       dispatch(OrderStoreContract(OrderStore));
       dispatch(EtherMarketContract(EtherMarket));
 
-      dispatch(fetchProducts(PRODUCT_FILTER.ALL));
+      dispatch(fetchDataForMenuItem(MENU_ITEM.MARKETPLACE));
       dispatch(getBalances());
     } catch (err) {
-      console.log("ERROR: GET CONTRACTS")
+      console.log("ERROR: GET CONTRACTS");
     }
   };
 };
@@ -238,24 +289,7 @@ export const initKiosk = () => {
 
 export const selectMenuItem = id => {
   return async dispatch => {
-    dispatch(selectedMenuItemId(id));
-
-    switch (id) {
-      case MENU_ITEM.MARKETPLACE:
-        dispatch(fetchProducts(PRODUCT_FILTER.ALL));
-        break;
-      case MENU_ITEM.PURCHASES:
-        dispatch(fetchOrders(ORDER_TYPE.PURCHASES));
-        break;
-      case MENU_ITEM.PRODUCTS:
-        dispatch(fetchProducts(PRODUCT_FILTER.OWNER));
-        break;
-      case MENU_ITEM.SALES:
-        dispatch(fetchOrders(ORDER_TYPE.SALES));
-        break;
-      default:
-        break;
-    }
+    dispatch(fetchDataForMenuItem(id));
   };
 };
 
@@ -313,10 +347,14 @@ export const buyNow = product => {
 export const buyKioskMarketToken = () => {
   return async (dispatch, getState) => {
     try {
-      const { web3, market, buyer } = getContext(getState, ["web3", "EtherMarket", "account"])
+      const { web3, EtherMarket, account } = getContext(getState, [
+        "web3",
+        "EtherMarket",
+        "account"
+      ]);
       const value = web3.toWei(1, "ether"); // Hardcode for now
 
-      const txId = await buyKMT(market, value, buyer);
+      const txId = await buyKMT(EtherMarket, value, account);
       console.log(txId);
       // Reload balances
       dispatch(getBalances());
@@ -327,15 +365,23 @@ export const buyKioskMarketToken = () => {
 };
 
 export const changedQuantity = quantity => {
-  return dispatch => {
-    dispatch(selectedQuantity(quantity))
+  // return async (dispatch, getState) => {
+  //   const web3 = getState().config.web3;
+  //   const product = getState().buyModal.product;
 
+  //   dispatch(selectedQuantity(quantity));
+  //   dispatch(totalPriceIsCalculating());
 
-  }
-} 
+  //   try {
+  //     const totalPrice = await getPrice(web3, product.DIN, quantity, product.market);
+  //     dispatch(totalPrice(totalPrice));
+  //   } catch (err) {
+  //     dispatch(totalPriceError(true));
+  //   }
+  // };
+};
 
 // action(SELECTED_QUANTITY, { data });
-
 
 // const ERROR = {
 //   NOT_CONNECTED: 1,

@@ -15,6 +15,8 @@ import {
 	KMT_BALANCE,
 	ETH_BALANCE,
 	SELECTED_MENU_ITEM_ID,
+	REQUEST_LOADING,
+	REQUEST_ERROR,
 	RECEIVED_ALL_PRODUCTS,
 	RECEIVED_OWNER_PRODUCTS,
 	RECEIVED_PURCHASES,
@@ -62,10 +64,7 @@ const EtherMarket = (state = null, action) => reducer(state, action, ETHER_MARKE
 const KMTBalance = (state = null, action) => reducer(state, action, KMT_BALANCE);
 const ETHBalance = (state = null, action) => reducer(state, action, ETH_BALANCE);
 const selectedMenuItemId = (state = 0, action) => reducer(state, action, SELECTED_MENU_ITEM_ID);
-const allProducts = (state = null, action) => reducer(state, action, RECEIVED_ALL_PRODUCTS);
-const ownerProducts = (state = null, action) => reducer(state, action, RECEIVED_OWNER_PRODUCTS);
-const purchases = (state = null, action) => reducer(state, action, RECEIVED_PURCHASES);
-const sales = (state = null, action) => reducer(state, action, RECEIVED_SALES);
+const purchaseIsPending = (state = false, action) => reducer(state, action, PURCHASE_IS_PENDING);
 
 const buyModalDefaultState = {
 	product: null,
@@ -99,7 +98,51 @@ const buyModal = (state = buyModalDefaultState, action) => {
 	}
 };
 
-const purchaseIsPending = (state = false, action) => reducer(state, action, PURCHASE_IS_PENDING);
+const resultsDefaultState = {
+	isLoading: true,
+	allProducts: null,
+	ownerProducts: null,
+	purchases: null,
+	sales: null,
+	marketProducts: null
+}
+
+const results = (state = resultsDefaultState, action) => {
+	switch (action.type) {
+		case REQUEST_LOADING:
+			return {
+				...state,
+				isLoading: action.data
+			};
+		case REQUEST_ERROR:
+			return {
+				...state,
+				error: action.data
+			};
+		case RECEIVED_ALL_PRODUCTS:
+			return {
+				...state,
+				allProducts: action.data
+			};
+		case RECEIVED_OWNER_PRODUCTS:
+			return {
+				...state,
+				ownerProducts: action.data
+			};
+		case RECEIVED_PURCHASES:
+			return {
+				...state,
+				purchases: action.data
+			};
+		case RECEIVED_SALES:
+			return {
+				...state,
+				sales: action.data
+			};
+		default:
+			return state;
+	}
+};
 
 const config = combineReducers({
 	theme,
@@ -117,13 +160,6 @@ const config = combineReducers({
 	DINRegistry,
 	OrderStore,
 	EtherMarket
-});
-
-const results = combineReducers({
-	allProducts,
-	ownerProducts,
-	purchases,
-	sales
 });
 
 export const rootReducer = combineReducers({
