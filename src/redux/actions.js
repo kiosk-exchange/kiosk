@@ -105,15 +105,14 @@ const fetchProducts = filter => {
   return async (dispatch, getState) => {
     const DINRegistry = getState().DINRegistry;
     const web3 = getState().web3;
+    const account = getState().account;
 
-    if (DINRegistry !== null && web3 !== null) {
-      let products;
-
+    if (DINRegistry !== null && web3 !== null && account !== null) {
       if (filter === "all") {
-        products = await getAllProducts(DINRegistry, web3);
+        const products = await getAllProducts(DINRegistry, web3);
         dispatch(receivedAllProducts(products));
       } else if (filter === "owner") {
-        products = await getOwnerProducts(DINRegistry, web3);
+        const products = await getOwnerProducts(DINRegistry, web3, account);
         dispatch(receivedOwnerProducts(products));
       }
     }
@@ -122,13 +121,9 @@ const fetchProducts = filter => {
 
 const fetchOrders = type => {
   return async (dispatch, getState) => {
-    console.log("WTF")
-
     const orderStore = getState().OrderStore;
     const web3 = getState().web3;
     const account = getState().account;
-
-    console.log(orderStore);
 
     if (orderStore !== null && web3 !== null && account !== null) {
       if (type == "purhases") {
