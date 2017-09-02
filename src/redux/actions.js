@@ -6,10 +6,10 @@ import {
   getKMTBalanceAsync,
   getETHBalanceAsync
 } from "../utils/kioskWeb3";
-import { getKioskMarketToken } from "../utils/contracts";
-import { 
-  getAllProducts, 
-  // getOwnerProducts 
+import { getKioskMarketToken, getDINRegistry } from "../utils/contracts";
+import {
+  getAllProducts
+  // getOwnerProducts
 } from "../utils/products";
 // import { getPurchases, getSales } from "../utils/orders";
 
@@ -21,6 +21,7 @@ export const ACCOUNT_SUCCESS = "ACCOUNT_SUCCESS";
 export const NETWORK_ERROR = "NETWORK_ERROR";
 export const NETWORK_SUCCESS = "NETWORK_SUCCESS";
 export const KMT_CONTRACT = "KMT_CONTRACT";
+export const DIN_REGISTRY_CONTRACT = "DIN_REGISTRY_CONTRACT";
 export const KMT_BALANCE = "KMT_BALANCE";
 export const ETH_BALANCE = "ETH_BALANCE";
 export const SELECTED_MENU_ITEM_ID = "SELECTED_MENU_ITEM_ID";
@@ -41,9 +42,10 @@ export const accountSuccess = data => action(ACCOUNT_SUCCESS, { data });
 export const networkHasError = data => action(NETWORK_ERROR, { data });
 export const networkSuccess = data => action(NETWORK_SUCCESS, { data });
 export const KMTContract = data => action(KMT_CONTRACT, { data });
+export const DINRegistryContract = data => action(DIN_REGISTRY_CONTRACT, { data });
 export const KMTBalance = data => action(KMT_BALANCE, { data });
 export const ETHBalance = data => action(ETH_BALANCE, { data });
-export const receivedAllProducts = data => action(ALL_PRODUCTS_SUCCESS, { data});
+export const receivedAllProducts = data => action(RECEIVED_ALL_PRODUCTS, { data });
 
 // Actions
 export const selectedMenuItemId = data =>
@@ -91,10 +93,24 @@ const getBalances = () => {
   };
 };
 
+const fetchAllProducts = () => {
+  return async (dispatch, getState) => {
+    const DINRegistry = getState().DINRegistry;
+    const web3 = getState().web3;
+
+    if (DINRegistry !== null && web3 !== null) {
+      const products = await getAllProducts(DINRegistry, web3);
+      dispatch(receivedAllProducts(products));
+    }
+  };
+};
+
 const getContracts = () => {
   return async (dispatch, getState) => {
     const KMT = await getKioskMarketToken(getState().web3);
-    if (KMT) {
+    const DINRegistry = await getDINRegistry(getState().web3);
+
+    if (KMT !== null) {
       dispatch(KMTContract(KMT));
 
       // If there's an account, get the KMT balance
@@ -102,6 +118,13 @@ const getContracts = () => {
         dispatch(getBalances());
       }
     }
+
+    if (DINRegistry !== null) {
+      dispatch(DINRegistryContract(DINRegistry));
+
+      dispatch(fetchAllProducts())
+    }
+
   };
 };
 
@@ -130,27 +153,16 @@ export const initKiosk = () => {
   };
 };
 
-const fetchProducts = () => {
-  return async (dispatch, getState) => {
-    const DINRegistry = getState().DINRegistry
-    const web3 = getState().web3
-
-    if (DINRegistry && web3) {
-      const products = await getAllProducts()
-      dispatch()
-    }
-  }
-}
-
 export const selectMenuItem = id => {
   return dispatch => {
     dispatch(selectedMenuItemId(id));
 
     switch (id) {
       case 0: // Marketplace
-        dispatch(fetchProducts())
+        dispatch(fetchAllProducts());
+      default:
+        break;
     }
-
   };
 };
 

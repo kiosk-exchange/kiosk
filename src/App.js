@@ -11,7 +11,6 @@ const mapStateToProps = state => ({
   web3: state.web3,
   hasError: state.web3HasError,
   isLoading: state.web3IsLoading,
-  selectedMenuItem: state.selectedMenuItem
 });
 
 class App extends Component {
@@ -22,7 +21,7 @@ class App extends Component {
   }
 
   render() {
-    const { web3, isLoading, selectedMenuItem } = this.props;
+    const { web3, isLoading } = this.props;
 
     const hContainerStyle = {
       display: "flex", // 💪
@@ -60,7 +59,7 @@ class App extends Component {
               <NavBar />
             </div>
             <div style={tableStyle}>
-              <TableContainer itemId={selectedMenuItem}/>
+              <TableContainer />
             </div>
           </div>
           <BuyModal isOpen={false}/>

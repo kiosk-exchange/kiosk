@@ -9,9 +9,11 @@ import {
 	NETWORK_ERROR,
 	NETWORK_SUCCESS,
 	KMT_CONTRACT,
+	DIN_REGISTRY_CONTRACT,
 	KMT_BALANCE,
 	ETH_BALANCE,
-	SELECTED_MENU_ITEM_ID
+	SELECTED_MENU_ITEM_ID,
+	RECEIVED_ALL_PRODUCTS
 } from "./actions";
 
 /*
@@ -45,9 +47,11 @@ const account = (state = null, action) => reducer(state, action, ACCOUNT_SUCCESS
 const networkHasError = (state = false, action) => reducer(state, action, NETWORK_ERROR);
 const network = (state = null, action) => reducer(state, action, NETWORK_SUCCESS);
 const KMTContract = (state = null, action) => reducer(state, action, KMT_CONTRACT);
+const DINRegistry = (state = null, action) => reducer(state, action, DIN_REGISTRY_CONTRACT);
 const KMTBalance = (state = null, action) => reducer(state, action, KMT_BALANCE);
 const ETHBalance = (state = null, action) => reducer(state, action, ETH_BALANCE);
 const selectedMenuItemId = (state = 0, action) => reducer(state, action, SELECTED_MENU_ITEM_ID);
+const allProducts = (state = null, action) => reducer(state, action, RECEIVED_ALL_PRODUCTS);
 
 export const rootReducer = combineReducers({
 	theme,
@@ -60,7 +64,9 @@ export const rootReducer = combineReducers({
 	networkHasError,
 	network,
 	KMTContract,
+	DINRegistry,
 	KMTBalance,
 	ETHBalance,
-	selectedMenuItemId
+	selectedMenuItemId,
+	allProducts
 });
