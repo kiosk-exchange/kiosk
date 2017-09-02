@@ -65,33 +65,33 @@ const SideMenu = ({ account, KMT, ETH, selectedItem, selectMenuItem }) => {
 			<br />
 			<Subheader style={subheaderStyle}>BUY</Subheader>
 			<ListItem
-				value={1}
+				value={0}
 				{...listItemStyle}
 				primaryText="Marketplace"
 				leftIcon={<Store color="white" />}
-				onClick={() => selectMenuItem(1)}
+				onClick={() => selectMenuItem(0)}
 			/>
 			<ListItem
-				value={2}
+				value={1}
 				{...listItemStyle}
 				primaryText="Purchases"
 				leftIcon={<ShoppingCart color="white" />}
-				onClick={() => selectMenuItem(2)}
+				onClick={() => selectMenuItem(1)}
 			/>
 			<Subheader style={subheaderStyle}>SELL</Subheader>
 			<ListItem
-				value={3}
+				value={2}
 				{...listItemStyle}
 				primaryText="Products"
 				leftIcon={<Products color="white" />}
-				onClick={() => selectMenuItem(3)}
+				onClick={() => selectMenuItem(2)}
 			/>
 			<ListItem
-				value={4}
+				value={3}
 				{...listItemStyle}
 				primaryText="Sales"
 				leftIcon={<Money color="white" />}
-				onClick={() => selectMenuItem(4)}
+				onClick={() => selectMenuItem(3)}
 			/>
 			<AccountSection account={account} KMT={KMT} ETH={ETH} />
 		</SelectableList>

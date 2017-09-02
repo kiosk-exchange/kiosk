@@ -2,7 +2,7 @@ import React, { Component } from "react";
 // import { Route } from "react-router-dom";
 import SideMenu from "./components/SideMenu";
 import NavBar from "./components/NavBar";
-// import TableContainer from "./tables/TableContainer";
+import TableContainer from "./tables/TableContainer";
 import BuyModal from "./components/BuyModal";
 import { connect } from "react-redux";
 import { initKiosk } from "./redux/actions";
@@ -22,7 +22,7 @@ class App extends Component {
   }
 
   render() {
-    const { web3, isLoading } = this.props;
+    const { web3, isLoading, selectedMenuItem } = this.props;
 
     const hContainerStyle = {
       display: "flex", // 💪
@@ -45,13 +45,9 @@ class App extends Component {
       height: "100%"
     };
 
-    const theme = {
-      red: "#FC575E",
-      blue: "#32C1FF",
-      gray: "#2C363F",
-      lightGray: "#6E7E85",
-      white: "#F6F8FF"
-    };
+    const tableStyle = {
+      padding: "10px 30px"
+    }
 
     if (web3 !== null) {
       return (
@@ -61,10 +57,13 @@ class App extends Component {
           </div>
           <div style={rightContainerStyle}>
             <div>
-              <NavBar theme={theme} />
+              <NavBar />
             </div>
-            <BuyModal theme={theme} isOpen={false}/>
+            <div style={tableStyle}>
+              <TableContainer itemId={selectedMenuItem}/>
+            </div>
           </div>
+          <BuyModal isOpen={false}/>
         </div>
       );
     } else if (isLoading === true) {
@@ -77,7 +76,7 @@ class App extends Component {
 
 export default connect(mapStateToProps)(App);
 
-// <TableContainer />
+// 
 
 // <div style={{ padding: "10px 30px" }} />
 // <TableContainer />

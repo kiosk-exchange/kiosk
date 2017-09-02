@@ -8,7 +8,8 @@ import { connect } from "react-redux";
 
 const mapStateToProps = state => ({
   isOpen: false,
-  product: {}
+  product: {},
+  theme: state.theme
 });
 
 const mapDispatchToProps = dispatch => ({

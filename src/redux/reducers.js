@@ -29,6 +29,10 @@ const reducer = (state, action, type) => {
 	}
 };
 
+// Initial state
+const theme = (state = null, action) => { return state };
+const menuItems = (state = null, action) => { return state };
+
 /*
 *  Name reducers according to how you would like to access  them in a component (e.g. web3 instead of web3Success)
 *  Use a separate reducer for each top-level object in the state tree.
@@ -43,12 +47,11 @@ const network = (state = null, action) => reducer(state, action, NETWORK_SUCCESS
 const KMTContract = (state = null, action) => reducer(state, action, KMT_CONTRACT);
 const KMTBalance = (state = null, action) => reducer(state, action, KMT_BALANCE);
 const ETHBalance = (state = null, action) => reducer(state, action, ETH_BALANCE);
-const selectedMenuItemId = (state = 1, action) => {
-	console.log("SELECTED_MENU_ITEM_ID" + action.data)
-	return reducer(state, action, SELECTED_MENU_ITEM_ID);
-}
+const selectedMenuItemId = (state = 0, action) => reducer(state, action, SELECTED_MENU_ITEM_ID);
 
 export const rootReducer = combineReducers({
+	theme,
+	menuItems,
 	web3IsLoading,
 	web3HasError,
 	web3,
