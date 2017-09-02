@@ -10,7 +10,8 @@ import {
 	NETWORK_SUCCESS,
 	KMT_CONTRACT,
 	KMT_BALANCE,
-	ETH_BALANCE
+	ETH_BALANCE,
+	SELECTED_MENU_ITEM_ID
 } from "./actions";
 
 /*
@@ -42,6 +43,10 @@ const network = (state = null, action) => reducer(state, action, NETWORK_SUCCESS
 const KMTContract = (state = null, action) => reducer(state, action, KMT_CONTRACT);
 const KMTBalance = (state = null, action) => reducer(state, action, KMT_BALANCE);
 const ETHBalance = (state = null, action) => reducer(state, action, ETH_BALANCE);
+const selectedMenuItemId = (state = 1, action) => {
+	console.log("SELECTED_MENU_ITEM_ID" + action.data)
+	return reducer(state, action, SELECTED_MENU_ITEM_ID);
+}
 
 export const rootReducer = combineReducers({
 	web3IsLoading,
@@ -53,5 +58,6 @@ export const rootReducer = combineReducers({
 	network,
 	KMTContract,
 	KMTBalance,
-	ETHBalance
+	ETHBalance,
+	selectedMenuItemId
 });

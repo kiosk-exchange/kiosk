@@ -18,6 +18,7 @@ export const NETWORK_SUCCESS = "NETWORK_SUCCESS";
 export const KMT_CONTRACT = "KMT_CONTRACT";
 export const KMT_BALANCE = "KMT_BALANCE";
 export const ETH_BALANCE = "ETH_BALANCE";
+export const SELECTED_MENU_ITEM_ID = "SELECTED_MENU_ITEM_ID";
 
 // Helper function
 const action = (type, data) => ({
@@ -25,6 +26,7 @@ const action = (type, data) => ({
   ...data
 });
 
+// Config
 export const web3IsLoading = data => action(WEB_3_LOADING, { data });
 export const web3HasError = data => action(WEB_3_ERROR, { data });
 export const web3Success = data => action(WEB_3_SUCCESS, { data });
@@ -35,6 +37,9 @@ export const networkSuccess = data => action(NETWORK_SUCCESS, { data });
 export const KMTContract = data => action(KMT_CONTRACT, { data });
 export const KMTBalance = data => action(KMT_BALANCE, { data });
 export const ETHBalance = data => action(ETH_BALANCE, { data });
+
+// Actions
+export const selectedMenuItemId = data => action(SELECTED_MENU_ITEM_ID, { data });
 
 const getAccount = () => {
   return async (dispatch, getState) => {
@@ -47,6 +52,11 @@ const getAccount = () => {
     }
   };
 };
+
+// TestRPC or Kovan
+// const isSupportedNetwork = network => {
+//   return parseInt(network, 10) > 100 || network === "42";
+// };
 
 const getNetwork = () => {
   return async (dispatch, getState) => {
@@ -109,6 +119,12 @@ export const initKiosk = () => {
       // Dispatch an error if web3 doesn't load correctly
       dispatch(web3HasError(true));
     }
+  };
+};
+
+export const selectMenuItem = id => {
+  return dispatch => {
+    dispatch(selectedMenuItemId(id));
   };
 };
 

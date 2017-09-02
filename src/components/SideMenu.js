@@ -1,5 +1,5 @@
 import React from "react";
-import { List, ListItem } from "material-ui/List";
+import { List, ListItem, makeSelectable } from "material-ui/List";
 import AccountSection from "./AccountSection";
 import Subheader from "material-ui/Subheader";
 import Store from "material-ui/svg-icons/action/store";
@@ -8,14 +8,24 @@ import Products from "material-ui/svg-icons/action/loyalty";
 import Money from "material-ui/svg-icons/editor/attach-money";
 import Avatar from "material-ui/Avatar";
 import { connect } from "react-redux";
+import { selectMenuItem } from "../redux/actions";
 
 const mapStateToProps = state => ({
 	account: state.account,
 	KMT: state.KMTBalance,
-	ETH: state.ETHBalance
+	ETH: state.ETHBalance,
+	selectedItem: state.selectedMenuItemId
 });
 
-const SideMenu = ({ account, KMT, ETH }) => {
+const mapDispatchToProps = dispatch => ({
+	selectMenuItem: id => {
+		dispatch(selectMenuItem(id));
+	}
+});
+
+const SelectableList = makeSelectable(List);
+
+const SideMenu = ({ account, KMT, ETH, selectedItem, selectMenuItem }) => {
 	const style = {
 		color: "white",
 		fontSize: "15px",
@@ -44,30 +54,8 @@ const SideMenu = ({ account, KMT, ETH }) => {
 		style: style
 	};
 
-	const headers = ["Markets", "Purchases", "Products", "Sales"];
-	const icons = [
-		<Store color="white" />,
-		<ShoppingCart color="white" />,
-		<Products color="white" />,
-		<Money color="white" />
-	];
-
-	let listItems = [];
-	for (var i = 0; i < headers.length; i++) {
-		const listItem = (
-			<ListItem
-				value={i + 1}
-				{...listItemStyle}
-				primaryText={headers[i]}
-				leftIcon={icons[i]}
-				// onClick={() => this.props.history.push("/products")}
-			/>
-		);
-		listItems.push(listItem);
-	}
-
 	return (
-		<List style={listStyle}>
+		<SelectableList style={listStyle} value={selectedItem}>
 			<ListItem
 				style={logoStyle}
 				disabled={true}
@@ -76,14 +64,38 @@ const SideMenu = ({ account, KMT, ETH }) => {
 			/>
 			<br />
 			<Subheader style={subheaderStyle}>BUY</Subheader>
-			{listItems[0]}
-			{listItems[1]}
+			<ListItem
+				value={1}
+				{...listItemStyle}
+				primaryText="Marketplace"
+				leftIcon={<Store color="white" />}
+				onClick={() => selectMenuItem(1)}
+			/>
+			<ListItem
+				value={2}
+				{...listItemStyle}
+				primaryText="Purchases"
+				leftIcon={<ShoppingCart color="white" />}
+				onClick={() => selectMenuItem(2)}
+			/>
 			<Subheader style={subheaderStyle}>SELL</Subheader>
-			{listItems[2]}
-			{listItems[3]}
+			<ListItem
+				value={3}
+				{...listItemStyle}
+				primaryText="Products"
+				leftIcon={<Products color="white" />}
+				onClick={() => selectMenuItem(3)}
+			/>
+			<ListItem
+				value={4}
+				{...listItemStyle}
+				primaryText="Sales"
+				leftIcon={<Money color="white" />}
+				onClick={() => selectMenuItem(4)}
+			/>
 			<AccountSection account={account} KMT={KMT} ETH={ETH} />
-		</List>
+		</SelectableList>
 	);
 };
 
-export default connect(mapStateToProps)(SideMenu);
+export default connect(mapStateToProps, mapDispatchToProps)(SideMenu);

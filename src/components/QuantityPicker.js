@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import DropDownMenu from "material-ui/DropDownMenu";
 import MenuItem from "material-ui/MenuItem";
-import PropTypes from "prop-types";
 
 const items = [];
 for (let i = 1; i <= 10; i++) {

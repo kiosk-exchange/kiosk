@@ -10,7 +10,8 @@ import { initKiosk } from "./redux/actions";
 const mapStateToProps = state => ({
   web3: state.web3,
   hasError: state.web3HasError,
-  isLoading: state.web3IsLoading
+  isLoading: state.web3IsLoading,
+  selectedMenuItem: state.selectedMenuItem
 });
 
 class App extends Component {
@@ -62,7 +63,7 @@ class App extends Component {
             <div>
               <NavBar theme={theme} />
             </div>
-            <BuyModal theme={theme}/>
+            <BuyModal theme={theme} isOpen={false}/>
           </div>
         </div>
       );
@@ -75,6 +76,8 @@ class App extends Component {
 }
 
 export default connect(mapStateToProps)(App);
+
+// <TableContainer />
 
 // <div style={{ padding: "10px 30px" }} />
 // <TableContainer />

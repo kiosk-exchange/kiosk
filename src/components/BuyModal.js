@@ -7,7 +7,7 @@ import { closeBuyModal, buyNowClicked } from "../redux/actions";
 import { connect } from "react-redux";
 
 const mapStateToProps = state => ({
-  isOpen: true,
+  isOpen: false,
   product: {}
 });
 
@@ -38,12 +38,12 @@ class BuyModal extends Component {
       padding: "0px"
     };
 
-    const errorStyle = {
-      color: theme.red,
-      fontSize: "12px",
-      fontWeight: "medium",
-      padding: "0px"
-    };
+    // const errorStyle = {
+    //   color: theme.red,
+    //   fontSize: "12px",
+    //   fontWeight: "medium",
+    //   padding: "0px"
+    // };
 
     const buyNow = (
       <RaisedButton
