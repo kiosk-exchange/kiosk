@@ -19,8 +19,8 @@ export const buyProduct = (KMT, DIN, quantity, value, buyer) => {
 	});
 };
 
-export const buyKMT = (etherMarket, value, buyer) => {
-	etherMarket.contribute({ from: buyer, value: value }, (error, result) => {
+export const buyKMT = (EtherMarket, value, buyer) => {
+	EtherMarket.contribute({ from: buyer, value: value }, (error, result) => {
 		if (!error) {
 			console.log(result);
 		} else {

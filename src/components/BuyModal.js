@@ -7,6 +7,8 @@ import { showBuyModal, buyNow } from "../redux/actions";
 import { connect } from "react-redux";
 
 const mapStateToProps = state => ({
+  product: state.buyModal.selectedProduct,
+  isOpen: state.buyModal.isOpen,
   theme: state.config.theme
 });
 

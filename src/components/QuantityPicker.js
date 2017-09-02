@@ -1,44 +1,46 @@
-import React, { Component } from "react";
+import React from "react";
 import DropDownMenu from "material-ui/DropDownMenu";
 import MenuItem from "material-ui/MenuItem";
+import { selectedQuantity } from "../redux/actions";
+import { connect } from "react-redux";
 
-const items = [];
-for (let i = 1; i <= 10; i++) {
-	let text = i.toString();
+const mapStateToProps = state => ({
+	selectedQuantity: state.buyModal.selectedQuantity
+});
 
-	// TODO:
-	// if (i == 10) {
-	// 	text = text.concat(" +")
-	// }
+const mapDispatchToProps = dispatch => ({
+	onQuantityChange: quantity => {
+		dispatch(selectedQuantity(quantity));
+	}
+});
 
-	items.push(<MenuItem value={i} key={i} primaryText={`${text}`} />);
-}
+const QuantityPicker = ({ selectedQuantity, onQuantityChange, theme }) => {
+	const items = [];
+	for (let i = 1; i <= 10; i++) {
+		let text = i.toString();
 
-class QuantityPicker extends Component {
-	constructor(props) {
-		super(props);
-		this.state = { value: 1 };
+		if (i === 10) {
+			text = text.concat(" +");
+		}
+
+		items.push(<MenuItem value={i} key={i} primaryText={`${text}`} />);
 	}
 
-	handleChange = (event, index, value) => {
-		this.props.handleQuantityChange(value)
-		this.setState({ value });
+	const handleQuantityChange = (event, index, value) => {
+		console.log(value)
+		onQuantityChange(value)
 	}
 
-	render() {
-		const { theme } = this.props
+	return (
+		<DropDownMenu
+			maxHeight={400}
+			selectedMenuItemStyle={{ color: theme.blue }}
+			value={selectedQuantity}
+			onChange={handleQuantityChange}
+		>
+			{items}
+		</DropDownMenu>
+	);
+};
 
-		return (
-			<DropDownMenu
-				maxHeight={400}
-				selectedMenuItemStyle={{color: theme.blue}}
-				value={this.state.value}
-				onChange={this.handleChange}
-			>
-				{items}
-			</DropDownMenu>
-		);
-	}
-}
-
-export default QuantityPicker;
+export default connect(mapStateToProps, mapDispatchToProps)(QuantityPicker);

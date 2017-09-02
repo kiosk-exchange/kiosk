@@ -11,6 +11,7 @@ import {
 	KMT_CONTRACT,
 	DIN_REGISTRY_CONTRACT,
 	ORDER_STORE_CONTRACT,
+	ETHER_MARKET_CONTRACT,
 	KMT_BALANCE,
 	ETH_BALANCE,
 	SELECTED_MENU_ITEM_ID,
@@ -19,6 +20,7 @@ import {
 	RECEIVED_PURCHASES,
 	RECEIVED_SALES,
 	SELECTED_PRODUCT,
+	SELECTED_QUANTITY,
 	SHOW_BUY_MODAL,
 	PURCHASE_IS_PENDING
 } from "./actions";
@@ -56,6 +58,7 @@ const network = (state = null, action) => reducer(state, action, NETWORK_SUCCESS
 const KMTContract = (state = null, action) => reducer(state, action, KMT_CONTRACT);
 const DINRegistry = (state = null, action) => reducer(state, action, DIN_REGISTRY_CONTRACT);
 const OrderStore = (state = null, action) => reducer(state, action, ORDER_STORE_CONTRACT);
+const EtherMarket = (state = null, action) => reducer(state, action, ETHER_MARKET_CONTRACT);
 const KMTBalance = (state = null, action) => reducer(state, action, KMT_BALANCE);
 const ETHBalance = (state = null, action) => reducer(state, action, ETH_BALANCE);
 const selectedMenuItemId = (state = 0, action) => reducer(state, action, SELECTED_MENU_ITEM_ID);
@@ -63,8 +66,39 @@ const allProducts = (state = null, action) => reducer(state, action, RECEIVED_AL
 const ownerProducts = (state = null, action) => reducer(state, action, RECEIVED_OWNER_PRODUCTS);
 const purchases = (state = null, action) => reducer(state, action, RECEIVED_PURCHASES);
 const sales = (state = null, action) => reducer(state, action, RECEIVED_SALES);
-const selectedProduct = (state = null, action) => reducer(state, action, SELECTED_PRODUCT);
-const showBuyModal = (state = false, action) => reducer(state, action, SHOW_BUY_MODAL);
+
+const buyModalDefaultState = {
+	selectedProduct: null,
+	selectedQuantity: 1,
+	isOpen: false
+}
+
+const buyModal = (state = buyModalDefaultState, action) => {
+	switch (action.type) {
+		case SHOW_BUY_MODAL:
+			if (action.data === false) {
+				return buyModalDefaultState;
+			}
+			return {
+				...state,
+				selectedQuantity: 1,
+				isOpen: true
+			};
+		case SELECTED_PRODUCT:
+			return {
+				...state,
+				selectedProduct: action.data
+			}
+		case SELECTED_QUANTITY:
+			return {
+				...state,
+				selectedQuantity: action.data
+			}
+		default:
+			return state;
+	}
+};
+
 const purchaseIsPending = (state = false, action) => reducer(state, action, PURCHASE_IS_PENDING);
 
 const config = combineReducers({
@@ -80,6 +114,7 @@ const config = combineReducers({
 	KMTContract,
 	DINRegistry,
 	OrderStore,
+	EtherMarket,
 	KMTBalance,
 	ETHBalance
 });
@@ -95,7 +130,6 @@ export const rootReducer = combineReducers({
 	config,
 	results,
 	selectedMenuItemId,
-	selectedProduct,
-	showBuyModal,
+	buyModal,
 	purchaseIsPending
 });
