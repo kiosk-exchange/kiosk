@@ -10,10 +10,14 @@ import {
 	NETWORK_SUCCESS,
 	KMT_CONTRACT,
 	DIN_REGISTRY_CONTRACT,
+	ORDER_STORE_CONTRACT,
 	KMT_BALANCE,
 	ETH_BALANCE,
 	SELECTED_MENU_ITEM_ID,
-	RECEIVED_ALL_PRODUCTS
+	RECEIVED_ALL_PRODUCTS,
+	RECEIVED_OWNER_PRODUCTS,
+	RECEIVED_PURCHASES,
+	RECEIVED_SALES
 } from "./actions";
 
 /*
@@ -48,10 +52,14 @@ const networkHasError = (state = false, action) => reducer(state, action, NETWOR
 const network = (state = null, action) => reducer(state, action, NETWORK_SUCCESS);
 const KMTContract = (state = null, action) => reducer(state, action, KMT_CONTRACT);
 const DINRegistry = (state = null, action) => reducer(state, action, DIN_REGISTRY_CONTRACT);
+const OrderStore = (state = null, action) => reducer(state, action, ORDER_STORE_CONTRACT);
 const KMTBalance = (state = null, action) => reducer(state, action, KMT_BALANCE);
 const ETHBalance = (state = null, action) => reducer(state, action, ETH_BALANCE);
 const selectedMenuItemId = (state = 0, action) => reducer(state, action, SELECTED_MENU_ITEM_ID);
 const allProducts = (state = null, action) => reducer(state, action, RECEIVED_ALL_PRODUCTS);
+const ownerProducts = (state = null, action) => reducer(state, action, RECEIVED_OWNER_PRODUCTS);
+const purchases = (state = null, action) => reducer(state, action, RECEIVED_PURCHASES);
+const sales = (state = null, action) => reducer(state, action, RECEIVED_SALES);
 
 export const rootReducer = combineReducers({
 	theme,
@@ -65,8 +73,12 @@ export const rootReducer = combineReducers({
 	network,
 	KMTContract,
 	DINRegistry,
+	OrderStore,
 	KMTBalance,
 	ETHBalance,
 	selectedMenuItemId,
-	allProducts
+	allProducts,
+	ownerProducts,
+	purchases,
+	sales
 });

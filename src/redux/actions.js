@@ -6,12 +6,9 @@ import {
   getKMTBalanceAsync,
   getETHBalanceAsync
 } from "../utils/kioskWeb3";
-import { getKioskMarketToken, getDINRegistry } from "../utils/contracts";
-import {
-  getAllProducts
-  // getOwnerProducts
-} from "../utils/products";
-// import { getPurchases, getSales } from "../utils/orders";
+import { getKioskMarketToken, getDINRegistry, getOrderStore } from "../utils/contracts";
+import { getAllProducts, getOwnerProducts } from "../utils/products";
+import { getPurchases, getSales } from "../utils/orders";
 
 export const WEB_3_LOADING = "WEB_3_LOADING";
 export const WEB_3_ERROR = "WEB_3_ERROR";
@@ -22,10 +19,14 @@ export const NETWORK_ERROR = "NETWORK_ERROR";
 export const NETWORK_SUCCESS = "NETWORK_SUCCESS";
 export const KMT_CONTRACT = "KMT_CONTRACT";
 export const DIN_REGISTRY_CONTRACT = "DIN_REGISTRY_CONTRACT";
+export const ORDER_STORE_CONTRACT = "ORDER_STORE_CONTRACT";
 export const KMT_BALANCE = "KMT_BALANCE";
 export const ETH_BALANCE = "ETH_BALANCE";
 export const SELECTED_MENU_ITEM_ID = "SELECTED_MENU_ITEM_ID";
 export const RECEIVED_ALL_PRODUCTS = "RECEIVED_ALL_PRODUCTS";
+export const RECEIVED_OWNER_PRODUCTS = "RECEIVED_OWNER_PRODUCTS";
+export const RECEIVED_PURCHASES = "RECEIVED_PURCHASES";
+export const RECEIVED_SALES = "RECEIVED_SALES";
 
 // Helper function
 const action = (type, data) => ({
@@ -42,10 +43,17 @@ export const accountSuccess = data => action(ACCOUNT_SUCCESS, { data });
 export const networkHasError = data => action(NETWORK_ERROR, { data });
 export const networkSuccess = data => action(NETWORK_SUCCESS, { data });
 export const KMTContract = data => action(KMT_CONTRACT, { data });
-export const DINRegistryContract = data => action(DIN_REGISTRY_CONTRACT, { data });
+export const DINRegistryContract = data =>
+  action(DIN_REGISTRY_CONTRACT, { data });
+export const OrderStoreContract = data => action(ORDER_STORE_CONTRACT, { data });
 export const KMTBalance = data => action(KMT_BALANCE, { data });
 export const ETHBalance = data => action(ETH_BALANCE, { data });
-export const receivedAllProducts = data => action(RECEIVED_ALL_PRODUCTS, { data });
+export const receivedAllProducts = data =>
+  action(RECEIVED_ALL_PRODUCTS, { data });
+export const receivedOwnerProducts = data =>
+  action(RECEIVED_OWNER_PRODUCTS, { data });
+export const receivedPurchases = data => action(RECEIVED_PURCHASES, { data });
+export const receivedSales = data => action(RECEIVED_SALES, { data });
 
 // Actions
 export const selectedMenuItemId = data =>
@@ -93,22 +101,55 @@ const getBalances = () => {
   };
 };
 
-const fetchAllProducts = () => {
+const fetchProducts = filter => {
   return async (dispatch, getState) => {
     const DINRegistry = getState().DINRegistry;
     const web3 = getState().web3;
 
     if (DINRegistry !== null && web3 !== null) {
-      const products = await getAllProducts(DINRegistry, web3);
-      dispatch(receivedAllProducts(products));
+      let products;
+
+      if (filter === "all") {
+        products = await getAllProducts(DINRegistry, web3);
+        dispatch(receivedAllProducts(products));
+      } else if (filter === "owner") {
+        products = await getOwnerProducts(DINRegistry, web3);
+        dispatch(receivedOwnerProducts(products));
+      }
+    }
+  };
+};
+
+const fetchOrders = type => {
+  return async (dispatch, getState) => {
+    console.log("WTF")
+
+    const orderStore = getState().OrderStore;
+    const web3 = getState().web3;
+    const account = getState().account;
+
+    console.log(orderStore);
+
+    if (orderStore !== null && web3 !== null && account !== null) {
+      if (type == "purhases") {
+        const purchases = await getPurchases(orderStore, web3, account);
+        dispatch(receivedPurchases(purchases));
+      } else if (type == "sales") {
+        const sales = await getSales(orderStore, web3, account);
+
+        dispatch(receivedSales(sales));
+      }
     }
   };
 };
 
 const getContracts = () => {
   return async (dispatch, getState) => {
-    const KMT = await getKioskMarketToken(getState().web3);
-    const DINRegistry = await getDINRegistry(getState().web3);
+    const web3 = getState().web3;
+
+    const KMT = await getKioskMarketToken(web3);
+    const DINRegistry = await getDINRegistry(web3);
+    const OrderStore = await getOrderStore(web3);
 
     if (KMT !== null) {
       dispatch(KMTContract(KMT));
@@ -122,7 +163,11 @@ const getContracts = () => {
     if (DINRegistry !== null) {
       dispatch(DINRegistryContract(DINRegistry));
 
-      dispatch(fetchAllProducts())
+      dispatch(fetchProducts("all"));
+    }
+
+    if (OrderStore !== null) {
+      dispatch(OrderStoreContract(OrderStore));
     }
 
   };
@@ -154,12 +199,22 @@ export const initKiosk = () => {
 };
 
 export const selectMenuItem = id => {
-  return dispatch => {
+  return async dispatch => {
     dispatch(selectedMenuItemId(id));
 
     switch (id) {
       case 0: // Marketplace
-        dispatch(fetchAllProducts());
+        dispatch(fetchProducts("all"));
+        break;
+      case 1: // Purchases
+        dispatch(fetchOrders("purchases"));
+        break;
+      case 2: // Products
+        dispatch(fetchProducts("owner"));
+        break;
+      case 3: // Sales
+        dispatch(fetchOrders("sales"));
+        break;
       default:
         break;
     }
