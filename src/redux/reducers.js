@@ -17,7 +17,9 @@ import {
 	RECEIVED_ALL_PRODUCTS,
 	RECEIVED_OWNER_PRODUCTS,
 	RECEIVED_PURCHASES,
-	RECEIVED_SALES
+	RECEIVED_SALES,
+	SELECTED_PRODUCT,
+	SHOW_BUY_MODAL
 } from "./actions";
 
 /*
@@ -60,8 +62,10 @@ const allProducts = (state = null, action) => reducer(state, action, RECEIVED_AL
 const ownerProducts = (state = null, action) => reducer(state, action, RECEIVED_OWNER_PRODUCTS);
 const purchases = (state = null, action) => reducer(state, action, RECEIVED_PURCHASES);
 const sales = (state = null, action) => reducer(state, action, RECEIVED_SALES);
+const selectedProduct = (state = null, action) => reducer(state, action, SELECTED_PRODUCT);
+const showBuyModal = (state = false, action) => reducer(state, action, SHOW_BUY_MODAL);
 
-export const rootReducer = combineReducers({
+const config = combineReducers({
 	theme,
 	menuItems,
 	web3IsLoading,
@@ -75,10 +79,20 @@ export const rootReducer = combineReducers({
 	DINRegistry,
 	OrderStore,
 	KMTBalance,
-	ETHBalance,
-	selectedMenuItemId,
+	ETHBalance
+});
+
+const results = combineReducers({
 	allProducts,
 	ownerProducts,
 	purchases,
 	sales
+});
+
+export const rootReducer = combineReducers({
+	config,
+	results,
+	selectedMenuItemId,
+	selectedProduct,
+	showBuyModal
 });

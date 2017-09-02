@@ -8,9 +8,11 @@ import { connect } from "react-redux";
 import { initKiosk } from "./redux/actions";
 
 const mapStateToProps = state => ({
-  web3: state.web3,
-  hasError: state.web3HasError,
-  isLoading: state.web3IsLoading,
+  web3: state.config.web3,
+  hasError: state.config.web3HasError,
+  isLoading: state.config.web3IsLoading,
+  showBuyModal: state.showBuyModal,
+  selectedProduct: state.selectedProduct
 });
 
 class App extends Component {
@@ -21,7 +23,7 @@ class App extends Component {
   }
 
   render() {
-    const { web3, isLoading } = this.props;
+    const { web3, isLoading, showBuyModal, selectedProduct } = this.props;
 
     const hContainerStyle = {
       display: "flex", // 💪
@@ -62,7 +64,7 @@ class App extends Component {
               <TableContainer />
             </div>
           </div>
-          <BuyModal isOpen={false}/>
+          <BuyModal isOpen={showBuyModal} product={selectedProduct}/>
         </div>
       );
     } else if (isLoading === true) {

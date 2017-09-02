@@ -27,6 +27,8 @@ export const RECEIVED_ALL_PRODUCTS = "RECEIVED_ALL_PRODUCTS";
 export const RECEIVED_OWNER_PRODUCTS = "RECEIVED_OWNER_PRODUCTS";
 export const RECEIVED_PURCHASES = "RECEIVED_PURCHASES";
 export const RECEIVED_SALES = "RECEIVED_SALES";
+export const SELECTED_PRODUCT = "SELECTED_PRODUCT";
+export const SHOW_BUY_MODAL = "SHOW_BUY_MODAL";
 
 // Helper function
 const action = (type, data) => ({
@@ -34,7 +36,7 @@ const action = (type, data) => ({
   ...data
 });
 
-// Config
+// Actions
 export const web3IsLoading = data => action(WEB_3_LOADING, { data });
 export const web3HasError = data => action(WEB_3_ERROR, { data });
 export const web3Success = data => action(WEB_3_SUCCESS, { data });
@@ -54,6 +56,8 @@ export const receivedOwnerProducts = data =>
   action(RECEIVED_OWNER_PRODUCTS, { data });
 export const receivedPurchases = data => action(RECEIVED_PURCHASES, { data });
 export const receivedSales = data => action(RECEIVED_SALES, { data });
+export const selectedProduct = data => action(SELECTED_PRODUCT, { data });
+export const showBuyModal = data => action(SHOW_BUY_MODAL, { data });
 
 // Actions
 export const selectedMenuItemId = data =>
@@ -61,7 +65,7 @@ export const selectedMenuItemId = data =>
 
 const getAccount = () => {
   return async (dispatch, getState) => {
-    const accounts = await getAccountsAsync(getState().web3);
+    const accounts = await getAccountsAsync(getState().config.web3);
     if (accounts.length > 0) {
       const account = accounts[0];
       dispatch(accountSuccess(account));
@@ -78,7 +82,7 @@ const getAccount = () => {
 
 const getNetwork = () => {
   return async (dispatch, getState) => {
-    const network = await getNetworkAsync(getState().web3);
+    const network = await getNetworkAsync(getState().config.web3);
     if (network) {
       dispatch(networkSuccess(network));
     } else {
@@ -89,9 +93,9 @@ const getNetwork = () => {
 
 const getBalances = () => {
   return async (dispatch, getState) => {
-    const web3 = getState().web3;
-    const KMTContract = getState().KMTContract;
-    const account = getState().account;
+    const web3 = getState().config.web3;
+    const KMTContract = getState().config.KMTContract;
+    const account = getState().config.account;
 
     const KMT = await getKMTBalanceAsync(web3, KMTContract, account);
     dispatch(KMTBalance(KMT));
@@ -103,9 +107,9 @@ const getBalances = () => {
 
 const fetchProducts = filter => {
   return async (dispatch, getState) => {
-    const DINRegistry = getState().DINRegistry;
-    const web3 = getState().web3;
-    const account = getState().account;
+    const DINRegistry = getState().config.DINRegistry;
+    const web3 = getState().config.web3;
+    const account = getState().config.account;
 
     if (DINRegistry !== null && web3 !== null && account !== null) {
       if (filter === "all") {
@@ -121,15 +125,15 @@ const fetchProducts = filter => {
 
 const fetchOrders = type => {
   return async (dispatch, getState) => {
-    const orderStore = getState().OrderStore;
-    const web3 = getState().web3;
-    const account = getState().account;
+    const orderStore = getState().config.OrderStore;
+    const web3 = getState().config.web3;
+    const account = getState().config.account;
 
     if (orderStore !== null && web3 !== null && account !== null) {
-      if (type == "purhases") {
+      if (type === "purchases") {
         const purchases = await getPurchases(orderStore, web3, account);
         dispatch(receivedPurchases(purchases));
-      } else if (type == "sales") {
+      } else if (type === "sales") {
         const sales = await getSales(orderStore, web3, account);
 
         dispatch(receivedSales(sales));
@@ -140,7 +144,7 @@ const fetchOrders = type => {
 
 const getContracts = () => {
   return async (dispatch, getState) => {
-    const web3 = getState().web3;
+    const web3 = getState().config.web3;
 
     const KMT = await getKioskMarketToken(web3);
     const DINRegistry = await getDINRegistry(web3);
@@ -193,21 +197,28 @@ export const initKiosk = () => {
   };
 };
 
+const MENU_ITEM = {
+  MARKETPLACE: 0,
+  PURCHASES: 1,
+  PRODUCTS: 2,
+  SALES: 3
+}
+
 export const selectMenuItem = id => {
   return async dispatch => {
     dispatch(selectedMenuItemId(id));
 
     switch (id) {
-      case 0: // Marketplace
+      case MENU_ITEM.MARKETPLACE: // Marketplace
         dispatch(fetchProducts("all"));
         break;
-      case 1: // Purchases
+      case MENU_ITEM.PURCHASES: // Purchases
         dispatch(fetchOrders("purchases"));
         break;
-      case 2: // Products
+      case MENU_ITEM.PRODUCTS: // Products
         dispatch(fetchProducts("owner"));
         break;
-      case 3: // Sales
+      case MENU_ITEM.SALES: // Sales
         dispatch(fetchOrders("sales"));
         break;
       default:
@@ -215,6 +226,28 @@ export const selectMenuItem = id => {
     }
   };
 };
+
+export const selectProduct = index => {
+  return (dispatch, getState) => {
+    const menuItem = getState().selectedMenuItemId;
+    let product;
+
+    switch (menuItem) {
+      case MENU_ITEM.MARKETPLACE:
+        const products = getState().results.allProducts;
+        product = products[index];
+        break;
+      default:
+        break;
+    }
+
+    if (product) {
+      dispatch(showBuyModal(true));
+      dispatch(selectedProduct(product))
+    }
+
+  }
+}
 
 // const ERROR = {
 //   NOT_CONNECTED: 1,

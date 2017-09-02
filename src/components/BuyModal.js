@@ -7,9 +7,7 @@ import { closeBuyModal, buyNowClicked } from "../redux/actions";
 import { connect } from "react-redux";
 
 const mapStateToProps = state => ({
-  isOpen: false,
-  product: {},
-  theme: state.theme
+  theme: state.config.theme
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -24,6 +22,10 @@ const mapDispatchToProps = dispatch => ({
 class BuyModal extends Component {
   render() {
     const { product, isOpen, theme, onBuyNowClick, onClose } = this.props;
+
+    if (!product) {
+      return null;
+    }
 
     const contentStyle = {
       width: "50%",

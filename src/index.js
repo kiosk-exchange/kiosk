@@ -9,14 +9,16 @@ import App from "./App";
 import "./styles/App.css";
 
 const initialState = {
-	theme: {
-		red: "#FC575E",
-		blue: "#32C1FF",
-		gray: "#2C363F",
-		lightGray: "#6E7E85",
-		white: "#F6F8FF"
-	},
-	menuItems: ["Marketplace", "Purchases", "Products", "Sales"]
+	config: {
+		theme: {
+			red: "#FC575E",
+			blue: "#32C1FF",
+			gray: "#2C363F",
+			lightGray: "#6E7E85",
+			white: "#F6F8FF"
+		},
+		menuItems: ["Marketplace", "Purchases", "Products", "Sales"]
+	}
 };
 
 const store = configureStore(initialState);
