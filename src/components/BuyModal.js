@@ -3,21 +3,21 @@ import Dialog from "material-ui/Dialog";
 import RaisedButton from "material-ui/RaisedButton";
 import QuantityPicker from "./QuantityPicker";
 import Subheader from "material-ui/Subheader";
-import { closeBuyModal, buyNowClicked } from "../redux/actions";
+import { showBuyModal, buyNow } from "../redux/actions";
 import { connect } from "react-redux";
 
 const mapStateToProps = state => ({
   theme: state.config.theme
 });
 
-const mapDispatchToProps = dispatch => ({
-  onBuyNowClick: product => {
-    dispatch(buyNowClicked);
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  onBuyNowClick: () => {
+    dispatch(buyNow(ownProps.product));
   },
   onClose: () => {
-    dispatch(closeBuyModal);
+    dispatch(showBuyModal(false));
   }
-});
+})
 
 class BuyModal extends Component {
   render() {
@@ -113,7 +113,7 @@ class BuyModal extends Component {
                 }}
               >
                 <h2>
-                  {product.totalPrice + " KMT"}
+                  {product.value + " KMT"}
                 </h2>
               </div>
             </div>

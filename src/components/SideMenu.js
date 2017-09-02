@@ -11,9 +11,9 @@ import { connect } from "react-redux";
 import { selectMenuItem } from "../redux/actions";
 
 const mapStateToProps = state => ({
-	account: state.account,
-	KMT: state.KMTBalance,
-	ETH: state.ETHBalance,
+	account: state.config.account,
+	KMT: state.config.KMTBalance,
+	ETH: state.config.ETHBalance,
 	selectedItem: state.selectedMenuItemId
 });
 

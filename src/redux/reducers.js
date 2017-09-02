@@ -19,7 +19,8 @@ import {
 	RECEIVED_PURCHASES,
 	RECEIVED_SALES,
 	SELECTED_PRODUCT,
-	SHOW_BUY_MODAL
+	SHOW_BUY_MODAL,
+	PURCHASE_IS_PENDING
 } from "./actions";
 
 /*
@@ -64,6 +65,7 @@ const purchases = (state = null, action) => reducer(state, action, RECEIVED_PURC
 const sales = (state = null, action) => reducer(state, action, RECEIVED_SALES);
 const selectedProduct = (state = null, action) => reducer(state, action, SELECTED_PRODUCT);
 const showBuyModal = (state = false, action) => reducer(state, action, SHOW_BUY_MODAL);
+const purchaseIsPending = (state = false, action) => reducer(state, action, PURCHASE_IS_PENDING);
 
 const config = combineReducers({
 	theme,
@@ -94,5 +96,6 @@ export const rootReducer = combineReducers({
 	results,
 	selectedMenuItemId,
 	selectedProduct,
-	showBuyModal
+	showBuyModal,
+	purchaseIsPending
 });

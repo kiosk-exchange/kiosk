@@ -1,4 +1,4 @@
-// This will contain all actions related to web3 / kiosk
+// TODO: Extract into kiosk.js node module
 import {
   loadWeb3,
   getAccountsAsync,
@@ -9,7 +9,9 @@ import {
 import { getKioskMarketToken, getDINRegistry, getOrderStore } from "../utils/contracts";
 import { getAllProducts, getOwnerProducts } from "../utils/products";
 import { getPurchases, getSales } from "../utils/orders";
+import { buyProduct } from "../utils/buy";
 
+// Action stubs
 export const WEB_3_LOADING = "WEB_3_LOADING";
 export const WEB_3_ERROR = "WEB_3_ERROR";
 export const WEB_3_SUCCESS = "WEB_3_SUCCESS";
@@ -29,6 +31,10 @@ export const RECEIVED_PURCHASES = "RECEIVED_PURCHASES";
 export const RECEIVED_SALES = "RECEIVED_SALES";
 export const SELECTED_PRODUCT = "SELECTED_PRODUCT";
 export const SHOW_BUY_MODAL = "SHOW_BUY_MODAL";
+export const PENDING_PURCHASES = "PENDING_PURCHASES";
+export const PURCHASE_IS_PENDING = "PURCHASE_IS_PENDING";
+// export const PURCHASE_FAILED = "PURCHASE_FAILED";
+// export const PURCHASE_SUCCEEDED = "PURCHASE_SUCCEEDED";
 
 // Helper function
 const action = (type, data) => ({
@@ -50,6 +56,8 @@ export const DINRegistryContract = data =>
 export const OrderStoreContract = data => action(ORDER_STORE_CONTRACT, { data });
 export const KMTBalance = data => action(KMT_BALANCE, { data });
 export const ETHBalance = data => action(ETH_BALANCE, { data });
+export const selectedMenuItemId = data =>
+  action(SELECTED_MENU_ITEM_ID, { data });
 export const receivedAllProducts = data =>
   action(RECEIVED_ALL_PRODUCTS, { data });
 export const receivedOwnerProducts = data =>
@@ -59,9 +67,10 @@ export const receivedSales = data => action(RECEIVED_SALES, { data });
 export const selectedProduct = data => action(SELECTED_PRODUCT, { data });
 export const showBuyModal = data => action(SHOW_BUY_MODAL, { data });
 
-// Actions
-export const selectedMenuItemId = data =>
-  action(SELECTED_MENU_ITEM_ID, { data });
+// Purchase
+export const purchaseIsPending = data => action(PURCHASE_IS_PENDING, { data });
+
+// TODO: Refresh ETHBalance, KMTBalance, receivedPurchases after a purchase
 
 const getAccount = () => {
   return async (dispatch, getState) => {
@@ -79,6 +88,23 @@ const getAccount = () => {
 // const isSupportedNetwork = network => {
 //   return parseInt(network, 10) > 100 || network === "42";
 // };
+
+const MENU_ITEM = {
+  MARKETPLACE: 0,
+  PURCHASES: 1,
+  PRODUCTS: 2,
+  SALES: 3
+}
+
+const ORDER_TYPE = {
+  PURCHASES: "purchases",
+  SALES: "sales"
+}
+
+const PRODUCT_FILTER = {
+  ALL: "all",
+  OWNER: "owner"
+}
 
 const getNetwork = () => {
   return async (dispatch, getState) => {
@@ -112,10 +138,10 @@ const fetchProducts = filter => {
     const account = getState().config.account;
 
     if (DINRegistry !== null && web3 !== null && account !== null) {
-      if (filter === "all") {
+      if (filter === PRODUCT_FILTER.ALL) {
         const products = await getAllProducts(DINRegistry, web3);
         dispatch(receivedAllProducts(products));
-      } else if (filter === "owner") {
+      } else if (filter === PRODUCT_FILTER.OWNER) {
         const products = await getOwnerProducts(DINRegistry, web3, account);
         dispatch(receivedOwnerProducts(products));
       }
@@ -130,10 +156,10 @@ const fetchOrders = type => {
     const account = getState().config.account;
 
     if (orderStore !== null && web3 !== null && account !== null) {
-      if (type === "purchases") {
+      if (type === ORDER_TYPE.PURCHASES) {
         const purchases = await getPurchases(orderStore, web3, account);
         dispatch(receivedPurchases(purchases));
-      } else if (type === "sales") {
+      } else if (type === ORDER_TYPE.SALES) {
         const sales = await getSales(orderStore, web3, account);
 
         dispatch(receivedSales(sales));
@@ -162,7 +188,7 @@ const getContracts = () => {
     if (DINRegistry !== null) {
       dispatch(DINRegistryContract(DINRegistry));
 
-      dispatch(fetchProducts("all"));
+      dispatch(fetchProducts(PRODUCT_FILTER.ALL));
     }
 
     if (OrderStore !== null) {
@@ -197,29 +223,22 @@ export const initKiosk = () => {
   };
 };
 
-const MENU_ITEM = {
-  MARKETPLACE: 0,
-  PURCHASES: 1,
-  PRODUCTS: 2,
-  SALES: 3
-}
-
 export const selectMenuItem = id => {
   return async dispatch => {
     dispatch(selectedMenuItemId(id));
 
     switch (id) {
-      case MENU_ITEM.MARKETPLACE: // Marketplace
-        dispatch(fetchProducts("all"));
+      case MENU_ITEM.MARKETPLACE:
+        dispatch(fetchProducts(PRODUCT_FILTER.ALL));
         break;
-      case MENU_ITEM.PURCHASES: // Purchases
-        dispatch(fetchOrders("purchases"));
+      case MENU_ITEM.PURCHASES:
+        dispatch(fetchOrders(ORDER_TYPE.PURCHASES));
         break;
-      case MENU_ITEM.PRODUCTS: // Products
-        dispatch(fetchProducts("owner"));
+      case MENU_ITEM.PRODUCTS:
+        dispatch(fetchProducts(PRODUCT_FILTER.OWNER));
         break;
-      case MENU_ITEM.SALES: // Sales
-        dispatch(fetchOrders("sales"));
+      case MENU_ITEM.SALES:
+        dispatch(fetchOrders(ORDER_TYPE.SALES));
         break;
       default:
         break;
@@ -246,6 +265,38 @@ export const selectProduct = index => {
       dispatch(selectedProduct(product))
     }
 
+  }
+}
+
+const reloadAfterPurchase = () => {
+  return async dispatch => {
+    dispatch(getBalances)
+    dispatch(fetchOrders(ORDER_TYPE.PURCHASES))
+  }
+}
+
+export const buyNow = product => {
+  return async (dispatch, getState) => {
+    // Reset
+    dispatch(purchaseIsPending(true));
+    dispatch(showBuyModal(false));
+    try {
+      const KMT = getState().config.KMTContract;
+      const DIN = product.DIN;
+      const quantity = 1; // TODO: Selected quantity
+      const value = product.value;
+      const buyer = getState().config.account;
+
+      console.log(KMT, DIN, quantity, value, buyer);
+
+      const txId = await buyProduct(KMT, DIN, quantity, value, buyer);
+      console.log(txId);
+      dispatch(purchaseIsPending(false));
+      dispatch(reloadAfterPurchase());
+    } catch (err) {
+      console.log("FAIL")
+      dispatch(purchaseIsPending(false));
+    }
   }
 }
 

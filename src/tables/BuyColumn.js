@@ -12,7 +12,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 
 class BuyColumn extends Component {
 	render() {
-		const { onBuyClick, index } = this.props
+		const { onBuyClick } = this.props
 
 		return (
 			<TableRowColumn>
