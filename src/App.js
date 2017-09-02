@@ -1,11 +1,9 @@
 import React, { Component } from "react";
 // import { Route } from "react-router-dom";
 import SideMenu from "./components/SideMenu";
-// import HeaderToolbar from "./components/HeaderToolbar";
-// import TableContainer from "./components/TableContainer";
-// import BuyModal from "./components/BuyModal";
-
-// Redux
+import NavBar from "./components/NavBar";
+// import TableContainer from "./tables/TableContainer";
+import BuyModal from "./components/BuyModal";
 import { connect } from "react-redux";
 import { initKiosk } from "./redux/actions";
 
@@ -22,11 +20,6 @@ class App extends Component {
     dispatch(initKiosk());
   }
 
-  // TestRPC or Kovan
-  isSupportedNetwork(network) {
-    return parseInt(network, 10) > 100 || network === "42";
-  }
-
   render() {
     const { web3, isLoading } = this.props;
 
@@ -38,28 +31,44 @@ class App extends Component {
     };
 
     const sideMenuStyle = {
+      flex: "1",
       minWidth: "220px",
       maxWidth: "220px",
       height: "100vh"
     };
 
-    // const rightContainerStyle = {
-    //   display: "flex",
-    //   flexFlow: "column",
-    //   height: "100%"
-    // };
+    const rightContainerStyle = {
+      display: "flex",
+      flex: "2",
+      flexFlow: "column",
+      height: "100%"
+    };
 
-    if (web3) {
+    const theme = {
+      red: "#FC575E",
+      blue: "#32C1FF",
+      gray: "#2C363F",
+      lightGray: "#6E7E85",
+      white: "#F6F8FF"
+    };
+
+    if (web3 !== null) {
       return (
         <div style={hContainerStyle}>
           <div style={sideMenuStyle}>
             <SideMenu />
           </div>
+          <div style={rightContainerStyle}>
+            <div>
+              <NavBar theme={theme} />
+            </div>
+            <BuyModal theme={theme}/>
+          </div>
         </div>
       );
-    } else if (isLoading) {
+    } else if (isLoading === true) {
       // Loading & Handle Error
-      return <div />
+      return <div />;
     }
     return null;
   }
@@ -67,26 +76,8 @@ class App extends Component {
 
 export default connect(mapStateToProps)(App);
 
-// <div style={rightContainerStyle}>
-//   <div>
-//     <HeaderToolbar />
-//   </div>
-//   <div style={{ padding: "10px 30px" }}>
-//     <TableContainer />
-//     <BuyModal />
-//   </div>
-// </div>;
-
-  // account: state.account,
-  // network: state.network,
-  // DINRegistry: state.DINRegistry,
-  // Buyer: state.Buyer,
-  // etherMarket: state.etherMarket,
-  // KioskMarketToken: state.KioskMarketToken,
-  // KMTBalance: state.KMTBalance,
-  // ETHBalance: state.ETHBalance,
-  // error: state.error,
-  // refresh: state.refresh
+// <div style={{ padding: "10px 30px" }} />
+// <TableContainer />
 
 //   const ERROR = {
 //   NOT_CONNECTED: 1,

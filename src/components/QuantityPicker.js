@@ -27,10 +27,12 @@ class QuantityPicker extends Component {
 	}
 
 	render() {
+		const { theme } = this.props
+
 		return (
 			<DropDownMenu
 				maxHeight={400}
-				selectedMenuItemStyle={{color: this.context.theme.blue}}
+				selectedMenuItemStyle={{color: theme.blue}}
 				value={this.state.value}
 				onChange={this.handleChange}
 			>
@@ -38,10 +40,6 @@ class QuantityPicker extends Component {
 			</DropDownMenu>
 		);
 	}
-}
-
-QuantityPicker.contextTypes = {
-	theme: PropTypes.object
 }
 
 export default QuantityPicker;

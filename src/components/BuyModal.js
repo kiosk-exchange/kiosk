@@ -1,25 +1,29 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import Dialog from "material-ui/Dialog";
 import RaisedButton from "material-ui/RaisedButton";
 import QuantityPicker from "./QuantityPicker";
 import Subheader from "material-ui/Subheader";
+import { closeBuyModal, buyNowClicked } from "../redux/actions";
+import { connect } from "react-redux";
+
+const mapStateToProps = state => ({
+  isOpen: true,
+  product: {}
+});
+
+const mapDispatchToProps = dispatch => ({
+  onBuyNowClick: product => {
+    dispatch(buyNowClicked);
+  },
+  onClose: () => {
+    dispatch(closeBuyModal);
+  }
+});
 
 class BuyModal extends Component {
-  state = {
-    open: false,
-  };
-
-  handleOpen = () => {
-    this.setState({ open: true });
-  };
-
-  handleClose = () => {
-    this.props.handleClose();
-    this.setState({ open: false });
-  };
-
   render() {
+    const { product, isOpen, theme, onBuyNowClick, onClose } = this.props;
+
     const contentStyle = {
       width: "50%",
       minWidth: "300px",
@@ -27,7 +31,7 @@ class BuyModal extends Component {
     };
 
     const subheaderStyle = {
-      color: this.context.theme.lightGray,
+      color: theme.lightGray,
       letterSpacing: "1px",
       fontSize: "16px",
       fontWeight: "medium",
@@ -35,43 +39,43 @@ class BuyModal extends Component {
     };
 
     const errorStyle = {
-      color: this.context.theme.red,
+      color: theme.red,
       fontSize: "12px",
       fontWeight: "medium",
       padding: "0px"
     };
 
-    let actions = [
+    const buyNow = (
       <RaisedButton
         label="Buy Now"
-        disabled={!this.props.product.available || this.props.insufficientFunds}
-        backgroundColor={this.context.theme.blue}
+        disabled={!product.available}
+        backgroundColor={theme.blue}
         labelColor="#FFFFFF"
         fullWidth={true}
-        onClick={this.props.handleBuySelectedProduct}
+        onClick={onBuyNowClick}
       />
-    ];
-
-    const insufficientFunds = (
-      <Subheader style={errorStyle}>
-        You do not have enough KMT for this purchase
-      </Subheader>
     );
 
-    if (this.props.insufficientFunds === true) {
-      actions.push(insufficientFunds);
-    }
+    let actions = [buyNow];
+
+    // const insufficientFunds = (
+    //   <Subheader style={errorStyle}>
+    //     You do not have enough KMT for this purchase
+    //   </Subheader>
+    // );
+
+    // if (this.props.insufficientFunds === true) {
+    //   actions.push(insufficientFunds);
+    // }
 
     return (
       <div>
         <Dialog
           title={
-            <div
-              style={{ textAlign: "center", color: this.context.theme.gray }}
-            >
-              {this.props.product.name}
+            <div style={{ textAlign: "center", color: theme.gray }}>
+              {product.name}
               <Subheader style={subheaderStyle}>
-                {this.props.product.DIN}
+                {product.DIN}
               </Subheader>
             </div>
           }
@@ -79,11 +83,11 @@ class BuyModal extends Component {
           actionsContainerStyle={{ padding: "20px 10%", textAlign: "center" }}
           modal={false}
           contentStyle={contentStyle}
-          open={this.props.open}
-          onRequestClose={this.props.handleClose}
+          open={isOpen}
+          onRequestClose={onClose}
           autoScrollBodyContent={true}
         >
-          <div style={{ color: this.context.theme.gray }}>
+          <div style={{ color: theme.gray }}>
             <div style={{ display: "flex" }}>
               <h2>Quantity</h2>
               <div
@@ -93,9 +97,7 @@ class BuyModal extends Component {
                   textAlign: "right"
                 }}
               >
-                <QuantityPicker
-                  handleQuantityChange={this.props.handleQuantityChange}
-                />
+                <QuantityPicker theme={theme}/>
               </div>
             </div>
             <div style={{ display: "flex" }}>
@@ -108,7 +110,7 @@ class BuyModal extends Component {
                 }}
               >
                 <h2>
-                  {this.props.totalPrice + " KMT"}
+                  {product.totalPrice + " KMT"}
                 </h2>
               </div>
             </div>
@@ -119,9 +121,4 @@ class BuyModal extends Component {
   }
 }
 
-BuyModal.contextTypes = {
-  theme: PropTypes.object,
-  KMTBalance: PropTypes.number
-};
-
-export default BuyModal;
+export default connect(mapStateToProps, mapDispatchToProps)(BuyModal);

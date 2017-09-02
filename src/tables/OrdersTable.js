@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import { TableRow, TableRowColumn } from "material-ui/Table";
 import { tableRowStyle } from "./TableStyles";
 import BaseTableContainer from "./BaseTableContainer";
+import { OrderTableRow } from "./OrderTableRow";
 
-class OrdersTable extends Component {
-  render() {
+export const OrdersTable = ({ orders }) => {
     return (
       <BaseTableContainer
         title={this.props.title}
@@ -16,33 +16,11 @@ class OrdersTable extends Component {
           "Quantity",
           "Date"
         ]}
-        rows={this.props.orders.map(order => {
+        rows={orders.map(order => {
           return (
-            <TableRow style={tableRowStyle} key={order.orderID}>
-              <TableRowColumn>
-                {order.orderID}
-              </TableRowColumn>
-              <TableRowColumn>
-                {order.DIN}
-              </TableRowColumn>
-              <TableRowColumn>
-                {order[this.props.userValue]}
-              </TableRowColumn>
-              <TableRowColumn>
-                {order.value}
-              </TableRowColumn>
-              <TableRowColumn>
-                {order.quantity}
-              </TableRowColumn>
-              <TableRowColumn>
-                {order.date}
-              </TableRowColumn>
-            </TableRow>
+            <OrderTableRow order={order} />
           );
         })}
       />
     );
-  }
 }
-
-export default OrdersTable;
