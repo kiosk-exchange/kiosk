@@ -116,6 +116,20 @@ const PRODUCT_FILTER = {
   OWNER: "owner"
 };
 
+// Helper method
+const getContext = (getState, args) => {
+  const state = getState();
+
+  let context = {}
+
+  args.map(arg => {
+    context[arg] = state.config[arg];
+  })
+
+  return context;
+
+}
+
 const getNetwork = () => {
   return async (dispatch, getState) => {
     const network = await getNetworkAsync(getState().config.web3);
@@ -129,9 +143,7 @@ const getNetwork = () => {
 
 const getBalances = () => {
   return async (dispatch, getState) => {
-    const web3 = getState().config.web3;
-    const KMTContract = getState().contracts.KMTContract;
-    const account = getState().config.account;
+    const { web3, KMTContract, account } = getContext(getState, ["web3", "account", "KMTContract"]);
 
     if (web3 && KMTContract && account) {
       const KMT = await getKMTBalanceAsync(web3, KMTContract, account);
@@ -145,9 +157,7 @@ const getBalances = () => {
 
 const fetchProducts = filter => {
   return async (dispatch, getState) => {
-    const DINRegistry = getState().contracts.DINRegistry;
-    const web3 = getState().config.web3;
-    const account = getState().config.account;
+    const { web3, DINRegistry, account } = getContext(getState, ["web3", "DINRegistry", "account"])
 
     if (DINRegistry && web3 && account) {
       if (filter === PRODUCT_FILTER.ALL) {
@@ -163,9 +173,7 @@ const fetchProducts = filter => {
 
 const fetchOrders = type => {
   return async (dispatch, getState) => {
-    const orderStore = getState().contracts.OrderStore;
-    const web3 = getState().config.web3;
-    const account = getState().config.account;
+    const { web3, orderStore, account } = getContext(getState, ["web3", "OrderStore", "account"])
 
     if (orderStore && web3 && account) {
       if (type === ORDER_TYPE.PURCHASES) {
@@ -285,7 +293,7 @@ export const buyNow = product => {
     dispatch(purchaseIsPending(true));
     dispatch(showBuyModal(false));
     try {
-      const KMT = getState().contracts.KMTContract;
+      const KMT = getState().config.KMTContract;
       const DIN = product.DIN;
       const quantity = getState().buyModal.selectedQuantity;
       const value = product.value;
@@ -305,11 +313,10 @@ export const buyNow = product => {
 export const buyKioskMarketToken = () => {
   return async (dispatch, getState) => {
     try {
-      const EtherMarket = getState().contracts.EtherMarket;
-      const value = getState().config.web3.toWei(1, "ether"); // Hardcode for now
-      const buyer = getState().config.account;
+      const { web3, market, buyer } = getContext(getState, ["web3", "EtherMarket", "account"])
+      const value = web3.toWei(1, "ether"); // Hardcode for now
 
-      const txId = await buyKMT(EtherMarket, value, buyer);
+      const txId = await buyKMT(market, value, buyer);
       console.log(txId);
       // Reload balances
       dispatch(getBalances());

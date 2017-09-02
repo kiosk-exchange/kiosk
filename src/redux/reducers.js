@@ -112,15 +112,12 @@ const config = combineReducers({
 	networkHasError,
 	network,
 	KMTBalance,
-	ETHBalance
-});
-
-const contracts = combineReducers({
+	ETHBalance,
 	KMTContract,
 	DINRegistry,
 	OrderStore,
 	EtherMarket
-})
+});
 
 const results = combineReducers({
 	allProducts,
@@ -131,7 +128,6 @@ const results = combineReducers({
 
 export const rootReducer = combineReducers({
 	config,
-	contracts,
 	results,
 	selectedMenuItemId,
 	buyModal,
