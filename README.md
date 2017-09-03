@@ -40,34 +40,6 @@ Then, start the React project and open http://localhost:3000/ to see the app.
 yarn start
 ```
 
-## How It Works
-
-![kiosk protocol](/kioskprotocol.jpg?raw=true)
-
-The Kiosk protocol has four main components: `DIN`, `Market`, `Product`, and `Order`.
-
-### DIN
-
-A Decentralized Identification Number (DIN), is a unique, 10-digit product identifier. A client can look up a `DIN` on the global `DINRegistry` contract to find its corresponding `Market`.
-
-### Market
-
-A `Market` is an interface that buyers can use to purchase a product based on its `DIN`.
-
-### Product
-
-A `Product` tells a `Market` its price and availability.
-
-### Order
-
-An `Order` contains information about a purchase.
-
-## Testing
-
-```
-truffle test
-```
-
 ## Contact Us
 
 The best way to get in touch is to join our public [Slack channel](https://join.slack.com/t/kioskprotocol/shared_invite/MjI3NzAwMzMyMTYyLTE1MDI5MjYyNzItM2FiMjA1NWIxZg).
