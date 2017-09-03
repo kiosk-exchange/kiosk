@@ -27,7 +27,6 @@ const QuantityPicker = ({ selectedQuantity, onQuantityChange, theme }) => {
 	}
 
 	const handleQuantityChange = (event, index, value) => {
-		console.log(value)
 		onQuantityChange(value)
 	}
 

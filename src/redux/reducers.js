@@ -26,8 +26,8 @@ import {
 	SHOW_BUY_MODAL,
 	PURCHASE_IS_PENDING,
 	TOTAL_PRICE_CALCULATING,
-	TOTAL_PRICE_ERROR,
-	TOTAL_PRICE
+	TOTAL_PRICE,
+	PRODUCT_AVAILABILITY
 } from "./actions";
 
 /*
@@ -73,17 +73,15 @@ const buyModalDefaultState = {
 	product: null,
 	quantity: 1,
 	totalPrice: 0,
+	available: true,
 	isOpen: false,
 	isLoading: false,
-	error: false
+	error: false,
 }
 
 const buyModal = (state = buyModalDefaultState, action) => {
 	switch (action.type) {
 		case SHOW_BUY_MODAL:
-			if (action.data === false) {
-				return buyModalDefaultState;
-			}
 			return {
 				...state,
 				quantity: 1,
@@ -105,16 +103,17 @@ const buyModal = (state = buyModalDefaultState, action) => {
 				isLoading: true
 			}
 		case TOTAL_PRICE:
+			console.log(action.data)
 			return {
 				...state,
 				isLoading: false,
 				error: false,
 				totalPrice: action.data
 			}
-		case TOTAL_PRICE_ERROR:
+		case PRODUCT_AVAILABILITY:
 			return {
 				...state,
-				error: true
+				available: action.data
 			}
 		default:
 			return state;

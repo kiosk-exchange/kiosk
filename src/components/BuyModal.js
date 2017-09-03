@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import Dialog from "material-ui/Dialog";
 import RaisedButton from "material-ui/RaisedButton";
 import QuantityPicker from "./QuantityPicker";
@@ -9,122 +9,123 @@ import { connect } from "react-redux";
 const mapStateToProps = state => ({
   product: state.buyModal.product,
   totalPrice: state.buyModal.totalPrice,
+  available: state.buyModal.available,
   isOpen: state.buyModal.isOpen,
   theme: state.config.theme
 });
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  onBuyNowClick: () => {
-    dispatch(buyNow(ownProps.product));
-  },
-  onClose: () => {
-    dispatch(showBuyModal(false));
-  }
-})
-
-class BuyModal extends Component {
-  render() {
-    const { product, totalPrice, isOpen, theme, onBuyNowClick, onClose } = this.props;
-
-    if (!product) {
-      return null;
+const mapDispatchToProps = dispatch => {
+  return {
+    onBuyNow: product => {
+      dispatch(buyNow(product));
+    },
+    onClose: () => {
+      dispatch(showBuyModal(false));
     }
+  };
+};
 
-    const contentStyle = {
-      width: "50%",
-      minWidth: "300px",
-      maxWidth: "400px"
-    };
+const BuyModal = ({
+  product,
+  totalPrice,
+  available,
+  isOpen,
+  theme,
+  onBuyNow,
+  onClose
+}) => {
+  if (!product) {
+    return null;
+  }
 
-    const subheaderStyle = {
-      color: theme.lightGray,
-      letterSpacing: "1px",
-      fontSize: "16px",
-      fontWeight: "medium",
-      padding: "0px"
-    };
+  const contentStyle = {
+    width: "50%",
+    minWidth: "300px",
+    maxWidth: "400px"
+  };
 
-    // const errorStyle = {
-    //   color: theme.red,
-    //   fontSize: "12px",
-    //   fontWeight: "medium",
-    //   padding: "0px"
-    // };
+  const subheaderStyle = {
+    color: theme.lightGray,
+    letterSpacing: "1px",
+    fontSize: "16px",
+    fontWeight: "medium",
+    padding: "0px"
+  };
 
-    const buyNow = (
-      <RaisedButton
-        label="Buy Now"
-        disabled={!product.available}
-        backgroundColor={theme.blue}
-        labelColor="#FFFFFF"
-        fullWidth={true}
-        onClick={onBuyNowClick}
-      />
-    );
+  // const errorStyle = {
+  //   color: theme.red,
+  //   fontSize: "12px",
+  //   fontWeight: "medium",
+  //   padding: "0px"
+  // };
 
-    let actions = [buyNow];
+  const buyNow = (
+    <RaisedButton
+      label="Buy Now"
+      disabled={!available}
+      backgroundColor={theme.blue}
+      labelColor="#FFFFFF"
+      fullWidth={true}
+      onClick={() => onBuyNow(product)}
+    />
+  );
 
-    // const insufficientFunds = (
-    //   <Subheader style={errorStyle}>
-    //     You do not have enough KMT for this purchase
-    //   </Subheader>
-    // );
+  let actions = [buyNow];
 
-    // if (this.props.insufficientFunds === true) {
-    //   actions.push(insufficientFunds);
-    // }
+  // const insufficientFunds = (
+  //   <Subheader style={errorStyle}>
+  //     You do not have enough KMT for this purchase
+  //   </Subheader>
+  // );
 
-    return (
-      <div>
-        <Dialog
-          title={
-            <div style={{ textAlign: "center", color: theme.gray }}>
-              {product.name}
-              <Subheader style={subheaderStyle}>
-                {product.DIN}
-              </Subheader>
-            </div>
-          }
-          actions={actions}
-          actionsContainerStyle={{ padding: "20px 10%", textAlign: "center" }}
-          modal={false}
-          contentStyle={contentStyle}
-          open={isOpen}
-          onRequestClose={onClose}
-          autoScrollBodyContent={true}
-        >
-          <div style={{ color: theme.gray }}>
-            <div style={{ display: "flex" }}>
-              <h2>Quantity</h2>
-              <div
-                style={{
-                  width: "100%",
-                  padding: "0px 20px",
-                  textAlign: "right"
-                }}
-              >
-                <QuantityPicker theme={theme}/>
-              </div>
-            </div>
-            <div style={{ display: "flex" }}>
-              <h2>Total</h2>
-              <div
-                style={{
-                  width: "100%",
-                  padding: "0px 20px",
-                  textAlign: "right"
-                }}
-              >
-                <h2>
-                  {totalPrice + " KMT"}
-                </h2>
-              </div>
+  // if (this.props.insufficientFunds === true) {
+  //   actions.push(insufficientFunds);
+  // }
+
+  const valueStyle = {
+    width: "100%",
+    padding: "0px 20px",
+    textAlign: "right"
+  };
+
+  return (
+    <div>
+      <Dialog
+        title={
+          <div style={{ textAlign: "center", color: theme.gray }}>
+            {product.name}
+            <Subheader style={subheaderStyle}>
+              {product.DIN}
+            </Subheader>
+          </div>
+        }
+        actions={actions}
+        actionsContainerStyle={{ padding: "20px 10%", textAlign: "center" }}
+        modal={false}
+        contentStyle={contentStyle}
+        open={isOpen}
+        onRequestClose={onClose}
+        autoScrollBodyContent={true}
+      >
+        <div style={{ color: theme.gray }}>
+          <div style={{ display: "flex" }}>
+            <h2>Quantity</h2>
+            <div style={valueStyle}>
+              <QuantityPicker theme={theme} />
             </div>
           </div>
-        </Dialog>
-      </div>
-    );
-  }
-}
+          <div style={{ display: "flex" }}>
+            <h2>Total</h2>
+            <div style={valueStyle}>
+              <h2>
+                {totalPrice + " KMT"}
+              </h2>
+            </div>
+          </div>
+        </div>
+      </Dialog>
+    </div>
+  );
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(BuyModal);

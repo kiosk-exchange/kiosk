@@ -1,22 +1,12 @@
+const Promise = require("bluebird");
+
 export const buyProduct = (KMT, DIN, quantity, value, buyer) => {
-	return new Promise((resolve, reject) => {
-		KMT.buy(
-			DIN,
-			quantity,
-			value,
-			{
-				from: buyer,
-				gas: 4700000 // TODO: Use estimated gas
-			},
-			(error, result) => {
-				if (!error) {
-					resolve(result);
-				} else {
-					reject(error);
-				}
-			}
-		);
-	});
+	const buyAsync = Promise.promisify(KMT.buy);
+	console.log(KMT)
+	console.log(DIN)
+	console.log(quantity)
+	console.log(value)
+	return buyAsync(DIN, quantity, value, { from: buyer, gas: 4700000 });
 };
 
 export const buyKMT = (EtherMarket, value, buyer) => {

@@ -90,7 +90,7 @@ class TableContainer extends Component {
 		let table = null;
 		let emptyState = null;
 
-		if (dataSource !== null && dataSource.length > 0) {
+		if (dataSource !== null) {
 			switch (selectedMenuItemId) {
 				case 0:
 					table = <MarketplaceTable products={dataSource} />;
