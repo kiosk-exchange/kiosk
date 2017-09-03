@@ -317,7 +317,13 @@ const getPriceAndAvailability = (product, quantity) => {
     dispatch(totalPriceIsCalculating(true));
 
     try {
-      const value = await getValue(web3, product.DIN, quantity, buyer, product.market);
+      const value = await getValue(
+        web3,
+        product.DIN,
+        quantity,
+        buyer,
+        product.market
+      );
       dispatch(totalPrice(value));
     } catch (err) {
       //
@@ -344,7 +350,6 @@ export const selectProduct = index => {
   return (dispatch, getState) => {
     const menuItem = getState().selectedMenuItemId;
     let product;
-
 
     switch (menuItem) {
       case MENU_ITEM.MARKETPLACE:
@@ -373,21 +378,20 @@ const reloadAfterPurchase = () => {
 export const buyNow = product => {
   console.log(product);
   return async (dispatch, getState) => {
+    const { web3, KMTContract, account } = getContext(getState, [
+      "web3",
+      "KMTContract",
+      "account"
+    ]);
+    const DIN = product.DIN;
+    const quantity = getState().buyModal.quantity;
+    const value = getState().buyModal.totalPrice;
+    const valueInKMTWei = web3.toWei(value, "ether");
+
     // Reset
     dispatch(purchaseIsPending(true));
     dispatch(showBuyModal(false));
     try {
-      const { web3, KMTContract, account } = getContext(getState, [
-        "web3",
-        "KMTContract",
-        "account"
-      ]);
-
-      const DIN = product.DIN;
-      const quantity = getState().buyModal.quantity;
-      const value = getState().buyModal.totalPrice;
-      const valueInKMTWei = web3.toWei(value, "ether");
-
       const txId = await buyProduct(
         KMTContract,
         DIN,
