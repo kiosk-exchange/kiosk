@@ -4,10 +4,9 @@ Kiosk is a protocol for buying and selling products on the Ethereum blockchain.
 
 ## Project Overview
 
-The blockchain has the potential to transform how we exchange goods and services. Early projects have shown innovative approaches for how buy and trade items in a trustless way. But most rely on application-specific smart contracts that are difficult to upgrade and reuse.
+The blockchain has the potential to transform how we exchange goods and services. Early projects have shown innovative approaches for how buy and trade items in a trustless way, but most rely on application-specific smart contracts that are difficult to upgrade and reuse.
 
-Kiosk provides a framework for creating decentralized marketplaces. Its smart contracts are building blocks that can be swapped in and out and reconfigured for many different markets.
-
+Kiosk provides a framework for creating and exchanging on decentralized marketplaces. Its smart contracts are building blocks that can be swapped in and out and reconfigured for many different markets.
 
 ## Quick Start
 
