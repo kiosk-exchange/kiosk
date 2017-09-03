@@ -1,5 +1,3 @@
-import { getOrderStore} from "../utils/contracts";
-
 function date(timestamp) {
   var date = new Date(timestamp * 1000);
 
@@ -40,32 +38,29 @@ const orderFromLog = (result, web3) => {
   return order;
 };
 
-const getOrders = async (web3, args) => {
+const getOrders = (orderStore, web3, user) => {
   return new Promise(resolve => {
-    getOrderStore(web3).then(contract => {
-      var event = contract.NewOrder(args, {
-        fromBlock: 0,
-        toBlock: "latest"
-      });
-      event.get((error, logs) => {
-        if (!error) {
-          const orders = logs.map(log => {
-            const order = orderFromLog(log, web3);
-            return order;
-          });
-          resolve(orders);
-        }
-      });
+    var event = orderStore.NewOrder(user, {
+      fromBlock: 0,
+      toBlock: "latest"
+    });
+    event.get((error, logs) => {
+      if (!error) {
+        const orders = logs.map(log => {
+          return orderFromLog(log, web3);
+        });
+        resolve(orders);
+      }
     });
   });
 };
 
-const getPurchases = async (web3, buyer) => {
-  return getOrders(web3, { buyer: buyer });
+const getPurchases = (orderStore, web3, buyer) => {
+  return getOrders(orderStore, web3, { buyer: buyer });
 };
 
-const getSales = (web3, seller) => {
-  return getOrders(web3, { seller: seller });
+const getSales = (orderStore, web3, seller) => {
+  return getOrders(orderStore, web3, { seller: seller });
 };
 
 export { getPurchases, getSales };

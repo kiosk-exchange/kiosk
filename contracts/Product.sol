@@ -56,7 +56,7 @@ contract Product is ProductInterface {
 		uint256 genesis = registry.genesis();
 
 		// Get the price of a new DIN.
-		uint256 price = buyer.totalPrice(genesis, 1, this);
+		uint256 price = KMT.totalPrice(genesis, 1);
 
 		// Take enough KMT from the buyer to purchase a new DIN.
 		if (price > 0) {
@@ -64,7 +64,7 @@ contract Product is ProductInterface {
 		}
 
 		// Buy one DIN.
-		uint256 orderID = buyer.buy(genesis, 1, price);
+		uint256 orderID = KMT.buy(genesis, 1, price);
 		
 		// Convert the order metadata to the registered DIN.
 		return uint256(orderStore.metadata(orderID));

@@ -46,9 +46,9 @@ contract ENSProduct is Product {
 		domains[DIN].price = price;
 
 		ENSMarket ensMarket = ENSMarket(market);
-		// Set the market of the new DIN to ENSMarket.
+		// // Set the market of the new DIN to ENSMarket.
 		registry.setMarket(DIN, market);
-		// Add the domain to ENS Market.
+		// // Add the domain to ENS Market.
 		ensMarket.addDomain(DIN, name, node);
 		ensMarket.setProduct(DIN, this);
 

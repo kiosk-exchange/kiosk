@@ -17,6 +17,11 @@ contract Buyer {
 	// The Order Maker contract.
 	OrderMaker public orderMaker;
 
+	modifier only_KMT {
+		require (KMT == msg.sender);
+		_;
+	}
+
 	// Constructor
 	function Buyer(KioskMarketToken _KMT) {
 		KMT = _KMT;
@@ -27,30 +32,30 @@ contract Buyer {
 	* Buy a product.
 	* @param DIN The DIN of the product to buy.
 	* @param quantity The quantity to buy.
-	* @param value The total price of the product(s).
+	* @param totalValue The total price of the product(s).
 	*/
-	function buy(uint256 DIN, uint256 quantity, uint256 value) returns (uint256) {
+	function buy(uint256 DIN, uint256 quantity, uint256 totalValue, address buyer) only_KMT returns (uint256) {
 		// Get the Market.
 		address marketAddr = registry.market(DIN);
 		Market market = Market(marketAddr);
 
 		// The buyer must have enough tokens for the purchase.
-		require (KMT.balanceOf(msg.sender) >= value);
+		require (KMT.balanceOf(msg.sender) >= totalValue);
 
 		// The requested quantity must be available for sale.
 		require(market.availableForSale(DIN, quantity, msg.sender) == true);
 
 		// The value must match the market price. 
-		require(market.totalPrice(DIN, quantity, msg.sender) == value);
+		require(market.totalPrice(DIN, quantity, msg.sender) == totalValue);
 
 		// Add the order to the order tracker and get the order ID.
 		uint256 orderID = orderMaker.addOrder(
-			msg.sender, // Buyer
+			buyer, // Buyer
 			registry.owner(DIN), // Seller
 			market,
 			DIN,
 			market.metadata(DIN),
-			value,
+			totalValue,
 			quantity,
 			block.timestamp
 		);
@@ -63,8 +68,8 @@ contract Buyer {
 		require(market.isFulfilled(orderID) == true);
 			
 		// Transfer the value of the order from the buyer to the market.
-		if (value > 0) {
-			KMT.transferFrom(msg.sender, marketAddr, value);
+		if (totalValue > 0) {
+			KMT.transferFrom(msg.sender, marketAddr, totalValue);
 		}
 
 		// Mark the order fulfilled.
@@ -72,6 +77,17 @@ contract Buyer {
 
 		// Return the order ID.
 		return orderID;
+	}
+
+	// TODO: This should only generate a single order. Not yet implemented.
+	function buyCart(uint256[] DINs, uint256[] quantities, uint256[] subtotalValues, address buyer) only_KMT returns (uint256) {
+		throw;
+		// for (uint i = 0; i < DINs.length; i++) {
+		// 	uint256 DIN = DINs[i];
+		// 	uint256 quantity = quantities[i];
+		// 	uint256 value = subtotalValues[i];
+		// 	buy(DIN, quantity, value, buyer);
+		// }
 	}
 
 	/**
