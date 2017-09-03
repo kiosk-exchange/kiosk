@@ -91,10 +91,6 @@ export const getProducts = async (event, DINRegistry, web3, buyer) => {
       products.push(product);
     }
   }
-
-  // const nameOfAsync = Promise.promisify(marketContract.nameOf);
-  // const name = nameOfAsync(DIN);
-
   return products;
 };
 
@@ -122,21 +118,13 @@ export const getOwnerProducts = async (web3, DINRegistry, owner, buyer) => {
     { owner: owner },
     { fromBlock: 0, toBlock: "latest" }
   );
-  const products = getProducts(event, DINRegistry, web3);
-  if (products) {
-    return products;
-  }
-  return [];
+  return getProducts(event, DINRegistry, web3, buyer);
 };
 
-export const getAllProducts = async (DINRegistry, web3, buyer) => {
+export const getAllProducts = async (web3, DINRegistry, buyer) => {
   var event = DINRegistry.NewRegistration(
     {},
     { fromBlock: 0, toBlock: "latest" }
   );
-  const products = getProducts(event, DINRegistry, web3);
-  if (products) {
-    return products;
-  }
-  return [];
+  return getProducts(event, DINRegistry, web3, buyer);
 };

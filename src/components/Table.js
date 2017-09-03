@@ -37,13 +37,13 @@ const DataTable = ({ dataSource, headers, values }) => {
 			<TableBody displayRowCheckbox={false}>
 				{dataSource.map((item, index) => {
 					return (
-						<TableRow key={v4()}>
+						<TableRow key={v4()} style={{height: "70px"}}>
 							{values.map(value => {
 								if (value === "buy") {
 									return <BuyColumn key={v4()} index={index} />;
 								}
 								return (
-									<TableRowColumn key={v4()}>
+									<TableRowColumn key={v4()} style={{whiteSpace: "normal"}}>
 										{item[value]}
 									</TableRowColumn>
 								);

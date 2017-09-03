@@ -37,8 +37,6 @@ const AccountSection = ({ account, KMT, ETH }) => {
 			.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 	};
 
-	console.log(KMT)
-
 	return (
 		<div>
 			<Subheader style={subheaderStyle}>ACCOUNT</Subheader>
@@ -57,14 +55,14 @@ const AccountSection = ({ account, KMT, ETH }) => {
 			<ListItem
 				style={style}
 				disabled={true}
-				primaryText={(KMT !== null) ? formatted(KMT) + " KMT" : ""}
-				leftIcon={(KMT !== null) ? <Wallet color="white" /> : null}
+				primaryText={KMT !== null ? formatted(KMT) + " KMT" : ""}
+				leftIcon={KMT !== null ? <Wallet color="white" /> : null}
 			/>
 			<ListItem
 				style={style}
 				disabled={true}
-				primaryText={(ETH !== null) ? formatted(ETH) + " ETH" : ""}
-				leftIcon={(ETH !== null) ? <Wallet color="white" /> : null}
+				primaryText={ETH !== null ? formatted(ETH) + " ETH" : ""}
+				leftIcon={ETH !== null ? <Wallet color="white" /> : null}
 			/>
 		</div>
 	);

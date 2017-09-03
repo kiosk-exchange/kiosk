@@ -26,7 +26,7 @@ class TableContainer extends Component {
 		const {
 			title,
 			theme,
-			isLoading,
+			// isLoading,
 			allProducts,
 			ownerProducts,
 			purchases,
@@ -39,7 +39,7 @@ class TableContainer extends Component {
 			fontWeight: "medium"
 		};
 
-		let loader = null;
+		// let loader = null;
 
 		// if (isLoading === true) {
 		// 	loader = (
@@ -64,7 +64,6 @@ class TableContainer extends Component {
 					<h1 style={headerStyle}>
 						{title}
 					</h1>
-					{loader}
 				</div>
 			</div>
 		);
@@ -88,10 +87,8 @@ class TableContainer extends Component {
 				break;
 		}
 
-		console.log(allProducts)
-
 		let table = null;
-		let emptyState = null;
+		// let emptyState = null;
 
 		if (dataSource !== null) {
 			switch (selectedMenuItemId) {

@@ -107,7 +107,6 @@ const buyModal = (state = buyModalDefaultState, action) => {
 				isLoading: true
 			}
 		case TOTAL_PRICE:
-			console.log(action.data)
 			return {
 				...state,
 				isLoading: false,

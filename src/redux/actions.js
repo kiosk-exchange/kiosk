@@ -182,16 +182,15 @@ const fetchProducts = filter => {
     if (DINRegistry && web3 && account) {
       if (filter === PRODUCT_FILTER.ALL) {
         const products = await getAllProducts(
-          DINRegistry,
           web3,
+          DINRegistry,
           account,
-          account
         );
         dispatch(receivedAllProducts(products));
       } else if (filter === PRODUCT_FILTER.OWNER) {
         const products = await getOwnerProducts(
-          DINRegistry,
           web3,
+          DINRegistry,
           account,
           account
         );
@@ -215,7 +214,6 @@ const fetchOrders = type => {
         dispatch(receivedPurchases(purchases));
       } else if (type === ORDER_TYPE.SALES) {
         const sales = await getSales(OrderStore, web3, account);
-
         dispatch(receivedSales(sales));
       }
     }
@@ -366,7 +364,6 @@ const reloadAfterPurchase = () => {
 };
 
 export const buyNow = product => {
-  console.log(product);
   return async (dispatch, getState) => {
     const { web3, KMTContract, account } = getContext(getState, [
       "web3",
