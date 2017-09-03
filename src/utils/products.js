@@ -43,14 +43,11 @@ export const getName = async (web3, DIN, marketAddr) => {
   });
 };
 
-export const getIsAvailable = (web3, DIN, quantity, marketAddr) => {
+export const getIsAvailable = async (web3, DIN, quantity, marketAddr) => {
   return new Promise(async (resolve, reject) => {
     const marketContract = web3.eth.contract(MarketJSON.abi).at(marketAddr);
-    const availableForSaleAsync = Promise.promisify(
-      marketContract.availableForSale
-    );
     try {
-      const available = availableForSaleAsync(DIN, quantity);
+      const available = await marketContract.availableForSale(DIN, quantity);
       resolve(available);
     } catch (err) {
       reject(err);

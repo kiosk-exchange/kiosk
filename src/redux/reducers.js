@@ -24,7 +24,10 @@ import {
 	SELECTED_PRODUCT,
 	SELECTED_QUANTITY,
 	SHOW_BUY_MODAL,
-	PURCHASE_IS_PENDING
+	PURCHASE_IS_PENDING,
+	TOTAL_PRICE_CALCULATING,
+	TOTAL_PRICE_ERROR,
+	TOTAL_PRICE
 } from "./actions";
 
 /*
@@ -69,7 +72,10 @@ const purchaseIsPending = (state = false, action) => reducer(state, action, PURC
 const buyModalDefaultState = {
 	product: null,
 	quantity: 1,
-	isOpen: false
+	totalPrice: 0,
+	isOpen: false,
+	isLoading: false,
+	error: false
 }
 
 const buyModal = (state = buyModalDefaultState, action) => {
@@ -92,6 +98,23 @@ const buyModal = (state = buyModalDefaultState, action) => {
 			return {
 				...state,
 				quantity: action.data
+			}
+		case TOTAL_PRICE_CALCULATING:
+			return {
+				...state,
+				isLoading: true
+			}
+		case TOTAL_PRICE:
+			return {
+				...state,
+				isLoading: false,
+				error: false,
+				totalPrice: action.data
+			}
+		case TOTAL_PRICE_ERROR:
+			return {
+				...state,
+				error: true
 			}
 		default:
 			return state;

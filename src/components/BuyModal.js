@@ -8,6 +8,7 @@ import { connect } from "react-redux";
 
 const mapStateToProps = state => ({
   product: state.buyModal.product,
+  totalPrice: state.buyModal.totalPrice,
   isOpen: state.buyModal.isOpen,
   theme: state.config.theme
 });
@@ -23,7 +24,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 
 class BuyModal extends Component {
   render() {
-    const { product, isOpen, theme, onBuyNowClick, onClose } = this.props;
+    const { product, totalPrice, isOpen, theme, onBuyNowClick, onClose } = this.props;
 
     if (!product) {
       return null;
@@ -115,7 +116,7 @@ class BuyModal extends Component {
                 }}
               >
                 <h2>
-                  {product.value + " KMT"}
+                  {totalPrice + " KMT"}
                 </h2>
               </div>
             </div>

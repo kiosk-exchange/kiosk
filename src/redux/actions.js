@@ -12,8 +12,8 @@ import {
   getOrderStore,
   getEtherMarket
 } from "../utils/contracts";
-import { getAllProducts, getOwnerProducts } from "../utils/products";
-import { getPurchases, getSales, getValue } from "../utils/orders";
+import { getAllProducts, getOwnerProducts, getValue } from "../utils/products";
+import { getPurchases, getSales } from "../utils/orders";
 import { buyProduct, buyKMT } from "../utils/buy";
 
 // Action stubs
@@ -129,7 +129,7 @@ const getContext = (getState, args) => {
 
   let context = {};
 
-  for (let i = 0; i < args.length; i ++) {
+  for (let i = 0; i < args.length; i++) {
     const arg = args[i];
     context[arg] = state.config[arg];
   }
@@ -179,7 +179,12 @@ const fetchProducts = filter => {
         const products = await getAllProducts(DINRegistry, web3, account);
         dispatch(receivedAllProducts(products));
       } else if (filter === PRODUCT_FILTER.OWNER) {
-        const products = await getOwnerProducts(DINRegistry, web3, account, account);
+        const products = await getOwnerProducts(
+          DINRegistry,
+          web3,
+          account,
+          account
+        );
         dispatch(receivedOwnerProducts(products));
       }
     }
@@ -310,6 +315,7 @@ export const selectProduct = index => {
     if (product) {
       dispatch(showBuyModal(true));
       dispatch(selectedProduct(product));
+      dispatch(calculateTotalPrice(product, 1))
     }
   };
 };
@@ -364,21 +370,29 @@ export const buyKioskMarketToken = () => {
   };
 };
 
+const calculateTotalPrice = (product, quantity) => {
+  return async (dispatch, getState) => {
+    const web3 = getState().config.web3;
+    dispatch(totalPriceIsCalculating(true));
+
+    try {
+      const value = await getValue(web3, product.DIN, quantity, product.market);
+      dispatch(totalPrice(value));
+    } catch (err) {
+      dispatch(totalPriceError(true));
+    }
+
+    dispatch(totalPriceIsCalculating(false));
+  };
+};
+
 export const changedQuantity = quantity => {
-  // return async (dispatch, getState) => {
-  //   const web3 = getState().config.web3;
-  //   const product = getState().buyModal.product;
+  return async (dispatch, getState) => {
+    const product = getState().buyModal.product;
 
-  //   dispatch(selectedQuantity(quantity));
-  //   dispatch(totalPriceIsCalculating());
-
-  //   try {
-  //     const totalPrice = await getPrice(web3, product.DIN, quantity, product.market);
-  //     dispatch(totalPrice(totalPrice));
-  //   } catch (err) {
-  //     dispatch(totalPriceError(true));
-  //   }
-  // };
+    dispatch(selectedQuantity(quantity));
+    dispatch(calculateTotalPrice(product, quantity));
+  };
 };
 
 // action(SELECTED_QUANTITY, { data });
