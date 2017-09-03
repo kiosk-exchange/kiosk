@@ -390,6 +390,7 @@ export const buyNow = product => {
       dispatch(purchaseIsPending(false));
       dispatch(reloadAfterPurchase());
     } catch (err) {
+      console.log(err)
       console.log("ERROR: BUY PRODUCT " + product.DIN);
       dispatch(purchaseIsPending(false));
     }

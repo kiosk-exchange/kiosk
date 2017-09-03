@@ -70,6 +70,10 @@ export const getProducts = async (event, DINRegistry, web3, buyer) => {
     const owner = await registry.ownerAsync(DIN);
     const market = await registry.marketAsync(DIN);
 
+    if (market === "0x0000000000000000000000000000000000000000") {
+      break;
+    }
+
     const product = {
       DIN: DIN,
       seller: owner,
