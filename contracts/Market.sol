@@ -8,7 +8,7 @@ contract Market {
 	string public name;
 
 	// Buy a product. Returns true if the transaction was successful.
-	function buy(uint256 orderID) returns (bool);
+	function buy(uint256 DIN, uint256 quantity, address buyer) returns (bool);
 
 	// Returns true if the seller has fulfilled the order.
 	function isFulfilled(uint256 orderID) constant returns (bool);
@@ -24,5 +24,4 @@ contract Market {
 
 	// Returns true if a given quantity of a product is available for purchase.
 	function availableForSale(uint256 DIN, uint256 quantity, address buyer) constant returns (bool);
-	
 }

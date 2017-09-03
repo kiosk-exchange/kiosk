@@ -1,6 +1,9 @@
 import MarketJSON from "../../build/contracts/Market.json";
 const Promise = require("bluebird");
 
+// TODO: Market name and product name will ideally come from the Buyer contract in the future.
+// Not possible now due to Solidity limitations:
+// http://solidity.readthedocs.io/en/develop/frequently-asked-questions.html#can-you-return-an-array-or-a-string-from-a-solidity-function-call
 export const getMarketName = (web3, marketAddr) => {
   return new Promise(async (resolve, reject) => {
     const marketContract = web3.eth.contract(MarketJSON.abi).at(marketAddr);
@@ -13,12 +16,24 @@ export const getMarketName = (web3, marketAddr) => {
   });
 };
 
-export const getValue = (web3, DIN, quantity, buyer, marketAddr) => {
-  return new Promise(async (resolve, reject) => {
+export const getProductName = (web3, DIN, marketAddr) => {
+  return new Promise((resolve, reject) => {
     const marketContract = web3.eth.contract(MarketJSON.abi).at(marketAddr);
-    const totalPriceAsync = Promise.promisify(marketContract.totalPrice);
     try {
-      const priceInKMTWei = await totalPriceAsync(DIN, quantity, buyer);
+      // This has to be synchronous because of an error in web3 (invalid BigNumber)
+      const name = marketContract.nameOf.call(DIN);
+      resolve(name);
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
+export const getValue = (web3, BuyerContract, DIN, quantity, buyerAcct) => {
+  return new Promise(async (resolve, reject) => {
+    const totalPriceAsync = Promise.promisify(BuyerContract.totalPrice);
+    try {
+      const priceInKMTWei = await totalPriceAsync(DIN, quantity, buyerAcct);
       const formattedPrice = web3
         .fromWei(priceInKMTWei, "ether")
         .toNumber()
@@ -30,25 +45,11 @@ export const getValue = (web3, DIN, quantity, buyer, marketAddr) => {
   });
 };
 
-export const getName = (web3, DIN, marketAddr) => {
-  return new Promise((resolve, reject) => {
-    const marketContract = web3.eth.contract(MarketJSON.abi).at(marketAddr);
-    try {
-      // This has to be synchronous because of an error in web3 (invalid BigNumber)
-      const name = marketContract.nameOf.call(DIN)
-      resolve(name)
-    } catch (err) {
-      reject(err);
-    }
-  });
-};
-
-export const getIsAvailable = (web3, DIN, quantity, buyer, marketAddr) => {
+export const getIsAvailable = (web3, BuyerContract, DIN, quantity, buyerAcct) => {
   return new Promise(async (resolve, reject) => {
-    const marketContract = web3.eth.contract(MarketJSON.abi).at(marketAddr);
-    const availableAsync = Promise.promisify(marketContract.availableForSale);
+    const availableAsync = Promise.promisify(BuyerContract.availableForSale);
     try {
-      const available = await availableAsync(DIN, quantity, buyer);
+      const available = await availableAsync(DIN, quantity, buyerAcct);
       resolve(available);
     } catch (err) {
       reject(err);
@@ -56,7 +57,7 @@ export const getIsAvailable = (web3, DIN, quantity, buyer, marketAddr) => {
   });
 };
 
-export const getProducts = async (event, DINRegistry, web3, buyer) => {
+export const getProducts = async (event, web3, DINRegistry, BuyerContract, buyerAcct) => {
   const asyncEvent = Promise.promisifyAll(event);
   const logs = await asyncEvent.getAsync();
   const DINs = logs.map(log => {
@@ -70,10 +71,6 @@ export const getProducts = async (event, DINRegistry, web3, buyer) => {
     const owner = await registry.ownerAsync(DIN);
     const market = await registry.marketAsync(DIN);
 
-    if (market === "0x0000000000000000000000000000000000000000") {
-      break;
-    }
-
     const product = {
       DIN: DIN,
       seller: owner,
@@ -81,9 +78,9 @@ export const getProducts = async (event, DINRegistry, web3, buyer) => {
     };
 
     try {
-      const name = await getName(web3, DIN, market);
-      const value = await getValue(web3, DIN, 1, buyer, market);
-      const available = await getIsAvailable(web3, DIN, buyer, 1, market);
+      const name = await getProductName(web3, DIN, market);
+      const value = await getValue(web3, BuyerContract, DIN, 1, buyerAcct);
+      const available = await getIsAvailable(web3, BuyerContract, DIN, buyerAcct, 1);
       const newProduct = {
         ...product,
         name,
@@ -94,8 +91,15 @@ export const getProducts = async (event, DINRegistry, web3, buyer) => {
     } catch (err) {
       products.push(product);
     }
+
   }
-  return products;
+
+  // Only show products where the market is set and with a name
+  const filteredProducts = products.filter(
+    product => (product.market !== "0x0000000000000000000000000000000000000000" && product.name)
+  );
+
+  return filteredProducts;
 };
 
 // TODO: This should confirm that the market has not changed
@@ -109,26 +113,22 @@ export const getMarketProducts = async (
     { market: marketAddr },
     { fromBlock: 0, toBlock: "latest" }
   );
-  const products = getProducts(event, DINRegistry, web3);
-  if (products) {
-    return products;
-  }
-  return [];
+  return getProducts(event, web3, DINRegistry);
 };
 
 // TODO: This should confirm that the owner has not changed
-export const getOwnerProducts = async (web3, DINRegistry, owner, buyer) => {
+export const getOwnerProducts = async (web3, DINRegistry, BuyerContract, owner, buyerAcct) => {
   var event = DINRegistry.NewRegistration(
     { owner: owner },
     { fromBlock: 0, toBlock: "latest" }
   );
-  return getProducts(event, DINRegistry, web3, buyer);
+  return getProducts(event, web3, DINRegistry, BuyerContract, buyerAcct);
 };
 
-export const getAllProducts = async (web3, DINRegistry, buyer) => {
+export const getAllProducts = async (web3, DINRegistry, BuyerContract, buyerAcct) => {
   var event = DINRegistry.NewRegistration(
     {},
     { fromBlock: 0, toBlock: "latest" }
   );
-  return getProducts(event, DINRegistry, web3, buyer);
+  return getProducts(event, web3, DINRegistry, BuyerContract, buyerAcct);
 };

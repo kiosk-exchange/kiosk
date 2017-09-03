@@ -8,7 +8,6 @@ const OrderStore = artifacts.require("OrderStore.sol");
 const DINMarket = artifacts.require("DIN/DINMarket.sol");
 const EtherMarket = artifacts.require("ether/EtherMarket.sol");
 const ENSMarket = artifacts.require("ENS/ENSMarket.sol");
-const ENSProduct = artifacts.require("ENS/ENSProduct.sol");
 const ENS = artifacts.require("ENS/ENS/ENS.sol");
 const FIFSRegistrar = artifacts.require("ENS/ENS/FIFSRegistrar.sol");
 const namehash = require("../node_modules/eth-ens-namehash");
@@ -60,6 +59,8 @@ const deployKiosk = async (deployer, network, accounts) => {
   await OrderStore.at(OrderStore.address).updateKiosk();
   await OrderMaker.at(OrderMaker.address).updateKiosk();
   await DINMarket.at(DINMarket.address).updateKiosk();
+
+  await KioskMarketToken.at(KioskMarketToken.address).buy(genesis, 1, 0);
 };
 
 const deployEtherMarket = async (deployer, network, accounts) => {
@@ -94,18 +95,12 @@ const deployENS = async (deployer, network, accounts) => {
   // Deploy ENS Market, where ENS domains can be bought and sold
   await deployer.deploy(ENSMarket, KioskMarketToken.address, ENS.address);
 
-  await deployer.deploy(
-    ENSProduct,
-    KioskMarketToken.address,
-    ENSMarket.address,
-    ENS.address
-  );
+  await ENSMarket.at(ENSMarket.address).setDomain(1000000001, subnodeName, subnodeNameHash, subnodePrice, true);
 
-
-  await ENSProduct.at(ENSProduct.address).addENSDomain(subnodeName, subnodeNameHash, subnodePrice);
+  await DINRegistry.at(DINRegistry.address).setMarket(1000000001, ENSMarket.address);
 
   // Transfer ownership of "example.eth" to the ENSPublicProduct
-  await ENS.at(ENS.address).setOwner(subnodeNameHash, ENSProduct.address);
+  await ENS.at(ENS.address).setOwner(subnodeNameHash, ENSMarket.address);
 };
 
 module.exports = async (deployer, network, accounts) => {

@@ -24,7 +24,13 @@ contract EtherMarket is StandardMarket {
 	function EtherMarket(KioskMarketToken _KMT) StandardMarket(_KMT) {
 		// Register a DIN to this contract. 
 		// Any exchange from KMT back into Ether will exist on this contract and can be resold.
-		uint256 DIN = registerDIN();
+		uint256 genesis = registry.genesis();
+
+		// Buy one DIN.
+		uint256 orderID = KMT.buy(genesis, 1, 0);
+
+		// Convert the order metadata to the registered DIN.
+		uint256 DIN = uint256(orderStore.metadata(orderID));
 
 		// Set the market for the newly registered DIN to this contract.
 		registry.setMarket(DIN, this);
@@ -50,13 +56,8 @@ contract EtherMarket is StandardMarket {
 	*	==============================
 	*/
 
-	function buy(uint256 orderID) only_buyer returns (bool) {
-        uint256 DIN = orderStore.DIN(orderID);
-
+	function buy(uint256 DIN, uint256 quantity, address buyer) only_buyer returns (bool) {
         require (DIN == ethDIN);
-
-        uint256 quantity = orderStore.quantity(orderID);
-        address buyer = orderStore.buyer(orderID);
 
         uint256 etherQuantity = quantity * 10**18;
 
@@ -93,17 +94,6 @@ contract EtherMarket is StandardMarket {
 	function availableForSale(uint256 DIN, uint256 quantity, address buyer) constant returns (bool) {
 		require(DIN == ethDIN);
 		return (this.balance >= quantity);
-	}
-
-	function registerDIN() private returns (uint256) {
-		// Register a new DIN.
-		uint256 genesis = registry.genesis();
-
-		// Buy one DIN.
-		uint256 orderID = KMT.buy(genesis, 1, 0);
-
-		// Convert the order metadata to the registered DIN.
-		return uint256(orderStore.metadata(orderID));
 	}
 
 }
