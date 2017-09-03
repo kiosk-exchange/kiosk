@@ -51,11 +51,12 @@ const loadWeb3 = new Promise((resolve, reject) => {
   const provider = new Web3.providers.HttpProvider("http://localhost:8545");
   const web3 = new Web3(provider);
 
-  web3.isConnected(connected => {
+  if (web3.isConnected() === true) {
     if (IS_DEBUG) console.log("********** USING LOCAL WEB3");
     const results = {
       web3: web3
     };
+
     resolve(results);
   } else {
     window.addEventListener("load", () => {
