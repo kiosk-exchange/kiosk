@@ -110,8 +110,7 @@ class TableContainer extends Component {
 		} else if (isLoading === false) {
 			emptyState = <h1>There's nothing to see here</h1>
 		}
-
-
+		
 		return (
 			<div>
 				{titleSection}

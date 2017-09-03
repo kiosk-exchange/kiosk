@@ -312,11 +312,12 @@ export const selectMenuItem = id => {
 const getPriceAndAvailability = (product, quantity) => {
   return async (dispatch, getState) => {
     const web3 = getState().config.web3;
+    const buyer = getState().config.account;
+
     dispatch(totalPriceIsCalculating(true));
 
     try {
-      const value = await getValue(web3, product.DIN, quantity, product.market);
-      console.log(value);
+      const value = await getValue(web3, product.DIN, quantity, buyer, product.market);
       dispatch(totalPrice(value));
     } catch (err) {
       //
@@ -327,9 +328,9 @@ const getPriceAndAvailability = (product, quantity) => {
         web3,
         product.DIN,
         quantity,
+        buyer,
         product.market
       );
-      console.log(isAvailable);
       dispatch(productAvailability(isAvailable));
     } catch (err) {
       //
@@ -343,6 +344,7 @@ export const selectProduct = index => {
   return (dispatch, getState) => {
     const menuItem = getState().selectedMenuItemId;
     let product;
+
 
     switch (menuItem) {
       case MENU_ITEM.MARKETPLACE:

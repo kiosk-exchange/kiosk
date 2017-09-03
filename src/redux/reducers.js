@@ -71,9 +71,9 @@ const purchaseIsPending = (state = false, action) => reducer(state, action, PURC
 
 const buyModalDefaultState = {
 	product: null,
-	quantity: 1,
-	totalPrice: 0,
-	available: true,
+	quantity: null,
+	totalPrice: null,
+	available: null,
 	isOpen: false,
 	isLoading: false,
 	error: false,
@@ -82,10 +82,14 @@ const buyModalDefaultState = {
 const buyModal = (state = buyModalDefaultState, action) => {
 	switch (action.type) {
 		case SHOW_BUY_MODAL:
+			if (action.data === false) {
+				// Reset
+				return buyModalDefaultState
+			}
 			return {
 				...state,
 				quantity: 1,
-				isOpen: true
+				isOpen: action.data,
 			};
 		case SELECTED_PRODUCT:
 			return {

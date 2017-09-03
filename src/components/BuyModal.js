@@ -88,6 +88,8 @@ const BuyModal = ({
     textAlign: "right"
   };
 
+  const show = (isOpen === true && totalPrice !== null && available !== null)
+
   return (
     <div>
       <Dialog
@@ -103,7 +105,7 @@ const BuyModal = ({
         actionsContainerStyle={{ padding: "20px 10%", textAlign: "center" }}
         modal={false}
         contentStyle={contentStyle}
-        open={isOpen}
+        open={show}
         onRequestClose={onClose}
         autoScrollBodyContent={true}
       >

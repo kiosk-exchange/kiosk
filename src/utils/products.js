@@ -92,6 +92,9 @@ export const getProducts = async (event, DINRegistry, web3, buyer) => {
     }
   }
 
+  // const nameOfAsync = Promise.promisify(marketContract.nameOf);
+  // const name = nameOfAsync(DIN);
+
   return products;
 };
 
