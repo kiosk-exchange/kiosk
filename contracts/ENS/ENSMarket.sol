@@ -47,12 +47,11 @@ contract ENSMarket is StandardMarket {
 	}
 
 	function isFulfilled(uint256 orderID) constant returns (bool) {
-		return true;
-		// address buyer = orderStore.buyer(orderID);
-		// bytes32 node = expected[buyer];
+		address buyer = orderStore.buyer(orderID);
+		bytes32 node = expected[buyer];
 
 		// Check that buyer is the owner of the domain.
-		// return (ens.owner(node) == buyer);
+		return (ens.owner(node) == buyer);
 	}
 
 	function nameOf(uint256 DIN) constant returns (string) {
@@ -76,18 +75,18 @@ contract ENSMarket is StandardMarket {
 	function availableForSale(uint256 DIN, uint256 quantity, address buyer) constant returns (bool) {
 		// The owner of the domain must be able to transfer it during a purchase.
 		// This means the market must hold the domain for the transaction to succeed.
-		bytes32 node = getNode(DIN);
+		// bytes32 node = domains[DIN].node;
 
-		// Verify that ENSMarket is the owner of the domain.
-		if (ens.owner(node) != address(this)) {
-			return false;
-		}
+		// // Verify that ENSMarket is the owner of the domain.
+		// if (ens.owner(node) != address(this)) {
+		// 	return false;
+		// }
 
-		// See if the domain is specifically available for the buyer.
-		if (domains[DIN].availabilities[buyer] == true) {
-			return true;
-		}
-
+		// // See if the domain is specifically available for the buyer.
+		// if (domains[DIN].availabilities[buyer] == true) {
+		// 	return true;
+		// }
+		return true;
 		return domains[DIN].available;
 	}
 

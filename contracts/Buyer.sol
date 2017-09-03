@@ -122,9 +122,9 @@ contract Buyer {
 		Market market = getMarket(DIN);
 
 		// http://truffleframework.com/tutorials/testing-for-throws-in-solidity-tests
-		bool error = market.call(bytes4(bytes32(sha3("totalPrice(uint256,uint256,address)"))));
+		bool success = market.call(bytes4(bytes32(sha3("totalPrice(uint256,uint256,address)"))), DIN, quantity, buyer);
 
-		if (error == true) {
+		if (!success) {
 			return 0;
 		}
 
@@ -136,9 +136,9 @@ contract Buyer {
 		Market market = getMarket(DIN);
 
 		// http://truffleframework.com/tutorials/testing-for-throws-in-solidity-tests
-		bool error = market.call(bytes4(bytes32(sha3("availableForSale(uint256,uint256,address)"))));
+		bool success = market.call(bytes4(bytes32(sha3("availableForSale(uint256,uint256,address)"))), DIN, quantity, buyer);
 
-		if (error == true) {
+		if (!success) {
 			return false;
 		}
 

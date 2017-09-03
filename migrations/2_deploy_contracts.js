@@ -16,8 +16,14 @@ const rootNode = getRootNodeFromTLD(tld);
 const subnodeSHA3 = web3.sha3("example");
 const subnodeName = "example.eth";
 const subnodeNameHash = namehash(subnodeName);
-const subnodePrice = web3.toWei(2, "ether");
-const initialSupply = 1000000 * 10 ** 18; // Initialize KMT with 1 million tokens
+const subnodePrice = web3.toWei(2, "ether"); // Price in KMT, just using web3 for decimal conversion
+
+const offChainSHA3 = web3.sha3("offthechain");
+const offChainSubnodeName = "offthechain.eth";
+const offChainNameHash = namehash(offChainSubnodeName);
+const offChainPrice = web3.toWei(100, "ether");
+
+const initialSupply = web3.toWei(1000000, "ether"); // Initialize KMT with 1 million tokens
 const genesis = 1000000000; // The genesis DIN (used for DIN product)
 
 /**
@@ -38,19 +44,30 @@ const deployKiosk = async (deployer, network, accounts) => {
 
   // Intitialize DINRegistry with a genesis DIN of 10000000000 and bind it to KMT.
   await deployer.deploy(DINRegistry, KioskMarketToken.address, genesis);
-  await KioskMarketToken.at(KioskMarketToken.address).setRegistry(DINRegistry.address);
+  await KioskMarketToken.at(KioskMarketToken.address).setRegistry(
+    DINRegistry.address
+  );
 
   await deployer.deploy(DINMarket, KioskMarketToken.address);
-  await DINRegistry.at(DINRegistry.address).setMarket(genesis, DINMarket.address);
+  await DINRegistry.at(DINRegistry.address).setMarket(
+    genesis,
+    DINMarket.address
+  );
 
   await deployer.deploy(DINRegistrar, KioskMarketToken.address);
-  await KioskMarketToken.at(KioskMarketToken.address).setRegistrar(DINRegistrar.address);
+  await KioskMarketToken.at(KioskMarketToken.address).setRegistrar(
+    DINRegistrar.address
+  );
 
   await deployer.deploy(OrderStore, KioskMarketToken.address);
-  await KioskMarketToken.at(KioskMarketToken.address).setOrderStore(OrderStore.address);
+  await KioskMarketToken.at(KioskMarketToken.address).setOrderStore(
+    OrderStore.address
+  );
 
   await deployer.deploy(OrderMaker, KioskMarketToken.address);
-  await KioskMarketToken.at(KioskMarketToken.address).setOrderMaker(OrderMaker.address);
+  await KioskMarketToken.at(KioskMarketToken.address).setOrderMaker(
+    OrderMaker.address
+  );
 
   // Bind the Kiosk protocol contracts to each other.
   await Buyer.at(Buyer.address).updateKiosk();
@@ -59,8 +76,6 @@ const deployKiosk = async (deployer, network, accounts) => {
   await OrderStore.at(OrderStore.address).updateKiosk();
   await OrderMaker.at(OrderMaker.address).updateKiosk();
   await DINMarket.at(DINMarket.address).updateKiosk();
-
-  await KioskMarketToken.at(KioskMarketToken.address).buy(genesis, 1, 0);
 };
 
 const deployEtherMarket = async (deployer, network, accounts) => {
@@ -71,8 +86,7 @@ const deployEtherMarket = async (deployer, network, accounts) => {
   await KioskMarketToken.at(KioskMarketToken.address).transfer(
     EtherMarket.address,
     initialSupply
-  )
-  
+  );
 };
 
 const deployENS = async (deployer, network, accounts) => {
@@ -89,18 +103,50 @@ const deployENS = async (deployer, network, accounts) => {
     rootNode.sha3,
     FIFSRegistrar.address
   );
+
+  // Register 2 DINs.
+  await KioskMarketToken.at(KioskMarketToken.address).buy(genesis, 2, 0);
+
   // Register "example.eth" to a test account
   await FIFSRegistrar.at(FIFSRegistrar.address).register(subnodeSHA3, account1);
+
+  // Register "offthechain.eth" to a test account (demonstrate off-chain price changes).
+  await FIFSRegistrar.at(FIFSRegistrar.address).register(
+    offChainSHA3,
+    account1
+  );
 
   // Deploy ENS Market, where ENS domains can be bought and sold
   await deployer.deploy(ENSMarket, KioskMarketToken.address, ENS.address);
 
-  await ENSMarket.at(ENSMarket.address).setDomain(1000000001, subnodeName, subnodeNameHash, subnodePrice, true);
+  await ENSMarket.at(ENSMarket.address).setDomain(
+    1000000002,
+    subnodeName,
+    subnodeNameHash,
+    subnodePrice,
+    true
+  );
+  await ENSMarket.at(ENSMarket.address).setDomain(
+    1000000003,
+    offChainSubnodeName,
+    offChainNameHash,
+    offChainPrice,
+    true
+  );
 
-  await DINRegistry.at(DINRegistry.address).setMarket(1000000001, ENSMarket.address);
+  await DINRegistry.at(DINRegistry.address).setMarket(
+    1000000002,
+    ENSMarket.address
+  );
+
+  await DINRegistry.at(DINRegistry.address).setMarket(
+    1000000003,
+    ENSMarket.address
+  );
 
   // Transfer ownership of "example.eth" to the ENSPublicProduct
   await ENS.at(ENS.address).setOwner(subnodeNameHash, ENSMarket.address);
+  await ENS.at(ENS.address).setOwner(offChainNameHash, ENSMarket.address);
 };
 
 module.exports = async (deployer, network, accounts) => {

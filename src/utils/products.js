@@ -87,6 +87,7 @@ export const getProducts = async (event, web3, DINRegistry, BuyerContract, buyer
         value,
         available
       };
+      console.log(newProduct)
       products.push(newProduct);
     } catch (err) {
       products.push(product);

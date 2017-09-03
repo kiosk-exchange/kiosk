@@ -47,13 +47,19 @@ contract KioskMarketToken is StandardToken {
 
 	/**
 	*	==============================
-	*	            Core
+	*	            Buy
 	*	==============================
 	*/
 
 	function buy(uint256 DIN, uint256 quantity, uint256 totalValue) returns (uint256) {
 		return Buyer(buyer).buy(DIN, quantity, totalValue, msg.sender);
 	}
+
+	/**
+	*	==============================
+	*	        Kiosk Client
+	*	==============================
+	*/
 
 	function totalPrice(uint256 DIN, uint256 quantity) constant returns (uint256) {
 		return Buyer(buyer).totalPrice(DIN, quantity, msg.sender);
