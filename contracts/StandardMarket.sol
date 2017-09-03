@@ -7,8 +7,6 @@ import "./DINRegistrar.sol";
 import "./OrderMaker.sol";
 import "./OrderStore.sol";
 import "./Market.sol";
-import "./Product.sol";
-import "./OrderUtils.sol";
 
 /**
 *  This is a base implementation of a Market that is used by Kiosk's market contracts (DINMarket, EtherMarket, ENSMarket, etc.).
@@ -37,6 +35,11 @@ contract StandardMarket is Market {
     // Only let the Buyer contract call "buy"
     modifier only_buyer {
         require (buyer == msg.sender);
+        _;
+    }
+
+    modifier only_owner(uint256 DIN) {
+        require (registry.owner(DIN) == msg.sender);
         _;
     }
 

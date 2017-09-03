@@ -106,8 +106,16 @@
       "constant": false,
       "inputs": [
         {
-          "name": "orderID",
+          "name": "DIN",
           "type": "uint256"
+        },
+        {
+          "name": "quantity",
+          "type": "uint256"
+        },
+        {
+          "name": "buyer",
+          "type": "address"
         }
       ],
       "name": "buy",
@@ -142,5 +150,5 @@
   "unlinked_binary": "0x",
   "networks": {},
   "schema_version": "0.0.5",
-  "updated_at": 1504407310342
+  "updated_at": 1504476737873
 }

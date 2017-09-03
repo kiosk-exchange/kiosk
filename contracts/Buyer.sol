@@ -34,23 +34,46 @@ contract Buyer {
 	* @param quantity The quantity to buy.
 	* @param totalValue The total price of the product(s).
 	*/
-	function buy(uint256 DIN, uint256 quantity, uint256 totalValue, address buyer) only_KMT returns (uint256) {
+	function buy(
+		uint256 DIN, 
+		uint256 quantity, 
+		uint256 totalValue, 
+		address buyer
+	) 
+		public
+		only_KMT 
+		returns (uint256) 
+	{
 		// Get the Market.
 		address marketAddr = registry.market(DIN);
 		Market market = Market(marketAddr);
 
 		// The buyer must have enough tokens for the purchase.
-		require (KMT.balanceOf(msg.sender) >= totalValue);
+		require (KMT.balanceOf(buyer) >= totalValue);
 
 		// The requested quantity must be available for sale.
-		require(market.availableForSale(DIN, quantity, msg.sender) == true);
+		require(market.availableForSale(DIN, quantity, buyer) == true);
 
 		// The value must match the market price. 
-		require(market.totalPrice(DIN, quantity, msg.sender) == totalValue);
+		require(market.totalPrice(DIN, quantity, buyer) == totalValue);
 
+		// If conditions are met, call the private buyProduct method to complete the transaction.
+		return buyProduct(DIN, quantity, totalValue, buyer, market);
+	}
+
+	function buyProduct(
+		uint256 DIN, 
+		uint256 quantity, 
+		uint256 totalValue,
+		address buyer, 
+		Market market
+	) 
+		private
+		returns (uint256)
+	{
 		// Add the order to the order tracker and get the order ID.
 		uint256 orderID = orderMaker.addOrder(
-			buyer, // Buyer
+			buyer,
 			registry.owner(DIN), // Seller
 			market,
 			DIN,
@@ -61,15 +84,15 @@ contract Buyer {
 		);
 
 		// Tell the market to execute the order.
-		market.buy(orderID);
+		market.buy(DIN, quantity, buyer);
 
 		// Throw if the market does not fulfill the order.
-		// Right now, Buyer only supports transactions that can be settled immediately (e.g., instant delivery).
+		// Right now, Buyer only supports transactions that can be settled immediately (i.e., instant delivery).
 		require(market.isFulfilled(orderID) == true);
 			
 		// Transfer the value of the order from the buyer to the market.
 		if (totalValue > 0) {
-			KMT.transferFrom(msg.sender, marketAddr, totalValue);
+			KMT.transferFrom(buyer, market, totalValue);
 		}
 
 		// Mark the order fulfilled.
@@ -77,17 +100,6 @@ contract Buyer {
 
 		// Return the order ID.
 		return orderID;
-	}
-
-	// TODO: This should only generate a single order. Not yet implemented.
-	function buyCart(uint256[] DINs, uint256[] quantities, uint256[] subtotalValues, address buyer) only_KMT returns (uint256) {
-		throw;
-		// for (uint i = 0; i < DINs.length; i++) {
-		// 	uint256 DIN = DINs[i];
-		// 	uint256 quantity = quantities[i];
-		// 	uint256 value = subtotalValues[i];
-		// 	buy(DIN, quantity, value, buyer);
-		// }
 	}
 
 	/**
@@ -108,12 +120,28 @@ contract Buyer {
 	// The total price of a product for a given quantity and buyer.
 	function totalPrice(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256) {
 		Market market = getMarket(DIN);
+
+		// http://truffleframework.com/tutorials/testing-for-throws-in-solidity-tests
+		bool success = market.call(bytes4(bytes32(sha3("totalPrice(uint256,uint256,address)"))), DIN, quantity, buyer);
+
+		if (!success) {
+			return 0;
+		}
+
 		return market.totalPrice(DIN, quantity, buyer);
 	}
 
 	// Returns true if a given quantity of a product is available for purchase.
 	function availableForSale(uint256 DIN, uint256 quantity, address buyer) constant returns (bool) {
 		Market market = getMarket(DIN);
+
+		// http://truffleframework.com/tutorials/testing-for-throws-in-solidity-tests
+		bool success = market.call(bytes4(bytes32(sha3("availableForSale(uint256,uint256,address)"))), DIN, quantity, buyer);
+
+		if (!success) {
+			return false;
+		}
+
 		return market.availableForSale(DIN, quantity, buyer);
 	}
 

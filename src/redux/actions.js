@@ -7,6 +7,7 @@ import {
 } from "../utils/kioskWeb3";
 import {
   getKioskMarketToken,
+  getBuyer,
   getDINRegistry,
   getOrderStore,
   getEtherMarket
@@ -29,6 +30,7 @@ export const ACCOUNT_SUCCESS = "ACCOUNT_SUCCESS";
 export const NETWORK_ERROR = "NETWORK_ERROR";
 export const NETWORK_SUCCESS = "NETWORK_SUCCESS";
 export const KMT_CONTRACT = "KMT_CONTRACT";
+export const BUYER_CONTRACT = "BUYER_CONTRACT";
 export const DIN_REGISTRY_CONTRACT = "DIN_REGISTRY_CONTRACT";
 export const ORDER_STORE_CONTRACT = "ORDER_STORE_CONTRACT";
 export const ETHER_MARKET_CONTRACT = "ETHER_MARKET_CONTRACT";
@@ -66,6 +68,7 @@ export const accountSuccess = data => action(ACCOUNT_SUCCESS, { data });
 export const networkHasError = data => action(NETWORK_ERROR, { data });
 export const networkSuccess = data => action(NETWORK_SUCCESS, { data });
 export const KMTContract = data => action(KMT_CONTRACT, { data });
+export const BuyerContract = data => action(BUYER_CONTRACT, { data });
 export const DINRegistryContract = data =>
   action(DIN_REGISTRY_CONTRACT, { data });
 export const OrderStoreContract = data =>
@@ -128,20 +131,6 @@ const PRODUCT_FILTER = {
   OWNER: "owner"
 };
 
-// Helper method
-const getContext = (getState, args) => {
-  const state = getState();
-
-  let context = {};
-
-  for (let i = 0; i < args.length; i++) {
-    const arg = args[i];
-    context[arg] = state.config[arg];
-  }
-
-  return context;
-};
-
 const getNetwork = () => {
   return async (dispatch, getState) => {
     const network = await getNetworkAsync(getState().config.web3);
@@ -155,11 +144,9 @@ const getNetwork = () => {
 
 const getBalances = () => {
   return async (dispatch, getState) => {
-    const { web3, KMTContract, account } = getContext(getState, [
-      "web3",
-      "account",
-      "KMTContract"
-    ]);
+    const web3 = getState().config.web3;
+    const KMTContract = getState().config.KMTContract;
+    const account = getState().config.account;
 
     if (web3 && KMTContract && account) {
       const KMT = await getKMTBalanceAsync(web3, KMTContract, account);
@@ -173,17 +160,17 @@ const getBalances = () => {
 
 const fetchProducts = filter => {
   return async (dispatch, getState) => {
-    const { web3, DINRegistry, account } = getContext(getState, [
-      "web3",
-      "DINRegistry",
-      "account"
-    ]);    
+    const web3 = getState().config.web3;
+    const DINRegistry = getState().config.DINRegistry;
+    const BuyerContract = getState().config.BuyerContract;
+    const account = getState().config.account;
 
     if (DINRegistry && web3 && account) {
       if (filter === PRODUCT_FILTER.ALL) {
         const products = await getAllProducts(
           web3,
           DINRegistry,
+          BuyerContract,
           account,
         );
         dispatch(receivedAllProducts(products));
@@ -191,6 +178,7 @@ const fetchProducts = filter => {
         const products = await getOwnerProducts(
           web3,
           DINRegistry,
+          BuyerContract,
           account,
           account
         );
@@ -202,11 +190,9 @@ const fetchProducts = filter => {
 
 const fetchOrders = type => {
   return async (dispatch, getState) => {
-    const { web3, OrderStore, account } = getContext(getState, [
-      "web3",
-      "OrderStore",
-      "account"
-    ]);
+    const web3 = getState().config.web3;
+    const OrderStore = getState().config.OrderStore;
+    const account = getState().config.account;
 
     if (OrderStore && web3 && account) {
       if (type === ORDER_TYPE.PURCHASES) {
@@ -222,8 +208,8 @@ const fetchOrders = type => {
 
 export const fetchDataForMenuItem = id => {
   return async dispatch => {
-    dispatch(selectedMenuItemId(id));
 
+    dispatch(selectedMenuItemId(id));
     dispatch(requestError(false));
     dispatch(requestLoading(true));
 
@@ -258,11 +244,13 @@ const getContracts = () => {
 
     try {
       const KMT = await getKioskMarketToken(web3);
+      const Buyer = await getBuyer(web3);
       const DINRegistry = await getDINRegistry(web3);
       const OrderStore = await getOrderStore(web3);
       const EtherMarket = await getEtherMarket(web3);
 
       dispatch(KMTContract(KMT));
+      dispatch(BuyerContract(Buyer));
       dispatch(DINRegistryContract(DINRegistry));
       dispatch(OrderStoreContract(OrderStore));
       dispatch(EtherMarketContract(EtherMarket));
@@ -300,6 +288,7 @@ export const selectMenuItem = id => {
 const getPriceAndAvailability = (product, quantity) => {
   return async (dispatch, getState) => {
     const web3 = getState().config.web3;
+    const BuyerContract = getState().config.BuyerContract;
     const buyer = getState().config.account;
 
     dispatch(totalPriceIsCalculating(true));
@@ -307,10 +296,10 @@ const getPriceAndAvailability = (product, quantity) => {
     try {
       const value = await getValue(
         web3,
+        BuyerContract,
         product.DIN,
         quantity,
         buyer,
-        product.market
       );
       dispatch(totalPrice(value));
     } catch (err) {
@@ -320,10 +309,10 @@ const getPriceAndAvailability = (product, quantity) => {
     try {
       const isAvailable = await getIsAvailable(
         web3,
+        BuyerContract,
         product.DIN,
         quantity,
         buyer,
-        product.market
       );
       dispatch(productAvailability(isAvailable));
     } catch (err) {
@@ -358,18 +347,16 @@ export const selectProduct = index => {
 
 const reloadAfterPurchase = () => {
   return async dispatch => {
-    dispatch(getBalances);
+    dispatch(getBalances());
     dispatch(fetchOrders(ORDER_TYPE.PURCHASES));
   };
 };
 
 export const buyNow = product => {
   return async (dispatch, getState) => {
-    const { web3, KMTContract, account } = getContext(getState, [
-      "web3",
-      "KMTContract",
-      "account"
-    ]);
+    const web3 = getState().config.web3;
+    const KMTContract = getState().config.KMTContract;
+    const account = getState().config.account;
     const DIN = product.DIN;
     const quantity = getState().buyModal.quantity;
     const value = getState().buyModal.totalPrice;
@@ -400,12 +387,10 @@ export const buyNow = product => {
 export const buyKioskMarketToken = () => {
   return async (dispatch, getState) => {
     try {
-      const { web3, EtherMarket, account } = getContext(getState, [
-        "web3",
-        "EtherMarket",
-        "account"
-      ]);
+      const web3 = getState().config.web3;
+      const EtherMarket = getState().config.EtherMarket;
       const value = web3.toWei(1, "ether"); // Hardcode for now
+      const account = getState().config.account;
 
       const txId = await buyKMT(EtherMarket, value, account);
       console.log(txId);

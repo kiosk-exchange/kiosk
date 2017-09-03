@@ -16,10 +16,7 @@ contract DINMarket is StandardMarket {
 		genesisDIN = registry.genesis();
 	}
 
-	function buy(uint256 orderID) returns (bool) {
-		address buyer = orderStore.buyer(orderID);
-		uint256 quantity = orderStore.quantity(orderID);
-
+	function buy(uint256 DIN, uint256 quantity, address buyer) returns (bool) {
 		// Expect the next DIN on the registrar to be registered.
 		expected[buyer] = registrar.index() + 1;
 
