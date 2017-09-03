@@ -39,7 +39,7 @@ import {
 const reducer = (state, action, type) => {
 	switch (action.type) {
 		case type:
-			return action.data;
+			return action.data ? action.data : state;
 		default:
 			return state;
 	}
@@ -53,9 +53,9 @@ const menuItems = (state = null, action) => { return state };
 *  Name reducers according to how you would like to access  them in a component (e.g. web3 instead of web3Success)
 *  Use a separate reducer for each top-level object in the state tree.
 */
+const web3 = (state = null, action) => reducer(state, action, WEB_3_SUCCESS);
 const web3IsLoading = (state = false, action) => reducer(state, action, WEB_3_LOADING);
 const web3Error = (state = false, action) => reducer(state, action, WEB_3_ERROR);
-const web3 = (state = null, action) => reducer(state, action, WEB_3_SUCCESS);
 const accountHasError = (state = false, action) => reducer(state, action, ACCOUNT_ERROR);
 const account = (state = null, action) => reducer(state, action, ACCOUNT_SUCCESS);
 const networkHasError = (state = false, action) => reducer(state, action, NETWORK_ERROR);
@@ -66,7 +66,7 @@ const OrderStore = (state = null, action) => reducer(state, action, ORDER_STORE_
 const EtherMarket = (state = null, action) => reducer(state, action, ETHER_MARKET_CONTRACT);
 const KMTBalance = (state = null, action) => reducer(state, action, KMT_BALANCE);
 const ETHBalance = (state = null, action) => reducer(state, action, ETH_BALANCE);
-const selectedMenuItemId = (state = 0, action) => reducer(state, action, SELECTED_MENU_ITEM_ID);
+const selectedMenuItemId = (state = 1, action) => reducer(state, action, SELECTED_MENU_ITEM_ID);
 const purchaseIsPending = (state = false, action) => reducer(state, action, PURCHASE_IS_PENDING);
 
 const buyModalDefaultState = {

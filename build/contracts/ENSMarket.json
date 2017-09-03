@@ -460,8 +460,14 @@
       "links": {},
       "address": "0xba06906f620ba03b8ed20c4e2d6031049552836f",
       "updated_at": 1504407314137
+    },
+    "1504410061147": {
+      "events": {},
+      "links": {},
+      "address": "0xc74ff045dbe440dd9bf6997c7773bf66552425b7",
+      "updated_at": 1504410080489
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1504407314137
+  "updated_at": 1504410080489
 }

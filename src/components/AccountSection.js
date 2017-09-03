@@ -56,13 +56,13 @@ const AccountSection = ({ account, KMT, ETH }) => {
 				style={style}
 				disabled={true}
 				primaryText={(KMT !== null) ? formatted(KMT) + " KMT" : ""}
-				leftIcon={<Wallet color="white" />}
+				leftIcon={(KMT !== null) ? <Wallet color="white" /> : null}
 			/>
 			<ListItem
 				style={style}
 				disabled={true}
 				primaryText={(ETH !== null) ? formatted(ETH) + " ETH" : ""}
-				leftIcon={<Wallet color="white" />}
+				leftIcon={(ETH !== null) ? <Wallet color="white" /> : null}
 			/>
 		</div>
 	);

@@ -1,6 +1,5 @@
 // TODO: Extract into kiosk.js node module
 import {
-  loadWeb3,
   getAccountsAsync,
   getNetworkAsync,
   getKMTBalanceAsync,
@@ -113,10 +112,10 @@ const getAccount = () => {
 // };
 
 const MENU_ITEM = {
-  MARKETPLACE: 0,
-  PURCHASES: 1,
-  PRODUCTS: 2,
-  SALES: 3
+  MARKETPLACE: 1,
+  PURCHASES: 2,
+  PRODUCTS: 3,
+  SALES: 4
 };
 
 const ORDER_TYPE = {
@@ -279,27 +278,18 @@ const getContracts = () => {
 };
 
 // Fetch web3, contracts, account and dispatch to store
-export const initKiosk = () => {
+export const initKiosk = web3 => {
   return async dispatch => {
-    dispatch(web3IsLoading(true));
-    try {
-      const results = await loadWeb3();
-      const web3 = results.web3;
+    dispatch(web3Success(web3));
 
-      dispatch(web3Success(web3));
+    // Get account
+    dispatch(getAccount());
 
-      // Get account
-      dispatch(getAccount());
+    // Get network
+    dispatch(getNetwork());
 
-      // Get network
-      dispatch(getNetwork());
-
-      // Get contracts
-      dispatch(getContracts());
-    } catch (err) {
-      // Dispatch an error if web3 doesn't load correctly
-      dispatch(web3HasError(true));
-    }
+    // Get contracts
+    dispatch(getContracts());
   };
 };
 

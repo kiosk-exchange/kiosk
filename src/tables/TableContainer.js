@@ -10,7 +10,7 @@ import {
 } from "../components/Table";
 
 const mapStateToProps = state => ({
-	title: state.config.menuItems[state.selectedMenuItemId],
+	title: state.config.menuItems[state.selectedMenuItemId - 1],
 	theme: state.config.theme,
 	isLoading: state.results.isLoading,
 	allProducts: state.results.allProducts,
@@ -108,14 +108,13 @@ class TableContainer extends Component {
 					break;
 			}
 		} else if (isLoading === false) {
-			emptyState = <h1>There's nothing to see here</h1>
+			return <h1>There's nothing to see here</h1>
 		}
-		
+
 		return (
 			<div>
 				{titleSection}
 				{table}
-				{emptyState}
 			</div>
 		);
 	}
