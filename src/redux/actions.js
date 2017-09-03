@@ -347,7 +347,7 @@ export const selectProduct = index => {
 
 const reloadAfterPurchase = () => {
   return async dispatch => {
-    dispatch(getBalances);
+    dispatch(getBalances());
     dispatch(fetchOrders(ORDER_TYPE.PURCHASES));
   };
 };
