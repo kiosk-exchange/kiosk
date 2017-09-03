@@ -173,7 +173,6 @@ const fetchProducts = filter => {
           BuyerContract,
           account,
         );
-        console.log(products)
         dispatch(receivedAllProducts(products));
       } else if (filter === PRODUCT_FILTER.OWNER) {
         const products = await getOwnerProducts(

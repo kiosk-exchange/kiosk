@@ -147,7 +147,6 @@ const results = (state = resultsDefaultState, action) => {
 				error: action.data
 			};
 		case RECEIVED_ALL_PRODUCTS:
-			console.log(action.data);
 			return {
 				...state,
 				allProducts: action.data
