@@ -1,16 +1,15 @@
 pragma solidity ^0.4.11;
 
 import "./ENS/AbstractENS.sol";
-import "../ProductMarket.sol";
+import "../StandardMarket.sol";
 import "../KioskMarketToken.sol";
 
-contract ENSMarket is ProductMarket {
+contract ENSMarket is StandardMarket {
 
 	string public name = "ENS Market";
 
 	// ENS Registry
-	AbstractENS public 
-	ens;
+	AbstractENS public ens;
 
 	struct Domain {
 		string name;
@@ -24,7 +23,7 @@ contract ENSMarket is ProductMarket {
 	mapping(address => bytes32) public expected;
 
 	// Constructor
-	function ENSMarket(KioskMarketToken _KMT, AbstractENS _ens) ProductMarket(_KMT) {
+	function ENSMarket(KioskMarketToken _KMT, AbstractENS _ens) StandardMarket(_KMT) {
 		ens = _ens;
 	}
 
@@ -35,11 +34,13 @@ contract ENSMarket is ProductMarket {
 		// Expect the buyer to own the domain at the end of the transaction.
 		expected[buyer] = getNode(DIN);
 
-		super.buy(orderID);
+		// Each DIN represents a single domain.
+		require(quantity == 1);
 
-		// TODO: Clear storage.
-		// domains[DIN].name = "";
-		// domains[DIN].node = 0x0;
+		// Give ownership of the node to the buyer.
+		ens.setOwner(domains[DIN].node, buyer);
+
+		delete domains[DIN];
 	}
 
 	function isFulfilled(uint256 orderID) constant returns (bool) {

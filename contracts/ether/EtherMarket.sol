@@ -1,7 +1,6 @@
 pragma solidity ^0.4.11;
 
 import "../StandardMarket.sol";
-import "../Product.sol";
 import "../Buyer.sol";
 import "../OrderStore.sol";
 import "../KioskMarketToken.sol";
