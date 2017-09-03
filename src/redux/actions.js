@@ -111,7 +111,7 @@ const getAccount = () => {
 //   return parseInt(network, 10) > 100 || network === "42";
 // };
 
-const MENU_ITEM = {
+export const MENU_ITEM = {
   MARKETPLACE: 1,
   PURCHASES: 2,
   PRODUCTS: 3,
@@ -177,7 +177,7 @@ const fetchProducts = filter => {
       "web3",
       "DINRegistry",
       "account"
-    ]);
+    ]);    
 
     if (DINRegistry && web3 && account) {
       if (filter === PRODUCT_FILTER.ALL) {

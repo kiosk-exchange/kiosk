@@ -8,6 +8,7 @@ import {
 	ProductsTable,
 	SalesTable
 } from "../components/Table";
+import { MENU_ITEM } from "../redux/actions";
 
 const mapStateToProps = state => ({
 	title: state.config.menuItems[state.selectedMenuItemId - 1],
@@ -71,45 +72,49 @@ class TableContainer extends Component {
 		let dataSource = null;
 
 		switch (selectedMenuItemId) {
-			case 0:
+			case MENU_ITEM.MARKETPLACE:
 				dataSource = allProducts;
 				break;
-			case 1:
+			case MENU_ITEM.PURCHASES:
 				dataSource = purchases;
 				break;
-			case 2:
+			case MENU_ITEM.PRODUCTS:
 				dataSource = ownerProducts;
 				break;
-			case 3:
+			case MENU_ITEM.SALES:
 				dataSource = sales;
 				break;
 			default:
 				break;
 		}
 
+		console.log(allProducts)
+
 		let table = null;
 		let emptyState = null;
 
 		if (dataSource !== null) {
 			switch (selectedMenuItemId) {
-				case 0:
+				case MENU_ITEM.MARKETPLACE:
 					table = <MarketplaceTable products={dataSource} />;
 					break;
-				case 1:
+				case MENU_ITEM.PURCHASES:
 					table = <PurchasesTable orders={dataSource} />;
 					break;
-				case 2:
+				case MENU_ITEM.PRODUCTS:
 					table = <ProductsTable products={dataSource} />;
 					break;
-				case 3:
+				case MENU_ITEM.SALES:
 					table = <SalesTable orders={dataSource} />;
 					break;
 				default:
 					break;
 			}
-		} else if (isLoading === false) {
-			return <h1>There's nothing to see here</h1>
-		}
+		} 
+
+		// else if (isLoading === false) {
+		// 	return <h1>There's nothing to see here</h1>
+		// }
 
 		return (
 			<div>

@@ -39,7 +39,7 @@ import {
 const reducer = (state, action, type) => {
 	switch (action.type) {
 		case type:
-			return action.data ? action.data : state;
+			return action.data;
 		default:
 			return state;
 	}

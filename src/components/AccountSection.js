@@ -37,6 +37,8 @@ const AccountSection = ({ account, KMT, ETH }) => {
 			.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 	};
 
+	console.log(KMT)
+
 	return (
 		<div>
 			<Subheader style={subheaderStyle}>ACCOUNT</Subheader>
