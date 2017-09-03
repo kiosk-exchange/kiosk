@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { v4 } from "node-uuid";
 
 import {
@@ -17,10 +18,10 @@ const DataTable = ({ dataSource, headers, values }) => {
 		borderWidth: "1px",
 		borderColor: "#E0E0E0"
 	};
-	// Empty state needed
-	if (!dataSource) {
-		return null;
-	}
+	const linkStyle = {
+		color: "#32C1FF",
+		textDecoration: "none"
+	};
 	return (
 		<Table style={tableStyle} height="420px" selectable={false}>
 			<TableHeader displaySelectAll={false} adjustForCheckbox={false}>
@@ -37,13 +38,29 @@ const DataTable = ({ dataSource, headers, values }) => {
 			<TableBody displayRowCheckbox={false}>
 				{dataSource.map((item, index) => {
 					return (
-						<TableRow key={v4()} style={{height: "70px"}}>
+						<TableRow key={v4()} style={{ height: "70px" }}>
 							{values.map(value => {
 								if (value === "buy") {
-									return <BuyColumn key={v4()} index={index} />;
+									return (
+										<BuyColumn key={v4()} index={index} />
+									);
+								} else if (value === "market") {
+									return (
+										<TableRowColumn key={v4()}>
+											<Link
+												style={linkStyle}
+												to={`/market/${item[value]}`}
+											>
+												{item[value].slice(0, 12)}
+											</Link>
+										</TableRowColumn>
+									);
 								}
 								return (
-									<TableRowColumn key={v4()} style={{whiteSpace: "normal"}}>
+									<TableRowColumn
+										key={v4()}
+										style={{ whiteSpace: "normal" }}
+									>
 										{item[value]}
 									</TableRowColumn>
 								);
