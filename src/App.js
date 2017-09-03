@@ -4,12 +4,13 @@ import SideMenu from "./components/SideMenu";
 import NavBar from "./components/NavBar";
 import TableContainer from "./tables/TableContainer";
 import BuyModal from "./components/BuyModal";
+import ErrorMessage from "./components/ErrorMessage";
 import { connect } from "react-redux";
 import { initKiosk } from "./redux/actions";
 
 const mapStateToProps = state => ({
   web3: state.config.web3,
-  hasError: state.config.web3HasError,
+  error: state.config.web3Error,
   isLoading: state.config.web3IsLoading
 });
 
@@ -21,7 +22,7 @@ class App extends Component {
   }
 
   render() {
-    const { web3, isLoading } = this.props;
+    const { web3, isLoading, error } = this.props;
 
     const hContainerStyle = {
       display: "flex", // 💪
@@ -46,36 +47,37 @@ class App extends Component {
 
     const tableStyle = {
       padding: "10px 30px"
+    };
+
+    let content = null;
+    if (!error) {
+      content = <TableContainer />   
+    } else {
+      content = <ErrorMessage title="You are not connected to an Ethereum node" />
     }
 
-    if (web3 !== null) {
-      return (
-        <div style={hContainerStyle}>
-          <div style={sideMenuStyle}>
-            <SideMenu />
-          </div>
-          <div style={rightContainerStyle}>
-            <div>
-              <NavBar />
-            </div>
-            <div style={tableStyle}>
-              <TableContainer />
-            </div>
-          </div>
-          <BuyModal />
+    return (
+      <div style={hContainerStyle}>
+        <div style={sideMenuStyle}>
+          <SideMenu />
         </div>
-      );
-    } else if (isLoading === true) {
-      // Loading & Handle Error
-      return <div />;
-    }
-    return null;
+        <div style={rightContainerStyle}>
+          <div>
+            <NavBar />
+          </div>
+          <div style={tableStyle}>
+            {content}
+          </div>
+        </div>
+        <BuyModal />
+      </div>
+    );
   }
 }
 
 export default connect(mapStateToProps)(App);
 
-// 
+//
 
 // <div style={{ padding: "10px 30px" }} />
 // <TableContainer />

@@ -5,6 +5,7 @@ import { buyKioskMarketToken } from "../redux/actions";
 import { connect } from "react-redux";
 
 const mapStateToProps = state => ({
+	network: state.config.network,
 	theme: state.config.theme
 })
 
@@ -14,9 +15,9 @@ const mapDispatchToProps = dispatch => ({
 	}
 })
 
-const NavBar = ({ theme, network, isError, onBuyClick }) => {
+const NavBar = ({ theme, network, onBuyClick }) => {
 	const networkStyle = {
-		// color: network.color ? "white" : "white",
+		color: network ? network.color : theme.lightGray,
 		fontSize: "16px",
 		fontWeight: "bold",
 		letterSpacing: "1px",
@@ -35,18 +36,14 @@ const NavBar = ({ theme, network, isError, onBuyClick }) => {
 			<ToolbarGroup>
 				<ToolbarTitle
 					style={networkStyle}
-					// text={
-					// 	network.name
-					// 		? network.name
-					// 		: ""
-					// }
+					text={network ? network.name : "Not Connected"}
 				/>
 			</ToolbarGroup>
 			<ToolbarGroup>
 				<RaisedButton
 					label="Buy Kiosk Market Token"
 					backgroundColor={theme.red}
-					disabled={isError}
+					disabled={network ? false : true}
 					labelColor="#FFFFFF"
 					onClick={onBuyClick}
 				/>

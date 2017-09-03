@@ -1,33 +1,35 @@
 import Web3 from "web3";
 const Promise = require("bluebird");
+import { getNetwork } from "./network";
 
 export const getAccountsAsync = async web3 => {
   const addresses = await Promise.promisify(web3.eth.getAccounts)();
   return addresses;
-}
+};
 
 export const getNetworkAsync = async web3 => {
-  const network = await Promise.promisify(web3.version.getNetwork)();
+  const networkId = await Promise.promisify(web3.version.getNetwork)();
+  const network = getNetwork(networkId);
   return network;
-}
+};
 
 const numberBalance = (balance, web3) => {
   return web3.fromWei(balance, "ether").toNumber();
-}
+};
 
 export const getKMTBalanceAsync = async (web3, KMT, account) => {
   const getBalance = Promise.promisify(KMT.balanceOf);
   const balance = await getBalance(account);
   const formattedBalance = numberBalance(balance, web3);
   return formattedBalance;
-}
+};
 
 export const getETHBalanceAsync = async (web3, account) => {
   const getBalance = Promise.promisify(web3.eth.getBalance);
   const balance = await getBalance(account);
   const formattedBalance = numberBalance(balance, web3);
   return formattedBalance;
-}
+};
 
 //   if (this.state.web3.version.network !== this.state.network.id) {
 //   this.state.web3.version.getNetwork((error, result) => {
@@ -42,48 +44,81 @@ export const getETHBalanceAsync = async (web3, account) => {
 // }
 //
 
+const IS_DEBUG = true;
 
-export const loadWeb3 = () => {
-  return new Promise((resolve, reject) => {
+const loadWeb3 = new Promise((resolve, reject) => {
+  // Check for a local connection first
+  const provider = new Web3.providers.HttpProvider("http://localhost:8545");
+  const web3 = new Web3(provider);
 
-    // Check for a local connection first
-    const provider = new Web3.providers.HttpProvider("http://localhost:8545");
-    const web3 = new Web3(provider);
-
+  if (web3.isConnected() === true) {
+    if (IS_DEBUG) console.log("********** USING LOCAL WEB3");
     const results = {
       web3: web3
-    }
+    };
 
-    resolve(results)
+    resolve(results);
+  } else {
+    window.addEventListener("load", () => {
+      let web3 = window.web3;
 
-    // web3.isConnected(connected => {
-    //   if (connected === true) {
-    //     if (IS_DEBUG) console.log("********** USING LOCAL WEB3");
-    //     const results = {
-    //       web3: web3
-    //     };
-    //   } 
-      // else {
-      //   window.addEventListener("load", () => {
-      //     let web3 = window.web3;
+      // See if web3 has been injected by the browser (Mist, Parity, MetaMask)
+      if (typeof web3 !== "undefined") {
+        web3 = new Web3(web3.currentProvider);
 
-      //     // See if web3 has been injected by the browser (Mist, Parity, MetaMask)
-      //     if (typeof web3 !== "undefined") {
-      //       web3 = new Web3(web3.currentProvider);
+        if (IS_DEBUG) console.log("********** USING INJECTED WEB3");
+      } else {
+        web3 = null;
+        if (IS_DEBUG) console.log("********** NO WEB3");
+      }
 
-      //       if (IS_DEBUG) console.log("********** USING INJECTED WEB3");
-      //     } else {
-      //       web3 = null;
-      //       if (IS_DEBUG) console.log("********** NO WEB3");
-      //     }
+      const results = {
+        web3: web3
+      };
 
-      //     const results = {
-      //       web3: web3
-      //     };
+      resolve(results);
+    });
+  }
+});
 
-      //     resolve(results);
-      //   });
-      // }
-    // });
-  });
-};
+export { loadWeb3 };
+
+
+// export const loadWeb3 = async () => {
+//   // Check for a local connection first
+//   const provider = new Web3.providers.HttpProvider("http://localhost:8545");
+//   const web3 = Promise.promisifyAll(new Web3(provider));
+//   const connected = await web3.isConnectedAsync();
+
+//   console.log(connected);
+
+  // web3.isConnected(connected => {
+  //   if (connected === true) {
+  //     if (IS_DEBUG) console.log("********** USING LOCAL WEB3");
+  //     const results = {
+  //       web3: web3
+  //     };
+  //     resolve(results);
+  //   } else {
+  //     window.addEventListener("load", () => {
+  //       let web3 = window.web3;
+
+  //       // See if web3 has been injected by the browser (Mist, Parity, MetaMask)
+  //       if (typeof web3 !== "undefined") {
+  //         web3 = new Web3(web3.currentProvider);
+
+  //         if (IS_DEBUG) console.log("********** USING INJECTED WEB3");
+  //       } else {
+  //         web3 = null;
+  //         if (IS_DEBUG) console.log("********** NO WEB3");
+  //       }
+
+  //       const results = {
+  //         web3: web3
+  //       };
+
+  //       resolve(results);
+  //     });
+  //   }
+  // });
+// };

@@ -54,7 +54,7 @@ const menuItems = (state = null, action) => { return state };
 *  Use a separate reducer for each top-level object in the state tree.
 */
 const web3IsLoading = (state = false, action) => reducer(state, action, WEB_3_LOADING);
-const web3HasError = (state = false, action) => reducer(state, action, WEB_3_ERROR);
+const web3Error = (state = false, action) => reducer(state, action, WEB_3_ERROR);
 const web3 = (state = null, action) => reducer(state, action, WEB_3_SUCCESS);
 const accountHasError = (state = false, action) => reducer(state, action, ACCOUNT_ERROR);
 const account = (state = null, action) => reducer(state, action, ACCOUNT_SUCCESS);
@@ -174,7 +174,7 @@ const config = combineReducers({
 	theme,
 	menuItems,
 	web3IsLoading,
-	web3HasError,
+	web3Error,
 	web3,
 	accountHasError,
 	account,
