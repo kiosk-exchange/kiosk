@@ -318,8 +318,66 @@
       "links": {},
       "address": "0x3446dc29062890810f87cf9ebb5dba8f764f1e5b",
       "updated_at": 1504476752899
+    },
+    "1504482017609": {
+      "events": {
+        "0x4c5d8ccfd4f32dad0c449108334c94e0bada87b1453ad71e79e233545f4c48a6": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "name": "owner",
+              "type": "address"
+            }
+          ],
+          "name": "NewOwner",
+          "type": "event"
+        },
+        "0x4582f3d992ffac5686bfcf1936b27b7983244893d40847f87b6e297b1359dab9": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "name": "market",
+              "type": "address"
+            }
+          ],
+          "name": "NewMarket",
+          "type": "event"
+        },
+        "0xef8ea3d0ef6bf7f673a09aa675838d76573d86e5a9fc235846ac3f54195d7217": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "name": "owner",
+              "type": "address"
+            }
+          ],
+          "name": "NewRegistration",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x0b109d901efab4caf20efbb3e7720aa8aaafb12f",
+      "updated_at": 1504482066764
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1504479524538
+  "updated_at": 1504482066764
 }

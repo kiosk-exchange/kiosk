@@ -542,8 +542,84 @@
       "links": {},
       "address": "0x12097984cd11a54e8b51b0cecce441f80171bf43",
       "updated_at": 1504476752902
+    },
+    "1504482017609": {
+      "events": {
+        "0xdd902d7d9f3345950f8f953e8dc2eb6dc21adb3fd9a85e6c0ca57b92494f411f": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "orderID",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "name": "buyer",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "seller",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "market",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "DIN",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "metadata",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "quantity",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "timestamp",
+              "type": "uint256"
+            }
+          ],
+          "name": "NewOrder",
+          "type": "event"
+        },
+        "0x365a3d0a71be5f440c8224437355d5bd81a703759bf906e441902272bfbafcb3": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "orderID",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "name": "status",
+              "type": "uint8"
+            }
+          ],
+          "name": "StatusChanged",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x77d0893457cbfd32268521c78c6aacfa62a6ae85",
+      "updated_at": 1504482066767
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1504479524542
+  "updated_at": 1504482066767
 }
