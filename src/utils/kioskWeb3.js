@@ -46,24 +46,26 @@ export const getETHBalanceAsync = async (web3, account) => {
 
 export const loadWeb3 = () => {
   return new Promise((resolve, reject) => {
-    if (process.env.REACT_APP_TESTRPC === true) {
-      web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-      resolve(web3);
-    } else if (process.env.NODE_ENV === "development") {
-      web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-      resolve(web3);
-    }
-
-    let web3 = window.web3;
-    // Checking if Web3 has been injected by the browser (Mist/MetaMask)
-    if (typeof web3 !== "undefined") {
-      // Use Mist/MetaMask's provider
-      web3 = new Web3(web3.currentProvider);
+    if (process.env.REACT_APP_TESTRPC) {
+      const web3 = new Web3(
+        new Web3.providers.HttpProvider("http://localhost:8545")
+      );
+      console.log(web3);
       resolve(web3);
     } else {
-      // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
-      web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-      resolve(web3);
+      let web3 = window.web3;
+      // Checking if Web3 has been injected by the browser (Mist/MetaMask)
+      if (typeof web3 !== "undefined") {
+        // Use Mist/MetaMask's provider
+        web3 = new Web3(web3.currentProvider);
+        resolve(web3);
+      } else {
+        // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
+        web3 = new Web3(
+          new Web3.providers.HttpProvider("http://localhost:8545")
+        );
+        resolve(web3);
+      }
     }
   });
 };
