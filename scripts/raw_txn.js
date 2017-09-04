@@ -6,7 +6,7 @@ const ENSMarket = artifacts.require("ENS/ENSMarket.sol");
 
 web3.eth = Promise.promisifyAll(web3.eth);
 
-export const encodeFunctionTxData = (functionName, types, args) => {
+const encodeFunctionTxData = (functionName, types, args) => {
   var fullName = functionName + "(" + types.join() + ")";
   var signature = CryptoJS.SHA3(fullName, { outputLength: 256 })
     .toString(CryptoJS.enc.Hex)
@@ -25,7 +25,7 @@ const createRawTransaction = async (account, privateKey) => {
     const nonce = await web3.eth.getTransactionCountAsync(account);
     console.log("Nonce: ", nonce);
     const tx = await new Transaction({
-      to: ENSMarket.address,
+      to: "0xac2f3f20617e6e64068e1d78cbf1c686d1be06bf",
       value: 0,
       nonce: nonce,
       data: data,
