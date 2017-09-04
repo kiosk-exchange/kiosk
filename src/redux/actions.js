@@ -20,6 +20,7 @@ import {
 } from "../utils/products";
 import { getPurchases, getSales } from "../utils/orders";
 import { buyProduct, buyKMT } from "../utils/buy";
+import { loadWeb3 } from "../utils/kioskWeb3";
 
 // Action stubs
 export const WEB_3_LOADING = "WEB_3_LOADING";
@@ -171,7 +172,7 @@ const fetchProducts = filter => {
           web3,
           DINRegistry,
           BuyerContract,
-          account,
+          account
         );
         dispatch(receivedAllProducts(products));
       } else if (filter === PRODUCT_FILTER.OWNER) {
@@ -208,7 +209,6 @@ const fetchOrders = type => {
 
 export const fetchDataForMenuItem = id => {
   return async dispatch => {
-
     dispatch(selectedMenuItemId(id));
     dispatch(requestError(false));
     dispatch(requestLoading(true));
@@ -263,19 +263,38 @@ const getContracts = () => {
   };
 };
 
+const refreshNetwork = () => {
+  return async (dispatch, getState) => {
+    const currentWeb3 = getState().config.web3;
+    const KMT = getState().config.KMTContract;
+
+    if (currentWeb3) {
+      // Refresh every second
+      // Get account
+      dispatch(getAccount());
+      // Get network
+      dispatch(getNetwork());
+
+      if (!KMT) {
+        // Get contracts
+        dispatch(getContracts());
+      }
+    } else {
+      try {
+        const web3 = await loadWeb3();
+        dispatch(web3Success(web3));
+        dispatch(web3HasError(false));
+      } catch (err) {
+        dispatch(web3HasError(true));
+      }
+    }
+  };
+};
+
 // Fetch web3, contracts, account and dispatch to store
-export const initKiosk = web3 => {
+export const initKiosk = () => {
   return async dispatch => {
-    dispatch(web3Success(web3));
-
-    // Get account
-    dispatch(getAccount());
-
-    // Get network
-    dispatch(getNetwork());
-
-    // Get contracts
-    dispatch(getContracts());
+    setInterval(() => dispatch(refreshNetwork()), 1000);
   };
 };
 
@@ -299,7 +318,7 @@ const getPriceAndAvailability = (product, quantity) => {
         BuyerContract,
         product.DIN,
         quantity,
-        buyer,
+        buyer
       );
       dispatch(totalPrice(value));
     } catch (err) {
@@ -312,7 +331,7 @@ const getPriceAndAvailability = (product, quantity) => {
         BuyerContract,
         product.DIN,
         quantity,
-        buyer,
+        buyer
       );
       dispatch(productAvailability(isAvailable));
     } catch (err) {
@@ -377,7 +396,7 @@ export const buyNow = product => {
       dispatch(purchaseIsPending(false));
       dispatch(reloadAfterPurchase());
     } catch (err) {
-      console.log(err)
+      console.log(err);
       console.log("ERROR: BUY PRODUCT " + product.DIN);
       dispatch(purchaseIsPending(false));
     }

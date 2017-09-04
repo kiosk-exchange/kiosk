@@ -7,26 +7,22 @@ import BuyModal from "./components/BuyModal";
 import ErrorMessage from "./components/ErrorMessage";
 import { connect } from "react-redux";
 import { initKiosk } from "./redux/actions";
-import { loadWeb3 } from "./utils/kioskWeb3";
 
 const mapStateToProps = state => ({
   web3: state.config.web3,
   error: state.config.web3Error,
-  isLoading: state.config.web3IsLoading
 });
 
 class App extends Component {
   // Initialize Kiosk (web3, accounts, contracts)
   componentDidMount() {
     const { dispatch } = this.props;
-    loadWeb3.then(results => {
-      dispatch(initKiosk(results.web3))
-    })
+    dispatch(initKiosk());
   }
 
   render() {
-    const { web3, isLoading, error } = this.props;
-
+    const { web3, error } = this.props;
+    
     const hContainerStyle = {
       display: "flex", // 💪
       flexFlow: "row",
@@ -54,9 +50,11 @@ class App extends Component {
 
     let content = null;
     if (web3) {
-      content = <TableContainer />   
-    } else if (error && !isLoading) {
-      content = <ErrorMessage title="You are not connected to an Ethereum node" />
+      content = <TableContainer />;
+    } else if (error === true) {
+      content = (
+        <ErrorMessage title="You are not connected to an Ethereum node" />
+      );
     }
 
     return (
