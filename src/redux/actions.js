@@ -54,6 +54,10 @@ export const TOTAL_PRICE = "TOTAL_PRICE";
 export const PRODUCT_AVAILABILITY = "PRODUCT_AVAILABILITY";
 export const PURCHASE_IS_PENDING = "PURCHASE_IS_PENDING";
 
+// Snackbar
+export const TX_PENDING_ADDED = "TX_PENDING_ADDED";
+export const TX_PENDING_REMOVED = "TX_PENDING_REMOVED";
+
 // Helper function
 const action = (type, data) => ({
   type: type,
@@ -91,6 +95,8 @@ export const receivedSales = data => action(RECEIVED_SALES, { data });
 export const selectedProduct = data => action(SELECTED_PRODUCT, { data });
 export const showBuyModal = data => action(SHOW_BUY_MODAL, { data });
 export const purchaseIsPending = data => action(PURCHASE_IS_PENDING, { data });
+export const addPendingTx = data => action(TX_PENDING_ADDED, { data });
+export const removePendingTx = data => action(TX_PENDING_REMOVED, { data });
 export const selectedQuantity = data => action(SELECTED_QUANTITY, { data });
 export const totalPriceIsCalculating = data =>
   action(TOTAL_PRICE_CALCULATING, { data });
@@ -393,6 +399,8 @@ export const buyNow = product => {
         account
       );
       console.log(txId);
+      dispatch(addPendingTx(txId))
+      setInterval(() => dispatch(checkPendingTxs()), 1000);
       dispatch(purchaseIsPending(false));
       dispatch(reloadAfterPurchase());
     } catch (err) {
@@ -402,6 +410,30 @@ export const buyNow = product => {
     }
   };
 };
+
+export const checkPendingTxs = () => {
+  return async (dispatch, getState) => {
+    try {
+      const web3 = getState().config.web3;
+      const pendTxs = getState().txsPending;
+      //TODO: stop polling if pendTxs.length < 1
+      pendTxs.forEach((tx) => {
+        web3.eth.getTransaction(tx, (err, res) => {
+          console.log("CHECKING:   ", tx)
+          if (err) {
+            console.log("ERR:  \n", err)
+          } else {
+            if(res.blockNumber !== null) {
+              dispatch(removePendingTx(tx))
+            }
+          }
+        })
+      })
+    } catch (err) {
+      console.log("Can't fetch pending transactions");
+    }
+  };
+}
 
 export const buyKioskMarketToken = () => {
   return async (dispatch, getState) => {
