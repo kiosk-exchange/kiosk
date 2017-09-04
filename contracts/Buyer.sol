@@ -120,28 +120,12 @@ contract Buyer {
 	// The total price of a product for a given quantity and buyer.
 	function totalPrice(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256) {
 		Market market = getMarket(DIN);
-
-		// http://truffleframework.com/tutorials/testing-for-throws-in-solidity-tests
-		bool success = market.call(bytes4(bytes32(sha3("totalPrice(uint256,uint256,address)"))), DIN, quantity, buyer);
-
-		if (!success) {
-			return 0;
-		}
-
 		return market.totalPrice(DIN, quantity, buyer);
 	}
 
 	// Returns true if a given quantity of a product is available for purchase.
 	function availableForSale(uint256 DIN, uint256 quantity, address buyer) constant returns (bool) {
 		Market market = getMarket(DIN);
-
-		// http://truffleframework.com/tutorials/testing-for-throws-in-solidity-tests
-		bool success = market.call(bytes4(bytes32(sha3("availableForSale(uint256,uint256,address)"))), DIN, quantity, buyer);
-
-		if (!success) {
-			return false;
-		}
-
 		return market.availableForSale(DIN, quantity, buyer);
 	}
 
