@@ -79,6 +79,7 @@
   },
   "scripts": {
     "start": "node scripts/start.js",
+    "testrpc": "REACT_APP_TESTRPC=true node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
     "compile": "rm -rf build/contracts; truffle compile"

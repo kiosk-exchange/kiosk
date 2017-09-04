@@ -46,6 +46,14 @@ export const getETHBalanceAsync = async (web3, account) => {
 
 export const loadWeb3 = () => {
   return new Promise((resolve, reject) => {
+    if (process.env.REACT_APP_TESTRPC === true) {
+      web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+      resolve(web3);
+    } else if (process.env.NODE_ENV === "development") {
+      web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+      resolve(web3);
+    }
+
     let web3 = window.web3;
     // Checking if Web3 has been injected by the browser (Mist/MetaMask)
     if (typeof web3 !== "undefined") {
