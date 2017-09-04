@@ -17,11 +17,12 @@ export const getMarketName = (web3, marketAddr) => {
 };
 
 export const getProductName = (web3, DIN, marketAddr) => {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     const marketContract = web3.eth.contract(MarketJSON.abi).at(marketAddr);
+    const nameOfAsync = Promise.promisify(marketContract.nameOf);
     try {
       // This has to be synchronous because of an error in web3 (invalid BigNumber)
-      const name = marketContract.nameOf.call(DIN);
+      const name = await nameOfAsync(DIN);
       resolve(name);
     } catch (err) {
       reject(err);
@@ -87,7 +88,6 @@ export const getProducts = async (event, web3, DINRegistry, BuyerContract, buyer
         value,
         available
       };
-      console.log(newProduct)
       products.push(newProduct);
     } catch (err) {
       products.push(product);
