@@ -44,41 +44,18 @@ export const getETHBalanceAsync = async (web3, account) => {
 // }
 //
 
-const IS_DEBUG = true;
-
-const loadWeb3 = new Promise(async (resolve, reject) => {
-  // Check for a local connection first
-  const provider = new Web3.providers.HttpProvider("http://localhost:8545");
-  const web3 = new Web3(provider);
-  const isConnectedAsync = Promise.promisify(web3.isConnected);
-
-  const isConnected = await isConnectedAsync;
-
-  if (isConnected === true) {
-    if (IS_DEBUG) console.log("********** USING LOCAL WEB3");
-    const results = {
-      web3: web3
-    };
-
-    resolve(results);
-  } else {
-    window.addEventListener("load", () => {
-      // See if web3 has been injected by the browser (Mist, Parity, MetaMask)
-      if (typeof web3 !== "undefined") {
-        window.web3 = new Web3(web3.currentProvider);
-
-        if (IS_DEBUG) console.log("********** USING INJECTED WEB3");
-      } else {
-        if (IS_DEBUG) console.log("********** NO WEB3");
-      }
-
-      const results = {
-        web3: window.web3
-      };
-
-      resolve(results);
-    });
-  }
-});
-
-export { loadWeb3 };
+export const loadWeb3 = () => {
+  return new Promise((resolve, reject) => {
+    let web3 = window.web3;
+    // Checking if Web3 has been injected by the browser (Mist/MetaMask)
+    if (typeof web3 !== "undefined") {
+      // Use Mist/MetaMask's provider
+      web3 = new Web3(web3.currentProvider);
+      resolve(web3);
+    } else {
+      // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
+      web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+      resolve(web3);
+    }
+  });
+};
