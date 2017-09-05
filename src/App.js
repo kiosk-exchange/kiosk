@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 // import { Route } from "react-router-dom";
 import SideMenu from "./components/SideMenu";
 import NavBar from "./components/NavBar";
@@ -10,7 +11,7 @@ import { initKiosk } from "./redux/actions";
 
 const mapStateToProps = state => ({
   web3: state.config.web3,
-  error: state.config.web3Error,
+  error: state.config.web3Error
 });
 
 class App extends Component {
@@ -22,7 +23,7 @@ class App extends Component {
 
   render() {
     const { web3, error } = this.props;
-    
+
     const hContainerStyle = {
       display: "flex", // 💪
       flexFlow: "row",
@@ -58,20 +59,22 @@ class App extends Component {
     }
 
     return (
-      <div style={hContainerStyle}>
-        <div style={sideMenuStyle}>
-          <SideMenu />
-        </div>
-        <div style={rightContainerStyle}>
-          <div>
-            <NavBar />
+      <MuiThemeProvider>
+        <div style={hContainerStyle}>
+          <div style={sideMenuStyle}>
+            <SideMenu />
           </div>
-          <div style={tableStyle}>
-            {content}
+          <div style={rightContainerStyle}>
+            <div>
+              <NavBar />
+            </div>
+            <div style={tableStyle}>
+              {content}
+            </div>
           </div>
+          <BuyModal />
         </div>
-        <BuyModal />
-      </div>
+      </MuiThemeProvider>
     );
   }
 }

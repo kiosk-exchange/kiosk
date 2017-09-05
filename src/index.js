@@ -1,12 +1,33 @@
 import React from "react";
 import { render } from "react-dom";
-import { Provider } from "react-redux";
-import { configureStore } from "./redux/configureStore";
-import { BrowserRouter } from "react-router-dom";
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import App from "./App";
 
+// State
+import { createStore, combineReducers, applyMiddleware } from "redux";
+import { Provider } from "react-redux";
+import {
+	config,
+	results,
+	selectedMenuItemId,
+	purchaseIsPending,
+	buyModal
+} from "./redux/reducers";
+import { routerReducer, routerMiddleware } from "react-router-redux";
+
+// Middleware
+import thunk from "redux-thunk";
+import { composeWithDevTools } from "redux-devtools-extension";
+
+// UI
+import App from "./App";
 import "./styles/App.css";
+
+// Routing
+import createHistory from "history/createBrowserHistory";
+import { Router, Route, browserHistory } from 'react-router'
+import { ConnectedRouter } from "react-router-redux";
+
+const history = createHistory();
+const middleware = routerMiddleware(history);
 
 const initialState = {
 	config: {
@@ -21,15 +42,27 @@ const initialState = {
 	}
 };
 
-const store = configureStore(initialState);
+const store = createStore(
+	combineReducers({
+		config,
+		results,
+		selectedMenuItemId,
+		purchaseIsPending,
+		buyModal,
+		router: routerReducer
+	}),
+	initialState,
+	composeWithDevTools(applyMiddleware(thunk, middleware))
+);
 
 render(
 	<Provider store={store}>
-		<BrowserRouter>
-			<MuiThemeProvider>
-				<App />
-			</MuiThemeProvider>
-		</BrowserRouter>
+		<Router history={history}>
+			<div>
+				<Route exact path="/" component={App} />
+				<Route exact path="/hello" render={() => <h1>Hello, World!</h1>} />
+			</div>
+		</Router>
 	</Provider>,
 	document.getElementById("root")
 );
@@ -37,3 +70,5 @@ render(
 // if (module.hot) {
 // 	module.hot.accept();
 // }
+
+// </Provider>,

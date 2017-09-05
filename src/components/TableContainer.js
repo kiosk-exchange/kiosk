@@ -90,6 +90,8 @@ const TableContainer = ({
 				return "You have no products";
 			case MENU_ITEM.SALES:
 				return "You have no sales";
+			default:
+				return "";
 		}
 	};
 

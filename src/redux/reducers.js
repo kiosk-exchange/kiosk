@@ -68,8 +68,8 @@ const OrderStore = (state = null, action) => reducer(state, action, ORDER_STORE_
 const EtherMarket = (state = null, action) => reducer(state, action, ETHER_MARKET_CONTRACT);
 const KMTBalance = (state = null, action) => reducer(state, action, KMT_BALANCE);
 const ETHBalance = (state = null, action) => reducer(state, action, ETH_BALANCE);
-const selectedMenuItemId = (state = 1, action) => reducer(state, action, SELECTED_MENU_ITEM_ID);
-const purchaseIsPending = (state = false, action) => reducer(state, action, PURCHASE_IS_PENDING);
+export const selectedMenuItemId = (state = 1, action) => reducer(state, action, SELECTED_MENU_ITEM_ID);
+export const purchaseIsPending = (state = false, action) => reducer(state, action, PURCHASE_IS_PENDING);
 
 const buyModalDefaultState = {
 	product: null,
@@ -81,7 +81,7 @@ const buyModalDefaultState = {
 	error: false,
 }
 
-const buyModal = (state = buyModalDefaultState, action) => {
+export const buyModal = (state = buyModalDefaultState, action) => {
 	switch (action.type) {
 		case SHOW_BUY_MODAL:
 			if (action.data === false) {
@@ -134,7 +134,7 @@ const resultsDefaultState = {
 	marketProducts: []
 }
 
-const results = (state = resultsDefaultState, action) => {
+export const results = (state = resultsDefaultState, action) => {
 	switch (action.type) {
 		case REQUEST_LOADING:
 			return {
@@ -171,7 +171,7 @@ const results = (state = resultsDefaultState, action) => {
 	}
 };
 
-const config = combineReducers({
+export const config = combineReducers({
 	theme,
 	menuItems,
 	web3IsLoading,
@@ -188,12 +188,4 @@ const config = combineReducers({
 	DINRegistry,
 	OrderStore,
 	EtherMarket
-});
-
-export const rootReducer = combineReducers({
-	config,
-	results,
-	selectedMenuItemId,
-	buyModal,
-	purchaseIsPending
 });

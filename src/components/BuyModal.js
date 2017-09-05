@@ -2,9 +2,7 @@ import React from "react";
 import Dialog from "material-ui/Dialog";
 import RaisedButton from "material-ui/RaisedButton";
 import QuantityPicker from "./QuantityPicker";
-import IconButton from "material-ui/IconButton";
 import Subheader from "material-ui/Subheader";
-import Close from "material-ui/svg-icons/navigation/close";
 import { showBuyModal, buyNow } from "../redux/actions";
 import { connect } from "react-redux";
 
