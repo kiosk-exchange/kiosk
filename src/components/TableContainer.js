@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import CircularProgress from "material-ui/CircularProgress";
 import { connect } from "react-redux";
 import {
@@ -9,8 +9,8 @@ import {
 	SalesTable
 } from "../components/Table";
 import { MENU_ITEM } from "../redux/actions";
-import marked from "marked";
-import prism from "../utils/prism";
+// import marked from "marked";
+// import prism from "../utils/prism";
 
 const mapStateToProps = state => ({
 	title: state.config.menuItems[state.selectedMenuItemId - 1],
@@ -23,155 +23,157 @@ const mapStateToProps = state => ({
 	selectedMenuItemId: state.selectedMenuItemId
 });
 
-class TableContainer extends Component {
-	render() {
-		const {
-			title,
-			theme,
-			isLoading,
-			allProducts,
-			ownerProducts,
-			purchases,
-			sales,
-			selectedMenuItemId
-		} = this.props;
+const TableContainer = ({
+	title,
+	theme,
+	isLoading,
+	allProducts,
+	ownerProducts,
+	purchases,
+	sales,
+	selectedMenuItemId
+}) => {
+	const headerStyle = {
+		color: theme.gray,
+		fontWeight: "medium"
+	};
 
-		const headerStyle = {
-			color: theme.gray,
-			fontWeight: "medium"
-		};
-
-		const titleSection = (
-			<div style={{ display: "flex", flexDirection: "column" }}>
-				<div
-					style={{
-						display: "flex",
-						width: "100%",
-						alignItems: "center"
-					}}
-				>
-					<h1 style={headerStyle}>
-						{title}
-					</h1>
-				</div>
+	const titleSection = (
+		<div style={{ display: "flex", flexDirection: "column" }}>
+			<div
+				style={{
+					display: "flex",
+					width: "100%",
+					alignItems: "center"
+				}}
+			>
+				<h1 style={headerStyle}>
+					{title}
+				</h1>
 			</div>
-		);
+		</div>
+	);
 
-		let dataSource = null;
-
+	const dataSource = () => {
 		switch (selectedMenuItemId) {
 			case MENU_ITEM.MARKETPLACE:
-				dataSource = allProducts;
-				break;
+				return allProducts;
 			case MENU_ITEM.PURCHASES:
-				dataSource = purchases;
-				break;
+				return purchases;
 			case MENU_ITEM.PRODUCTS:
-				dataSource = ownerProducts;
-				break;
+				return ownerProducts;
 			case MENU_ITEM.SALES:
-				dataSource = sales;
-				break;
+				return sales;
 			default:
-				break;
+				return [];
 		}
+	};
 
-		let table = null;
-		// let emptyState = null;
+	let data = dataSource();
 
-		if (dataSource !== null) {
-			switch (selectedMenuItemId) {
-				case MENU_ITEM.MARKETPLACE:
-					table = <MarketplaceTable products={dataSource} />;
-					break;
-				case MENU_ITEM.PURCHASES:
-					table = <PurchasesTable orders={dataSource} />;
-					break;
-				case MENU_ITEM.PRODUCTS:
-					table = <ProductsTable products={dataSource} />;
-					break;
-				case MENU_ITEM.SALES:
-					table = <SalesTable orders={dataSource} />;
-					break;
-				default:
-					break;
-			}
+	const emptyStyle = {
+		display: "flex",
+		width: "100%",
+		padding: "100px 50px",
+		justifyContent: "center",
+		alignItems: "center",
+		color: theme.lightGray
+	};
+
+	const emptyStateMessage = menuId => {
+		switch (menuId) {
+			case MENU_ITEM.MARKETPLACE:
+				return "Marketplace not available";
+			case MENU_ITEM.PURCHASES:
+				return "You have no purchases";
+			case MENU_ITEM.PRODUCTS:
+				return "You have no products";
+			case MENU_ITEM.SALES:
+				return "You have no sales";
 		}
+	};
 
-		let loader = null;
+	const emptyState = <h1 style={emptyStyle}>{emptyStateMessage(selectedMenuItemId)}</h1>;
 
-		if (isLoading === true && dataSource === null) {
-			loader = (
-				<CircularProgress
-					style={{ padding: "80px", textAlign: "center" }}
-					size={80}
-					thickness={6}
-					color={theme.blue}
-				/>
-			);
+	const loader = (
+		<CircularProgress
+			style={emptyStyle}
+			size={80}
+			thickness={6}
+			color={theme.blue}
+		/>
+	);
+
+	if (data.length === 0) {
+		if (isLoading === true) {
+			return loader;
 		}
-
-		// else if (isLoading === false) {
-		// 	return <h1>There's nothing to see here</h1>
-		// }
-
-		var markdownString = '```js\n console.log("hello"); \n```';
-
-		const renderer = new marked.Renderer();
-
-		renderer.heading = (text, level) => {
-			const escapedText = text
-				.toLowerCase()
-				.replace(/=&gt;|&lt;| \/&gt;|<code>|<\/code>/g, "")
-				.replace(/[^\w]+/g, "-");
-
-			return (
-				`
-    <h${level}>
-      <a class="anchor-link" id="${escapedText}"></a>${text}` +
-				`<a class="anchor-link-style" href="#${escapedText}">${"#"}</a>
-    </h${level}>
-  `
-			);
-		};
-
-		marked.setOptions({
-			gfm: true,
-			tables: true,
-			breaks: false,
-			pedantic: false,
-			sanitize: false,
-			smartLists: true,
-			smartypants: false,
-			// $FlowFixMe
-			highlight(code) {
-				return prism.highlight(code, prism.languages.js);
-			},
-			renderer
-		});
-
-		return <span dangerouslySetInnerHTML={{ __html: marked(markdownString) }} />;
-
-
-		return (
-			<div>
-				{titleSection}
-				<div
-					style={{
-						display: "flex",
-						width: "100%",
-						padding: "0px",
-						margin: "0px",
-						justifyContent: "center",
-						alignItems: "center"
-					}}
-				>
-					{loader}
-				</div>
-				{table}
-			</div>
-		);
+		return emptyState;
 	}
-}
+
+	const table = menuId => {
+		switch (menuId) {
+			case MENU_ITEM.MARKETPLACE:
+				return <MarketplaceTable products={data} />;
+			case MENU_ITEM.PURCHASES:
+				return <PurchasesTable orders={data} />;
+			case MENU_ITEM.PRODUCTS:
+				return <ProductsTable products={data} />;
+			case MENU_ITEM.SALES:
+				return <SalesTable orders={data} />;
+			default:
+				return null;
+		}
+	};
+
+	return (
+		<div>
+			{titleSection}
+			{table(selectedMenuItemId)}
+		</div>
+	);
+};
 
 export default connect(mapStateToProps)(TableContainer);
+
+// TODO: Show the actual code with marked
+// var markdownString = '```js\n console.log("hello"); \n```';
+
+// const renderer = new marked.Renderer();
+
+// renderer.heading = (text, level) => {
+// 	const escapedText = text
+// 		.toLowerCase()
+// 		.replace(/=&gt;|&lt;| \/&gt;|<code>|<\/code>/g, "")
+// 		.replace(/[^\w]+/g, "-");
+
+// 	return (
+// 		`
+//   <h${level}>
+//     <a class="anchor-link" id="${escapedText}"></a>${text}` +
+// 		`<a class="anchor-link-style" href="#${escapedText}">${"#"}</a>
+//   </h${level}>
+// `
+// 	);
+// };
+
+// marked.setOptions({
+// 	gfm: true,
+// 	tables: true,
+// 	breaks: false,
+// 	pedantic: false,
+// 	sanitize: false,
+// 	smartLists: true,
+// 	smartypants: false,
+// 	// $FlowFixMe
+// 	highlight(code) {
+// 		return prism.highlight(code, prism.languages.js);
+// 	},
+// 	renderer
+// });
+
+// 		return (
+// 	<span
+// 		dangerouslySetInnerHTML={{ __html: marked(markdownString) }}
+// 	/>
+// );

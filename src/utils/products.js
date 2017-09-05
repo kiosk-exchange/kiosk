@@ -132,8 +132,6 @@ export const getProducts = async (
     }
   }
 
-  console.log(products)
-
   // Only show products where the market is set and with a name
   const filteredProducts = products.filter(
     product =>

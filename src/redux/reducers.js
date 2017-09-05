@@ -127,11 +127,11 @@ const buyModal = (state = buyModalDefaultState, action) => {
 
 const resultsDefaultState = {
 	isLoading: true,
-	allProducts: null,
-	ownerProducts: null,
-	purchases: null,
-	sales: null,
-	marketProducts: null
+	allProducts: [],
+	ownerProducts: [],
+	purchases: [],
+	sales: [],
+	marketProducts: []
 }
 
 const results = (state = resultsDefaultState, action) => {
