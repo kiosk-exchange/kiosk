@@ -74,7 +74,7 @@ const TableContainer = ({
 	const emptyStyle = {
 		display: "flex",
 		width: "100%",
-		padding: "100px 50px",
+		paddingTop: "100px",
 		justifyContent: "center",
 		alignItems: "center",
 		color: theme.lightGray
