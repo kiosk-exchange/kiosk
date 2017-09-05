@@ -28,7 +28,7 @@ const DataTable = ({ dataSource, headers, values }) => {
 				<TableRow>
 					{headers.map(header => {
 						return (
-							<TableHeaderColumn key={v4()}>
+							<TableHeaderColumn key={v4()} style={{fontSize: "15px"}}>
 								{header}
 							</TableHeaderColumn>
 						);
