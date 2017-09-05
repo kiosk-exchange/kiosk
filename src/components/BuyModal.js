@@ -2,7 +2,9 @@ import React from "react";
 import Dialog from "material-ui/Dialog";
 import RaisedButton from "material-ui/RaisedButton";
 import QuantityPicker from "./QuantityPicker";
+import IconButton from "material-ui/IconButton";
 import Subheader from "material-ui/Subheader";
+import Close from "material-ui/svg-icons/navigation/close";
 import { showBuyModal, buyNow } from "../redux/actions";
 import { connect } from "react-redux";
 
@@ -54,7 +56,7 @@ const BuyModal = ({
     padding: "0px"
   };
 
-  const insufficientFunds = (KMTBalance < totalPrice);
+  const insufficientFunds = KMTBalance < totalPrice;
 
   const buyNow = (
     <RaisedButton
@@ -93,13 +95,18 @@ const BuyModal = ({
     textAlign: "right"
   };
 
-  const show = (isOpen === true && totalPrice !== null && available !== null)
+  const show = isOpen === true && totalPrice !== null && available !== null;
 
   return (
     <div>
       <Dialog
         title={
-          <div style={{ textAlign: "center", color: theme.gray }}>
+          <div
+            style={{
+              textAlign: "center",
+              color: theme.gray
+            }}
+          >
             {product.name}
             <Subheader style={subheaderStyle}>
               {product.DIN}

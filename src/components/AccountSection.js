@@ -22,8 +22,14 @@ const AccountSection = ({ account, KMT, ETH }) => {
 	const style = {
 		color: "white",
 		fontSize: "15px",
-		letterSpacing: "1px"
+		letterSpacing: "1px",
 	};
+
+	const accountStyle = {
+		...style,
+		overflow: "hidden",
+  		maxWidth: "12ch"
+	}
 
 	const subheaderStyle = {
 		color: "#9CA6AF",
@@ -41,9 +47,9 @@ const AccountSection = ({ account, KMT, ETH }) => {
 		<div>
 			<Subheader style={subheaderStyle}>ACCOUNT</Subheader>
 			<ListItem
-				style={style}
+				style={accountStyle}
 				disabled={true}
-				primaryText={account.slice(0, 12)}
+				primaryText={account}
 				leftAvatar={
 					<img
 						src={icon.toDataURL()}
