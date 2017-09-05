@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-// import CircularProgress from "material-ui/CircularProgress";
+import CircularProgress from "material-ui/CircularProgress";
 import { connect } from "react-redux";
 import {
 	MarketplaceTable,
@@ -26,31 +26,18 @@ class TableContainer extends Component {
 		const {
 			title,
 			theme,
-			// isLoading,
+			isLoading,
 			allProducts,
 			ownerProducts,
 			purchases,
 			sales,
 			selectedMenuItemId
 		} = this.props;
-		
+
 		const headerStyle = {
 			color: theme.gray,
 			fontWeight: "medium"
 		};
-
-		// let loader = null;
-
-		// if (isLoading === true) {
-		// 	loader = (
-		// 		<CircularProgress
-		// 			style={{ marginLeft: "auto", paddingRight: "20px" }}
-		// 			size={40}
-		// 			thickness={6}
-		// 			color={theme.blue}
-		// 		/>
-		// 	);
-		// }
 
 		const titleSection = (
 			<div style={{ display: "flex", flexDirection: "column" }}>
@@ -107,7 +94,20 @@ class TableContainer extends Component {
 				default:
 					break;
 			}
-		} 
+		}
+
+		let loader = null;
+
+		if (isLoading === true && dataSource === null) {
+			loader = (
+				<CircularProgress
+					style={{ padding: "80px", textAlign: "center" }}
+					size={80}
+					thickness={6}
+					color={theme.blue}
+				/>
+			);
+		}
 
 		// else if (isLoading === false) {
 		// 	return <h1>There's nothing to see here</h1>
@@ -116,6 +116,18 @@ class TableContainer extends Component {
 		return (
 			<div>
 				{titleSection}
+				<div
+					style={{
+						display: "flex",
+						width: "100%",
+						padding: "0px",
+						margin: "0px",
+						justifyContent: "center",
+						alignItems: "center"
+					}}
+				>
+					{loader}
+				</div>
 				{table}
 			</div>
 		);
