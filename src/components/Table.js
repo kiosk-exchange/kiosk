@@ -59,7 +59,7 @@ const DataTable = ({ dataSource, headers, values }) => {
 								return (
 									<TableRowColumn
 										key={v4()}
-										style={{ whiteSpace: "normal" }}
+										style={{ whiteSpace: "normal", textAlign: (value === "value" || value === "quantity") ? "right" : "left" }}
 									>
 										{item[value]}
 									</TableRowColumn>
@@ -98,13 +98,13 @@ export const ProductsTable = ({ products }) => {
 };
 
 export const PurchasesTable = ({ orders }) => {
-	const headers = ["Order ID", "DIN", "Value", "Seller", "Quantity", "Date"];
+	const headers = ["Order ID", "DIN", "Value (KMT)", "Seller", "Quantity", "Date"];
 	const values = ["orderID", "DIN", "value", "seller", "quantity", "date"];
 	return <DataTable dataSource={orders} headers={headers} values={values} />;
 };
 
 export const SalesTable = ({ orders }) => {
-	const headers = ["Order ID", "DIN", "Value", "Buyer", "Quantity", "Date"];
+	const headers = ["Order ID", "DIN", "Value (KMT)", "Buyer", "Quantity", "Date"];
 	const values = ["orderID", "DIN", "value", "buyer", "quantity", "date"];
 	return <DataTable dataSource={orders} headers={headers} values={values} />;
 };
