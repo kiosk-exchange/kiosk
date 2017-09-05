@@ -2,7 +2,7 @@ import React, { Component } from "react";
 // import { Route } from "react-router-dom";
 import SideMenu from "./components/SideMenu";
 import NavBar from "./components/NavBar";
-import TableContainer from "./tables/TableContainer";
+import TableContainer from "./components/TableContainer";
 import BuyModal from "./components/BuyModal";
 import ErrorMessage from "./components/ErrorMessage";
 import { connect } from "react-redux";

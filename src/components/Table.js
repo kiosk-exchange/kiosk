@@ -10,7 +10,7 @@ import {
 	TableRow,
 	TableRowColumn
 } from "material-ui/Table";
-import BuyColumn from "../tables/BuyColumn";
+import BuyColumn from "./BuyColumn";
 
 const DataTable = ({ dataSource, headers, values }) => {
 	const tableStyle = {
