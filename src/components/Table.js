@@ -14,6 +14,10 @@ import {
 } from "material-ui/Table";
 import BuyColumn from "./BuyColumn";
 
+const mapStateToProps = state => ({
+	accountLength: state.config.accountDisplayLength
+});
+
 const mapDispatchToProps = dispatch => ({
 	onLinkClick: market => {
 		dispatch(selectMarket(market));
@@ -22,7 +26,13 @@ const mapDispatchToProps = dispatch => ({
 
 class DataTable extends Component {
 	render() {
-		const { dataSource, headers, values, onLinkClick } = this.props;
+		const {
+			dataSource,
+			headers,
+			values,
+			accountLength,
+			onLinkClick
+		} = this.props;
 
 		const tableStyle = {
 			borderStyle: "solid",
@@ -31,7 +41,7 @@ class DataTable extends Component {
 		};
 		const linkStyle = {
 			color: "#32C1FF",
-			textDecoration: "none"
+			textDecoration: "none",
 		};
 		return (
 			<Table style={tableStyle} height="420px" selectable={false}>
@@ -63,7 +73,7 @@ class DataTable extends Component {
 										);
 									} else if (value === "market") {
 										return (
-											<TableRowColumn key={v4()}>
+											<TableRowColumn key={v4()} style={{ maxWidth: "60px" }}>
 												<Link
 													style={linkStyle}
 													to="#"
@@ -72,7 +82,7 @@ class DataTable extends Component {
 															item[value]
 														)}
 												>
-													{item[value].slice(0, 12)}
+													{item[value]}
 												</Link>
 											</TableRowColumn>
 										);
@@ -102,13 +112,17 @@ class DataTable extends Component {
 	}
 }
 
-const LinkDataTable = connect(null, mapDispatchToProps)(DataTable);
+const LinkDataTable = connect(mapStateToProps, mapDispatchToProps)(DataTable);
 
 export const MarketplaceTable = ({ products }) => {
 	const headers = ["DIN", "Name", "Price (KMT)", "Market", "Buy"];
 	const values = ["DIN", "name", "value", "market", "buy"];
 	return (
-		<LinkDataTable dataSource={products} headers={headers} values={values} />
+		<LinkDataTable
+			dataSource={products}
+			headers={headers}
+			values={values}
+		/>
 	);
 };
 

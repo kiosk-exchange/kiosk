@@ -21,7 +21,8 @@ const initialState = {
 			lightGray: "#6E7E85",
 			white: "#F6F8FF"
 		},
-		menuItems: ["Marketplace", "Purchases", "Products", "Sales"]
+		menuItems: ["Marketplace", "Purchases", "Products", "Sales"],
+		accountDisplayLength: "12ch"
 	}
 };
 

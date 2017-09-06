@@ -13,7 +13,7 @@ import { MENU_ITEM } from "../redux/actions/config";
 // import prism from "../utils/prism";
 
 const mapStateToProps = state => ({
-	title: state.config.menuItems[state.selectedMenuItemId - 1],
+	menuItems: state.config.menuItems,
 	theme: state.config.theme,
 	isLoading: state.results.isLoading,
 	allProducts: state.results.allProducts,
@@ -26,7 +26,7 @@ const mapStateToProps = state => ({
 });
 
 const TableContainer = ({
-	title,
+	menuItems,
 	theme,
 	isLoading,
 	allProducts,
@@ -37,25 +37,24 @@ const TableContainer = ({
 	selectedMenuItemId,
 	selectedMarket
 }) => {
+	// Show the market name if a market is selected. Otherwise, show the menu item.
+	const title = selectedMarket
+		? selectedMarket
+		: menuItems[selectedMenuItemId - 1];
+
 	const headerStyle = {
 		color: theme.gray,
-		fontWeight: "medium"
+		fontWeight: "medium",
+		display: "block",
+		width: "50%",
+		textOverflow: "ellipsis",
+		overflow: "hidden"
 	};
 
 	const titleSection = (
-		<div style={{ display: "flex", flexDirection: "column" }}>
-			<div
-				style={{
-					display: "flex",
-					width: "100%",
-					alignItems: "center"
-				}}
-			>
-				<h1 style={headerStyle}>
-					{title}
-				</h1>
-			</div>
-		</div>
+		<h1 style={headerStyle}>
+			{title}
+		</h1>
 	);
 
 	const dataSource = () => {
