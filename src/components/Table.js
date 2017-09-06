@@ -13,7 +13,13 @@ import {
 } from "material-ui/Table";
 import BuyColumn from "./BuyColumn";
 
-const DataTable = ({ dataSource, headers, values, onLinkClick }) => {
+const mapDispatchToProps = dispatch => ({
+	onLinkClick: id => {
+		dispatch(selectMenuItem(id));
+	}
+});
+
+const DataTable = ({ dataSource, headers, values }) => {
 	const tableStyle = {
 		borderStyle: "solid",
 		borderWidth: "1px",

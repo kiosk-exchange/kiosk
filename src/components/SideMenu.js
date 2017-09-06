@@ -18,14 +18,14 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-	selectMenuItem: id => {
-		dispatch(selectMenuItem(id));
+	onMenuItemClick: id => {
+		// dispatch(selectMenuItem(id));
 	}
 });
 
 const SelectableList = makeSelectable(List);
 
-const SideMenu = ({ account, KMT, ETH, selectedItem, selectMenuItem }) => {
+const SideMenu = ({ account, KMT, ETH, selectedItem, onMenuItemClick }) => {
 	const style = {
 		color: "white",
 		fontSize: "15px",
@@ -69,14 +69,14 @@ const SideMenu = ({ account, KMT, ETH, selectedItem, selectMenuItem }) => {
 				{...listItemStyle}
 				primaryText="Marketplace"
 				leftIcon={<Store color="white" />}
-				onClick={() => selectMenuItem(1)}
+				onClick={() => onMenuItemClick(1)}
 			/>
 			<ListItem
 				value={2}
 				{...listItemStyle}
 				primaryText="Purchases"
 				leftIcon={<ShoppingCart color="white" />}
-				onClick={() => selectMenuItem(2)}
+				onClick={() => onMenuItemClick(2)}
 			/>
 			<Subheader style={subheaderStyle}>SELL</Subheader>
 			<ListItem
@@ -84,14 +84,14 @@ const SideMenu = ({ account, KMT, ETH, selectedItem, selectMenuItem }) => {
 				{...listItemStyle}
 				primaryText="Products"
 				leftIcon={<Products color="white" />}
-				onClick={() => selectMenuItem(3)}
+				onClick={() => onMenuItemClick(3)}
 			/>
 			<ListItem
 				value={4}
 				{...listItemStyle}
 				primaryText="Sales"
 				leftIcon={<Money color="white" />}
-				onClick={() => selectMenuItem(4)}
+				onClick={() => onMenuItemClick(4)}
 			/>
 			<AccountSection account={account} KMT={KMT} ETH={ETH} />
 		</SelectableList>
