@@ -3,7 +3,7 @@ import CircularProgress from "material-ui/CircularProgress";
 import { connect } from "react-redux";
 import {
 	MarketplaceTable,
-	MarketTable,
+	// MarketTable,
 	PurchasesTable,
 	ProductsTable,
 	SalesTable
@@ -16,9 +16,7 @@ const mapStateToProps = state => ({
 	menuItems: state.config.menuItems,
 	theme: state.config.theme,
 	isLoading: state.results.isLoading,
-	allProducts: state.results.allProducts,
-	ownerProducts: state.results.ownerProducts,
-	marketProducts: state.results.marketProducts,
+	products: state.results.products,
 	purchases: state.results.purchases,
 	sales: state.results.sales,
 	selectedMenuItemId: state.selectedMenuItemId,
@@ -29,9 +27,7 @@ const TableContainer = ({
 	menuItems,
 	theme,
 	isLoading,
-	allProducts,
-	ownerProducts,
-	marketProducts,
+	products,
 	purchases,
 	sales,
 	selectedMenuItemId,
@@ -60,11 +56,11 @@ const TableContainer = ({
 	const dataSource = () => {
 		switch (selectedMenuItemId) {
 			case MENU_ITEM.MARKETPLACE:
-				return allProducts;
+				return products;
 			case MENU_ITEM.PURCHASES:
 				return purchases;
 			case MENU_ITEM.PRODUCTS:
-				return ownerProducts;
+				return products;
 			case MENU_ITEM.SALES:
 				return sales;
 			default:
@@ -121,9 +117,9 @@ const TableContainer = ({
 	}
 
 	const getTable = () => {
-		if (selectedMarket && marketProducts.length > 0) {
-			return <MarketTable products={marketProducts} />;
-		}
+		// if (selectedMarket && marketProducts.length > 0) {
+		// 	return <MarketTable products={marketProducts} />;
+		// }
 		switch (selectedMenuItemId) {
 			case MENU_ITEM.MARKETPLACE:
 				return <MarketplaceTable products={data} />;

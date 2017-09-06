@@ -30,9 +30,7 @@ import {
 import {
 	REQUEST_LOADING,
 	REQUEST_ERROR,
-	RECEIVED_ALL_PRODUCTS,
-	RECEIVED_OWNER_PRODUCTS,
-	RECEIVED_MARKET_PRODUCTS,
+	RECEIVED_PRODUCT,
 	RECEIVED_PURCHASES,
 	RECEIVED_SALES,
 	PURCHASE_IS_PENDING,
@@ -152,11 +150,9 @@ export const buyModal = (state = buyModalDefaultState, action) => {
 
 const resultsDefaultState = {
 	isLoading: true,
-	allProducts: [],
-	ownerProducts: [],
+	products: [],
 	purchases: [],
-	sales: [],
-	marketProducts: []
+	sales: []
 };
 
 export const results = (state = resultsDefaultState, action) => {
@@ -171,20 +167,29 @@ export const results = (state = resultsDefaultState, action) => {
 				...state,
 				error: action.data
 			};
-		case RECEIVED_ALL_PRODUCTS:
+		case RECEIVED_PRODUCT:
+			// Get the index of the existing product (if any) from the state by its DIN
+			// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex
+			const index = state.products.findIndex(product => {
+				return product.DIN === action.data.DIN;
+			});
+
+			let products;
+
+			// If the product exists in state, replace the existing product
+			if (index >= 0) {
+				products = [
+					...state.products.slice(0, index),
+					action.data,
+					...state.products.slice(index + 1)
+				];
+			} else {
+				// Otherwise, append it to the results array
+				products = state.products.concat(action.data)
+			}
 			return {
 				...state,
-				allProducts: action.data
-			};
-		case RECEIVED_OWNER_PRODUCTS:
-			return {
-				...state,
-				ownerProducts: action.data
-			};
-		case RECEIVED_MARKET_PRODUCTS:
-			return {
-				...state,
-				marketProducts: action.data
+				products: products
 			};
 		case RECEIVED_PURCHASES:
 			return {

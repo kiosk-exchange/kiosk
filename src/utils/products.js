@@ -1,9 +1,7 @@
-import React from "react";
 import MarketJSON from "../../build/contracts/Market.json";
 var coder = require("web3/lib/solidity/coder");
 const Promise = require("bluebird");
 const CryptoJS = require("crypto-js");
-import { connect } from "react-redux";
 
 const encodeFunctionTxData = (functionName, types, args) => {
   var fullName = functionName + "(" + types.join() + ")";
@@ -95,16 +93,7 @@ export const getIsAvailable = (
 
 // return filteredProducts;
 
-const mapDispatchToProps = dispatch => {
-  onRequest: DIN => {
-    console.log("Making a request for: " + DIN)
-  }
-  onCompletion: DIN => {
-    console.log("Finished downloading: " + DIN)
-  }
-}
-
-const getProduct = async (web3, registry, BuyerContract, buyerAcct, DIN) => {
+export const getProduct = async (web3, registry, BuyerContract, buyerAcct, DIN) => {
   const owner = await registry.ownerAsync(DIN);
   const market = await registry.marketAsync(DIN);
 
@@ -130,6 +119,7 @@ const getProduct = async (web3, registry, BuyerContract, buyerAcct, DIN) => {
       value,
       available
     };
+    console.log(fullProduct);
     return fullProduct;
   } catch (err) {
     return product;

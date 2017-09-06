@@ -1,19 +1,18 @@
 import {
   getAllProductDINs,
-  getOwnerProductDINs,
-  getMarketProductDINs,
+  // getOwnerProductDINs,
+  // getMarketProductDINs,
   getProduct,
   getValue,
   getIsAvailable
 } from "../../utils/products";
 import { getPurchases, getSales } from "../../utils/orders";
 import { getBalances } from "./config";
+const Promise = require("bluebird");
 
 export const REQUEST_LOADING = "REQUEST_LOADING";
 export const REQUEST_ERROR = "REQUEST_ERROR";
-export const RECEIVED_ALL_PRODUCTS = "RECEIVED_ALL_PRODUCTS";
-export const RECEIVED_OWNER_PRODUCTS = "RECEIVED_OWNER_PRODUCTS";
-export const RECEIVED_MARKET_PRODUCTS = "RECEIVED_MARKET_PRODUCTS";
+export const RECEIVED_PRODUCT = "RECEIVED_PRODUCT";
 export const RECEIVED_PURCHASES = "RECEIVED_PURCHASES";
 export const RECEIVED_SALES = "RECEIVED_SALES";
 export const TOTAL_PRICE_CALCULATING = "TOTAL_PRICE_CALCULATING";
@@ -44,11 +43,7 @@ const action = (type, data) => ({
   ...data
 });
 
-export const receivedAllProducts = data =>
-  action(RECEIVED_ALL_PRODUCTS, { data });
-export const receivedOwnerProducts = data =>
-  action(RECEIVED_OWNER_PRODUCTS, { data });
-export const receivedMarketProducts = data => action(RECEIVED_MARKET_PRODUCTS, { data });
+export const receivedProduct = data => action(RECEIVED_PRODUCT, { data });
 export const receivedPurchases = data => action(RECEIVED_PURCHASES, { data });
 export const receivedSales = data => action(RECEIVED_SALES, { data });
 export const requestLoading = data => action(REQUEST_LOADING, { data });
@@ -68,52 +63,58 @@ const fetchProducts = filter => {
     const account = getState().config.account;
     const registry = Promise.promisifyAll(DINRegistry);
 
-    console.log("1")
-
     if (web3 && DINRegistry && account) {
+      let DINs;
+
       if (filter === PRODUCT_FILTER.ALL) {
-        const DINs = await getAllProductDINs(
+        DINs = await getAllProductDINs(
           web3,
           DINRegistry,
           BuyerContract,
           account
         );
-        console.log(DINs)
-        for (let DIN in DINs) {
-          const product = await getProduct(DIN, registry, BuyerContract, account, DIN);
-          console.log(product)
-        }
-      } else if (filter === PRODUCT_FILTER.OWNER) {
-        const products = await getOwnerProductDINs(
+      // } else if (filter === PRODUCT_FILTER.OWNER) {
+      //   DINs = await getOwnerProductDINs(
+      //     web3,
+      //     DINRegistry,
+      //     BuyerContract,
+      //     account,
+      //     account
+      //   );
+      //   dispatch(receivedOwnerProducts(products));
+      }
+
+      DINs.map(async DIN => {
+        const product = await getProduct(
           web3,
-          DINRegistry,
+          registry,
           BuyerContract,
           account,
-          account
+          DIN
         );
-        dispatch(receivedOwnerProducts(products));
-      }
+        dispatch(receivedProduct(product))
+      })
     }
   };
 };
 
 export const fetchProductsForMarket = market => {
   return async (dispatch, getState) => {
-    const web3 = getState().config.web3;
-    const DINRegistry = getState().config.DINRegistry;
-    const BuyerContract = getState().config.BuyerContract;
-    const account = getState().config.account;
+    // const web3 = getState().config.web3;
+    // const DINRegistry = getState().config.DINRegistry;
+    // const BuyerContract = getState().config.BuyerContract;
+    // const account = getState().config.account;
 
-    if (web3 && DINRegistry && account) {
-      const products = await getMarketProductDINs(
-        web3,
-        DINRegistry,
-        BuyerContract,
-        account,
-        market
-      )
-      dispatch(receivedMarketProducts(products))
-    }
+    // if (web3 && DINRegistry && account) {
+    //   const products = await getMarketProductDINs(
+    //     web3,
+    //     DINRegistry,
+    //     BuyerContract,
+    //     account,
+    //     market
+    //   );
+    //   dispatch(receivedMarketProducts(products));
+    // }
   };
 };
 
@@ -147,19 +148,20 @@ export const fetchDataForMenuItem = id => {
     dispatch(requestError(false));
     dispatch(requestLoading(true));
 
+
     try {
       switch (id) {
         case MENU_ITEM.MARKETPLACE:
-          await dispatch(fetchProducts(PRODUCT_FILTER.ALL));
+          dispatch(fetchProducts(PRODUCT_FILTER.ALL));
           break;
         case MENU_ITEM.PURCHASES:
-          await dispatch(fetchOrders(ORDER_TYPE.PURCHASES));
+          dispatch(fetchOrders(ORDER_TYPE.PURCHASES));
           break;
         case MENU_ITEM.PRODUCTS:
-          await dispatch(fetchProducts(PRODUCT_FILTER.OWNER));
+          dispatch(fetchProducts(PRODUCT_FILTER.OWNER));
           break;
         case MENU_ITEM.SALES:
-          await dispatch(fetchOrders(ORDER_TYPE.SALES));
+          dispatch(fetchOrders(ORDER_TYPE.SALES));
           break;
         default:
           break;
