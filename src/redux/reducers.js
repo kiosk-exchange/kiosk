@@ -26,6 +26,8 @@ import {
 	SELECTED_QUANTITY,
 	SHOW_BUY_MODAL,
 	PURCHASE_IS_PENDING,
+	TX_PENDING_ADDED,
+	TX_PENDING_REMOVED,
 	TOTAL_PRICE_CALCULATING,
 	TOTAL_PRICE,
 	PRODUCT_AVAILABILITY
@@ -70,6 +72,18 @@ const KMTBalance = (state = null, action) => reducer(state, action, KMT_BALANCE)
 const ETHBalance = (state = null, action) => reducer(state, action, ETH_BALANCE);
 const selectedMenuItemId = (state = 1, action) => reducer(state, action, SELECTED_MENU_ITEM_ID);
 const purchaseIsPending = (state = false, action) => reducer(state, action, PURCHASE_IS_PENDING);
+const txsPending = (state = [], action) => {
+	if (action.type === TX_PENDING_ADDED) {
+		return state.concat(action.data)
+	} else if (action.type === TX_PENDING_REMOVED) {
+		var indx = state.indexOf(action.data);
+		return [
+			...state.slice(0, indx),
+			...state.slice(indx + 1)
+		]
+	}
+	return state;
+}
 
 const buyModalDefaultState = {
 	product: null,
@@ -195,5 +209,6 @@ export const rootReducer = combineReducers({
 	results,
 	selectedMenuItemId,
 	buyModal,
-	purchaseIsPending
+	purchaseIsPending,
+	txsPending
 });

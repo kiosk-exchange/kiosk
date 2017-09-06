@@ -4,6 +4,7 @@ import SideMenu from "./components/SideMenu";
 import NavBar from "./components/NavBar";
 import TableContainer from "./components/TableContainer";
 import BuyModal from "./components/BuyModal";
+import PendingTxSnackbar from "./components/PendingTxSnackbar";
 import ErrorMessage from "./components/ErrorMessage";
 import { connect } from "react-redux";
 import { initKiosk } from "./redux/actions";
@@ -22,7 +23,7 @@ class App extends Component {
 
   render() {
     const { web3, error } = this.props;
-    
+
     const hContainerStyle = {
       display: "flex", // 💪
       flexFlow: "row",
@@ -71,6 +72,7 @@ class App extends Component {
           </div>
         </div>
         <BuyModal />
+        <PendingTxSnackbar />
       </div>
     );
   }
