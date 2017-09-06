@@ -3,7 +3,7 @@ import Dialog from "material-ui/Dialog";
 import RaisedButton from "material-ui/RaisedButton";
 import Subheader from "material-ui/Subheader";
 import TextField from "material-ui/TextField";
-import { showBuyKMTModal } from "../redux/actions";
+import { showBuyKMTModal } from "../redux/actions/actions";
 import { connect } from "react-redux";
 
 const mapStateToProps = state => ({
@@ -32,18 +32,11 @@ const BuyKMTModal = ({
   onBuyNow,
   onClose
 }) => {
+
   const contentStyle = {
     width: "50%",
     minWidth: "300px",
     maxWidth: "400px"
-  };
-
-  const subheaderStyle = {
-    color: theme.lightGray,
-    letterSpacing: "1px",
-    fontSize: "16px",
-    fontWeight: "medium",
-    padding: "0px"
   };
 
   const insufficientFunds = ETHBalance < totalPrice;
@@ -88,7 +81,6 @@ const BuyKMTModal = ({
         <TextField
           id="Quantity"
           floatingLabelFixed={true}
-          fullWidth={true}
           underlineFocusStyle={{ borderColor: theme.blue }}
           floatingLabelFocusStyle={{ color: theme.blue }}
         />
@@ -101,7 +93,7 @@ const BuyKMTModal = ({
 
   const rate = (
     <div style={{ display: "flex", width: "100%", padding: "0" }}>
-      <h2>Rate:</h2>
+      <h3>x Rate:</h3>
       <div
         style={{
           marginLeft: "auto",
@@ -110,7 +102,7 @@ const BuyKMTModal = ({
           borderColor: theme.gray
         }}
       >
-        <h2>300 KMT / ETH</h2>
+        <h3>300 KMT / ETH</h3>
       </div>
     </div>
   );

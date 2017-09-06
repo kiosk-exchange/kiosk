@@ -3,16 +3,16 @@ import {
   getNetworkAsync,
   getKMTBalanceAsync,
   getETHBalanceAsync
-} from "../utils/kioskWeb3";
+} from "../../utils/kioskWeb3";
 import {
   getKioskMarketToken,
   getBuyer,
   getDINRegistry,
   getOrderStore,
   getEtherMarket
-} from "../utils/contracts";
-import { loadWeb3 } from "../utils/kioskWeb3";
-import { MENU_ITEM, fetchDataForMenuItem } from "./blockchain";
+} from "../../utils/contracts";
+import { loadWeb3 } from "../../utils/kioskWeb3";
+import { fetchDataForMenuItem } from "./blockchain";
 
 export const WEB_3_LOADING = "WEB_3_LOADING";
 export const WEB_3_ERROR = "WEB_3_ERROR";
@@ -28,6 +28,13 @@ export const ORDER_STORE_CONTRACT = "ORDER_STORE_CONTRACT";
 export const ETHER_MARKET_CONTRACT = "ETHER_MARKET_CONTRACT";
 export const KMT_BALANCE = "KMT_BALANCE";
 export const ETH_BALANCE = "ETH_BALANCE";
+
+export const MENU_ITEM = {
+  MARKETPLACE: 1,
+  PURCHASES: 2,
+  PRODUCTS: 3,
+  SALES: 4
+};
 
 // Helper function
 const action = (type, data) => ({

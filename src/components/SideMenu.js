@@ -8,7 +8,7 @@ import Products from "material-ui/svg-icons/action/loyalty";
 import Money from "material-ui/svg-icons/editor/attach-money";
 import Avatar from "material-ui/Avatar";
 import { connect } from "react-redux";
-import { selectMenuItem } from "../redux/actions";
+import { selectMenuItem } from "../redux/actions/actions";
 
 const mapStateToProps = state => ({
 	account: state.config.account,

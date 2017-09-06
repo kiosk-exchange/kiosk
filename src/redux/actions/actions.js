@@ -1,17 +1,17 @@
-import { buyProduct, buyKMT } from "../utils/buy";
-import { MENU_ITEM, fetchDataForMenuItem } from "./blockchain";
+import { buyProduct } from "../../utils/buy";
+import {
+  MENU_ITEM,
+  fetchDataForMenuItem,
+  getPriceAndAvailability,
+  purchaseIsPending,
+  reloadAfterPurchase
+} from "./blockchain";
 
 export const SELECTED_MENU_ITEM_ID = "SELECTED_MENU_ITEM_ID";
-
-// Buy Modal
 export const SHOW_BUY_MODAL = "SHOW_BUY_MODAL";
 export const SHOW_BUY_KMT_MODAL = "SHOW_BUY_KMT_MODAL";
 export const SELECTED_PRODUCT = "SELECTED_PRODUCT";
 export const SELECTED_QUANTITY = "QUANTITY";
-export const TOTAL_PRICE_CALCULATING = "TOTAL_PRICE_CALCULATING";
-export const TOTAL_PRICE = "TOTAL_PRICE";
-export const PRODUCT_AVAILABILITY = "PRODUCT_AVAILABILITY";
-export const PURCHASE_IS_PENDING = "PURCHASE_IS_PENDING";
 
 // Helper function
 const action = (type, data) => ({
@@ -26,14 +26,7 @@ export const selectedProduct = data => action(SELECTED_PRODUCT, { data });
 // export const selectedMarket = data => action(SELECTED_MARKET, { data });
 export const showBuyModal = data => action(SHOW_BUY_MODAL, { data });
 export const showBuyKMTModal = data => action(SHOW_BUY_KMT_MODAL, { data });
-export const purchaseIsPending = data => action(PURCHASE_IS_PENDING, { data });
 export const selectedQuantity = data => action(SELECTED_QUANTITY, { data });
-export const totalPriceIsCalculating = data =>
-  action(TOTAL_PRICE_CALCULATING, { data });
-export const totalPrice = data => action(TOTAL_PRICE, { data });
-export const productAvailability = data =>
-  action(PRODUCT_AVAILABILITY, { data });
-
 
 // TestRPC or Kovan
 // const isSupportedNetwork = network => {
@@ -43,44 +36,6 @@ export const productAvailability = data =>
 export const selectMenuItem = id => {
   return async dispatch => {
     dispatch(fetchDataForMenuItem(id));
-  };
-};
-
-const getPriceAndAvailability = (product, quantity) => {
-  return async (dispatch, getState) => {
-    const web3 = getState().config.web3;
-    const BuyerContract = getState().config.BuyerContract;
-    const buyer = getState().config.account;
-
-    dispatch(totalPriceIsCalculating(true));
-
-    try {
-      const value = await getValue(
-        web3,
-        BuyerContract,
-        product.DIN,
-        quantity,
-        buyer
-      );
-      dispatch(totalPrice(value));
-    } catch (err) {
-      //
-    }
-
-    try {
-      const isAvailable = await getIsAvailable(
-        web3,
-        BuyerContract,
-        product.DIN,
-        quantity,
-        buyer
-      );
-      dispatch(productAvailability(isAvailable));
-    } catch (err) {
-      //
-    }
-
-    dispatch(totalPriceIsCalculating(false));
   };
 };
 
@@ -98,7 +53,7 @@ export const selectProduct = index => {
         break;
     }
 
-    if (product) 
+    if (product) {
       dispatch(showBuyModal(true));
       dispatch(selectedProduct(product));
       dispatch(getPriceAndAvailability(product, 1));
@@ -139,12 +94,6 @@ export const buyNow = product => {
 };
 
 // export const buyKioskMarketToken = () => {
-//   return dispatch => {
-//     dispatch();
-//   }
-// }
-
-// export const buyKioskMarketToken = () => {
 //   return async (dispatch, getState) => {
 //     try {
 //       const web3 = getState().config.web3;
@@ -170,12 +119,3 @@ export const changedQuantity = quantity => {
     dispatch(getPriceAndAvailability(product, quantity));
   };
 };
-
-// action(SELECTED_QUANTITY, { data });
-
-// const ERROR = {
-//   NOT_CONNECTED: 1,
-//   CONTRACTS_NOT_DEPLOYED: 2,
-//   NETWORK_NOT_SUPPORTED: 3,
-//   LOCKED_ACCOUNT: 4
-// };

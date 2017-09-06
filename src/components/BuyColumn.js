@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import RaisedButton from "material-ui/RaisedButton";
 import { TableRowColumn } from "material-ui/Table";
 import { connect } from "react-redux";
-import { selectProduct } from "../redux/actions";
+import { selectProduct } from "../redux/actions/actions";
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
 	onBuyClick: () => {

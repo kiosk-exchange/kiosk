@@ -3,9 +3,9 @@ import {
   getOwnerProducts,
   getValue,
   getIsAvailable
-} from "../utils/products";
-import { getPurchases, getSales } from "../utils/orders";
-import { getBalances } from "./config"
+} from "../../utils/products";
+import { getPurchases, getSales } from "../../utils/orders";
+import { getBalances } from "./config";
 
 export const REQUEST_LOADING = "REQUEST_LOADING";
 export const REQUEST_ERROR = "REQUEST_ERROR";
@@ -13,6 +13,10 @@ export const RECEIVED_ALL_PRODUCTS = "RECEIVED_ALL_PRODUCTS";
 export const RECEIVED_OWNER_PRODUCTS = "RECEIVED_OWNER_PRODUCTS";
 export const RECEIVED_PURCHASES = "RECEIVED_PURCHASES";
 export const RECEIVED_SALES = "RECEIVED_SALES";
+export const TOTAL_PRICE_CALCULATING = "TOTAL_PRICE_CALCULATING";
+export const TOTAL_PRICE = "TOTAL_PRICE";
+export const PURCHASE_IS_PENDING = "PURCHASE_IS_PENDING";
+export const PRODUCT_AVAILABILITY = "PRODUCT_AVAILABILITY";
 
 export const MENU_ITEM = {
   MARKETPLACE: 1,
@@ -45,13 +49,12 @@ export const receivedPurchases = data => action(RECEIVED_PURCHASES, { data });
 export const receivedSales = data => action(RECEIVED_SALES, { data });
 export const requestLoading = data => action(REQUEST_LOADING, { data });
 export const requestError = data => action(REQUEST_ERROR, { data });
-
-const reloadAfterPurchase = () => {
-  return async dispatch => {
-    dispatch(getBalances());
-    dispatch(fetchOrders(ORDER_TYPE.PURCHASES));
-  };
-};
+export const totalPriceIsCalculating = data =>
+  action(TOTAL_PRICE_CALCULATING, { data });
+export const totalPrice = data => action(TOTAL_PRICE, { data });
+export const productAvailability = data =>
+  action(PRODUCT_AVAILABILITY, { data });
+export const purchaseIsPending = data => action(PURCHASE_IS_PENDING, { data });
 
 const fetchProducts = filter => {
   return async (dispatch, getState) => {
@@ -101,6 +104,13 @@ const fetchOrders = type => {
   };
 };
 
+export const reloadAfterPurchase = () => {
+  return async dispatch => {
+    dispatch(getBalances());
+    dispatch(fetchOrders(ORDER_TYPE.PURCHASES));
+  };
+};
+
 export const fetchDataForMenuItem = id => {
   return async dispatch => {
     dispatch(requestError(false));
@@ -128,5 +138,43 @@ export const fetchDataForMenuItem = id => {
     }
 
     dispatch(requestLoading(false));
+  };
+};
+
+export const getPriceAndAvailability = (product, quantity) => {
+  return async (dispatch, getState) => {
+    const web3 = getState().config.web3;
+    const BuyerContract = getState().config.BuyerContract;
+    const buyer = getState().config.account;
+
+    dispatch(totalPriceIsCalculating(true));
+
+    try {
+      const value = await getValue(
+        web3,
+        BuyerContract,
+        product.DIN,
+        quantity,
+        buyer
+      );
+      dispatch(totalPrice(value));
+    } catch (err) {
+      //
+    }
+
+    try {
+      const isAvailable = await getIsAvailable(
+        web3,
+        BuyerContract,
+        product.DIN,
+        quantity,
+        buyer
+      );
+      dispatch(productAvailability(isAvailable));
+    } catch (err) {
+      //
+    }
+
+    dispatch(totalPriceIsCalculating(false));
   };
 };

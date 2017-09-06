@@ -50,7 +50,6 @@ const DataTable = ({ dataSource, headers, values }) => {
 											<Link
 												style={linkStyle}
 												to={`/market/${item[value]}`}
-												onClick={console.log("SELECTED MARKET: " + item[value])}
 											>
 												{item[value].slice(0, 12)}
 											</Link>

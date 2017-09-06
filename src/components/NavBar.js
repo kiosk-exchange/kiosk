@@ -1,7 +1,7 @@
 import React from "react";
 import { Toolbar, ToolbarGroup, ToolbarTitle } from "material-ui/Toolbar";
 import RaisedButton from "material-ui/RaisedButton";
-import { showBuyKMTModal } from "../redux/actions";
+import { showBuyKMTModal } from "../redux/actions/actions";
 import { connect } from "react-redux";
 
 const mapStateToProps = state => ({

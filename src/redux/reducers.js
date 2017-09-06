@@ -1,6 +1,13 @@
 import { combineReducers } from "redux";
 import { routerReducer } from "react-router-redux";
 
+import {
+	SELECTED_MENU_ITEM_ID,
+	SHOW_BUY_MODAL,
+	SHOW_BUY_KMT_MODAL,
+	SELECTED_PRODUCT,
+	SELECTED_QUANTITY
+} from "./actions/actions";
 
 import {
 	WEB_3_LOADING,
@@ -16,23 +23,21 @@ import {
 	ORDER_STORE_CONTRACT,
 	ETHER_MARKET_CONTRACT,
 	KMT_BALANCE,
-	ETH_BALANCE,
-	SELECTED_MENU_ITEM_ID,
+	ETH_BALANCE
+} from "./actions/config";
+
+import {
 	REQUEST_LOADING,
 	REQUEST_ERROR,
 	RECEIVED_ALL_PRODUCTS,
 	RECEIVED_OWNER_PRODUCTS,
 	RECEIVED_PURCHASES,
 	RECEIVED_SALES,
-	SELECTED_PRODUCT,
-	SELECTED_QUANTITY,
-	SHOW_BUY_MODAL,
-	SHOW_BUY_KMT_MODAL,
 	PURCHASE_IS_PENDING,
 	TOTAL_PRICE_CALCULATING,
 	TOTAL_PRICE,
 	PRODUCT_AVAILABILITY
-} from "./actions";
+} from "./actions/blockchain";
 
 /*
 *  @param state - From Redux
@@ -50,29 +55,48 @@ const reducer = (state, action, type) => {
 };
 
 // Initial state
-const theme = (state = null, action) => { return state };
-const menuItems = (state = null, action) => { return state };
+const theme = (state = null, action) => {
+	return state;
+};
+const menuItems = (state = null, action) => {
+	return state;
+};
 
 /*
 *  Name reducers according to how you would like to access  them in a component (e.g. web3 instead of web3Success)
 *  Use a separate reducer for each top-level object in the state tree.
 */
 const web3 = (state = null, action) => reducer(state, action, WEB_3_SUCCESS);
-const web3IsLoading = (state = false, action) => reducer(state, action, WEB_3_LOADING);
-const web3Error = (state = false, action) => reducer(state, action, WEB_3_ERROR);
-const accountHasError = (state = false, action) => reducer(state, action, ACCOUNT_ERROR);
-const account = (state = null, action) => reducer(state, action, ACCOUNT_SUCCESS);
-const networkHasError = (state = false, action) => reducer(state, action, NETWORK_ERROR);
-const network = (state = null, action) => reducer(state, action, NETWORK_SUCCESS);
-const KMTContract = (state = null, action) => reducer(state, action, KMT_CONTRACT);
-const BuyerContract = (state = null, action) => reducer(state, action, BUYER_CONTRACT);
-const DINRegistry = (state = null, action) => reducer(state, action, DIN_REGISTRY_CONTRACT);
-const OrderStore = (state = null, action) => reducer(state, action, ORDER_STORE_CONTRACT);
-const EtherMarket = (state = null, action) => reducer(state, action, ETHER_MARKET_CONTRACT);
-const KMTBalance = (state = null, action) => reducer(state, action, KMT_BALANCE);
-const ETHBalance = (state = null, action) => reducer(state, action, ETH_BALANCE);
-export const selectedMenuItemId = (state = 1, action) => reducer(state, action, SELECTED_MENU_ITEM_ID);
-export const purchaseIsPending = (state = false, action) => reducer(state, action, PURCHASE_IS_PENDING);
+const web3IsLoading = (state = false, action) =>
+	reducer(state, action, WEB_3_LOADING);
+const web3Error = (state = false, action) =>
+	reducer(state, action, WEB_3_ERROR);
+const accountHasError = (state = false, action) =>
+	reducer(state, action, ACCOUNT_ERROR);
+const account = (state = null, action) =>
+	reducer(state, action, ACCOUNT_SUCCESS);
+const networkHasError = (state = false, action) =>
+	reducer(state, action, NETWORK_ERROR);
+const network = (state = null, action) =>
+	reducer(state, action, NETWORK_SUCCESS);
+const KMTContract = (state = null, action) =>
+	reducer(state, action, KMT_CONTRACT);
+const BuyerContract = (state = null, action) =>
+	reducer(state, action, BUYER_CONTRACT);
+const DINRegistry = (state = null, action) =>
+	reducer(state, action, DIN_REGISTRY_CONTRACT);
+const OrderStore = (state = null, action) =>
+	reducer(state, action, ORDER_STORE_CONTRACT);
+const EtherMarket = (state = null, action) =>
+	reducer(state, action, ETHER_MARKET_CONTRACT);
+const KMTBalance = (state = null, action) =>
+	reducer(state, action, KMT_BALANCE);
+const ETHBalance = (state = null, action) =>
+	reducer(state, action, ETH_BALANCE);
+const selectedMenuItemId = (state = 1, action) =>
+	reducer(state, action, SELECTED_MENU_ITEM_ID);
+const purchaseIsPending = (state = false, action) =>
+	reducer(state, action, PURCHASE_IS_PENDING);
 
 const buyModalDefaultState = {
 	product: null,
@@ -81,49 +105,50 @@ const buyModalDefaultState = {
 	available: null,
 	isOpen: false,
 	isLoading: false,
-	error: false,
-}
+	error: false
+};
 
-export const showBuyKMTModal = (state = false, action) => reducer(state, action, SHOW_BUY_KMT_MODAL);
+export const showBuyKMTModal = (state = false, action) =>
+	reducer(state, action, SHOW_BUY_KMT_MODAL);
 export const buyModal = (state = buyModalDefaultState, action) => {
 	switch (action.type) {
 		case SHOW_BUY_MODAL:
 			if (action.data === false) {
 				// Reset
-				return buyModalDefaultState
+				return buyModalDefaultState;
 			}
 			return {
 				...state,
 				quantity: 1,
-				isOpen: action.data,
+				isOpen: action.data
 			};
 		case SELECTED_PRODUCT:
 			return {
 				...state,
 				product: action.data
-			}
+			};
 		case SELECTED_QUANTITY:
 			return {
 				...state,
 				quantity: action.data
-			}
+			};
 		case TOTAL_PRICE_CALCULATING:
 			return {
 				...state,
 				isLoading: true
-			}
+			};
 		case TOTAL_PRICE:
 			return {
 				...state,
 				isLoading: false,
 				error: false,
 				totalPrice: action.data
-			}
+			};
 		case PRODUCT_AVAILABILITY:
 			return {
 				...state,
 				available: action.data
-			}
+			};
 		default:
 			return state;
 	}
@@ -136,7 +161,7 @@ const resultsDefaultState = {
 	purchases: [],
 	sales: [],
 	marketProducts: []
-}
+};
 
 export const results = (state = resultsDefaultState, action) => {
 	switch (action.type) {
@@ -195,11 +220,11 @@ export const config = combineReducers({
 });
 
 export const rootReducer = combineReducers({
-		config,
-		results,
-		selectedMenuItemId,
-		purchaseIsPending,
-		buyModal,
-		showBuyKMTModal,
-		router: routerReducer
-	})
+	config,
+	results,
+	selectedMenuItemId,
+	purchaseIsPending,
+	buyModal,
+	showBuyKMTModal,
+	router: routerReducer
+});

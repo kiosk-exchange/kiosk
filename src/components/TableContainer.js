@@ -8,7 +8,7 @@ import {
 	ProductsTable,
 	SalesTable
 } from "../components/Table";
-import { MENU_ITEM } from "../redux/actions";
+import { MENU_ITEM } from "../redux/actions/config";
 // import marked from "marked";
 // import prism from "../utils/prism";
 

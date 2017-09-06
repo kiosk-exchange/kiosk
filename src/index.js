@@ -1,26 +1,11 @@
 import React from "react";
 import { render } from "react-dom";
-
-// State
-import { createStore, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
-import { rootReducer } from "./redux/reducers";
-import { routerMiddleware } from "react-router-redux";
+import { Router, Route } from "react-router";
+import { configureStore, history } from "./redux/configureStore"
 
-// Middleware
-import thunk from "redux-thunk";
-import { composeWithDevTools } from "redux-devtools-extension";
-
-// UI
 import App from "./App";
 import "./styles/App.css";
-
-// Routing
-import createHistory from "history/createBrowserHistory";
-import { Router, Route } from 'react-router'
-
-const history = createHistory();
-const routing = routerMiddleware(history);
 
 const initialState = {
 	config: {
@@ -35,18 +20,18 @@ const initialState = {
 	}
 };
 
-const store = createStore(
-	rootReducer,
-	initialState,
-	composeWithDevTools(applyMiddleware(thunk, routing))
-);
+const store = configureStore(initialState)
 
 render(
 	<Provider store={store}>
 		<Router history={history}>
 			<div>
 				<Route exact path="/" component={App} />
-				<Route exact path="/hello" render={() => <h1>Hello, World!</h1>} />
+				<Route
+					exact
+					path="/hello"
+					render={() => <h1>Hello, World!</h1>}
+				/>
 			</div>
 		</Router>
 	</Provider>,
