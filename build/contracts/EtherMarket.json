@@ -330,8 +330,14 @@
       "links": {},
       "address": "0x21e3a7d5198cbc0fea0103390c57f00841b9c98d",
       "updated_at": 1504563965474
+    },
+    "1504668382532": {
+      "events": {},
+      "links": {},
+      "address": "0x2f2db87b366bff37454dc06e6c1fa11fad3deb77",
+      "updated_at": 1504668416971
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1504563965474
+  "updated_at": 1504668416971
 }

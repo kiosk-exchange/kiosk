@@ -29,11 +29,19 @@ class PendingTxSnackbar extends Component {
 
   render() {
     if (this.props.txsPending.length > 0) {
+      const firstTx = this.props.txsPending[0].substring(0,5)
+      let message
+      if (this.props.txsPending.length > 1) {
+        message = `Transaction ${firstTx} and ${this.props.txsPending.length} are pending.`
+      } else {
+        message = `Transaction ${firstTx} is pending.`
+      }
+
       return (
         <div>
           <Snackbar
             open={true}
-            message="Event added to your calendar"
+            message={message}
           />
         </div>
       );
