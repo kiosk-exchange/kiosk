@@ -8,7 +8,7 @@ import BuyModal from "./components/BuyModal";
 import BuyKMTModal from "./components/BuyKMTModal";
 import ErrorMessage from "./components/ErrorMessage";
 import { connect } from "react-redux";
-import { initKiosk } from "./redux/actions";
+import { initKiosk } from "./redux/config";
 
 const mapStateToProps = state => ({
   web3: state.config.web3,
