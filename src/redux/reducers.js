@@ -6,7 +6,8 @@ import {
 	SHOW_BUY_MODAL,
 	SHOW_BUY_KMT_MODAL,
 	SELECTED_PRODUCT,
-	SELECTED_QUANTITY
+	SELECTED_QUANTITY,
+	SELECTED_MARKET
 } from "./actions/actions";
 
 import {
@@ -31,6 +32,7 @@ import {
 	REQUEST_ERROR,
 	RECEIVED_ALL_PRODUCTS,
 	RECEIVED_OWNER_PRODUCTS,
+	RECEIVED_MARKET_PRODUCTS,
 	RECEIVED_PURCHASES,
 	RECEIVED_SALES,
 	PURCHASE_IS_PENDING,
@@ -95,6 +97,7 @@ const ETHBalance = (state = null, action) =>
 	reducer(state, action, ETH_BALANCE);
 const selectedMenuItemId = (state = 1, action) =>
 	reducer(state, action, SELECTED_MENU_ITEM_ID);
+const selectedMarket = (state = null, action) => reducer(state, action, SELECTED_MARKET)
 const purchaseIsPending = (state = false, action) =>
 	reducer(state, action, PURCHASE_IS_PENDING);
 
@@ -185,6 +188,11 @@ export const results = (state = resultsDefaultState, action) => {
 				...state,
 				ownerProducts: action.data
 			};
+		case RECEIVED_MARKET_PRODUCTS:
+			return {
+				...state,
+				marketProducts: action.data
+			}
 		case RECEIVED_PURCHASES:
 			return {
 				...state,
@@ -223,6 +231,7 @@ export const rootReducer = combineReducers({
 	config,
 	results,
 	selectedMenuItemId,
+	selectedMarket,
 	purchaseIsPending,
 	buyModal,
 	showBuyKMTModal,

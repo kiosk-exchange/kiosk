@@ -19,7 +19,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
 	onMenuItemClick: id => {
-		// dispatch(selectMenuItem(id));
+		dispatch(selectMenuItem(id));
 	}
 });
 

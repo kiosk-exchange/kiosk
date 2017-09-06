@@ -2,6 +2,7 @@ import { buyProduct } from "../../utils/buy";
 import {
   MENU_ITEM,
   fetchDataForMenuItem,
+  fetchProductsForMarket,
   getPriceAndAvailability,
   purchaseIsPending,
   reloadAfterPurchase
@@ -12,6 +13,7 @@ export const SHOW_BUY_MODAL = "SHOW_BUY_MODAL";
 export const SHOW_BUY_KMT_MODAL = "SHOW_BUY_KMT_MODAL";
 export const SELECTED_PRODUCT = "SELECTED_PRODUCT";
 export const SELECTED_QUANTITY = "QUANTITY";
+export const SELECTED_MARKET = "SELECTED_MARKET";
 
 // Helper function
 const action = (type, data) => ({
@@ -23,10 +25,10 @@ const action = (type, data) => ({
 export const selectedMenuItemId = data =>
   action(SELECTED_MENU_ITEM_ID, { data });
 export const selectedProduct = data => action(SELECTED_PRODUCT, { data });
-// export const selectedMarket = data => action(SELECTED_MARKET, { data });
 export const showBuyModal = data => action(SHOW_BUY_MODAL, { data });
 export const showBuyKMTModal = data => action(SHOW_BUY_KMT_MODAL, { data });
 export const selectedQuantity = data => action(SELECTED_QUANTITY, { data });
+export const selectedMarket = data => action(SELECTED_MARKET, { data });
 
 // TestRPC or Kovan
 // const isSupportedNetwork = network => {
@@ -35,6 +37,7 @@ export const selectedQuantity = data => action(SELECTED_QUANTITY, { data });
 
 export const selectMenuItem = id => {
   return async dispatch => {
+    dispatch(selectedMarket(null));
     dispatch(selectedMenuItemId(id));
     dispatch(fetchDataForMenuItem(id));
   };
@@ -64,7 +67,8 @@ export const selectProduct = index => {
 
 export const selectMarket = market => {
   return dispatch => {
-    console.log("SELECTED MARKET: " + market)
+    dispatch(selectedMarket(market));
+    dispatch(fetchProductsForMarket(market));
   }
 }
 

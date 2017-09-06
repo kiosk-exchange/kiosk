@@ -84,6 +84,7 @@ export const getIsAvailable = (
   });
 };
 
+// TODO: Break this mess up and don't wait for all products to complete
 export const getProducts = async (
   event,
   web3,
@@ -146,14 +147,15 @@ export const getProducts = async (
 export const getMarketProducts = async (
   web3,
   DINRegistry,
-  marketAddr,
-  buyer
+  BuyerContract,
+  buyerAcct,
+  marketAddr
 ) => {
   var event = DINRegistry.NewMarket(
     { market: marketAddr },
     { fromBlock: 0, toBlock: "latest" }
   );
-  return getProducts(event, web3, DINRegistry);
+  return getProducts(event, web3, DINRegistry, BuyerContract, buyerAcct);
 };
 
 // TODO: This should confirm that the owner has not changed
