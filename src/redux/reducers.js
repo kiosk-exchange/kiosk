@@ -2,7 +2,7 @@ import { combineReducers } from "redux";
 import { routerReducer } from "react-router-redux";
 
 import {
-	SELECTED_MENU_ITEM_ID,
+	SELECTED_DATA_TYPE,
 	SHOW_BUY_MODAL,
 	SHOW_BUY_KMT_MODAL,
 	SELECTED_PRODUCT,
@@ -31,6 +31,8 @@ import {
 	REQUEST_LOADING,
 	REQUEST_ERROR,
 	RECEIVED_PRODUCT,
+	RECEIVED_OWNER_DINS,
+	RECEIVED_MARKET_DINS,
 	RECEIVED_PURCHASES,
 	RECEIVED_SALES,
 	PURCHASE_IS_PENDING,
@@ -85,8 +87,8 @@ const KMTBalance = (state = null, action) =>
 	reducer(state, action, KMT_BALANCE);
 const ETHBalance = (state = null, action) =>
 	reducer(state, action, ETH_BALANCE);
-const selectedMenuItemId = (state = 1, action) =>
-	reducer(state, action, SELECTED_MENU_ITEM_ID);
+const dataType = (state = 1, action) =>
+	reducer(state, action, SELECTED_DATA_TYPE);
 const selectedMarket = (state = null, action) =>
 	reducer(state, action, SELECTED_MARKET);
 const purchaseIsPending = (state = false, action) =>
@@ -167,6 +169,16 @@ export const results = (state = resultsDefaultState, action) => {
 				...state,
 				error: action.data
 			};
+		case RECEIVED_OWNER_DINS:
+			return {
+				...state,
+				productFilter: action.data
+			}
+		case RECEIVED_MARKET_DINS:
+			return {
+				...state,
+				productFilter: action.data
+			}
 		case RECEIVED_PRODUCT:
 			// Get the index of the existing product (if any) from the state by its DIN
 			// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex
@@ -240,7 +252,7 @@ export const config = combineReducers({
 export const rootReducer = combineReducers({
 	config,
 	results,
-	selectedMenuItemId,
+	dataType,
 	selectedMarket,
 	purchaseIsPending,
 	buyModal,

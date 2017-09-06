@@ -3,12 +3,12 @@ import CircularProgress from "material-ui/CircularProgress";
 import { connect } from "react-redux";
 import {
 	MarketplaceTable,
-	// MarketTable,
+	MarketTable,
 	PurchasesTable,
 	ProductsTable,
 	SalesTable
 } from "../components/Table";
-import { MENU_ITEM } from "../redux/actions/config";
+import { DATA_TYPE } from "../redux/actions/blockchain";
 // import marked from "marked";
 // import prism from "../utils/prism";
 
@@ -17,9 +17,10 @@ const mapStateToProps = state => ({
 	theme: state.config.theme,
 	isLoading: state.results.isLoading,
 	products: state.results.products,
+	productFilter: state.results.productFilter, // Array of relevant DINs
 	purchases: state.results.purchases,
 	sales: state.results.sales,
-	selectedMenuItemId: state.selectedMenuItemId,
+	dataType: state.dataType,
 	selectedMarket: state.selectedMarket
 });
 
@@ -28,15 +29,16 @@ const TableContainer = ({
 	theme,
 	isLoading,
 	products,
+	productFilter,
 	purchases,
 	sales,
-	selectedMenuItemId,
+	dataType,
 	selectedMarket
 }) => {
 	// Show the market name if a market is selected. Otherwise, show the menu item.
 	const title = selectedMarket
 		? selectedMarket
-		: menuItems[selectedMenuItemId - 1];
+		: menuItems[dataType - 1];
 
 	const headerStyle = {
 		color: theme.gray,
@@ -54,14 +56,15 @@ const TableContainer = ({
 	);
 
 	const dataSource = () => {
-		switch (selectedMenuItemId) {
-			case MENU_ITEM.MARKETPLACE:
+		console.log(dataType)
+		switch (dataType) {
+			case DATA_TYPE.ALL_PRODUCTS:
 				return products;
-			case MENU_ITEM.PURCHASES:
+			case DATA_TYPE.PURCHASES:
 				return purchases;
-			case MENU_ITEM.PRODUCTS:
+			case DATA_TYPE.PRODUCTS:
 				return products;
-			case MENU_ITEM.SALES:
+			case DATA_TYPE.SALES:
 				return sales;
 			default:
 				return [];
@@ -69,6 +72,11 @@ const TableContainer = ({
 	};
 
 	let data = dataSource();
+
+	// If owner or specific market, apply filter
+	if (productFilter && dataType !== DATA_TYPE.ALL_PRODUCTS) {
+		data = data.filter(product => productFilter.includes(product.DIN))
+	}
 
 	const emptyStyle = {
 		display: "flex",
@@ -81,13 +89,13 @@ const TableContainer = ({
 
 	const emptyStateMessage = menuId => {
 		switch (menuId) {
-			case MENU_ITEM.MARKETPLACE:
+			case DATA_TYPE.ALL_PRODUCTS:
 				return "Marketplace not available";
-			case MENU_ITEM.PURCHASES:
+			case DATA_TYPE.PURCHASES:
 				return "You have no purchases";
-			case MENU_ITEM.PRODUCTS:
+			case DATA_TYPE.PRODUCTS:
 				return "You have no products";
-			case MENU_ITEM.SALES:
+			case DATA_TYPE.SALES:
 				return "You have no sales";
 			default:
 				return "";
@@ -96,7 +104,7 @@ const TableContainer = ({
 
 	const emptyState = (
 		<h1 style={emptyStyle}>
-			{emptyStateMessage(selectedMenuItemId)}
+			{emptyStateMessage(dataType)}
 		</h1>
 	);
 
@@ -116,30 +124,29 @@ const TableContainer = ({
 		return emptyState;
 	}
 
-	const getTable = () => {
-		// if (selectedMarket && marketProducts.length > 0) {
-		// 	return <MarketTable products={marketProducts} />;
-		// }
-		switch (selectedMenuItemId) {
-			case MENU_ITEM.MARKETPLACE:
+	const configureTable = () => {
+		switch (dataType) {
+			case DATA_TYPE.ALL_PRODUCTS:
 				return <MarketplaceTable products={data} />;
-			case MENU_ITEM.PURCHASES:
+			case DATA_TYPE.PURCHASES:
 				return <PurchasesTable orders={data} />;
-			case MENU_ITEM.PRODUCTS:
+			case DATA_TYPE.PRODUCTS:
 				return <ProductsTable products={data} />;
-			case MENU_ITEM.SALES:
+			case DATA_TYPE.SALES:
 				return <SalesTable orders={data} />;
+			case DATA_TYPE.MARKET:
+				return <MarketTable products={data} />
 			default:
 				return null;
 		}
 	};
 
-	const actualTable = getTable(selectedMenuItemId);
+	const table = configureTable(dataType);
 
 	return (
 		<div>
 			{titleSection}
-			{actualTable}
+			{table}
 		</div>
 	);
 };

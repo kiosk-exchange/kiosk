@@ -119,7 +119,6 @@ export const getProduct = async (web3, registry, BuyerContract, buyerAcct, DIN) 
       value,
       available
     };
-    console.log(fullProduct);
     return fullProduct;
   } catch (err) {
     return product;

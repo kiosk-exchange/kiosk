@@ -1,6 +1,6 @@
 import { buyProduct } from "../../utils/buy";
 import {
-  MENU_ITEM,
+  DATA_TYPE,
   fetchDataForMenuItem,
   fetchProductsForMarket,
   getPriceAndAvailability,
@@ -8,7 +8,7 @@ import {
   reloadAfterPurchase
 } from "./blockchain";
 
-export const SELECTED_MENU_ITEM_ID = "SELECTED_MENU_ITEM_ID";
+export const SELECTED_DATA_TYPE = "SELECTED_DATA_TYPE";
 export const SHOW_BUY_MODAL = "SHOW_BUY_MODAL";
 export const SHOW_BUY_KMT_MODAL = "SHOW_BUY_KMT_MODAL";
 export const SELECTED_PRODUCT = "SELECTED_PRODUCT";
@@ -22,8 +22,7 @@ const action = (type, data) => ({
 });
 
 // Actions
-export const selectedMenuItemId = data =>
-  action(SELECTED_MENU_ITEM_ID, { data });
+export const selectedDataType = data => action(SELECTED_DATA_TYPE, { data });
 export const selectedProduct = data => action(SELECTED_PRODUCT, { data });
 export const showBuyModal = data => action(SHOW_BUY_MODAL, { data });
 export const showBuyKMTModal = data => action(SHOW_BUY_KMT_MODAL, { data });
@@ -38,7 +37,7 @@ export const selectedMarket = data => action(SELECTED_MARKET, { data });
 export const selectMenuItem = id => {
   return async dispatch => {
     dispatch(selectedMarket(null));
-    dispatch(selectedMenuItemId(id));
+    dispatch(selectedDataType(id));
     dispatch(fetchDataForMenuItem(id));
   };
 };
@@ -49,7 +48,7 @@ export const selectProduct = index => {
     let product;
 
     switch (menuItem) {
-      case MENU_ITEM.MARKETPLACE:
+      case DATA_TYPE.ALL_PRODUCTS:
         const products = getState().results.allProducts;
         product = products[index];
         break;
@@ -67,10 +66,11 @@ export const selectProduct = index => {
 
 export const selectMarket = market => {
   return dispatch => {
+    dispatch(selectedDataType(DATA_TYPE.MARKET))
     dispatch(selectedMarket(market));
     dispatch(fetchProductsForMarket(market));
-  }
-}
+  };
+};
 
 export const buyNow = product => {
   return async (dispatch, getState) => {
