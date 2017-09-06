@@ -1,0 +1,132 @@
+import {
+  getAllProducts,
+  getOwnerProducts,
+  getValue,
+  getIsAvailable
+} from "../utils/products";
+import { getPurchases, getSales } from "../utils/orders";
+import { getBalances } from "./config"
+
+export const REQUEST_LOADING = "REQUEST_LOADING";
+export const REQUEST_ERROR = "REQUEST_ERROR";
+export const RECEIVED_ALL_PRODUCTS = "RECEIVED_ALL_PRODUCTS";
+export const RECEIVED_OWNER_PRODUCTS = "RECEIVED_OWNER_PRODUCTS";
+export const RECEIVED_PURCHASES = "RECEIVED_PURCHASES";
+export const RECEIVED_SALES = "RECEIVED_SALES";
+
+export const MENU_ITEM = {
+  MARKETPLACE: 1,
+  PURCHASES: 2,
+  PRODUCTS: 3,
+  SALES: 4
+};
+
+const ORDER_TYPE = {
+  PURCHASES: "purchases",
+  SALES: "sales"
+};
+
+const PRODUCT_FILTER = {
+  ALL: "all",
+  OWNER: "owner"
+};
+
+// Helper function
+const action = (type, data) => ({
+  type: type,
+  ...data
+});
+
+export const receivedAllProducts = data =>
+  action(RECEIVED_ALL_PRODUCTS, { data });
+export const receivedOwnerProducts = data =>
+  action(RECEIVED_OWNER_PRODUCTS, { data });
+export const receivedPurchases = data => action(RECEIVED_PURCHASES, { data });
+export const receivedSales = data => action(RECEIVED_SALES, { data });
+export const requestLoading = data => action(REQUEST_LOADING, { data });
+export const requestError = data => action(REQUEST_ERROR, { data });
+
+const reloadAfterPurchase = () => {
+  return async dispatch => {
+    dispatch(getBalances());
+    dispatch(fetchOrders(ORDER_TYPE.PURCHASES));
+  };
+};
+
+const fetchProducts = filter => {
+  return async (dispatch, getState) => {
+    const web3 = getState().config.web3;
+    const DINRegistry = getState().config.DINRegistry;
+    const BuyerContract = getState().config.BuyerContract;
+    const account = getState().config.account;
+
+    if (DINRegistry && web3 && account) {
+      if (filter === PRODUCT_FILTER.ALL) {
+        const products = await getAllProducts(
+          web3,
+          DINRegistry,
+          BuyerContract,
+          account
+        );
+        dispatch(receivedAllProducts(products));
+      } else if (filter === PRODUCT_FILTER.OWNER) {
+        const products = await getOwnerProducts(
+          web3,
+          DINRegistry,
+          BuyerContract,
+          account,
+          account
+        );
+        dispatch(receivedOwnerProducts(products));
+      }
+    }
+  };
+};
+
+const fetchOrders = type => {
+  return async (dispatch, getState) => {
+    const web3 = getState().config.web3;
+    const OrderStore = getState().config.OrderStore;
+    const account = getState().config.account;
+
+    if (OrderStore && web3 && account) {
+      if (type === ORDER_TYPE.PURCHASES) {
+        const purchases = await getPurchases(OrderStore, web3, account);
+        dispatch(receivedPurchases(purchases));
+      } else if (type === ORDER_TYPE.SALES) {
+        const sales = await getSales(OrderStore, web3, account);
+        dispatch(receivedSales(sales));
+      }
+    }
+  };
+};
+
+export const fetchDataForMenuItem = id => {
+  return async dispatch => {
+    dispatch(requestError(false));
+    dispatch(requestLoading(true));
+
+    try {
+      switch (id) {
+        case MENU_ITEM.MARKETPLACE:
+          await dispatch(fetchProducts(PRODUCT_FILTER.ALL));
+          break;
+        case MENU_ITEM.PURCHASES:
+          await dispatch(fetchOrders(ORDER_TYPE.PURCHASES));
+          break;
+        case MENU_ITEM.PRODUCTS:
+          await dispatch(fetchProducts(PRODUCT_FILTER.OWNER));
+          break;
+        case MENU_ITEM.SALES:
+          await dispatch(fetchOrders(ORDER_TYPE.SALES));
+          break;
+        default:
+          break;
+      }
+    } catch (err) {
+      dispatch(requestError(true));
+    }
+
+    dispatch(requestLoading(false));
+  };
+};
