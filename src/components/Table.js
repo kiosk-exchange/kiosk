@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { v4 } from "node-uuid";
+import { selectMarket } from "../redux/actions/actions";
 
 import {
 	Table,
@@ -12,7 +13,7 @@ import {
 } from "material-ui/Table";
 import BuyColumn from "./BuyColumn";
 
-const DataTable = ({ dataSource, headers, values }) => {
+const DataTable = ({ dataSource, headers, values, onLinkClick }) => {
 	const tableStyle = {
 		borderStyle: "solid",
 		borderWidth: "1px",
@@ -49,7 +50,8 @@ const DataTable = ({ dataSource, headers, values }) => {
 										<TableRowColumn key={v4()}>
 											<Link
 												style={linkStyle}
-												to={`/market/${item[value]}`}
+												to="#"
+												onClick={() => console.log((item[value]))}
 											>
 												{item[value].slice(0, 12)}
 											</Link>
@@ -88,6 +90,7 @@ export const MarketTable = ({ products }) => {
 		<DataTable dataSource={products} headers={headers} values={values} />
 	);
 };
+
 
 export const ProductsTable = ({ products }) => {
 	const headers = ["DIN", "Name", "Price (KMT)", "Market"];

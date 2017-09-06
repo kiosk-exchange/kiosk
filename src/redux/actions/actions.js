@@ -35,6 +35,7 @@ export const selectedQuantity = data => action(SELECTED_QUANTITY, { data });
 
 export const selectMenuItem = id => {
   return async dispatch => {
+    dispatch(selectedMenuItemId(id));
     dispatch(fetchDataForMenuItem(id));
   };
 };
@@ -60,6 +61,12 @@ export const selectProduct = index => {
     }
   };
 };
+
+export const selectMarket = market => {
+  return dispatch => {
+    console.log("SELECTED MARKET: " + market)
+  }
+}
 
 export const buyNow = product => {
   return async (dispatch, getState) => {
