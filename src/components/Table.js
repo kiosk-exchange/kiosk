@@ -67,17 +67,21 @@ class DataTable extends Component {
 											/>
 										);
 									} else if (value === "market") {
+										const market = {
+											name: item.marketName,
+											address: item.market
+										}
 										return (
 											<TableRowColumn key={v4()} style={{ maxWidth: "60px" }}>
 												<Link
 													style={linkStyle}
-													to={`/market/${item[value]}`}
+													to={`/market/${market.address}`}
 													onClick={() =>
 														onLinkClick(
-															item[value]
+															market
 														)}
 												>
-													{item[value]}
+													{market.name}
 												</Link>
 											</TableRowColumn>
 										);

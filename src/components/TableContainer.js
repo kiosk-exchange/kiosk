@@ -1,6 +1,5 @@
 import React from "react";
 import CircularProgress from "material-ui/CircularProgress";
-import { connect } from "react-redux";
 import {
 	MarketplaceTable,
 	MarketTable,
@@ -8,6 +7,7 @@ import {
 	ProductsTable,
 	SalesTable
 } from "../components/Table";
+import { connect } from "react-redux";
 import { DATA_TYPE } from "../redux/actions/blockchain";
 // import marked from "marked";
 // import prism from "../utils/prism";
@@ -36,7 +36,9 @@ const TableContainer = ({
 	selectedMarket
 }) => {
 	// Show the market name if a market is selected. Otherwise, show the menu item.
-	const title = selectedMarket ? selectedMarket : menuItems[dataType - 1];
+	const title = selectedMarket
+		? selectedMarket.name
+		: menuItems[dataType - 1];
 
 	const headerStyle = {
 		color: theme.gray,
@@ -47,10 +49,16 @@ const TableContainer = ({
 		overflow: "hidden"
 	};
 
+	// Show a subtitle with the market address if a market is selected.
+	const subtitle = selectedMarket ? <h4 style={{color: theme.lightGray}}>{selectedMarket.address}</h4> : null;
+
 	const titleSection = (
-		<h1 style={headerStyle}>
-			{title}
-		</h1>
+		<div>
+			<h1 style={headerStyle}>
+				{title}
+			</h1>
+			{subtitle}
+		</div>
 	);
 
 	const dataSource = () => {
@@ -70,12 +78,12 @@ const TableContainer = ({
 
 	let data = dataSource();
 
-	console.log(data)
+	console.log(data);
 
 	// If owner or specific market, apply filter
 	if (productFilter && dataType !== DATA_TYPE.ALL_PRODUCTS) {
 		data = data.filter(product => productFilter.includes(product.DIN));
-	}	
+	}
 
 	const emptyStyle = {
 		display: "flex",

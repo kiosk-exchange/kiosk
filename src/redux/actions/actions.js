@@ -85,10 +85,9 @@ export const selectProduct = index => {
 
 export const selectMarket = market => {
   return dispatch => {
-    console.log("SELECT MARKET")
     dispatch(selectedDataType(DATA_TYPE.MARKET))
     dispatch(selectedMarket(market));
-    dispatch(fetchProductsForMarket(market));
+    dispatch(fetchProductsForMarket(market.address));
   };
 };
 

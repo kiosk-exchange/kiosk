@@ -113,11 +113,13 @@ export const getProduct = async (web3, registry, BuyerContract, buyerAcct, DIN) 
       buyerAcct,
       1
     );
+    const marketName = await getMarketName(web3, market);
     const fullProduct = {
       ...product,
       name,
       value,
-      available
+      available,
+      marketName
     };
     return fullProduct;
   } catch (err) {

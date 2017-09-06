@@ -106,6 +106,7 @@ const buyModalDefaultState = {
 
 export const showBuyKMTModal = (state = false, action) =>
 	reducer(state, action, SHOW_BUY_KMT_MODAL);
+	
 export const buyModal = (state = buyModalDefaultState, action) => {
 	switch (action.type) {
 		case SHOW_BUY_MODAL:
