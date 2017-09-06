@@ -53,7 +53,8 @@ export const selectMenuItem = id => {
       case DATA_TYPE.SALES:
         dispatch(push("/sales"))
         break;
-
+      default:
+        break;
     }
 
     dispatch(fetchDataForMenuItem(id));
@@ -84,6 +85,7 @@ export const selectProduct = index => {
 
 export const selectMarket = market => {
   return dispatch => {
+    console.log("SELECT MARKET")
     dispatch(selectedDataType(DATA_TYPE.MARKET))
     dispatch(selectedMarket(market));
     dispatch(fetchProductsForMarket(market));

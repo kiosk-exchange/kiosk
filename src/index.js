@@ -39,36 +39,6 @@ render(
 		<Router history={history}>
 			<div>
 				<Route exactPath="/" component={App} />
-				<Route
-					path="/marketplace"
-					render={() => {
-						return <App dataType={1} />;
-					}}
-				/>
-				<Route
-					path="/purchases"
-					render={() => {
-						return <App dataType={2} />;
-					}}
-				/>
-				<Route
-					path="/products"
-					render={() => {
-						return <App dataType={3} />;
-					}}
-				/>
-				<Route
-					path="/sales"
-					render={() => {
-						return <App dataType={4} />;
-					}}
-				/>
-				<Route
-					path="/market/:market"
-					render={() => {
-						return <App dataType={5} />;
-					}}
-				/>
 			</div>
 		</Router>
 	</Provider>,

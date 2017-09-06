@@ -9,7 +9,6 @@ import {
 	SalesTable
 } from "../components/Table";
 import { DATA_TYPE } from "../redux/actions/blockchain";
-import { Route } from "react-router";
 // import marked from "marked";
 // import prism from "../utils/prism";
 
@@ -55,14 +54,13 @@ const TableContainer = ({
 	);
 
 	const dataSource = () => {
-		console.log(dataType);
 		switch (dataType) {
 			case DATA_TYPE.ALL_PRODUCTS:
+			case DATA_TYPE.PRODUCTS:
+			case DATA_TYPE.MARKET:
 				return products;
 			case DATA_TYPE.PURCHASES:
 				return purchases;
-			case DATA_TYPE.PRODUCTS:
-				return products;
 			case DATA_TYPE.SALES:
 				return sales;
 			default:
@@ -72,10 +70,12 @@ const TableContainer = ({
 
 	let data = dataSource();
 
+	console.log(data)
+
 	// If owner or specific market, apply filter
 	if (productFilter && dataType !== DATA_TYPE.ALL_PRODUCTS) {
 		data = data.filter(product => productFilter.includes(product.DIN));
-	}
+	}	
 
 	const emptyStyle = {
 		display: "flex",
@@ -141,7 +141,6 @@ const TableContainer = ({
 	};
 
 	const table = configureTable();
-
 
 	return (
 		<div>

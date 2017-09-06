@@ -99,7 +99,6 @@ const fetchProducts = filter => {
           account,
           account
         );
-        console.log("1")
         dispatch(receivedOwnerDINs(DINs));
       }
       await DINs.map(async DIN => {

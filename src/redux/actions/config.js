@@ -12,7 +12,7 @@ import {
   getEtherMarket
 } from "../../utils/contracts";
 import { loadWeb3 } from "../../utils/kioskWeb3";
-import { DATA_TYPE, fetchDataForMenuItem } from "./blockchain";
+import { fetchDataForMenuItem } from "./blockchain";
 import { selectedDataType } from "./actions";
 
 export const WEB_3_LOADING = "WEB_3_LOADING";
