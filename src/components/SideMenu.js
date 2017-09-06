@@ -54,13 +54,14 @@ const SideMenu = ({ account, KMT, ETH, selectedItem, selectMenuItem }) => {
 		style: style
 	};
 
+
 	return (
 		<SelectableList style={listStyle} value={selectedItem}>
 			<ListItem
 				style={logoStyle}
 				disabled={true}
 				primaryText="kiosk"
-				leftAvatar={<Avatar src="favicon.png" backgroundColor="none" />}
+				leftAvatar={<Avatar src={"./favicon.png"} backgroundColor="none" />}
 			/>
 			<br />
 			<Subheader style={subheaderStyle}>BUY</Subheader>
