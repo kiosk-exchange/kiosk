@@ -1,7 +1,8 @@
 import {
-  getAllProducts,
-  getOwnerProducts,
-  getMarketProducts,
+  getAllProductDINs,
+  getOwnerProductDINs,
+  getMarketProductDINs,
+  getProduct,
   getValue,
   getIsAvailable
 } from "../../utils/products";
@@ -65,18 +66,25 @@ const fetchProducts = filter => {
     const DINRegistry = getState().config.DINRegistry;
     const BuyerContract = getState().config.BuyerContract;
     const account = getState().config.account;
+    const registry = Promise.promisifyAll(DINRegistry);
+
+    console.log("1")
 
     if (web3 && DINRegistry && account) {
       if (filter === PRODUCT_FILTER.ALL) {
-        const products = await getAllProducts(
+        const DINs = await getAllProductDINs(
           web3,
           DINRegistry,
           BuyerContract,
           account
         );
-        dispatch(receivedAllProducts(products));
+        console.log(DINs)
+        for (let DIN in DINs) {
+          const product = await getProduct(DIN, registry, BuyerContract, account, DIN);
+          console.log(product)
+        }
       } else if (filter === PRODUCT_FILTER.OWNER) {
-        const products = await getOwnerProducts(
+        const products = await getOwnerProductDINs(
           web3,
           DINRegistry,
           BuyerContract,
@@ -97,7 +105,7 @@ export const fetchProductsForMarket = market => {
     const account = getState().config.account;
 
     if (web3 && DINRegistry && account) {
-      const products = await getMarketProducts(
+      const products = await getMarketProductDINs(
         web3,
         DINRegistry,
         BuyerContract,

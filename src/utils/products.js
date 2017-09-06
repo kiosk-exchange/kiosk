@@ -104,9 +104,7 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-const getProduct = async ({ web3, registry, BuyerContract, buyerAcct, DIN, onRequest, onCompletion }) => {
-  onRequest(DIN);
-
+const getProduct = async (web3, registry, BuyerContract, buyerAcct, DIN) => {
   const owner = await registry.ownerAsync(DIN);
   const market = await registry.marketAsync(DIN);
 
@@ -132,14 +130,11 @@ const getProduct = async ({ web3, registry, BuyerContract, buyerAcct, DIN, onReq
       value,
       available
     };
-    onCompletion(DIN);
+    return fullProduct;
   } catch (err) {
-    onCompletion(DIN);
+    return product;
   }
-
 };
-
-const dispatchGetProduct = connect(null, mapDispatchToProps)(getProduct)
 
 const getProducts = async (
   event,
@@ -154,15 +149,11 @@ const getProducts = async (
     return parseInt(log["args"]["DIN"]["c"][0], 10);
   });
 
-  const registry = Promise.promisifyAll(DINRegistry);
-
-  for (let DIN of DINs) {
-    dispatchGetProduct(web3, registry, BuyerContract, buyerAcct, DIN);
-  }
+  return DINs;
 };
 
 // TODO: This should confirm that the market has not changed
-export const getMarketProducts = async (
+export const getMarketProductDINs = async (
   web3,
   DINRegistry,
   BuyerContract,
@@ -177,7 +168,7 @@ export const getMarketProducts = async (
 };
 
 // TODO: This should confirm that the owner has not changed
-export const getOwnerProducts = async (
+export const getOwnerProductDINs = async (
   web3,
   DINRegistry,
   BuyerContract,
@@ -191,7 +182,7 @@ export const getOwnerProducts = async (
   return getProducts(event, web3, DINRegistry, BuyerContract, buyerAcct);
 };
 
-export const getAllProducts = async (
+export const getAllProductDINs = async (
   web3,
   DINRegistry,
   BuyerContract,

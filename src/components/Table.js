@@ -14,10 +14,6 @@ import {
 } from "material-ui/Table";
 import BuyColumn from "./BuyColumn";
 
-const mapStateToProps = state => ({
-	accountLength: state.config.accountDisplayLength
-});
-
 const mapDispatchToProps = dispatch => ({
 	onLinkClick: market => {
 		dispatch(selectMarket(market));
@@ -30,7 +26,6 @@ class DataTable extends Component {
 			dataSource,
 			headers,
 			values,
-			accountLength,
 			onLinkClick
 		} = this.props;
 
@@ -112,7 +107,7 @@ class DataTable extends Component {
 	}
 }
 
-const LinkDataTable = connect(mapStateToProps, mapDispatchToProps)(DataTable);
+const LinkDataTable = connect(null, mapDispatchToProps)(DataTable);
 
 export const MarketplaceTable = ({ products }) => {
 	const headers = ["DIN", "Name", "Price (KMT)", "Market", "Buy"];
