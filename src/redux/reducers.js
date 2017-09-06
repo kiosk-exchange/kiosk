@@ -1,4 +1,6 @@
 import { combineReducers } from "redux";
+import { routerReducer } from "react-router-redux";
+
 
 import {
 	WEB_3_LOADING,
@@ -25,6 +27,7 @@ import {
 	SELECTED_PRODUCT,
 	SELECTED_QUANTITY,
 	SHOW_BUY_MODAL,
+	SHOW_BUY_KMT_MODAL,
 	PURCHASE_IS_PENDING,
 	TOTAL_PRICE_CALCULATING,
 	TOTAL_PRICE,
@@ -81,6 +84,7 @@ const buyModalDefaultState = {
 	error: false,
 }
 
+export const showBuyKMTModal = (state = false, action) => reducer(state, action, SHOW_BUY_KMT_MODAL);
 export const buyModal = (state = buyModalDefaultState, action) => {
 	switch (action.type) {
 		case SHOW_BUY_MODAL:
@@ -189,3 +193,13 @@ export const config = combineReducers({
 	OrderStore,
 	EtherMarket
 });
+
+export const rootReducer = combineReducers({
+		config,
+		results,
+		selectedMenuItemId,
+		purchaseIsPending,
+		buyModal,
+		showBuyKMTModal,
+		router: routerReducer
+	})

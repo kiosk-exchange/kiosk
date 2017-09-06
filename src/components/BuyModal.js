@@ -36,14 +36,15 @@ const BuyModal = ({
   onBuyNow,
   onClose
 }) => {
+
   if (!product) {
     return null;
   }
 
   const contentStyle = {
     width: "50%",
-    minWidth: "300px",
-    maxWidth: "400px"
+    minWidth: "350px",
+    maxWidth: "450px"
   };
 
   const subheaderStyle = {
@@ -87,12 +88,6 @@ const BuyModal = ({
     actions.push(errorMessage);
   }
 
-  const valueStyle = {
-    width: "100%",
-    padding: "0px 20px",
-    textAlign: "right"
-  };
-
   const show = isOpen === true && totalPrice !== null && available !== null;
 
   return (
@@ -107,7 +102,7 @@ const BuyModal = ({
           >
             {product.name}
             <Subheader style={subheaderStyle}>
-              {product.DIN}
+              {"DIN: " + product.DIN}
             </Subheader>
           </div>
         }
@@ -119,16 +114,16 @@ const BuyModal = ({
         onRequestClose={onClose}
         autoScrollBodyContent={true}
       >
-        <div style={{ color: theme.gray }}>
-          <div style={{ display: "flex" }}>
-            <h2>Quantity</h2>
-            <div style={valueStyle}>
+        <div style={{ color: theme.gray, padding: "10px" }}>
+          <div style={{ display: "flex", width: "100%" }}>
+            <h2>Quantity:</h2>
+            <div style={{marginLeft: "auto"}}>
               <QuantityPicker theme={theme} />
             </div>
           </div>
-          <div style={{ display: "flex" }}>
-            <h2>Total</h2>
-            <div style={valueStyle}>
+          <div style={{ display: "flex", width: "100%" }}>
+            <h2>Total Price:</h2>
+            <div style={{marginLeft: "auto"}}>
               <h2>
                 {totalPrice + " KMT"}
               </h2>

@@ -2,16 +2,10 @@ import React from "react";
 import { render } from "react-dom";
 
 // State
-import { createStore, combineReducers, applyMiddleware } from "redux";
+import { createStore, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
-import {
-	config,
-	results,
-	selectedMenuItemId,
-	purchaseIsPending,
-	buyModal
-} from "./redux/reducers";
-import { routerReducer, routerMiddleware } from "react-router-redux";
+import { rootReducer } from "./redux/reducers";
+import { routerMiddleware } from "react-router-redux";
 
 // Middleware
 import thunk from "redux-thunk";
@@ -23,11 +17,10 @@ import "./styles/App.css";
 
 // Routing
 import createHistory from "history/createBrowserHistory";
-import { Router, Route, browserHistory } from 'react-router'
-import { ConnectedRouter } from "react-router-redux";
+import { Router, Route } from 'react-router'
 
 const history = createHistory();
-const middleware = routerMiddleware(history);
+const routing = routerMiddleware(history);
 
 const initialState = {
 	config: {
@@ -43,16 +36,9 @@ const initialState = {
 };
 
 const store = createStore(
-	combineReducers({
-		config,
-		results,
-		selectedMenuItemId,
-		purchaseIsPending,
-		buyModal,
-		router: routerReducer
-	}),
+	rootReducer,
 	initialState,
-	composeWithDevTools(applyMiddleware(thunk, middleware))
+	composeWithDevTools(applyMiddleware(thunk, routing))
 );
 
 render(
@@ -70,5 +56,3 @@ render(
 // if (module.hot) {
 // 	module.hot.accept();
 // }
-
-// </Provider>,

@@ -47,6 +47,7 @@ export const RECEIVED_SALES = "RECEIVED_SALES";
 
 // Buy Modal
 export const SHOW_BUY_MODAL = "SHOW_BUY_MODAL";
+export const SHOW_BUY_KMT_MODAL = "SHOW_BUY_KMT_MODAL";
 export const SELECTED_PRODUCT = "SELECTED_PRODUCT";
 export const SELECTED_QUANTITY = "QUANTITY";
 export const TOTAL_PRICE_CALCULATING = "TOTAL_PRICE_CALCULATING";
@@ -90,6 +91,7 @@ export const receivedPurchases = data => action(RECEIVED_PURCHASES, { data });
 export const receivedSales = data => action(RECEIVED_SALES, { data });
 export const selectedProduct = data => action(SELECTED_PRODUCT, { data });
 export const showBuyModal = data => action(SHOW_BUY_MODAL, { data });
+export const showBuyKMTModal = data => action(SHOW_BUY_KMT_MODAL, { data });
 export const purchaseIsPending = data => action(PURCHASE_IS_PENDING, { data });
 export const selectedQuantity = data => action(SELECTED_QUANTITY, { data });
 export const totalPriceIsCalculating = data =>
@@ -403,23 +405,29 @@ export const buyNow = product => {
   };
 };
 
-export const buyKioskMarketToken = () => {
-  return async (dispatch, getState) => {
-    try {
-      const web3 = getState().config.web3;
-      const EtherMarket = getState().config.EtherMarket;
-      const value = web3.toWei(1, "ether"); // Hardcode for now
-      const account = getState().config.account;
+// export const buyKioskMarketToken = () => {
+//   return dispatch => {
+//     dispatch();
+//   }
+// }
 
-      const txId = await buyKMT(EtherMarket, value, account);
-      console.log(txId);
-      // Reload balances
-      dispatch(getBalances());
-    } catch (err) {
-      console.log("ERROR: BUY KMT");
-    }
-  };
-};
+// export const buyKioskMarketToken = () => {
+//   return async (dispatch, getState) => {
+//     try {
+//       const web3 = getState().config.web3;
+//       const EtherMarket = getState().config.EtherMarket;
+//       const value = web3.toWei(1, "ether"); // Hardcode for now
+//       const account = getState().config.account;
+
+//       const txId = await buyKMT(EtherMarket, value, account);
+//       console.log(txId);
+//       // Reload balances
+//       dispatch(getBalances());
+//     } catch (err) {
+//       console.log("ERROR: BUY KMT");
+//     }
+//   };
+// };
 
 export const changedQuantity = quantity => {
   return async (dispatch, getState) => {

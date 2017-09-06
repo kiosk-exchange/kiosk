@@ -50,7 +50,6 @@ export const loadWeb3 = () => {
       const web3 = new Web3(
         new Web3.providers.HttpProvider("http://localhost:8545")
       );
-      console.log(web3);
       resolve(web3);
     } else {
       let web3 = window.web3;
