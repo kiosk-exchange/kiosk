@@ -23,10 +23,12 @@ class App extends Component {
   }
 
   render() {
-    const { web3, error } = this.props;
+    const { web3, error, isMarket } = this.props;
+
+    console.log(isMarket)
 
     const hContainerStyle = {
-      display: "flex", // 💪
+      display: "flex",
       flexFlow: "row",
       width: "100%",
       height: "100%"

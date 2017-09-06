@@ -46,13 +46,14 @@ render(
 					path="/hello"
 					render={() => <h1>Hello, World!</h1>}
 				/>
-				<Route path="/market/:market" render={() => <App />} />
+				<Route path="/market/:market" render={() => <App isMarket={true}/>} />
 			</div>
 		</Router>
 	</Provider>,
 	document.getElementById("root")
 );
 
-if (module.hot) {
-	module.hot.accept();
-}
+// TODO: Figure out hot reloading with React Router
+// if (module.hot) {
+// 	module.hot.accept();
+// }
