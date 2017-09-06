@@ -13,6 +13,7 @@ import {
 } from "../../utils/contracts";
 import { loadWeb3 } from "../../utils/kioskWeb3";
 import { DATA_TYPE, fetchDataForMenuItem } from "./blockchain";
+import { selectedDataType } from "./actions";
 
 export const WEB_3_LOADING = "WEB_3_LOADING";
 export const WEB_3_ERROR = "WEB_3_ERROR";
@@ -93,7 +94,7 @@ const getBalances = () => {
   };
 };
 
-const getContracts = () => {
+const getContracts = dataType => {
   return async (dispatch, getState) => {
     const web3 = getState().config.web3;
 
@@ -110,7 +111,7 @@ const getContracts = () => {
       dispatch(OrderStoreContract(OrderStore));
       dispatch(EtherMarketContract(EtherMarket));
 
-      dispatch(fetchDataForMenuItem(DATA_TYPE.ALL_PRODUCTS));
+      dispatch(fetchDataForMenuItem(dataType));
       dispatch(getBalances());
     } catch (err) {
       console.log("ERROR: GET CONTRACTS");
@@ -118,7 +119,7 @@ const getContracts = () => {
   };
 };
 
-const refreshNetwork = () => {
+const refreshNetwork = dataType => {
   return async (dispatch, getState) => {
     const currentWeb3 = getState().config.web3;
     const KMT = getState().config.KMTContract;
@@ -132,7 +133,8 @@ const refreshNetwork = () => {
 
       if (!KMT) {
         // Get contracts
-        dispatch(getContracts());
+        dispatch(selectedDataType(dataType))
+        dispatch(getContracts(dataType));
       }
     } else {
       try {
@@ -147,8 +149,8 @@ const refreshNetwork = () => {
 };
 
 // Fetch web3, contracts, account and dispatch to store
-export const initKiosk = () => {
+export const initKiosk = dataType => {
   return async dispatch => {
-    setInterval(() => dispatch(refreshNetwork()), 1000);
+    setInterval(() => dispatch(refreshNetwork(dataType)), 1000);
   };
 };

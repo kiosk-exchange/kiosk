@@ -71,7 +71,7 @@ class DataTable extends Component {
 											<TableRowColumn key={v4()} style={{ maxWidth: "60px" }}>
 												<Link
 													style={linkStyle}
-													to="#"
+													to={`/market/${item[value]}`}
 													onClick={() =>
 														onLinkClick(
 															item[value]

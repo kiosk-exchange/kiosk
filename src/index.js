@@ -1,7 +1,7 @@
 import React from "react";
 import { render } from "react-dom";
 import { Provider } from "react-redux";
-import { routerMiddleware } from 'react-router-redux'
+import { routerMiddleware } from "react-router-redux";
 import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
@@ -27,10 +27,7 @@ const initialState = {
 };
 
 const history = createHistory();
-
-
 const routing = routerMiddleware(history);
-
 const store = createStore(
 	rootReducer,
 	initialState,
@@ -41,13 +38,37 @@ render(
 	<Provider store={store}>
 		<Router history={history}>
 			<div>
-				<Route exact path="/" component={App} />
+				<Route exactPath="/" component={App} />
 				<Route
-					exact
-					path="/hello"
-					render={() => <h1>Hello, World!</h1>}
+					path="/marketplace"
+					render={() => {
+						return <App dataType={1} />;
+					}}
 				/>
-				<Route path="/market/:market" render={() => <App isMarket={true}/>} />
+				<Route
+					path="/purchases"
+					render={() => {
+						return <App dataType={2} />;
+					}}
+				/>
+				<Route
+					path="/products"
+					render={() => {
+						return <App dataType={3} />;
+					}}
+				/>
+				<Route
+					path="/sales"
+					render={() => {
+						return <App dataType={4} />;
+					}}
+				/>
+				<Route
+					path="/market/:market"
+					render={() => {
+						return <App dataType={5} />;
+					}}
+				/>
 			</div>
 		</Router>
 	</Provider>,

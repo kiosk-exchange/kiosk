@@ -9,6 +9,7 @@ import {
 	SalesTable
 } from "../components/Table";
 import { DATA_TYPE } from "../redux/actions/blockchain";
+import { Route } from "react-router";
 // import marked from "marked";
 // import prism from "../utils/prism";
 
@@ -36,9 +37,7 @@ const TableContainer = ({
 	selectedMarket
 }) => {
 	// Show the market name if a market is selected. Otherwise, show the menu item.
-	const title = selectedMarket
-		? selectedMarket
-		: menuItems[dataType - 1];
+	const title = selectedMarket ? selectedMarket : menuItems[dataType - 1];
 
 	const headerStyle = {
 		color: theme.gray,
@@ -56,7 +55,7 @@ const TableContainer = ({
 	);
 
 	const dataSource = () => {
-		console.log(dataType)
+		console.log(dataType);
 		switch (dataType) {
 			case DATA_TYPE.ALL_PRODUCTS:
 				return products;
@@ -75,7 +74,7 @@ const TableContainer = ({
 
 	// If owner or specific market, apply filter
 	if (productFilter && dataType !== DATA_TYPE.ALL_PRODUCTS) {
-		data = data.filter(product => productFilter.includes(product.DIN))
+		data = data.filter(product => productFilter.includes(product.DIN));
 	}
 
 	const emptyStyle = {
@@ -135,13 +134,14 @@ const TableContainer = ({
 			case DATA_TYPE.SALES:
 				return <SalesTable orders={data} />;
 			case DATA_TYPE.MARKET:
-				return <MarketTable products={data} />
+				return <MarketTable products={data} />;
 			default:
 				return null;
 		}
 	};
 
-	const table = configureTable(dataType);
+	const table = configureTable();
+
 
 	return (
 		<div>

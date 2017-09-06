@@ -7,6 +7,7 @@ import {
   purchaseIsPending,
   reloadAfterPurchase
 } from "./blockchain";
+import { push } from 'react-router-redux'
 
 export const SELECTED_DATA_TYPE = "SELECTED_DATA_TYPE";
 export const SHOW_BUY_MODAL = "SHOW_BUY_MODAL";
@@ -38,6 +39,23 @@ export const selectMenuItem = id => {
   return async dispatch => {
     dispatch(selectedMarket(null));
     dispatch(selectedDataType(id));
+
+    switch (id) {
+      case DATA_TYPE.ALL_PRODUCTS:
+        dispatch(push("/marketplace"))
+        break;
+      case DATA_TYPE.PURCHASES:
+        dispatch(push("/purchases"))
+        break;
+      case DATA_TYPE.PRODUCTS:
+        dispatch(push("/products"))
+        break;
+      case DATA_TYPE.SALES:
+        dispatch(push("/sales"))
+        break;
+
+    }
+
     dispatch(fetchDataForMenuItem(id));
   };
 };

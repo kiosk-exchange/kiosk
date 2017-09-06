@@ -9,6 +9,7 @@ import BuyKMTModal from "./components/BuyKMTModal";
 import ErrorMessage from "./components/ErrorMessage";
 import { connect } from "react-redux";
 import { initKiosk } from "./redux/actions/config";
+import { DATA_TYPE } from "./redux/actions/blockchain";
 
 const mapStateToProps = state => ({
   web3: state.config.web3,
@@ -18,8 +19,12 @@ const mapStateToProps = state => ({
 class App extends Component {
   // Initialize Kiosk (web3, accounts, contracts)
   componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch(initKiosk());
+    const { dispatch, dataType } = this.props;
+    if (dataType) {
+      dispatch(initKiosk(dataType));
+    } else {
+      dispatch(initKiosk(DATA_TYPE.ALL_PRODUCTS))
+    }
   }
 
   render() {
