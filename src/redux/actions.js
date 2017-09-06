@@ -377,6 +377,30 @@ const reloadAfterPurchase = () => {
   };
 };
 
+export const checkPendingTxs = () => {
+  return async (dispatch, getState) => {
+    try {
+      const web3 = getState().config.web3;
+      const pendTxs = getState().txsPending;
+      //TODO: stop polling if pendTxs.length < 1
+      pendTxs.forEach((tx) => {
+        web3.eth.getTransaction(tx, (err, res) => {
+          if (err) {
+            console.log("ERR:  \n", err)
+            //TODO: Handle Error Properly
+          } else {
+            if(res.blockNumber !== null) {
+              dispatch(removePendingTx(tx))
+            }
+          }
+        })
+      })
+    } catch (err) {
+      console.log("Can't fetch pending transactions");
+    }
+  };
+}
+
 export const buyNow = product => {
   return async (dispatch, getState) => {
     const web3 = getState().config.web3;
@@ -398,7 +422,6 @@ export const buyNow = product => {
         valueInKMTWei,
         account
       );
-      console.log(txId);
       dispatch(addPendingTx(txId))
       setInterval(() => dispatch(checkPendingTxs()), 1000);
       dispatch(purchaseIsPending(false));
@@ -410,30 +433,6 @@ export const buyNow = product => {
     }
   };
 };
-
-export const checkPendingTxs = () => {
-  return async (dispatch, getState) => {
-    try {
-      const web3 = getState().config.web3;
-      const pendTxs = getState().txsPending;
-      //TODO: stop polling if pendTxs.length < 1
-      pendTxs.forEach((tx) => {
-        web3.eth.getTransaction(tx, (err, res) => {
-          console.log("CHECKING:   ", tx)
-          if (err) {
-            console.log("ERR:  \n", err)
-          } else {
-            if(res.blockNumber !== null) {
-              dispatch(removePendingTx(tx))
-            }
-          }
-        })
-      })
-    } catch (err) {
-      console.log("Can't fetch pending transactions");
-    }
-  };
-}
 
 export const buyKioskMarketToken = () => {
   return async (dispatch, getState) => {

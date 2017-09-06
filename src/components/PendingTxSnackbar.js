@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import { connect } from "react-redux";
 import Snackbar from 'material-ui/Snackbar';
-import RaisedButton from 'material-ui/RaisedButton';
 
 const mapStateToProps = state => ({
   txsPending: state.txsPending,

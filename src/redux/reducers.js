@@ -73,9 +73,9 @@ const ETHBalance = (state = null, action) => reducer(state, action, ETH_BALANCE)
 const selectedMenuItemId = (state = 1, action) => reducer(state, action, SELECTED_MENU_ITEM_ID);
 const purchaseIsPending = (state = false, action) => reducer(state, action, PURCHASE_IS_PENDING);
 const txsPending = (state = [], action) => {
-	if (action.type == TX_PENDING_ADDED) {
+	if (action.type === TX_PENDING_ADDED) {
 		return state.concat(action.data)
-	} else if (action.type == TX_PENDING_REMOVED) {
+	} else if (action.type === TX_PENDING_REMOVED) {
 		var indx = state.indexOf(action.data);
 		return [
 			...state.slice(0, indx),
