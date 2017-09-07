@@ -10,7 +10,7 @@ import Avatar from "material-ui/Avatar";
 import { connect } from "react-redux";
 import { selectMenuItem } from "../redux/actions/actions";
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state, ownProps) => ({
 	account: state.config.account,
 	KMT: state.config.KMTBalance,
 	ETH: state.config.ETHBalance,
@@ -25,7 +25,7 @@ const mapDispatchToProps = dispatch => ({
 
 const SelectableList = makeSelectable(List);
 
-const SideMenu = ({ account, KMT, ETH, dataType, onMenuItemClick }) => {
+const SideMenu = ({ account, KMT, ETH, dataType, onMenuItemClick, id, filter }) => {
 	const style = {
 		color: "white",
 		fontSize: "15px",

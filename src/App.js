@@ -10,11 +10,13 @@ import { connect } from "react-redux";
 import { initKiosk } from "./redux/actions/config";
 import { DATA_TYPE } from "./redux/actions/blockchain";
 
-const mapStateToProps = state => ({
-  web3: state.config.web3,
-  network: state.config.network,
-  error: state.config.web3Error
-});
+const mapStateToProps = state => {
+  return {
+    web3: state.config.web3,
+    network: state.config.network,
+    error: state.config.web3Error
+  };
+};
 
 class App extends Component {
   // Initialize Kiosk (web3, accounts, contracts)

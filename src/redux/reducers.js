@@ -106,7 +106,7 @@ const buyModalDefaultState = {
 
 export const showBuyKMTModal = (state = false, action) =>
 	reducer(state, action, SHOW_BUY_KMT_MODAL);
-	
+
 export const buyModal = (state = buyModalDefaultState, action) => {
 	switch (action.type) {
 		case SHOW_BUY_MODAL:
@@ -174,12 +174,12 @@ export const results = (state = resultsDefaultState, action) => {
 			return {
 				...state,
 				ownedDINs: action.data
-			}
+			};
 		case RECEIVED_MARKET_DINS:
 			return {
 				...state,
 				marketDINs: action.data
-			}
+			};
 		case RECEIVED_PRODUCT:
 			// Get the index of the existing product (if any) from the state by its DIN
 			// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex
@@ -196,12 +196,16 @@ export const results = (state = resultsDefaultState, action) => {
 					action.data,
 					...state.products.slice(index + 1)
 				];
-			// If the product has a name and market, add it to the array
-			} else if (action.data.name && action.data.market !== "0x0000000000000000000000000000000000000000") {
+				// If the product has a name and market, add it to the array
+			} else if (
+				action.data.name &&
+				action.data.market !==
+					"0x0000000000000000000000000000000000000000"
+			) {
 				// Sort by DIN
 				products = state.products.concat(action.data).sort((a, b) => {
 					return a.DIN - b.DIN;
-				})
+				});
 			} else {
 				products = state.products;
 			}
@@ -263,5 +267,5 @@ export const rootReducer = combineReducers({
 	purchaseIsPending,
 	buyModal,
 	showBuyKMTModal,
-	router: routerReducer
+	routing: routerReducer
 });
