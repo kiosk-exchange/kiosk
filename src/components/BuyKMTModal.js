@@ -33,7 +33,7 @@ const BuyKMTModal = ({
 }) => {
   const contentStyle = {
     width: "50%",
-    minWidth: "600px"
+    minWidth: "500px"
   };
 
   const insufficientFunds = ETHBalance < totalPrice;
@@ -42,7 +42,7 @@ const BuyKMTModal = ({
     <RaisedButton
       label="Submit"
       disabled={insufficientFunds}
-      backgroundColor={theme.blue}
+      backgroundColor={theme.red}
       labelColor="#FFFFFF"
       fullWidth={true}
       onClick={() => onBuyNow()}
@@ -75,15 +75,13 @@ const BuyKMTModal = ({
     width: "100%",
     color: theme.gray,
     textAlign: "center",
-    fontSize: "30px",
-    fontWeight: "bold"
+    fontSize: "32px",
   };
 
   const currencyStyle = {
     width: "100%",
     color: theme.gray,
-    fontSize: "30px",
-    fontWeight: "bold",
+    fontSize: "32px",
     paddingLeft: "10px"
   };
 
@@ -91,7 +89,8 @@ const BuyKMTModal = ({
     color: theme.lightGray,
     textAlign: "center",
     fontSize: "16px",
-    fontWeight: "bold"
+    fontWeight: "bold",
+    letterSpacing: "1px"
   };
 
   const inputStyle = {
@@ -100,11 +99,13 @@ const BuyKMTModal = ({
     fontSize: "30px",
     textAlign: "center",
     padding: "5px",
-    marginTop: "5px",
+    marginTop: "9px",
+    marginRight: "5px",
     borderRadius: "5px",
     border: "2px solid",
-    backgroundColor: theme.white,
-    borderColor: theme.blue,
+    backgroundColor: "#feeeee",
+    opacity: "10%",
+    borderColor: theme.red,
     outline: "none"
   };
 
@@ -122,28 +123,28 @@ const BuyKMTModal = ({
         <Subheader style={subheaderStyle}>Exchange Ether (ETH) for Kiosk Market Token (KMT)</Subheader>
         <br />
         <div style={{ display: "flex", width: "100%" }}>
-          <div style={{ flex: "5" }}>
+          <div style={{ flex: "2" }}>
             <form>
               <input style={inputStyle} type="text" autoFocus={true} />
             </form>
           </div>
-          <div style={{ flex: "3" }}>
+          <div style={{ flex: "1" }}>
             <p style={currencyStyle}>ETH</p>
           </div>
-          <div style={{ flex: "2" }}>
+          <div style={{ flex: "1" }}>
             <p style={textStyle}>×</p>
           </div>
-          <div style={{ flex: "2" }}>
+          <div style={{ flex: "1" }}>
             <p style={textStyle}>300</p>
           </div>
-          <div style={{ flex: "2" }}>
+          <div style={{ flex: "1" }}>
             <p style={textStyle}>=</p>
           </div>
-          <div style={{ flex: "3" }}>
-            <p style={textStyle}>3,000</p>
+          <div style={{ flex: "1" }}>
+            <p style={{...textStyle, fontWeight: "bolder", color: theme.red}}>3,000</p>
           </div>
-          <div style={{ flex: "3" }}>
-            <p style={currencyStyle}>KMT</p>
+          <div style={{ flex: "1" }}>
+            <p style={{...currencyStyle, fontWeight: "bolder", color: theme.red}}>KMT</p>
           </div>
         </div>
       </Dialog>
