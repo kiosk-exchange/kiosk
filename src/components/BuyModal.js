@@ -97,7 +97,8 @@ const BuyModal = ({
           <div
             style={{
               textAlign: "center",
-              color: theme.gray
+              color: theme.gray,
+              fontWeight: "bold"
             }}
           >
             {product.name}

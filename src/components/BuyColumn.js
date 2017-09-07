@@ -4,15 +4,17 @@ import { TableRowColumn } from "material-ui/Table";
 import { connect } from "react-redux";
 import { selectProduct } from "../redux/actions/actions";
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-	onBuyClick: () => {
-		dispatch(selectProduct(ownProps.index))
-	}
-})
+const mapDispatchToProps = (dispatch, ownProps) => {
+	return {
+		onBuyClick: () => {
+			dispatch(selectProduct(ownProps.index));
+		}
+	};
+};
 
 class BuyColumn extends Component {
 	render() {
-		const { onBuyClick } = this.props
+		const { onBuyClick } = this.props;
 
 		return (
 			<TableRowColumn>

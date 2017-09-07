@@ -78,8 +78,6 @@ const TableContainer = ({
 
 	let data = dataSource();
 
-	console.log(data);
-
 	// If owner or specific market, apply filter
 	if (productFilter && dataType !== DATA_TYPE.ALL_PRODUCTS) {
 		data = data.filter(product => productFilter.includes(product.DIN));

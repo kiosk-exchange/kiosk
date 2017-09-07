@@ -4,7 +4,7 @@ const Promise = require("bluebird");
 const CryptoJS = require("crypto-js");
 
 const encodeFunctionTxData = (functionName, types, args) => {
-  var fullName = functionName + "(" + types.join() + ")";
+  const fullName = functionName + "(" + types.join() + ")";
   var signature = CryptoJS.SHA3(fullName, { outputLength: 256 })
     .toString(CryptoJS.enc.Hex)
     .slice(0, 8);
@@ -12,17 +12,24 @@ const encodeFunctionTxData = (functionName, types, args) => {
   return dataHex;
 };
 
-// TODO: Market name and product name will ideally come from the Buyer contract in the future.
-// Not possible now due to Solidity limitations:
-// http://solidity.readthedocs.io/en/develop/frequently-asked-questions.html#can-you-return-an-array-or-a-string-from-a-solidity-function-call
 export const getMarketName = (web3, marketAddr) => {
   return new Promise(async (resolve, reject) => {
     const marketContract = web3.eth.contract(MarketJSON.abi).at(marketAddr);
-    try {
-      const name = await marketContract.name(marketAddr);
+    const callAsync = Promise.promisify(web3.eth.call);
+
+    const nameData = encodeFunctionTxData("name", [], []);
+    const result = await callAsync({
+      to: marketAddr,
+      data: nameData
+    });
+
+    if (result === "0x") {
+      resolve("");
+    } else {
+      // Sometimes web3 to Ascii on the result is slightly wrong, so make request directly
+      const nameAsync = Promise.promisify(marketContract.name);
+      const name = await nameAsync();
       resolve(name);
-    } catch (err) {
-      reject(err);
     }
   });
 };
@@ -93,7 +100,13 @@ export const getIsAvailable = (
 
 // return filteredProducts;
 
-export const getProduct = async (web3, registry, BuyerContract, buyerAcct, DIN) => {
+export const getProduct = async (
+  web3,
+  registry,
+  BuyerContract,
+  buyerAcct,
+  DIN
+) => {
   const owner = await registry.ownerAsync(DIN);
   const market = await registry.marketAsync(DIN);
 

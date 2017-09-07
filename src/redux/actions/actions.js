@@ -63,12 +63,12 @@ export const selectMenuItem = id => {
 
 export const selectProduct = index => {
   return (dispatch, getState) => {
-    const menuItem = getState().selectedMenuItemId;
+    const menuItem = getState().dataType;
     let product;
 
     switch (menuItem) {
       case DATA_TYPE.ALL_PRODUCTS:
-        const products = getState().results.allProducts;
+        const products = getState().results.products;
         product = products[index];
         break;
       default:

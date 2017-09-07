@@ -42,7 +42,7 @@ const BuyKMTModal = ({
     <RaisedButton
       label="Submit"
       disabled={insufficientFunds}
-      backgroundColor={theme.red}
+      backgroundColor={theme.blue}
       labelColor="#FFFFFF"
       fullWidth={true}
       onClick={() => onBuyNow()}
@@ -75,7 +75,7 @@ const BuyKMTModal = ({
     width: "100%",
     color: theme.gray,
     textAlign: "center",
-    fontSize: "32px",
+    fontSize: "32px"
   };
 
   const currencyStyle = {
@@ -103,52 +103,58 @@ const BuyKMTModal = ({
     marginRight: "5px",
     borderRadius: "5px",
     border: "2px solid",
-    backgroundColor: "#feeeee",
+    backgroundColor: theme.white,
     opacity: "10%",
-    borderColor: theme.red,
+    borderColor: theme.blue,
     outline: "none"
   };
 
   return (
-    <div>
-      <Dialog
-        actions={actions}
-        actionsContainerStyle={{ padding: "20px 10%", textAlign: "center" }}
-        modal={false}
-        contentStyle={contentStyle}
-        open={show}
-        onRequestClosse={onClose}
-        autoScrollBodyContent={true}
-      >
-        <Subheader style={subheaderStyle}>Exchange Ether (ETH) for Kiosk Market Token (KMT)</Subheader>
-        <br />
-        <div style={{ display: "flex", width: "100%" }}>
-          <div style={{ flex: "2" }}>
-            <form>
-              <input style={inputStyle} type="text" autoFocus={true} />
-            </form>
-          </div>
-          <div style={{ flex: "1" }}>
-            <p style={currencyStyle}>ETH</p>
-          </div>
-          <div style={{ flex: "1" }}>
-            <p style={textStyle}>×</p>
-          </div>
-          <div style={{ flex: "1" }}>
-            <p style={textStyle}>300</p>
-          </div>
-          <div style={{ flex: "1" }}>
-            <p style={textStyle}>=</p>
-          </div>
-          <div style={{ flex: "1" }}>
-            <p style={{...textStyle, fontWeight: "bolder", color: theme.red}}>3,000</p>
-          </div>
-          <div style={{ flex: "1" }}>
-            <p style={{...currencyStyle, fontWeight: "bolder", color: theme.red}}>KMT</p>
-          </div>
+    <Dialog
+      actions={actions}
+      actionsContainerStyle={{ padding: "20px 10%", textAlign: "center" }}
+      modal={false}
+      contentStyle={contentStyle}
+      open={show}
+      onRequestClose={onClose}
+      autoScrollBodyContent={true}
+    >
+      <Subheader style={subheaderStyle}>
+        Exchange Ether (ETH) for Kiosk Market Token (KMT)
+      </Subheader>
+      <br />
+      <div style={{ display: "flex", width: "100%" }}>
+        <div style={{ flex: "2" }}>
+          <form>
+            <input style={inputStyle} type="text" autoFocus={true} />
+          </form>
         </div>
-      </Dialog>
-    </div>
+        <div style={{ flex: "1" }}>
+          <p style={currencyStyle}>ETH</p>
+        </div>
+        <div style={{ flex: "1" }}>
+          <p style={textStyle}>×</p>
+        </div>
+        <div style={{ flex: "1" }}>
+          <p style={textStyle}>300</p>
+        </div>
+        <div style={{ flex: "1" }}>
+          <p style={textStyle}>=</p>
+        </div>
+        <div style={{ flex: "1" }}>
+          <p style={{ ...textStyle, fontWeight: "bolder", color: theme.blue }}>
+            3,000
+          </p>
+        </div>
+        <div style={{ flex: "1" }}>
+          <p
+            style={{ ...currencyStyle, fontWeight: "bolder", color: theme.blue }}
+          >
+            KMT
+          </p>
+        </div>
+      </div>
+    </Dialog>
   );
 };
 
