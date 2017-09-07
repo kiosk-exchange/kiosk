@@ -2,7 +2,8 @@ import React from "react";
 import { render } from "react-dom";
 import { Provider } from "react-redux";
 import { routerMiddleware } from "react-router-redux";
-import { createStore, applyMiddleware } from "redux";
+import { createStore, applyMiddleware, compose } from "redux";
+import DevTools from "./containers/DevTools";
 import thunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
 import { rootReducer } from "./redux/reducers";
@@ -25,28 +26,44 @@ const initialState = {
 			lightGray: "#6E7E85",
 			white: "#F6F8FF"
 		},
-		menuItems: ["Marketplace", "Purchases", "Products", "Sales"],
-		accountDisplayLength: "12ch"
+		menuItems: ["Marketplace", "Purchases", "Products", "Sales"]
 	}
 };
 
 const history = createHistory();
 const routing = routerMiddleware(history);
-const store = createStore(
-	rootReducer,
-	initialState,
-	composeWithDevTools(applyMiddleware(thunk, routing))
+
+const enhancer = compose(
+	applyMiddleware(thunk, routing),
+	DevTools.instrument()
 );
+
+const store = createStore(rootReducer, initialState, enhancer);
 
 render(
 	<Provider store={store}>
 		<Router history={history}>
-			<App>
-				<Route exact={true} path="/marketplace" component={MarketplaceTable} />
-				<Route exact={true} path="/purchases" component={PurchasesTable} />
-				<Route exact={true} path="/products" component={ProductsTable} />
-				<Route exact={true} path="/sales" component={SalesTable} />
-			</App>
+			<div>
+				<App>
+					<Route
+						exact={true}
+						path="/marketplace"
+						component={MarketplaceTable}
+					/>
+					<Route
+						exact={true}
+						path="/purchases"
+						component={PurchasesTable}
+					/>
+					<Route
+						exact={true}
+						path="/products"
+						component={ProductsTable}
+					/>
+					<Route exact={true} path="/sales" component={SalesTable} />
+				</App>
+				<DevTools />
+			</div>
 		</Router>
 	</Provider>,
 	document.getElementById("root")

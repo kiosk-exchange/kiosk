@@ -235,14 +235,10 @@ const theme = (state = null, action) => {
 const menuItems = (state = null, action) => {
 	return state;
 };
-const accountDisplayLength = (state = null, action) => {
-	return accountDisplayLength;
-};
 
 export const config = combineReducers({
 	theme,
 	menuItems,
-	accountDisplayLength,
 	web3IsLoading,
 	web3Error,
 	web3,

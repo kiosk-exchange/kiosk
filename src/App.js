@@ -32,6 +32,8 @@ class App extends Component {
   render() {
     // const { web3, network, error } = this.props;
 
+    console.log(this)
+
     const hContainerStyle = {
       display: "flex",
       flexFlow: "row",
