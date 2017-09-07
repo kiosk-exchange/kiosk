@@ -45,7 +45,7 @@ export const getETHBalanceAsync = async (web3, account) => {
 //
 
 export const loadWeb3 = () => {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     if (process.env.REACT_APP_TESTRPC) {
       const web3 = new Web3(
         new Web3.providers.HttpProvider("http://localhost:8545")
@@ -63,7 +63,17 @@ export const loadWeb3 = () => {
         web3 = new Web3(
           new Web3.providers.HttpProvider("http://localhost:8545")
         );
-        resolve(web3);
+
+        // If we can get the latest block number without an error, resolve with web3
+        const getBlockAsync = Promise.promisify(web3.eth.getBlockNumber);
+
+        try {
+          await getBlockAsync();
+          resolve(web3)
+        } catch (err) {
+          resolve(null)
+        }
+
       }
     }
   });
