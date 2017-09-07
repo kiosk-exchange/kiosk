@@ -7,7 +7,7 @@ import {
   purchaseIsPending,
   reloadAfterPurchase
 } from "./blockchain";
-import { push } from 'react-router-redux'
+import { push } from "react-router-redux";
 
 export const SELECTED_DATA_TYPE = "SELECTED_DATA_TYPE";
 export const SHOW_BUY_MODAL = "SHOW_BUY_MODAL";
@@ -30,11 +30,6 @@ export const showBuyKMTModal = data => action(SHOW_BUY_KMT_MODAL, { data });
 export const selectedQuantity = data => action(SELECTED_QUANTITY, { data });
 export const selectedMarket = data => action(SELECTED_MARKET, { data });
 
-// TestRPC or Kovan
-// const isSupportedNetwork = network => {
-//   return parseInt(network, 10) > 100 || network === "42";
-// };
-
 export const selectMenuItem = id => {
   return async dispatch => {
     dispatch(selectedMarket(null));
@@ -42,16 +37,16 @@ export const selectMenuItem = id => {
 
     switch (id) {
       case DATA_TYPE.ALL_PRODUCTS:
-        dispatch(push("/marketplace"))
+        dispatch(push("/marketplace"));
         break;
       case DATA_TYPE.PURCHASES:
-        dispatch(push("/purchases"))
+        dispatch(push("/purchases"));
         break;
       case DATA_TYPE.PRODUCTS:
-        dispatch(push("/products"))
+        dispatch(push("/products"));
         break;
       case DATA_TYPE.SALES:
-        dispatch(push("/sales"))
+        dispatch(push("/sales"));
         break;
       default:
         break;
@@ -61,19 +56,13 @@ export const selectMenuItem = id => {
   };
 };
 
-export const selectProduct = index => {
+export const selectProduct = DIN => {
   return (dispatch, getState) => {
-    const menuItem = getState().dataType;
-    let product;
-
-    switch (menuItem) {
-      case DATA_TYPE.ALL_PRODUCTS:
-        const products = getState().results.products;
-        product = products[index];
-        break;
-      default:
-        break;
-    }
+    const products = getState().results.products;
+    const index = products.findIndex(product => {
+      return product.DIN === DIN;
+    });
+    const product = products[index];
 
     if (product) {
       dispatch(showBuyModal(true));
@@ -85,7 +74,7 @@ export const selectProduct = index => {
 
 export const selectMarket = market => {
   return dispatch => {
-    dispatch(selectedDataType(DATA_TYPE.MARKET))
+    dispatch(selectedDataType(DATA_TYPE.MARKET));
     dispatch(selectedMarket(market));
     dispatch(fetchProductsForMarket(market.address));
   };
