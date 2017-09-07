@@ -173,12 +173,12 @@ export const results = (state = resultsDefaultState, action) => {
 		case RECEIVED_OWNER_DINS:
 			return {
 				...state,
-				productFilter: action.data
+				ownedDINs: action.data
 			}
 		case RECEIVED_MARKET_DINS:
 			return {
 				...state,
-				productFilter: action.data
+				marketDINs: action.data
 			}
 		case RECEIVED_PRODUCT:
 			// Get the index of the existing product (if any) from the state by its DIN

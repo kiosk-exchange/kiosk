@@ -3,7 +3,6 @@ import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 // import { Route } from "react-router-dom";
 import SideMenu from "./components/SideMenu";
 import NavBar from "./components/NavBar";
-import TableContainer from "./components/TableContainer";
 import BuyModal from "./components/BuyModal";
 import BuyKMTModal from "./components/BuyKMTModal";
 import ErrorMessage from "./components/ErrorMessage";
@@ -29,7 +28,7 @@ class App extends Component {
   }
 
   render() {
-    const { web3, network, error } = this.props;
+    // const { web3, network, error } = this.props;
 
     const hContainerStyle = {
       display: "flex",
@@ -56,20 +55,20 @@ class App extends Component {
       padding: "10px 30px"
     };
 
-    let content = null;
-    if (web3 && network) {
-      if (network.valid === true) {
-        content = <TableContainer />;
-      } else {
-        content = (
-          <ErrorMessage message="Kiosk is not deployed to this network. Please connect to Kovan Test Network" showIcon={false} />
-        );
-      }
-    } else if (error === true) {
-      content = (
-        <ErrorMessage title="You are not connected to an Ethereum node" showIcon={true} />
-      );
-    }
+    // let content = null;
+    // if (web3 && network) {
+    //   if (network.valid === true) {
+    //     content = <TableContainer />;
+    //   } else {
+    //     content = (
+    //       <ErrorMessage message="Kiosk is not deployed to this network. Please connect to Kovan Test Network" showIcon={false} />
+    //     );
+    //   }
+    // } else if (error === true) {
+    //   content = (
+    //     <ErrorMessage title="You are not connected to an Ethereum node" showIcon={true} />
+    //   );
+    // }
 
     return (
       <MuiThemeProvider>
@@ -82,7 +81,7 @@ class App extends Component {
               <NavBar />
             </div>
             <div style={tableStyle}>
-              {content}
+              {this.props.children}
             </div>
           </div>
           <BuyModal />

@@ -8,6 +8,10 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import { rootReducer } from "./redux/reducers";
 import { Router, Route } from "react-router";
 import createHistory from "history/createBrowserHistory";
+import MarketplaceTable from "./components/tables/MarketplaceTable";
+import PurchasesTable from "./components/tables/PurchasesTable";
+import ProductsTable from "./components/tables/ProductsTable";
+import SalesTable from "./components/tables/SalesTable";
 
 import App from "./App";
 import "./styles/App.css";
@@ -37,13 +41,22 @@ const store = createStore(
 render(
 	<Provider store={store}>
 		<Router history={history}>
-			<div>
-				<Route exactPath="/" component={App} />
-			</div>
+			<App>
+				<Route exact={true} path="/marketplace" component={MarketplaceTable} />
+				<Route exact={true} path="/purchases" component={PurchasesTable} />
+				<Route exact={true} path="/products" component={ProductsTable} />
+				<Route exact={true} path="/sales" component={SalesTable} />
+			</App>
 		</Router>
 	</Provider>,
 	document.getElementById("root")
 );
+
+// <Route path="/marketplace" component={MarketplaceTable} />
+// <Route path="/products" component={ProductsTable} />
+// <Route path="/purchases" component={PurchasesTable} />
+// <Route path="/sales" component={SalesTable} />
+// <Route path="markets" component={MarketTable} />
 
 // TODO: Figure out hot reloading with React Router
 // if (module.hot) {
