@@ -197,8 +197,10 @@ export const results = (state = resultsDefaultState, action) => {
 					...state.products.slice(index + 1)
 				];
 			} else {
-				// Otherwise, append it to the results array
-				products = state.products.concat(action.data)
+				// Otherwise, append it to the results array and sort by DIN
+				products = state.products.concat(action.data).sort((a, b) => {
+					return a.DIN - b.DIN;
+				})
 			}
 			return {
 				...state,
