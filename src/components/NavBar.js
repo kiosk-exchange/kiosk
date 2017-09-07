@@ -41,7 +41,7 @@ const NavBar = ({ theme, network, onBuyClick }) => {
 			</ToolbarGroup>
 			<ToolbarGroup>
 				<RaisedButton
-					label="Buy Kiosk Market Token"
+					label="Get Kiosk Market Tokens"
 					backgroundColor={theme.red}
 					disabled={network ? false : true}
 					labelColor="#FFFFFF"

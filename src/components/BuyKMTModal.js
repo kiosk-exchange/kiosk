@@ -2,7 +2,6 @@ import React from "react";
 import Dialog from "material-ui/Dialog";
 import RaisedButton from "material-ui/RaisedButton";
 import Subheader from "material-ui/Subheader";
-import TextField from "material-ui/TextField";
 import { showBuyKMTModal } from "../redux/actions/actions";
 import { connect } from "react-redux";
 
@@ -32,20 +31,18 @@ const BuyKMTModal = ({
   onBuyNow,
   onClose
 }) => {
-
   const contentStyle = {
     width: "50%",
-    minWidth: "300px",
-    maxWidth: "400px"
+    minWidth: "600px"
   };
 
   const insufficientFunds = ETHBalance < totalPrice;
 
   const buyNow = (
     <RaisedButton
-      label="Buy Now"
+      label="Submit"
       disabled={insufficientFunds}
-      backgroundColor={theme.red}
+      backgroundColor={theme.blue}
       labelColor="#FFFFFF"
       fullWidth={true}
       onClick={() => onBuyNow()}
@@ -74,68 +71,80 @@ const BuyKMTModal = ({
 
   const show = isOpen === true;
 
-  const KMTAmount = (
-    <div style={{ display: "flex", paddingBottom: "10px" }}>
-      <div style={{ display: "flex", width: "100%" }}>
-        <h2>Quantity:</h2>
-        <TextField
-          id="Quantity"
-          floatingLabelFixed={true}
-          underlineFocusStyle={{ borderColor: theme.blue }}
-          floatingLabelFocusStyle={{ color: theme.blue }}
-        />
-        <div style={{ marginLeft: "auto" }}>
-          <h2>KMT</h2>
-        </div>
-      </div>
-    </div>
-  );
+  const textStyle = {
+    width: "100%",
+    color: theme.gray,
+    textAlign: "center",
+    fontSize: "30px",
+    fontWeight: "bold"
+  };
 
-  const rate = (
-    <div style={{ display: "flex", width: "100%", padding: "0" }}>
-      <h3>x Rate:</h3>
-      <div
-        style={{
-          marginLeft: "auto",
-          borderStyleBottom: "solid",
-          borderWidth: "1px",
-          borderColor: theme.gray
-        }}
-      >
-        <h3>300 KMT / ETH</h3>
-      </div>
-    </div>
-  );
+  const currencyStyle = {
+    width: "100%",
+    color: theme.gray,
+    fontSize: "30px",
+    fontWeight: "bold",
+    paddingLeft: "10px"
+  };
 
-  const total = (
-    <div style={{ display: "flex", width: "100%" }}>
-      <h2>Total Price:</h2>
-      <div style={{ marginLeft: "auto" }}>
-        <h2>
-          {totalPrice + " ETH"}
-        </h2>
-      </div>
-    </div>
-  );
+  const subheaderStyle = {
+    color: theme.lightGray,
+    textAlign: "center",
+    fontSize: "16px",
+    fontWeight: "bold"
+  };
+
+  const inputStyle = {
+    width: "90%",
+    height: "70px",
+    fontSize: "30px",
+    textAlign: "center",
+    padding: "5px",
+    marginTop: "5px",
+    borderRadius: "5px",
+    border: "2px solid",
+    backgroundColor: theme.white,
+    borderColor: theme.blue,
+    outline: "none"
+  };
 
   return (
     <div>
       <Dialog
-        title={
-          <div style={{ textAlign: "center" }}>Kiosk Market Token (KMT)</div>
-        }
         actions={actions}
         actionsContainerStyle={{ padding: "20px 10%", textAlign: "center" }}
         modal={false}
         contentStyle={contentStyle}
         open={show}
-        onRequestClose={onClose}
+        onRequestClosse={onClose}
         autoScrollBodyContent={true}
       >
-        <div style={{ color: theme.gray }}>
-          {KMTAmount}
-          {rate}
-          {total}
+        <Subheader style={subheaderStyle}>Exchange Ether (ETH) for Kiosk Market Token (KMT)</Subheader>
+        <br />
+        <div style={{ display: "flex", width: "100%" }}>
+          <div style={{ flex: "5" }}>
+            <form>
+              <input style={inputStyle} type="text" autoFocus={true} />
+            </form>
+          </div>
+          <div style={{ flex: "3" }}>
+            <p style={currencyStyle}>ETH</p>
+          </div>
+          <div style={{ flex: "2" }}>
+            <p style={textStyle}>×</p>
+          </div>
+          <div style={{ flex: "2" }}>
+            <p style={textStyle}>300</p>
+          </div>
+          <div style={{ flex: "2" }}>
+            <p style={textStyle}>=</p>
+          </div>
+          <div style={{ flex: "3" }}>
+            <p style={textStyle}>3,000</p>
+          </div>
+          <div style={{ flex: "3" }}>
+            <p style={currencyStyle}>KMT</p>
+          </div>
         </div>
       </Dialog>
     </div>
