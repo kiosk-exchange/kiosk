@@ -9,15 +9,22 @@ class ErrorMessage extends Component {
 			padding: "20px 0px"
 		};
 
-		return (
+		const message = (
 			<div>
 				<div style={style}>
 					<div style={{ width: "100%" }}>
 						<h1 style={{ color: "#6E7E85" }}>
-							You are not connected to an Ethereum node
+							{this.props.message}
 						</h1>
 					</div>
 				</div>
+			</div>
+		);
+
+		let icon = null;
+
+		if (this.props.showIcon === true) {
+			icon = (
 				<div style={style}>
 					<a
 						style={{
@@ -29,6 +36,13 @@ class ErrorMessage extends Component {
 						<img src="metamask.png" alt="metamask" width="300px" />
 					</a>
 				</div>
+			);
+		}
+
+		return (
+			<div>
+				{message}
+				{icon}
 			</div>
 		);
 	}

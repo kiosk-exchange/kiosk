@@ -13,6 +13,7 @@ import { DATA_TYPE } from "./redux/actions/blockchain";
 
 const mapStateToProps = state => ({
   web3: state.config.web3,
+  network: state.config.network,
   error: state.config.web3Error
 });
 
@@ -23,12 +24,12 @@ class App extends Component {
     if (dataType) {
       dispatch(initKiosk(dataType));
     } else {
-      dispatch(initKiosk(DATA_TYPE.ALL_PRODUCTS))
+      dispatch(initKiosk(DATA_TYPE.ALL_PRODUCTS));
     }
   }
 
   render() {
-    const { web3, error } = this.props;
+    const { web3, network, error } = this.props;
 
     const hContainerStyle = {
       display: "flex",
@@ -56,11 +57,17 @@ class App extends Component {
     };
 
     let content = null;
-    if (web3) {
-      content = <TableContainer />;
+    if (web3 && network) {
+      if (network.valid === true) {
+        content = <TableContainer />;
+      } else {
+        content = (
+          <ErrorMessage message="Kiosk is not deployed to this network. Please connect to Kovan Test Network" showIcon={false} />
+        );
+      }
     } else if (error === true) {
       content = (
-        <ErrorMessage title="You are not connected to an Ethereum node" />
+        <ErrorMessage title="You are not connected to an Ethereum node" showIcon={true} />
       );
     }
 

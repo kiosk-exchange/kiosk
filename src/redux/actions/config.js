@@ -77,7 +77,6 @@ const getAccount = () => {
   };
 };
 
-
 const getBalances = () => {
   return async (dispatch, getState) => {
     const web3 = getState().config.web3;
@@ -123,6 +122,7 @@ const refreshNetwork = dataType => {
   return async (dispatch, getState) => {
     const currentWeb3 = getState().config.web3;
     const KMT = getState().config.KMTContract;
+    const network = getState().config.network;
 
     if (currentWeb3) {
       // Refresh every second
@@ -131,17 +131,17 @@ const refreshNetwork = dataType => {
       // Get network
       dispatch(getNetwork());
 
-      if (!KMT) {
+      if (!KMT && network && network.valid === true) {
         // Get contracts
-        dispatch(selectedDataType(dataType))
+        dispatch(selectedDataType(dataType));
         dispatch(getContracts(dataType));
       }
     } else {
-      try {
-        const web3 = await loadWeb3();
+      const web3 = await loadWeb3();
+      if (web3) {
         dispatch(web3Success(web3));
         dispatch(web3HasError(false));
-      } catch (err) {
+      } else {
         dispatch(web3HasError(true));
       }
     }
