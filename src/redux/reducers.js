@@ -196,11 +196,14 @@ export const results = (state = resultsDefaultState, action) => {
 					action.data,
 					...state.products.slice(index + 1)
 				];
-			} else {
-				// Otherwise, append it to the results array and sort by DIN
+			// If the product has a name and market, add it to the array
+			} else if (action.data.name && action.data.market !== "0x0000000000000000000000000000000000000000") {
+				// Sort by DIN
 				products = state.products.concat(action.data).sort((a, b) => {
 					return a.DIN - b.DIN;
 				})
+			} else {
+				products = state.products;
 			}
 			return {
 				...state,
