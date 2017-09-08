@@ -73,19 +73,6 @@ export const addPendingTx = data => action(TX_PENDING_ADDED, { data });
 export const removePendingTx = data => action(TX_PENDING_REMOVED, { data });
 export const txSucceeded = data => action(TX_SUCCEEDED, { data });
 
-const fetchProduct = (web3, registry, BuyerContract, account, DIN) => {
-  return async dispatch => {
-    const product = await getProduct(
-      web3,
-      registry,
-      BuyerContract,
-      account,
-      DIN
-    );
-    dispatch(receivedProduct(product));
-  };
-};
-
 const fetchProducts = filter => {
   return async (dispatch, getState) => {
     const web3 = getState().config.web3;
@@ -104,6 +91,7 @@ const fetchProducts = filter => {
           BuyerContract,
           account
         );
+        console.log("GOT ALL DINS");
       } else if (filter === PRODUCT_FILTER.OWNER) {
         DINs = await getOwnerProductDINs(
           web3,
@@ -119,9 +107,13 @@ const fetchProducts = filter => {
       if (!DINs) {
         dispatch(requestLoading(false));
       } else {
-        DINs.map(async DIN => {
-          dispatch(fetchProduct(web3, registry, BuyerContract, account, DIN));
-        });
+        Promise.each(DINs, DIN => {
+          return getProduct(web3, registry, BuyerContract, account, DIN).then(product => {
+            dispatch(receivedProduct(product))
+          })
+        })
+
+
       }
     }
   };
