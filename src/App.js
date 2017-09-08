@@ -64,12 +64,18 @@ class App extends Component {
         content = this.props.children;
       } else {
         content = (
-          <ErrorMessage message="Kiosk is not deployed to this network. Please connect to Kovan Test Network" showIcon={false} />
+          <ErrorMessage
+            message="Kiosk is not deployed to this network. Please connect to Kovan Test Network"
+            showIcon={false}
+          />
         );
       }
     } else if (error === true) {
       content = (
-        <ErrorMessage title="You are not connected to an Ethereum node" showIcon={true} />
+        <ErrorMessage
+          title="You are not connected to an Ethereum node"
+          showIcon={true}
+        />
       );
     }
 
@@ -77,15 +83,13 @@ class App extends Component {
       <MuiThemeProvider>
         <div style={hContainerStyle}>
           <div style={sideMenuStyle}>
-            <SideMenu value={selectedMenuItem}/>
+            <SideMenu value={selectedMenuItem} />
           </div>
           <div style={rightContainerStyle}>
             <div>
               <NavBar />
             </div>
-            <div style={tableStyle}>
-              {content}
-            </div>
+            <div style={tableStyle}>{content}</div>
           </div>
           <BuyModal />
           <BuyKMTModal />
