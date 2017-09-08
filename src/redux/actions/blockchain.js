@@ -239,8 +239,6 @@ export const getPriceAndAvailability = (product, quantity) => {
 
 export const checkPendingTxs = () => {
   return async (dispatch, getState) => {
-    console.log("HI");
-
     try {
       const web3 = getState().config.web3;
       const pendTxs = getState().txsPending;
@@ -251,7 +249,7 @@ export const checkPendingTxs = () => {
         try {
           const result = await getTxAsync(tx);
           if (result.blockNumber !== null) {
-            dispatch(txSucceeded(tx));
+            dispatch(txSucceeded(true));
             dispatch(removePendingTx(tx));
           }
         } catch (err) {
@@ -286,6 +284,7 @@ export const buyNow = product => {
         account
       );
       console.log(txId);
+      dispatch(txSucceeded(false)); // Reset
       dispatch(addPendingTx(txId));
       setInterval(() => dispatch(checkPendingTxs()), 1000);
       dispatch(purchaseIsPending(false));
