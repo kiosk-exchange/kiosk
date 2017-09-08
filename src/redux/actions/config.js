@@ -76,7 +76,7 @@ const getAccount = () => {
   };
 };
 
-const getBalances = () => {
+export const getBalances = () => {
   return async (dispatch, getState) => {
     const web3 = getState().config.web3;
     const KMTContract = getState().config.KMTContract;

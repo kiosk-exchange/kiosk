@@ -12,6 +12,8 @@ const Promise = require("bluebird");
 
 export const REQUEST_LOADING = "REQUEST_LOADING";
 export const REQUEST_ERROR = "REQUEST_ERROR";
+export const REQUEST_SHOW_LOADER = "SHOW_LOADER";
+export const REQUEST_TIMEOUT = "REQUEST_TIMEOUT"
 export const RECEIVED_PRODUCT = "RECEIVED_PRODUCT";
 export const RECEIVED_OWNER_DINS = "RECEIVED_OWNER_DINS";
 export const RECEIVED_MARKET_DINS = "RECEIVED_MARKET_DINS";
@@ -48,10 +50,13 @@ const action = (type, data) => ({
 
 export const receivedProduct = data => action(RECEIVED_PRODUCT, { data });
 export const receivedOwnerDINs = data => action(RECEIVED_OWNER_DINS, { data });
-export const receivedMarketDINs = data => action(RECEIVED_MARKET_DINS, { data });
+export const receivedMarketDINs = data =>
+  action(RECEIVED_MARKET_DINS, { data });
 export const receivedPurchases = data => action(RECEIVED_PURCHASES, { data });
 export const receivedSales = data => action(RECEIVED_SALES, { data });
 export const requestLoading = data => action(REQUEST_LOADING, { data });
+export const requestShowLoader = data => action(REQUEST_SHOW_LOADER, { data });
+export const requestTimeout = data => action(REQUEST_TIMEOUT, { data });
 export const requestError = data => action(REQUEST_ERROR, { data });
 export const totalPriceIsCalculating = data =>
   action(TOTAL_PRICE_CALCULATING, { data });
@@ -101,26 +106,26 @@ const fetchProducts = filter => {
         );
         dispatch(receivedOwnerDINs(DINs));
       }
-      await DINs.map(async DIN => {
-        dispatch(fetchProduct(web3, registry, BuyerContract, account, DIN))
-      });
-      dispatch(requestLoading(false));
+
+      // If no DINs, stop loading right away. Otherwise, do it in the reducer.
+      if (!DINs) {
+        dispatch(requestLoading(false));
+      } else {
+        DINs.map(async DIN => {
+          dispatch(fetchProduct(web3, registry, BuyerContract, account, DIN));
+        });
+      }
     }
   };
 };
 
 export const fetchProductsForMarket = market => {
   return async (dispatch, getState) => {
-    console.log("FETCHING")
     const web3 = getState().config.web3;
     const DINRegistry = getState().config.DINRegistry;
     const BuyerContract = getState().config.BuyerContract;
     const account = getState().config.account;
-
-    console.log(web3)
-    console.log(DINRegistry)
-    console.log(BuyerContract)
-
+    
     if (web3 && DINRegistry && account) {
       const DINs = await getMarketProductDINs(
         web3,
@@ -160,10 +165,9 @@ export const reloadAfterPurchase = () => {
 };
 
 export const fetchDataForMenuItem = id => {
-  return async dispatch => {
+  return async (dispatch, getState) => {
     dispatch(requestError(false));
     dispatch(requestLoading(true));
-
     try {
       switch (id) {
         case DATA_TYPE.ALL_PRODUCTS:
