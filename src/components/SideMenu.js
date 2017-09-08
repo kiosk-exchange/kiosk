@@ -8,24 +8,23 @@ import Products from "material-ui/svg-icons/action/loyalty";
 import Money from "material-ui/svg-icons/editor/attach-money";
 import Avatar from "material-ui/Avatar";
 import { connect } from "react-redux";
-import { selectMenuItem } from "../redux/actions";
+import { selectMenuItem } from "../redux/actions/actions";
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state, ownProps) => ({
 	account: state.config.account,
 	KMT: state.config.KMTBalance,
 	ETH: state.config.ETHBalance,
-	selectedItem: state.selectedMenuItemId
 });
 
 const mapDispatchToProps = dispatch => ({
-	selectMenuItem: id => {
+	onMenuItemClick: id => {
 		dispatch(selectMenuItem(id));
 	}
 });
 
 const SelectableList = makeSelectable(List);
 
-const SideMenu = ({ account, KMT, ETH, selectedItem, selectMenuItem }) => {
+const SideMenu = ({ value, account, KMT, ETH, dataType, onMenuItemClick, id, filter }) => {
 	const style = {
 		color: "white",
 		fontSize: "15px",
@@ -55,12 +54,12 @@ const SideMenu = ({ account, KMT, ETH, selectedItem, selectMenuItem }) => {
 	};
 
 	return (
-		<SelectableList style={listStyle} value={selectedItem}>
+		<SelectableList style={listStyle} value={value}>
 			<ListItem
 				style={logoStyle}
 				disabled={true}
 				primaryText="kiosk"
-				leftAvatar={<Avatar src="favicon.png" backgroundColor="none" />}
+				leftAvatar={<Avatar src={require("./favicon.png")} backgroundColor="none" />}
 			/>
 			<br />
 			<Subheader style={subheaderStyle}>BUY</Subheader>
@@ -69,14 +68,14 @@ const SideMenu = ({ account, KMT, ETH, selectedItem, selectMenuItem }) => {
 				{...listItemStyle}
 				primaryText="Marketplace"
 				leftIcon={<Store color="white" />}
-				onClick={() => selectMenuItem(1)}
+				onClick={() => onMenuItemClick(1)}
 			/>
 			<ListItem
 				value={2}
 				{...listItemStyle}
 				primaryText="Purchases"
 				leftIcon={<ShoppingCart color="white" />}
-				onClick={() => selectMenuItem(2)}
+				onClick={() => onMenuItemClick(2)}
 			/>
 			<Subheader style={subheaderStyle}>SELL</Subheader>
 			<ListItem
@@ -84,14 +83,14 @@ const SideMenu = ({ account, KMT, ETH, selectedItem, selectMenuItem }) => {
 				{...listItemStyle}
 				primaryText="Products"
 				leftIcon={<Products color="white" />}
-				onClick={() => selectMenuItem(3)}
+				onClick={() => onMenuItemClick(3)}
 			/>
 			<ListItem
 				value={4}
 				{...listItemStyle}
 				primaryText="Sales"
 				leftIcon={<Money color="white" />}
-				onClick={() => selectMenuItem(4)}
+				onClick={() => onMenuItemClick(4)}
 			/>
 			<AccountSection account={account} KMT={KMT} ETH={ETH} />
 		</SelectableList>

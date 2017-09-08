@@ -1,10 +1,20 @@
 import React from "react";
 import { render } from "react-dom";
 import { Provider } from "react-redux";
-import { configureStore } from "./redux/configureStore";
-import { BrowserRouter } from "react-router-dom";
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import App from "./App";
+import { routerMiddleware } from "react-router-redux";
+import { createStore, applyMiddleware, compose } from "redux";
+import DevTools from "./containers/DevTools";
+import thunk from "redux-thunk";
+import { rootReducer } from "./redux/reducers";
+import { Router, Route, Switch } from "react-router";
+import createBrowserHistory from "history/createBrowserHistory";
+import {
+	Marketplace,
+	Purchases,
+	Products,
+	Sales,
+	Market
+} from "./containers/Container";
 
 import "./styles/App.css";
 
@@ -21,19 +31,43 @@ const initialState = {
 	}
 };
 
-const store = configureStore(initialState);
+const history = createBrowserHistory();
+const routing = routerMiddleware(history);
+
+const enhancer = compose(
+	applyMiddleware(thunk, routing),
+	DevTools.instrument()
+);
+const store = createStore(rootReducer, initialState, enhancer);
 
 render(
 	<Provider store={store}>
-		<BrowserRouter>
-			<MuiThemeProvider>
-				<App />
-			</MuiThemeProvider>
-		</BrowserRouter>
+		<Router history={history}>
+			<Switch>
+				<Route exact={true} path="/" component={Marketplace} />
+				<Route
+					exact={true}
+					path="/marketplace"
+					component={Marketplace}
+				/>
+				<Route exact={true} path="/purchases" component={Purchases} />
+				<Route exact={true} path="/products" component={Products} />
+				<Route exact={true} path="/sales" component={Sales} />
+				<Route path="/market/:market" component={Market} />
+ 			</Switch>
+		</Router>
 	</Provider>,
 	document.getElementById("root")
 );
 
+// <Route path="/marketplace" component={MarketplaceTable} />
+// <Route path="/products" component={ProductsTable} />
+// <Route path="/purchases" component={PurchasesTable} />
+// <Route path="/sales" component={SalesTable} />
+// <Route path="markets" component={MarketTable} />
+// <DevTools />;
+
+// TODO: Figure out hot reloading with React Router
 // if (module.hot) {
 // 	module.hot.accept();
 // }

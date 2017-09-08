@@ -1,7 +1,7 @@
 import React from "react";
 import { Toolbar, ToolbarGroup, ToolbarTitle } from "material-ui/Toolbar";
 import RaisedButton from "material-ui/RaisedButton";
-import { buyKioskMarketToken } from "../redux/actions";
+import { showBuyKMTModal } from "../redux/actions/actions";
 import { connect } from "react-redux";
 
 const mapStateToProps = state => ({
@@ -11,7 +11,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
 	onBuyClick: () => {
-		dispatch(buyKioskMarketToken())
+		dispatch(showBuyKMTModal(true))
 	}
 })
 
@@ -41,7 +41,7 @@ const NavBar = ({ theme, network, onBuyClick }) => {
 			</ToolbarGroup>
 			<ToolbarGroup>
 				<RaisedButton
-					label="Buy Kiosk Market Token"
+					label="Get Kiosk Market Tokens"
 					backgroundColor={theme.red}
 					disabled={network ? false : true}
 					labelColor="#FFFFFF"

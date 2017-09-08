@@ -1,4 +1,13 @@
 import { combineReducers } from "redux";
+import { routerReducer } from "react-router-redux";
+
+import {
+	SHOW_BUY_MODAL,
+	SHOW_BUY_KMT_MODAL,
+	SELECTED_PRODUCT,
+	SELECTED_QUANTITY,
+	SELECTED_MARKET
+} from "./actions/actions";
 
 import {
 	WEB_3_LOADING,
@@ -14,24 +23,22 @@ import {
 	ORDER_STORE_CONTRACT,
 	ETHER_MARKET_CONTRACT,
 	KMT_BALANCE,
-	ETH_BALANCE,
-	SELECTED_MENU_ITEM_ID,
+	ETH_BALANCE
+} from "./actions/config";
+
+import {
 	REQUEST_LOADING,
 	REQUEST_ERROR,
-	RECEIVED_ALL_PRODUCTS,
-	RECEIVED_OWNER_PRODUCTS,
+	RECEIVED_PRODUCT,
+	RECEIVED_OWNER_DINS,
+	RECEIVED_MARKET_DINS,
 	RECEIVED_PURCHASES,
 	RECEIVED_SALES,
-	SELECTED_PRODUCT,
-	SELECTED_QUANTITY,
-	SHOW_BUY_MODAL,
 	PURCHASE_IS_PENDING,
-	TX_PENDING_ADDED,
-	TX_PENDING_REMOVED,
 	TOTAL_PRICE_CALCULATING,
 	TOTAL_PRICE,
 	PRODUCT_AVAILABILITY
-} from "./actions";
+} from "./actions/blockchain";
 
 /*
 *  @param state - From Redux
@@ -48,42 +55,41 @@ const reducer = (state, action, type) => {
 	}
 };
 
-// Initial state
-const theme = (state = null, action) => { return state };
-const menuItems = (state = null, action) => { return state };
-
 /*
 *  Name reducers according to how you would like to access  them in a component (e.g. web3 instead of web3Success)
 *  Use a separate reducer for each top-level object in the state tree.
 */
 const web3 = (state = null, action) => reducer(state, action, WEB_3_SUCCESS);
-const web3IsLoading = (state = false, action) => reducer(state, action, WEB_3_LOADING);
-const web3Error = (state = false, action) => reducer(state, action, WEB_3_ERROR);
-const accountHasError = (state = false, action) => reducer(state, action, ACCOUNT_ERROR);
-const account = (state = null, action) => reducer(state, action, ACCOUNT_SUCCESS);
-const networkHasError = (state = false, action) => reducer(state, action, NETWORK_ERROR);
-const network = (state = null, action) => reducer(state, action, NETWORK_SUCCESS);
-const KMTContract = (state = null, action) => reducer(state, action, KMT_CONTRACT);
-const BuyerContract = (state = null, action) => reducer(state, action, BUYER_CONTRACT);
-const DINRegistry = (state = null, action) => reducer(state, action, DIN_REGISTRY_CONTRACT);
-const OrderStore = (state = null, action) => reducer(state, action, ORDER_STORE_CONTRACT);
-const EtherMarket = (state = null, action) => reducer(state, action, ETHER_MARKET_CONTRACT);
-const KMTBalance = (state = null, action) => reducer(state, action, KMT_BALANCE);
-const ETHBalance = (state = null, action) => reducer(state, action, ETH_BALANCE);
-const selectedMenuItemId = (state = 1, action) => reducer(state, action, SELECTED_MENU_ITEM_ID);
-const purchaseIsPending = (state = false, action) => reducer(state, action, PURCHASE_IS_PENDING);
-const txsPending = (state = [], action) => {
-	if (action.type === TX_PENDING_ADDED) {
-		return state.concat(action.data)
-	} else if (action.type === TX_PENDING_REMOVED) {
-		var indx = state.indexOf(action.data);
-		return [
-			...state.slice(0, indx),
-			...state.slice(indx + 1)
-		]
-	}
-	return state;
-}
+const web3IsLoading = (state = false, action) =>
+	reducer(state, action, WEB_3_LOADING);
+const web3Error = (state = false, action) =>
+	reducer(state, action, WEB_3_ERROR);
+const accountHasError = (state = false, action) =>
+	reducer(state, action, ACCOUNT_ERROR);
+const account = (state = null, action) =>
+	reducer(state, action, ACCOUNT_SUCCESS);
+const networkHasError = (state = false, action) =>
+	reducer(state, action, NETWORK_ERROR);
+const network = (state = null, action) =>
+	reducer(state, action, NETWORK_SUCCESS);
+const KMTContract = (state = null, action) =>
+	reducer(state, action, KMT_CONTRACT);
+const BuyerContract = (state = null, action) =>
+	reducer(state, action, BUYER_CONTRACT);
+const DINRegistry = (state = null, action) =>
+	reducer(state, action, DIN_REGISTRY_CONTRACT);
+const OrderStore = (state = null, action) =>
+	reducer(state, action, ORDER_STORE_CONTRACT);
+const EtherMarket = (state = null, action) =>
+	reducer(state, action, ETHER_MARKET_CONTRACT);
+const KMTBalance = (state = null, action) =>
+	reducer(state, action, KMT_BALANCE);
+const ETHBalance = (state = null, action) =>
+	reducer(state, action, ETH_BALANCE);
+const selectedMarket = (state = null, action) =>
+	reducer(state, action, SELECTED_MARKET);
+const purchaseIsPending = (state = false, action) =>
+	reducer(state, action, PURCHASE_IS_PENDING);
 
 const buyModalDefaultState = {
 	product: null,
@@ -92,48 +98,51 @@ const buyModalDefaultState = {
 	available: null,
 	isOpen: false,
 	isLoading: false,
-	error: false,
-}
+	error: false
+};
 
-const buyModal = (state = buyModalDefaultState, action) => {
+export const showBuyKMTModal = (state = false, action) =>
+	reducer(state, action, SHOW_BUY_KMT_MODAL);
+
+export const buyModal = (state = buyModalDefaultState, action) => {
 	switch (action.type) {
 		case SHOW_BUY_MODAL:
 			if (action.data === false) {
 				// Reset
-				return buyModalDefaultState
+				return buyModalDefaultState;
 			}
 			return {
 				...state,
 				quantity: 1,
-				isOpen: action.data,
+				isOpen: action.data
 			};
 		case SELECTED_PRODUCT:
 			return {
 				...state,
 				product: action.data
-			}
+			};
 		case SELECTED_QUANTITY:
 			return {
 				...state,
 				quantity: action.data
-			}
+			};
 		case TOTAL_PRICE_CALCULATING:
 			return {
 				...state,
 				isLoading: true
-			}
+			};
 		case TOTAL_PRICE:
 			return {
 				...state,
 				isLoading: false,
 				error: false,
 				totalPrice: action.data
-			}
+			};
 		case PRODUCT_AVAILABILITY:
 			return {
 				...state,
 				available: action.data
-			}
+			};
 		default:
 			return state;
 	}
@@ -141,14 +150,14 @@ const buyModal = (state = buyModalDefaultState, action) => {
 
 const resultsDefaultState = {
 	isLoading: true,
-	allProducts: [],
-	ownerProducts: [],
+	products: [],
 	purchases: [],
 	sales: [],
-	marketProducts: []
-}
+	ownedDINs: [],
+	marketDINs: []
+};
 
-const results = (state = resultsDefaultState, action) => {
+export const results = (state = resultsDefaultState, action) => {
 	switch (action.type) {
 		case REQUEST_LOADING:
 			return {
@@ -160,15 +169,48 @@ const results = (state = resultsDefaultState, action) => {
 				...state,
 				error: action.data
 			};
-		case RECEIVED_ALL_PRODUCTS:
+		case RECEIVED_OWNER_DINS:
 			return {
 				...state,
-				allProducts: action.data
+				ownedDINs: action.data
 			};
-		case RECEIVED_OWNER_PRODUCTS:
+		case RECEIVED_MARKET_DINS:
 			return {
 				...state,
-				ownerProducts: action.data
+				marketDINs: action.data
+			};
+		case RECEIVED_PRODUCT:
+			// Get the index of the existing product (if any) from the state by its DIN
+			// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex
+			const index = state.products.findIndex(product => {
+				return product.DIN === action.data.DIN;
+			});
+
+			let products;
+
+			// If the product exists in state, replace the existing product
+			if (index >= 0) {
+				products = [
+					...state.products.slice(0, index),
+					action.data,
+					...state.products.slice(index + 1)
+				];
+				// If the product has a name and market, add it to the array
+			} else if (
+				action.data.name &&
+				action.data.market !==
+					"0x0000000000000000000000000000000000000000"
+			) {
+				// Sort by DIN
+				products = state.products.concat(action.data).sort((a, b) => {
+					return a.DIN - b.DIN;
+				});
+			} else {
+				products = state.products;
+			}
+			return {
+				...state,
+				products: products
 			};
 		case RECEIVED_PURCHASES:
 			return {
@@ -185,7 +227,15 @@ const results = (state = resultsDefaultState, action) => {
 	}
 };
 
-const config = combineReducers({
+// Initial state
+const theme = (state = null, action) => {
+	return state;
+};
+const menuItems = (state = null, action) => {
+	return state;
+};
+
+export const config = combineReducers({
 	theme,
 	menuItems,
 	web3IsLoading,
@@ -207,8 +257,9 @@ const config = combineReducers({
 export const rootReducer = combineReducers({
 	config,
 	results,
-	selectedMenuItemId,
-	buyModal,
+	selectedMarket,
 	purchaseIsPending,
-	txsPending
+	buyModal,
+	showBuyKMTModal,
+	routing: routerReducer
 });
