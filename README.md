@@ -1,6 +1,6 @@
 # Kiosk
 
-Kiosk is a protocol for buying and selling products without a trusted third-party. It is built with smart contracts and will be deployed to the public Ethereum blockchain.
+Kiosk is a protocol for buying and selling products using the Ethereum blockchain.
 
 ## Project Overview
 
