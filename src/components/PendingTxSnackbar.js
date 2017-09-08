@@ -1,53 +1,49 @@
-import React, {Component} from 'react';
+import React from "react";
 import { connect } from "react-redux";
-import Snackbar from 'material-ui/Snackbar';
+import Snackbar from "material-ui/Snackbar";
 
-const mapStateToProps = state => ({
-  txsPending: state.txsPending
-});
+const mapStateToProps = state => {
+  return {
+    txsPending: state.txsPending,
+    txSucceeded: state.txSucceeded,
+    txFailed: state.txFailed // TODO:
+  };
+};
 
-class PendingTxSnackbar extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      open: false,
-    };
+const PendingTxSnackbar = ({ txsPending, txSucceeded, txFailed, onClose }) => {
+  let message;
+  let open = true;
+
+  const pending = (open, title = "", duration = 0) => (
+    <Snackbar
+      open={open}
+      message={title}
+      autoHideDuration={duration}
+      onRequestClose={onClose}
+    />
+  );
+
+  if (txSucceeded === true) {
+    message = "Transaction succeeded";
+    return pending(open, message, 3000); // Show for 3 seconds
+  } else if (txFailed === true) {
+    message = "Transaction failed";
+    return pending(open, message, 3000); // Show for 3 seconds
   }
 
-  handleTouchTap = () => {
-    this.setState({
-      open: true,
-    });
-  };
-
-  handleRequestClose = () => {
-    this.setState({
-      open: false,
-    });
-  };
-
-  render() {
-    if (this.props.txsPending.length > 0) {
-      const firstTx = this.props.txsPending[0].substring(0,5)
-      let message
-      if (this.props.txsPending.length > 1) {
-        message = `Transaction ${firstTx} and ${this.props.txsPending.length} are pending.`
-      } else {
-        message = `Transaction ${firstTx} is pending.`
+  switch (txsPending.length) {
+    case 0:
+      return pending(false);
+    case 1:
+      const first = txsPending[0].substring(0, 5);
+      message = `Transaction ${first} is pending.`;
+      // Allow fallthrough
+    default:
+      if (!message) {
+        message = "Multiple transactions are pending";
       }
-
-      return (
-        <div>
-          <Snackbar
-            open={true}
-            message={message}
-          />
-        </div>
-      );
-    } else {
-      return null
-    }
+      return pending(open, message, 10000); // Show for up to 10 seconds while transaction is pending
   }
-}
+};
 
-export default connect(mapStateToProps)(PendingTxSnackbar)
+export default connect(mapStateToProps)(PendingTxSnackbar);

@@ -15,7 +15,7 @@ const Promise = require("bluebird");
 export const REQUEST_LOADING = "REQUEST_LOADING";
 export const REQUEST_ERROR = "REQUEST_ERROR";
 export const REQUEST_SHOW_LOADER = "SHOW_LOADER";
-export const REQUEST_TIMEOUT = "REQUEST_TIMEOUT"
+export const REQUEST_TIMEOUT = "REQUEST_TIMEOUT";
 export const RECEIVED_PRODUCT = "RECEIVED_PRODUCT";
 export const RECEIVED_OWNER_DINS = "RECEIVED_OWNER_DINS";
 export const RECEIVED_MARKET_DINS = "RECEIVED_MARKET_DINS";
@@ -27,6 +27,7 @@ export const PURCHASE_IS_PENDING = "PURCHASE_IS_PENDING";
 export const PRODUCT_AVAILABILITY = "PRODUCT_AVAILABILITY";
 export const TX_PENDING_ADDED = "TX_PENDING_ADDED";
 export const TX_PENDING_REMOVED = "TX_PENDING_REMOVED";
+export const TX_SUCCEEDED = "TX_SUCCEEDED";
 
 export const DATA_TYPE = {
   ALL_PRODUCTS: 1,
@@ -70,6 +71,7 @@ export const productAvailability = data =>
 export const purchaseIsPending = data => action(PURCHASE_IS_PENDING, { data });
 export const addPendingTx = data => action(TX_PENDING_ADDED, { data });
 export const removePendingTx = data => action(TX_PENDING_REMOVED, { data });
+export const txSucceeded = data => action(TX_SUCCEEDED, { data });
 
 const fetchProduct = (web3, registry, BuyerContract, account, DIN) => {
   return async dispatch => {
@@ -131,7 +133,7 @@ export const fetchProductsForMarket = market => {
     const DINRegistry = getState().config.DINRegistry;
     const BuyerContract = getState().config.BuyerContract;
     const account = getState().config.account;
-    
+
     if (web3 && DINRegistry && account) {
       const DINs = await getMarketProductDINs(
         web3,
@@ -237,27 +239,30 @@ export const getPriceAndAvailability = (product, quantity) => {
 
 export const checkPendingTxs = () => {
   return async (dispatch, getState) => {
+    console.log("HI");
+
     try {
       const web3 = getState().config.web3;
       const pendTxs = getState().txsPending;
-      //TODO: stop polling if pendTxs.length < 1
-      pendTxs.forEach((tx) => {
-        web3.eth.getTransaction(tx, (err, res) => {
-          console.log("CHECKING:   ", tx)
-          if (err) {
-            console.log("ERR:  \n", err)
-          } else {
-            if(res.blockNumber !== null) {
-              dispatch(removePendingTx(tx))
-            }
+      const getTxAsync = Promise.promisify(web3.eth.getTransaction);
+
+      // TODO: stop polling if pendTxs.length < 1
+      pendTxs.forEach(async tx => {
+        try {
+          const result = await getTxAsync(tx);
+          if (result.blockNumber !== null) {
+            dispatch(txSucceeded(tx));
+            dispatch(removePendingTx(tx));
           }
-        })
-      })
+        } catch (err) {
+          console.log("ERROR");
+        }
+      });
     } catch (err) {
       console.log("Can't fetch pending transactions");
     }
   };
-}
+};
 
 export const buyNow = product => {
   return async (dispatch, getState) => {
@@ -281,7 +286,7 @@ export const buyNow = product => {
         account
       );
       console.log(txId);
-      dispatch(addPendingTx(txId))
+      dispatch(addPendingTx(txId));
       setInterval(() => dispatch(checkPendingTxs()), 1000);
       dispatch(purchaseIsPending(false));
       dispatch(reloadAfterPurchase());
