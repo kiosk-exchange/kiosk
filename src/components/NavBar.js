@@ -43,6 +43,7 @@ const NavBar = ({ theme, network, onBuyClick }) => {
 			<ToolbarGroup>
 				<RaisedButton
 					label="Get Kiosk Market Tokens"
+					buttonStyle={{ minWidth: "220px" }} // Prevent bug with text overflow on disabled state
 					backgroundColor={theme.red}
 					disabled={network ? false : true}
 					labelColor="#FFFFFF"

@@ -111,8 +111,6 @@ const fetchProducts = filter => {
             dispatch(receivedProduct(product))
           })
         })
-
-
       }
     }
   };
