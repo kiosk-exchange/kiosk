@@ -91,7 +91,6 @@ const fetchProducts = filter => {
           BuyerContract,
           account
         );
-        console.log("GOT ALL DINS");
       } else if (filter === PRODUCT_FILTER.OWNER) {
         DINs = await getOwnerProductDINs(
           web3,
