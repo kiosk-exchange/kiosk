@@ -151,6 +151,6 @@ const refreshNetwork = dataType => {
 // Fetch web3, contracts, account and dispatch to store
 export const initKiosk = dataType => {
   return async dispatch => {
-    setInterval(() => dispatch(refreshNetwork(dataType)), 10000);
+    setInterval(() => dispatch(refreshNetwork(dataType)), 1000);
   };
 };

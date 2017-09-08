@@ -5,16 +5,17 @@ import { routerMiddleware } from "react-router-redux";
 import { createStore, applyMiddleware, compose } from "redux";
 import DevTools from "./containers/DevTools";
 import thunk from "redux-thunk";
-import { composeWithDevTools } from "redux-devtools-extension";
 import { rootReducer } from "./redux/reducers";
-import { Router, Route } from "react-router";
-import createHistory from "history/createBrowserHistory";
-import MarketplaceTable from "./components/tables/MarketplaceTable";
-import PurchasesTable from "./components/tables/PurchasesTable";
-import ProductsTable from "./components/tables/ProductsTable";
-import SalesTable from "./components/tables/SalesTable";
+import { Router, Route, Switch } from "react-router";
+import createBrowserHistory from "history/createBrowserHistory";
+import {
+	Marketplace,
+	Purchases,
+	Products,
+	Sales,
+	Market
+} from "./containers/Container";
 
-import App from "./App";
 import "./styles/App.css";
 
 const initialState = {
@@ -30,40 +31,30 @@ const initialState = {
 	}
 };
 
-const history = createHistory();
+const history = createBrowserHistory();
 const routing = routerMiddleware(history);
 
 const enhancer = compose(
 	applyMiddleware(thunk, routing),
 	DevTools.instrument()
 );
-
 const store = createStore(rootReducer, initialState, enhancer);
 
 render(
 	<Provider store={store}>
 		<Router history={history}>
-			<div>
-				<App>
-					<Route
-						exact={true}
-						path="/marketplace"
-						component={MarketplaceTable}
-					/>
-					<Route
-						exact={true}
-						path="/purchases"
-						component={PurchasesTable}
-					/>
-					<Route
-						exact={true}
-						path="/products"
-						component={ProductsTable}
-					/>
-					<Route exact={true} path="/sales" component={SalesTable} />
-				</App>
-				<DevTools />
-			</div>
+			<Switch>
+				<Route exact={true} path="/" component={Marketplace} />
+				<Route
+					exact={true}
+					path="/marketplace"
+					component={Marketplace}
+				/>
+				<Route exact={true} path="/purchases" component={Purchases} />
+				<Route exact={true} path="/products" component={Products} />
+				<Route exact={true} path="/sales" component={Sales} />
+				<Route path="/market/:market" component={Market} />
+ 			</Switch>
 		</Router>
 	</Provider>,
 	document.getElementById("root")
@@ -74,6 +65,7 @@ render(
 // <Route path="/purchases" component={PurchasesTable} />
 // <Route path="/sales" component={SalesTable} />
 // <Route path="markets" component={MarketTable} />
+// <DevTools />;
 
 // TODO: Figure out hot reloading with React Router
 // if (module.hot) {

@@ -30,9 +30,7 @@ class App extends Component {
   }
 
   render() {
-    // const { web3, network, error } = this.props;
-
-    console.log(this)
+    const { web3, network, error, selectedMenuItem } = this.props;
 
     const hContainerStyle = {
       display: "flex",
@@ -59,33 +57,33 @@ class App extends Component {
       padding: "10px 30px"
     };
 
-    // let content = null;
-    // if (web3 && network) {
-    //   if (network.valid === true) {
-    //     content = <TableContainer />;
-    //   } else {
-    //     content = (
-    //       <ErrorMessage message="Kiosk is not deployed to this network. Please connect to Kovan Test Network" showIcon={false} />
-    //     );
-    //   }
-    // } else if (error === true) {
-    //   content = (
-    //     <ErrorMessage title="You are not connected to an Ethereum node" showIcon={true} />
-    //   );
-    // }
+    let content = null;
+    if (web3 && network) {
+      if (network.valid === true) {
+        content = this.props.children;
+      } else {
+        content = (
+          <ErrorMessage message="Kiosk is not deployed to this network. Please connect to Kovan Test Network" showIcon={false} />
+        );
+      }
+    } else if (error === true) {
+      content = (
+        <ErrorMessage title="You are not connected to an Ethereum node" showIcon={true} />
+      );
+    }
 
     return (
       <MuiThemeProvider>
         <div style={hContainerStyle}>
           <div style={sideMenuStyle}>
-            <SideMenu />
+            <SideMenu value={selectedMenuItem}/>
           </div>
           <div style={rightContainerStyle}>
             <div>
               <NavBar />
             </div>
             <div style={tableStyle}>
-              {this.props.children}
+              {content}
             </div>
           </div>
           <BuyModal />

@@ -48,7 +48,7 @@ const action = (type, data) => ({
 
 export const receivedProduct = data => action(RECEIVED_PRODUCT, { data });
 export const receivedOwnerDINs = data => action(RECEIVED_OWNER_DINS, { data });
-export const receivedMarketDINs = data => action(RECEIVED_OWNER_DINS, { data });
+export const receivedMarketDINs = data => action(RECEIVED_MARKET_DINS, { data });
 export const receivedPurchases = data => action(RECEIVED_PURCHASES, { data });
 export const receivedSales = data => action(RECEIVED_SALES, { data });
 export const requestLoading = data => action(REQUEST_LOADING, { data });

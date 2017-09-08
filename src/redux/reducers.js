@@ -2,7 +2,6 @@ import { combineReducers } from "redux";
 import { routerReducer } from "react-router-redux";
 
 import {
-	SELECTED_DATA_TYPE,
 	SHOW_BUY_MODAL,
 	SHOW_BUY_KMT_MODAL,
 	SELECTED_PRODUCT,
@@ -87,8 +86,6 @@ const KMTBalance = (state = null, action) =>
 	reducer(state, action, KMT_BALANCE);
 const ETHBalance = (state = null, action) =>
 	reducer(state, action, ETH_BALANCE);
-const dataType = (state = 1, action) =>
-	reducer(state, action, SELECTED_DATA_TYPE);
 const selectedMarket = (state = null, action) =>
 	reducer(state, action, SELECTED_MARKET);
 const purchaseIsPending = (state = false, action) =>
@@ -155,7 +152,9 @@ const resultsDefaultState = {
 	isLoading: true,
 	products: [],
 	purchases: [],
-	sales: []
+	sales: [],
+	ownedDINs: [],
+	marketDINs: []
 };
 
 export const results = (state = resultsDefaultState, action) => {
@@ -176,6 +175,7 @@ export const results = (state = resultsDefaultState, action) => {
 				ownedDINs: action.data
 			};
 		case RECEIVED_MARKET_DINS:
+			console.log(action.data)
 			return {
 				...state,
 				marketDINs: action.data
@@ -258,7 +258,6 @@ export const config = combineReducers({
 export const rootReducer = combineReducers({
 	config,
 	results,
-	dataType,
 	selectedMarket,
 	purchaseIsPending,
 	buyModal,

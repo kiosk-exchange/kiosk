@@ -13,12 +13,16 @@ export const ProductsTable = ({ products, filter }) => {
 	const values = ["DIN", "name", "value", "market"];
 	const emptyStateMessage = "You have no products";
 
-	const data = products.filter(product => filter.includes(product.DIN));
+	let data = [];
+
+	if (products.length > 0 && filter) {
+		data = products.filter(product => filter.includes(product.DIN));
+	}
 
 	return (
 		<TableContainer
 			title="Products"
-			data={products}
+			data={data}
 			emptyStateMessage={emptyStateMessage}
 		>
 			<DataTable dataSource={data} headers={headers} values={values} />

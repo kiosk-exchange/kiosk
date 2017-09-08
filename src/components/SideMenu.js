@@ -14,7 +14,6 @@ const mapStateToProps = (state, ownProps) => ({
 	account: state.config.account,
 	KMT: state.config.KMTBalance,
 	ETH: state.config.ETHBalance,
-	dataType: state.dataType
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -25,7 +24,7 @@ const mapDispatchToProps = dispatch => ({
 
 const SelectableList = makeSelectable(List);
 
-const SideMenu = ({ account, KMT, ETH, dataType, onMenuItemClick, id, filter }) => {
+const SideMenu = ({ value, account, KMT, ETH, dataType, onMenuItemClick, id, filter }) => {
 	const style = {
 		color: "white",
 		fontSize: "15px",
@@ -54,11 +53,8 @@ const SideMenu = ({ account, KMT, ETH, dataType, onMenuItemClick, id, filter }) 
 		style: style
 	};
 
-	// If the data type is 5 (Market), show the selected items as 1 (Marketplace)
-	const selectedIndex = dataType === 5 ? 1 : dataType;
-
 	return (
-		<SelectableList style={listStyle} value={selectedIndex}>
+		<SelectableList style={listStyle} value={value}>
 			<ListItem
 				style={logoStyle}
 				disabled={true}
