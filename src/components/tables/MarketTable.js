@@ -13,7 +13,7 @@ const mapStateToProps = state => {
 
 class MarketTable extends Component {
 	render() {
-		const { market, products, filter, address } = this.props;
+		const { market, products, filter } = this.props;
 
 		const headers = ["DIN", "Name", "Price (KMT)", "Buy"];
 		const values = ["DIN", "name", "value", "buy"];
