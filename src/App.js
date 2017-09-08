@@ -5,6 +5,7 @@ import SideMenu from "./components/SideMenu";
 import NavBar from "./components/NavBar";
 import BuyModal from "./components/BuyModal";
 import BuyKMTModal from "./components/BuyKMTModal";
+import PendingTxSnackbar from "./components/PendingTxSnackbar";
 import ErrorMessage from "./components/ErrorMessage";
 import { connect } from "react-redux";
 import { initKiosk } from "./redux/actions/config";
@@ -88,6 +89,7 @@ class App extends Component {
           </div>
           <BuyModal />
           <BuyKMTModal />
+          <PendingTxSnackbar />
         </div>
       </MuiThemeProvider>
     );

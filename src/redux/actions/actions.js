@@ -1,11 +1,8 @@
-import { buyProduct } from "../../utils/buy";
 import {
   DATA_TYPE,
   fetchDataForMenuItem,
   fetchProductsForMarket,
-  getPriceAndAvailability,
-  purchaseIsPending,
-  reloadAfterPurchase
+  getPriceAndAvailability
 } from "./blockchain";
 import { push } from "react-router-redux";
 
@@ -75,56 +72,6 @@ export const selectMarket = market => {
     dispatch(fetchProductsForMarket(market.address));
   };
 };
-
-export const buyNow = product => {
-  return async (dispatch, getState) => {
-    const web3 = getState().config.web3;
-    const KMTContract = getState().config.KMTContract;
-    const account = getState().config.account;
-    const DIN = product.DIN;
-    const quantity = getState().buyModal.quantity;
-    const value = getState().buyModal.totalPrice;
-    const valueInKMTWei = web3.toWei(value, "ether");
-
-    // Reset
-    dispatch(purchaseIsPending(true));
-    dispatch(showBuyModal(false));
-    try {
-      const txId = await buyProduct(
-        KMTContract,
-        DIN,
-        quantity,
-        valueInKMTWei,
-        account
-      );
-      console.log(txId);
-      dispatch(purchaseIsPending(false));
-      dispatch(reloadAfterPurchase());
-    } catch (err) {
-      console.log(err);
-      console.log("ERROR: BUY PRODUCT " + product.DIN);
-      dispatch(purchaseIsPending(false));
-    }
-  };
-};
-
-// export const buyKioskMarketToken = () => {
-//   return async (dispatch, getState) => {
-//     try {
-//       const web3 = getState().config.web3;
-//       const EtherMarket = getState().config.EtherMarket;
-//       const value = web3.toWei(1, "ether"); // Hardcode for now
-//       const account = getState().config.account;
-
-//       const txId = await buyKMT(EtherMarket, value, account);
-//       console.log(txId);
-//       // Reload balances
-//       dispatch(getBalances());
-//     } catch (err) {
-//       console.log("ERROR: BUY KMT");
-//     }
-//   };
-// };
 
 export const changedQuantity = quantity => {
   return async (dispatch, getState) => {

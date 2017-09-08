@@ -3,7 +3,7 @@ import Dialog from "material-ui/Dialog";
 import RaisedButton from "material-ui/RaisedButton";
 import QuantityPicker from "./QuantityPicker";
 import Subheader from "material-ui/Subheader";
-import { showBuyModal, buyNow } from "../redux/actions/actions";
+import { showBuyModal, buyNow } from "../redux/actions/blockchain";
 import { connect } from "react-redux";
 
 const mapStateToProps = state => ({

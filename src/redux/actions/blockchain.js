@@ -6,7 +6,9 @@ import {
   getValue,
   getIsAvailable
 } from "../../utils/products";
+import { buyProduct, buyKMT } from "../../utils/buy";
 import { getPurchases, getSales } from "../../utils/orders";
+import { showBuyModal } from "./actions";
 import { getBalances } from "./config";
 const Promise = require("bluebird");
 
@@ -23,6 +25,8 @@ export const TOTAL_PRICE_CALCULATING = "TOTAL_PRICE_CALCULATING";
 export const TOTAL_PRICE = "TOTAL_PRICE";
 export const PURCHASE_IS_PENDING = "PURCHASE_IS_PENDING";
 export const PRODUCT_AVAILABILITY = "PRODUCT_AVAILABILITY";
+export const TX_PENDING_ADDED = "TX_PENDING_ADDED";
+export const TX_PENDING_REMOVED = "TX_PENDING_REMOVED";
 
 export const DATA_TYPE = {
   ALL_PRODUCTS: 1,
@@ -64,6 +68,8 @@ export const totalPrice = data => action(TOTAL_PRICE, { data });
 export const productAvailability = data =>
   action(PRODUCT_AVAILABILITY, { data });
 export const purchaseIsPending = data => action(PURCHASE_IS_PENDING, { data });
+export const addPendingTx = data => action(TX_PENDING_ADDED, { data });
+export const removePendingTx = data => action(TX_PENDING_REMOVED, { data });
 
 const fetchProduct = (web3, registry, BuyerContract, account, DIN) => {
   return async dispatch => {
@@ -226,5 +232,81 @@ export const getPriceAndAvailability = (product, quantity) => {
     }
 
     dispatch(totalPriceIsCalculating(false));
+  };
+};
+
+export const checkPendingTxs = () => {
+  return async (dispatch, getState) => {
+    try {
+      const web3 = getState().config.web3;
+      const pendTxs = getState().txsPending;
+      //TODO: stop polling if pendTxs.length < 1
+      pendTxs.forEach((tx) => {
+        web3.eth.getTransaction(tx, (err, res) => {
+          console.log("CHECKING:   ", tx)
+          if (err) {
+            console.log("ERR:  \n", err)
+          } else {
+            if(res.blockNumber !== null) {
+              dispatch(removePendingTx(tx))
+            }
+          }
+        })
+      })
+    } catch (err) {
+      console.log("Can't fetch pending transactions");
+    }
+  };
+}
+
+export const buyNow = product => {
+  return async (dispatch, getState) => {
+    const web3 = getState().config.web3;
+    const KMTContract = getState().config.KMTContract;
+    const account = getState().config.account;
+    const DIN = product.DIN;
+    const quantity = getState().buyModal.quantity;
+    const value = getState().buyModal.totalPrice;
+    const valueInKMTWei = web3.toWei(value, "ether");
+
+    // Reset
+    dispatch(purchaseIsPending(true));
+    dispatch(showBuyModal(false));
+    try {
+      const txId = await buyProduct(
+        KMTContract,
+        DIN,
+        quantity,
+        valueInKMTWei,
+        account
+      );
+      console.log(txId);
+      dispatch(addPendingTx(txId))
+      setInterval(() => dispatch(checkPendingTxs()), 1000);
+      dispatch(purchaseIsPending(false));
+      dispatch(reloadAfterPurchase());
+    } catch (err) {
+      console.log(err);
+      console.log("ERROR: BUY PRODUCT " + product.DIN);
+      dispatch(purchaseIsPending(false));
+    }
+  };
+};
+
+export const buyKioskMarketToken = () => {
+  return async (dispatch, getState) => {
+    try {
+      const web3 = getState().config.web3;
+      const EtherMarket = getState().config.EtherMarket;
+      const value = web3.toWei(1, "ether"); // Hardcode for now
+      const account = getState().config.account;
+
+      const txId = await buyKMT(EtherMarket, value, account);
+      console.log(txId);
+      // Reload balances
+      dispatch(getBalances());
+    } catch (err) {
+      console.log("ERROR: BUY KMT");
+    }
   };
 };

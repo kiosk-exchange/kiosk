@@ -35,6 +35,8 @@ import {
 	RECEIVED_PURCHASES,
 	RECEIVED_SALES,
 	PURCHASE_IS_PENDING,
+	TX_PENDING_ADDED,
+	TX_PENDING_REMOVED,
 	TOTAL_PRICE_CALCULATING,
 	TOTAL_PRICE,
 	PRODUCT_AVAILABILITY
@@ -90,6 +92,20 @@ const selectedMarket = (state = null, action) =>
 	reducer(state, action, SELECTED_MARKET);
 const purchaseIsPending = (state = false, action) =>
 	reducer(state, action, PURCHASE_IS_PENDING);
+
+const txsPending = (state = [], action) => {
+if (action.type === TX_PENDING_ADDED) {
+	return state.concat(action.data)
+} else if (action.type === TX_PENDING_REMOVED) {
+	var indx = state.indexOf(action.data);
+	return [
+		...state.slice(0, indx),
+		...state.slice(indx + 1)
+	]
+}
+return state;
+}
+
 
 const buyModalDefaultState = {
 	product: null,
@@ -261,5 +277,6 @@ export const rootReducer = combineReducers({
 	purchaseIsPending,
 	buyModal,
 	showBuyKMTModal,
+	txsPending,
 	routing: routerReducer
 });
