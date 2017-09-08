@@ -1,0 +1,84 @@
+{
+  "contract_name": "TestRegistrar",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "ens",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "name": "expiryTimes",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "subnode",
+          "type": "bytes32"
+        },
+        {
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "register",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "rootNode",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "ensAddr",
+          "type": "address"
+        },
+        {
+          "name": "node",
+          "type": "bytes32"
+        }
+      ],
+      "payable": false,
+      "type": "constructor"
+    }
+  ],
+  "unlinked_binary": "0x6060604052341561000c57fe5b6040516040806102218339810160405280516020909101515b60008054600160a060020a031916600160a060020a03841617905560018190555b50505b6101c9806100586000396000f300606060405263ffffffff60e060020a6000350416633f15457f8114610042578063af9f26e41461006e578063d22057a914610093578063faff50a8146100b4575bfe5b341561004a57fe5b6100526100d6565b60408051600160a060020a039092168252519081900360200190f35b341561007657fe5b6100816004356100e5565b60408051918252519081900360200190f35b341561009b57fe5b6100b2600435600160a060020a03602435166100f7565b005b34156100bc57fe5b610081610197565b60408051918252519081900360200190f35b600054600160a060020a031681565b60026020526000908152604090205481565b6000828152600260205260409020544290106101135760006000fd5b600082815260026020526040808220426224ea000190558154600154825160e060020a6306ab5923028152600481019190915260248101869052600160a060020a038581166044830152925192909116926306ab59239260648084019382900301818387803b151561018157fe5b6102c65a03f1151561018f57fe5b5050505b5050565b600154815600a165627a7a72305820fbc277c56bac44f7b8437e999fdc2304ea1c3eb6f83cb12fdc9b7dec3e43e17d0029",
+  "networks": {},
+  "schema_version": "0.0.5",
+  "updated_at": 1504418732579
+}
