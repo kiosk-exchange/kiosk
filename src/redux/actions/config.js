@@ -13,7 +13,6 @@ import {
 } from "../../utils/contracts";
 import { loadWeb3 } from "../../utils/kioskWeb3";
 import { fetchDataForMenuItem } from "./blockchain";
-import { selectedDataType } from "./actions";
 
 export const WEB_3_LOADING = "WEB_3_LOADING";
 export const WEB_3_ERROR = "WEB_3_ERROR";
@@ -133,7 +132,6 @@ const refreshNetwork = dataType => {
 
       if (!KMT && network && network.valid === true) {
         // Get contracts
-        dispatch(selectedDataType(dataType));
         dispatch(getContracts(dataType));
       }
     } else {

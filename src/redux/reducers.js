@@ -175,7 +175,6 @@ export const results = (state = resultsDefaultState, action) => {
 				ownedDINs: action.data
 			};
 		case RECEIVED_MARKET_DINS:
-			console.log(action.data)
 			return {
 				...state,
 				marketDINs: action.data

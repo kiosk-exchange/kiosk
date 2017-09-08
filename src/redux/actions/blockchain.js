@@ -111,19 +111,25 @@ const fetchProducts = filter => {
 
 export const fetchProductsForMarket = market => {
   return async (dispatch, getState) => {
+    console.log("FETCHING")
     const web3 = getState().config.web3;
     const DINRegistry = getState().config.DINRegistry;
     const BuyerContract = getState().config.BuyerContract;
     const account = getState().config.account;
+
+    console.log(web3)
+    console.log(DINRegistry)
+    console.log(BuyerContract)
+
     if (web3 && DINRegistry && account) {
-      const products = await getMarketProductDINs(
+      const DINs = await getMarketProductDINs(
         web3,
         DINRegistry,
         BuyerContract,
         account,
         market
       );
-      dispatch(receivedMarketDINs(products));
+      dispatch(receivedMarketDINs(DINs));
     }
   };
 };

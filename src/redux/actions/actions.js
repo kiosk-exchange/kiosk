@@ -9,7 +9,6 @@ import {
 } from "./blockchain";
 import { push } from "react-router-redux";
 
-export const SELECTED_DATA_TYPE = "SELECTED_DATA_TYPE";
 export const SHOW_BUY_MODAL = "SHOW_BUY_MODAL";
 export const SHOW_BUY_KMT_MODAL = "SHOW_BUY_KMT_MODAL";
 export const SELECTED_PRODUCT = "SELECTED_PRODUCT";
@@ -23,7 +22,6 @@ const action = (type, data) => ({
 });
 
 // Actions
-export const selectedDataType = data => action(SELECTED_DATA_TYPE, { data });
 export const selectedProduct = data => action(SELECTED_PRODUCT, { data });
 export const showBuyModal = data => action(SHOW_BUY_MODAL, { data });
 export const showBuyKMTModal = data => action(SHOW_BUY_KMT_MODAL, { data });
@@ -33,7 +31,6 @@ export const selectedMarket = data => action(SELECTED_MARKET, { data });
 export const selectMenuItem = id => {
   return async dispatch => {
     dispatch(selectedMarket(null));
-    dispatch(selectedDataType(id));
 
     switch (id) {
       case DATA_TYPE.ALL_PRODUCTS:
@@ -74,7 +71,6 @@ export const selectProduct = DIN => {
 
 export const selectMarket = market => {
   return dispatch => {
-    dispatch(selectedDataType(DATA_TYPE.MARKET));
     dispatch(selectedMarket(market));
     dispatch(fetchProductsForMarket(market.address));
   };
