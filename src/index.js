@@ -23,6 +23,7 @@ const initialState = {
 		theme: {
 			red: "#FC575E",
 			blue: "#32C1FF",
+			green: "#4ED4B3",
 			gray: "#2C363F",
 			lightGray: "#6E7E85",
 			white: "#F6F8FF"
