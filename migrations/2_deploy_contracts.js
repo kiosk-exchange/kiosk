@@ -9,7 +9,7 @@ const DINMarket = artifacts.require("DIN/DINMarket.sol");
 const EtherMarket = artifacts.require("ether/EtherMarket.sol");
 const ENSMarket = artifacts.require("ENS/ENSMarket.sol");
 const ENS = artifacts.require("ENS/ENS/ENS.sol");
-const FIFSRegistrar = artifacts.require("ENS/ENS/FIFSRegistrar.sol");
+const TestRegistrar = artifacts.require("ENS/ENS/TestRegistrar.sol");
 const namehash = require("../node_modules/eth-ens-namehash");
 const tld = "eth";
 const rootNode = getRootNodeFromTLD(tld);
@@ -94,24 +94,24 @@ const deployENS = async (deployer, network, accounts) => {
 
   await deployer.deploy(ENS);
 
-  // Deploy the FIFSRegistrar and bind it with ENS
-  await deployer.deploy(FIFSRegistrar, ENS.address, rootNode.namehash);
+  // Deploy the TestRegistrar and bind it with ENS
+  await deployer.deploy(TestRegistrar, ENS.address, rootNode.namehash);
 
-  // Transfer the owner of the `rootNode` to the FIFSRegistrar
+  // Transfer the owner of the `rootNode` to the TestRegistrar
   await ENS.at(ENS.address).setSubnodeOwner(
     "0x0",
     rootNode.sha3,
-    FIFSRegistrar.address
+    TestRegistrar.address
   );
 
   // Register 2 DINs.
   await KioskMarketToken.at(KioskMarketToken.address).buy(genesis, 2, 0);
 
   // Register "example.eth" to a test account
-  await FIFSRegistrar.at(FIFSRegistrar.address).register(subnodeSHA3, account1);
+  await TestRegistrar.at(TestRegistrar.address).register(subnodeSHA3, account1);
 
   // Register "offthechain.eth" to a test account (demonstrate off-chain price changes).
-  await FIFSRegistrar.at(FIFSRegistrar.address).register(
+  await TestRegistrar.at(TestRegistrar.address).register(
     offChainSHA3,
     account1
   );

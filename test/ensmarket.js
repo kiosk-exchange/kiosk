@@ -1,19 +1,21 @@
 const KioskMarketToken = artifacts.require("KioskMarketToken");
-const BuyerContract = artifacts.require("Buyer");
+const OrderStore = artifacts.require("OrderStore");
 const ENSMarket = artifacts.require("ENSMarket");
 const ENSRegistry = artifacts.require("ENS");
-const FIFSRegistrar = artifacts.require("FIFSRegistrar");
+const TestRegistrar = artifacts.require("TestRegistrar");
 const EtherMarket = artifacts.require("EtherMarket");
 const namehash = require("../node_modules/eth-ens-namehash");
-const expect = require("chai").expect;
+const chai = require("chai"),
+	expect = chai.expect,
+	should = chai.should();
 
 contract("ENSMarket", accounts => {
-	
 	const seller = accounts[0];
 	const buyer = accounts[1];
 	const Alice = accounts[2];
 
 	// Test domain name
+	const genesis = 1000000000;
 	const DIN = 1000000002;
 	const domainName = "example.eth";
 	const domainPrice = parseInt(web3.toWei(2, "ether"));
@@ -30,15 +32,15 @@ contract("ENSMarket", accounts => {
 	before(async () => {
 		Market = await ENSMarket.deployed();
 		KMT = await KioskMarketToken.deployed();
-		Buy = await BuyerContract.deployed();
+		Orders = await OrderStore.deployed();
 		ENS = await ENSRegistry.deployed();
-		Registrar = await FIFSRegistrar.deployed();
+		Registrar = await TestRegistrar.deployed();
 		EthMarket = await EtherMarket.deployed();
 
 		// Exchange 10 ether for KMT
 		const amount = web3.toWei(10, "ether");
-		await EthMarket.contribute({ from: buyer, value: amount })
-	})
+		await EthMarket.contribute({ from: buyer, value: amount });
+	});
 
 	const quantity = 1;
 
@@ -60,28 +62,39 @@ contract("ENSMarket", accounts => {
 	});
 
 	it("should let buyers buy a domain", async () => {
-		KMT.buy(DIN, 1, domainPrice, { from: buyer, gas: 4700000 });
-
-		console.log(Market.address);
-
 		const owner = await ENS.owner(domainNode);
+		expect(owner).should.not.equal(buyer);
 
-		expect(owner).to.equal(buyer);
+		KMT.buy(DIN, 1, domainPrice, { from: buyer });
+		const newOwner = await ENS.owner(domainNode);
+		expect(newOwner).to.equal(buyer);
 	});
 
 	it("should let sellers sell a domain", async () => {
 		// Alice wants to register and sell "alice.eth"
-
-		// Step 1. Register alice.eth on the ENS Registrar (FIFSRegistrar)
+		// Step 1. Register alice.eth on the ENS Registrar (TestRegistrar)
 		const aliceDomainNode = web3.sha3("alice");
-		await Registrar.register(aliceDomainNode, Alice, { from: Alice, gas: 4700000 });
-		const owner = await ENS.owner(aliceDomainNode);
+		await Registrar.register(aliceDomainNode, Alice, {
+			from: Alice,
+			gas: 4700000
+		});
+		const aliceDomainNameHash = namehash("alice.eth");
 
+		const owner = await ENS.owner(aliceDomainNameHash);
 		expect(owner).to.equal(Alice);
 
-		// Step 2. Get a DIN to uniquely identify the product on Kiosk
+		// Step 2. Get a DIN that will uniquely identify the product on Kiosk
+		await KMT.buy(genesis, 1, 0, {
+			from: Alice,
+			gas: 4700000
+		});
 
+		// TODO: Get the DIN from the event
 
+		// const DIN = await Orders.metadata(orderId);
+		// console.log(DIN.toNumber());
+
+		// console.log(DIN.toNumber());
 	});
 
 	// It should let sellers add a domain
