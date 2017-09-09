@@ -1,4 +1,6 @@
+const KioskMarketToken = artifacts.require("KioskMarketToken");
 const ENSMarket = artifacts.require("ENSMarket");
+const ENS = artifacts.require("ENS");
 const FIFSRegistrar = artifacts.require("FIFSRegistrar");
 const namehash = require("../node_modules/eth-ens-namehash");
 const expect = require("chai").expect;
@@ -32,12 +34,19 @@ contract("ENSMarket", accounts => {
 
 		// Use ENS namehash function to convert the domain to bytes32 "node"
 		const domainNode = namehash(domainName);
-
 		expect(metadata).to.equal(domainNode)
 	})
 
-	it("should let buyers buy a domain", () => {
+	it("should let buyers buy a domain", async () => {
+		const market = await ENSMarket.deployed();
+		const ENS = await ENS.deployed();
+		const KMT = await.KioskMarketToken.deployed();
 
+		const beginBalance = KMT.balanceOf(account1);
+
+		market.buy(DIN, 1, domainPrice, account1);
+
+		expect(ENS.owner(domainNode)).to.equal(account1);
 	})
 
 	// It should let buyers buy a domain
