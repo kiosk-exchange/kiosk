@@ -46,7 +46,8 @@ contract ENSMarket is StandardMarket {
 		uint256 quantity, 
 		uint256 value, 
 		address buyer
-	) 	only_buyer 
+	) 	
+		only_buyer 
 		returns (bool) 
 	{
 		// Expect the buyer to own the domain at the end of the transaction.

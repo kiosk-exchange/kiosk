@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-// import { Route } from "react-router-dom";
 import SideMenu from "./components/SideMenu";
 import NavBar from "./components/NavBar";
 import BuyModal from "./components/BuyModal";
@@ -101,15 +100,3 @@ class App extends Component {
 }
 
 export default connect(mapStateToProps)(App);
-
-//
-
-// <div style={{ padding: "10px 30px" }} />
-// <TableContainer />
-
-//   const ERROR = {
-//   NOT_CONNECTED: 1,
-//   CONTRACTS_NOT_DEPLOYED: 2,
-//   NETWORK_NOT_SUPPORTED: 3,
-//   LOCKED_ACCOUNT: 4
-// };
