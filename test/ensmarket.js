@@ -11,6 +11,7 @@ contract("ENSMarket", accounts => {
 	
 	const seller = accounts[0];
 	const buyer = accounts[1];
+	const Alice = accounts[2];
 
 	// Test domain name
 	const DIN = 1000000002;
@@ -59,9 +60,6 @@ contract("ENSMarket", accounts => {
 	});
 
 	it("should let buyers buy a domain", async () => {
-		const beginBalance = await KMT.balanceOf(buyer);
-		console.log(beginBalance.toNumber());
-
 		KMT.buy(DIN, 1, domainPrice, { from: buyer, gas: 4700000 });
 
 		console.log(Market.address);
@@ -71,7 +69,21 @@ contract("ENSMarket", accounts => {
 		expect(owner).to.equal(buyer);
 	});
 
-	// It should let buyers buy a domain
+	it("should let sellers sell a domain", async () => {
+		// Alice wants to register and sell "alice.eth"
+
+		// Step 1. Register alice.eth on the ENS Registrar (FIFSRegistrar)
+		const aliceDomainNode = web3.sha3("alice");
+		await Registrar.register(aliceDomainNode, Alice, { from: Alice, gas: 4700000 });
+		const owner = await ENS.owner(aliceDomainNode);
+
+		expect(owner).to.equal(Alice);
+
+		// Step 2. Get a DIN to uniquely identify the product on Kiosk
+
+
+	});
+
 	// It should let sellers add a domain
 	// It should let sellers withdraw proceeds
 });
