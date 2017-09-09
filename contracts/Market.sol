@@ -19,12 +19,9 @@ contract Market {
 	// A hash representation of a product's metadata that is added to the order.
 	function metadata(uint256 DIN) constant returns (bytes32);
 
-	// Returns true if a given quantity of a product is available for purchase.
-	function availableForSale(uint256 DIN, uint256 quantity, address buyer) constant returns (bool);
-}
-
-contract PricedMarket is Market {
-	
 	// The total price of a product for a given quantity and buyer.
 	function totalPrice(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256);
+
+	// Returns true if a given quantity of a product is available for purchase.
+	function availableForSale(uint256 DIN, uint256 quantity, address buyer) constant returns (bool);
 }
