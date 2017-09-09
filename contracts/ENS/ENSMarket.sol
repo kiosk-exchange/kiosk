@@ -17,22 +17,38 @@ contract ENSMarket is StandardMarket {
 		bytes32 node;
 		uint256 price;
 		bool available;
-		mapping (address => uint256) prices;			// Set a price for specific buyer(s) (optional)
-		mapping (address => bool) availabilities;		// Set availability for specific buyer(s) (optional)
 	}
 
 	// DIN => ENS node
 	mapping(uint256 => Domain) public domains;
 
-	// Buyer => Node of purchased domain
+	// Buyer => ENS node
 	mapping(address => bytes32) public expected;
+
+	// Seller => Aggregate value of sales (in KMT)
+	mapping(address => uint256) public pendingWithdrawals;
 
 	// Constructor
 	function ENSMarket(KioskMarketToken _KMT, AbstractENS _ens) StandardMarket(_KMT) {
 		ens = _ens;
 	}
 
-	function buy(uint256 DIN, uint256 quantity, address buyer) only_buyer returns (bool) {
+	function isFulfilled(uint256 orderID) constant returns (bool) {
+		address buyer = orderStore.buyer(orderID);
+		bytes32 node = expected[buyer];
+
+		// Check that buyer is the owner of the domain.
+		return (ens.owner(node) == buyer);
+	}
+
+	function buy(
+		uint256 DIN, 
+		uint256 quantity, 
+		uint256 value, 
+		address buyer
+	) 	only_buyer 
+		returns (bool) 
+	{
 		// Expect the buyer to own the domain at the end of the transaction.
 		expected[buyer] = domains[DIN].node;
 
@@ -42,16 +58,19 @@ contract ENSMarket is StandardMarket {
 		// Give ownership of the node to the buyer.
 		ens.setOwner(domains[DIN].node, buyer);
 
+		// Update pending withdrawals for the seller.
+		address seller = domains[DIN].seller;
+		pendingWithdrawals[seller] += value;
+
 		// Remove domain from storage.
 		delete domains[DIN];
 	}
 
-	function isFulfilled(uint256 orderID) constant returns (bool) {
-		address buyer = orderStore.buyer(orderID);
-		bytes32 node = expected[buyer];
+	function withdraw() {
+		uint256 amount = pendingWithdrawals[msg.sender];
+		pendingWithdrawals[msg.sender] = 0;
 
-		// Check that buyer is the owner of the domain.
-		return (ens.owner(node) == buyer);
+		KMT.transfer(msg.sender, amount);
 	}
 
 	function nameOf(uint256 DIN) constant returns (string) {
@@ -65,10 +84,7 @@ contract ENSMarket is StandardMarket {
 	function totalPrice(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256) {
 		require (quantity == 1);
 		require (domains[DIN].available == true);
-		// See if a specific price has been set for the buyer.
-		if (domains[DIN].prices[buyer] > 0) {
-			return domains[DIN].prices[buyer];
-		}
+
 		return domains[DIN].price;
 	}
 
@@ -81,12 +97,6 @@ contract ENSMarket is StandardMarket {
 		// if (ens.owner(node) != address(this)) {
 		// 	return false;
 		// }
-
-		// // See if the domain is specifically available for the buyer.
-		// if (domains[DIN].availabilities[buyer] == true) {
-		// 	return true;
-		// }
-		return true;
 		return domains[DIN].available;
 	}
 
@@ -130,8 +140,8 @@ contract ENSMarket is StandardMarket {
 		domains[DIN].available = available;
 	}
 
-	// TODO: Set price for buyer
-	// TODO: Set available for buyer
-	// TODO: Set expiration
+	function pendingWihdrawal(address seller) constant returns (uint256) {
+		return pendingWithdrawals[seller];
+	}
 
 }

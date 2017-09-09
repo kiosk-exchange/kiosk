@@ -56,7 +56,14 @@ contract EtherMarket is StandardMarket {
 	*	==============================
 	*/
 
-	function buy(uint256 DIN, uint256 quantity, address buyer) only_buyer returns (bool) {
+	function buy(
+		uint256 DIN,
+		uint256 quantity,
+		uint256 value,
+		address buyer
+	) 	only_buyer 
+		returns (bool) 
+	{
         require (DIN == ethDIN);
 
         uint256 etherQuantity = quantity * 10**18;
@@ -72,6 +79,7 @@ contract EtherMarket is StandardMarket {
 
 	function metadata(uint256 DIN) constant returns (bytes32) {
 		require (DIN == ethDIN);
+		
 		// You're buying ether in this market.
 		return keccak256(nameOf(DIN));
 	}

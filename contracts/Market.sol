@@ -8,7 +8,7 @@ contract Market {
 	string public name;
 
 	// Buy a product. Returns true if the transaction was successful.
-	function buy(uint256 DIN, uint256 quantity, address buyer) returns (bool);
+	function buy(uint256 DIN, uint256 quantity, uint256 value, address buyer) returns (bool);
 
 	// Returns true if the seller has fulfilled the order.
 	function isFulfilled(uint256 orderID) constant returns (bool);
@@ -19,9 +19,12 @@ contract Market {
 	// A hash representation of a product's metadata that is added to the order.
 	function metadata(uint256 DIN) constant returns (bytes32);
 
-	// The total price of a product for a given quantity and buyer.
-	function totalPrice(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256);
-
 	// Returns true if a given quantity of a product is available for purchase.
 	function availableForSale(uint256 DIN, uint256 quantity, address buyer) constant returns (bool);
+}
+
+contract PricedMarket is Market {
+	
+	// The total price of a product for a given quantity and buyer.
+	function totalPrice(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256);
 }

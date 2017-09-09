@@ -54,9 +54,6 @@ contract Buyer {
 		// The requested quantity must be available for sale.
 		require(market.availableForSale(DIN, quantity, buyer) == true);
 
-		// The value must match the market price. 
-		require(market.totalPrice(DIN, quantity, buyer) == totalValue);
-
 		// If conditions are met, call the private buyProduct method to complete the transaction.
 		return buyProduct(DIN, quantity, totalValue, buyer, market);
 	}
@@ -84,7 +81,7 @@ contract Buyer {
 		);
 
 		// Tell the market to execute the order.
-		market.buy(DIN, quantity, buyer);
+		market.buy(DIN, quantity, totalValue, buyer);
 
 		// Throw if the market does not fulfill the order.
 		// Right now, Buyer only supports transactions that can be settled immediately (i.e., instant delivery).
@@ -115,12 +112,6 @@ contract Buyer {
 	function metadata(uint256 DIN) constant returns (bytes32) {
 		Market market = getMarket(DIN);
 		return market.metadata(DIN);
-	}
-
-	// The total price of a product for a given quantity and buyer.
-	function totalPrice(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256) {
-		Market market = getMarket(DIN);
-		return market.totalPrice(DIN, quantity, buyer);
 	}
 
 	// Returns true if a given quantity of a product is available for purchase.
