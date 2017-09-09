@@ -2,11 +2,14 @@ import React from "react";
 import Dialog from "material-ui/Dialog";
 import RaisedButton from "material-ui/RaisedButton";
 import Subheader from "material-ui/Subheader";
-import { showBuyKMTModal } from "../redux/actions/actions";
+import { showBuyKMTModal, changeEtherContributionAmount } from "../redux/actions/actions";
+import { buyKioskMarketToken } from "../redux/actions/blockchain";
+
 import { connect } from "react-redux";
 
 const mapStateToProps = state => ({
   totalPrice: 0,
+  etherContribution: state.etherContribution,
   ETHBalance: state.config.ETHBalance,
   isOpen: state.showBuyKMTModal,
   theme: state.config.theme
@@ -14,11 +17,14 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => {
   return {
-    onBuyNow: () => {
-      console.log("BUY KMT!");
+    onBuyNow: amount => {
+      dispatch(buyKioskMarketToken(amount))
     },
     onClose: () => {
       dispatch(showBuyKMTModal(false));
+    },
+    onEtherChange: value => {
+      dispatch(changeEtherContributionAmount(value))
     }
   };
 };
@@ -29,7 +35,9 @@ const BuyKMTModal = ({
   isOpen,
   theme,
   onBuyNow,
-  onClose
+  onClose,
+  onEtherChange,
+  etherContribution
 }) => {
   const contentStyle = {
     width: "50%",
@@ -45,7 +53,7 @@ const BuyKMTModal = ({
       backgroundColor={theme.blue}
       labelColor="#FFFFFF"
       fullWidth={true}
-      onClick={() => onBuyNow()}
+      onClick={() => onBuyNow(etherContribution)}
     />
   );
 
@@ -109,6 +117,10 @@ const BuyKMTModal = ({
     outline: "none"
   };
 
+  const handleInputChange = (event) => {
+    onEtherChange(event.target.value);
+  }
+
   return (
     <Dialog
       actions={actions}
@@ -126,7 +138,7 @@ const BuyKMTModal = ({
       <div style={{ display: "flex", width: "100%" }}>
         <div style={{ flex: "2" }}>
           <form>
-            <input style={inputStyle} type="text" autoFocus={true} />
+            <input style={inputStyle} type="text" autoFocus={true} onChange={handleInputChange} />
           </form>
         </div>
         <div style={{ flex: "1" }}>
@@ -143,7 +155,7 @@ const BuyKMTModal = ({
         </div>
         <div style={{ flex: "1" }}>
           <p style={{ ...textStyle, fontWeight: "bolder", color: theme.blue }}>
-            3,000
+            {etherContribution === 0 ? 0 : etherContribution * 300}
           </p>
         </div>
         <div style={{ flex: "1" }}>

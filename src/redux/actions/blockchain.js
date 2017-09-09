@@ -8,7 +8,7 @@ import {
 } from "../../utils/products";
 import { buyProduct, buyKMT } from "../../utils/buy";
 import { getPurchases, getSales } from "../../utils/orders";
-import { showBuyModal } from "./actions";
+import { showBuyModal, showBuyKMTModal } from "./actions";
 import { getBalances } from "./config";
 const Promise = require("bluebird");
 
@@ -297,18 +297,19 @@ export const buyNow = product => {
   };
 };
 
-export const buyKioskMarketToken = () => {
+export const buyKioskMarketToken = (amount) => {
   return async (dispatch, getState) => {
     try {
       const web3 = getState().config.web3;
       const EtherMarket = getState().config.EtherMarket;
-      const value = web3.toWei(1, "ether"); // Hardcode for now
+      const value = web3.toWei(amount, "ether"); // Hardcode for now
       const account = getState().config.account;
 
       const txId = await buyKMT(EtherMarket, value, account);
       console.log(txId);
       // Reload balances
       dispatch(getBalances());
+      dispatch(showBuyKMTModal(false))
     } catch (err) {
       console.log("ERROR: BUY KMT");
     }
