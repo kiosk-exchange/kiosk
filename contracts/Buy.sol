@@ -1,6 +1,7 @@
 pragma solidity ^0.4.11;
 
 import "./KioskMarketToken.sol";
+import "./Kiosk.sol";
 import "./DINRegistry.sol";
 import "./OrderMaker.sol";
 import "./OrderStore.sol";
@@ -8,14 +9,23 @@ import "./Market.sol";
 import "./OrderUtils.sol";
 
 contract Buy {
+    // The Kiosk contract.
+    Kiosk public kiosk;
+
     // The Kiosk Market Token contract.
     KioskMarketToken public KMT;
 
     // The DIN Registry contract.
     DINRegistry public registry;
 
-    // The Order Maker contract.
+    // The OrderMaker contract.
     OrderMaker public orderMaker;
+
+    // The OrderStore contract.
+    OrderStore public orderStore;
+
+    // The DIN to buy a DIN.
+    uint256 public GENESIS_DIN = 1000000000;
 
     enum Errors {
         INSUFFICIENT_BALANCE,
@@ -32,8 +42,8 @@ contract Buy {
     event LogError(uint8 indexed errorId);
 
     // Constructor
-    function Buyer(KioskMarketToken _KMT) {
-        KMT = _KMT;
+    function Buy(Kiosk _kiosk) {
+        kiosk = _kiosk;
         updateKiosk();
     }
 
@@ -56,19 +66,19 @@ contract Buy {
         Market market = Market(marketAddr);
 
         // The buyer must have enough tokens for the purchase.
-        if (KMT.balanceOf(buyer) < totalValue) {
+        if (KMT.balanceOf(msg.sender) < totalValue) {
             LogError(uint8(Errors.INSUFFICIENT_BALANCE));
             return 0;
         }
 
         // The total value must match the value on the market.
-        if (market.totalValue(DIN, quantity, buyer) != totalValue) {
+        if (market.totalPrice(DIN, quantity, msg.sender) != totalValue) {
             LogError(uint8(Errors.INCORRECT_PRICE));
             return 0;
         }
 
         // The requested quantity must be available for sale.
-        if (market.availableForSale(DIN, quantity, buyer) == false) {
+        if (market.availableForSale(DIN, quantity, msg.sender) == false) {
             LogError(uint8(Errors.PRODUCT_NOT_AVAILABLE));
             return 0;
         }
@@ -78,13 +88,13 @@ contract Buy {
             DIN,
             quantity,
             totalValue,
-            buyer,
+            msg.sender,  // Buyer
             market,
-            false
+            false        // No off-chain price changes validated
         );
     }
 
-    // Buy several products
+    // Buy several products.
     function buyCart(uint256[] DINs, uint256[] quantities, uint256[] subtotalValues) public {
         for (uint256 i = 0; i < DINs.length; i++) {
             uint256 orderID = buy(DINs[i], quantities[i], subtotalValues[i]);
@@ -105,6 +115,21 @@ contract Buy {
 		// TODO:
     }
 
+    // Convenience method for buying a DIN. Return the DIN instead of the order ID.
+    function buyDIN(uint256 quantity) public returns (uint256 DIN) {
+    	 uint256 orderID = buy(GENESIS_DIN, quantity, 0);
+    	 return uint256(orderStore.metadata(orderID));
+    }
+
+    /**
+    * @dev Finalize the buy request.
+    * @param DIN The Decentralized Identification Number (DIN) of the product to buy.
+    * @param quantity The quantity to buy.
+    * @param totalValue The total price of the product(s) in Kiosk Market Token (KMT) base units (i.e. "wei").
+    * @param market The market for the given DIN.
+    * @param approved True if this contract has validated an off-chain price change.
+    * @return The order ID generated from the OrderStore.
+    */
     function executeOrder(
         uint256 DIN, 
         uint256 quantity, 
@@ -114,7 +139,7 @@ contract Buy {
         bool approved
     ) 
         private
-        returns (uint256 orderID)
+        returns (uint256 order)
     {
         // Add the order to the order tracker and get the order ID.
         uint256 orderID = orderMaker.addOrder(
@@ -215,13 +240,21 @@ contract Buy {
 
     // Update Kiosk protocol contracts if they change on Kiosk Market Token
     function updateKiosk() {
+        // Update Kiosk Market Token
+        address kmtAddr = kiosk.KMT();
+        KMT = KioskMarketToken(kmtAddr);
+
         // Update DINRegistry
-        address registryAddr = KMT.registry();
+        address registryAddr = kiosk.registry();
         registry = DINRegistry(registryAddr);
 
         // Update OrderMaker
-        address orderMakerAddr = KMT.orderMaker();
+        address orderMakerAddr = kiosk.orderMaker();
         orderMaker = OrderMaker(orderMakerAddr);
+
+        // Update OrderStore
+        address orderStoreAddr = kiosk.orderStore();
+        orderStore = OrderStore(orderStoreAddr);
     }
 
 }

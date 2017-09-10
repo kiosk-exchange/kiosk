@@ -1,6 +1,6 @@
 pragma solidity ^0.4.11;
 
-import "./Kiosk";
+import "./Kiosk.sol";
 import "zeppelin-solidity/contracts/token/StandardToken.sol";
 
 contract KioskMarketToken is StandardToken {

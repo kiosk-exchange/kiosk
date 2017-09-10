@@ -1,14 +1,14 @@
 pragma solidity ^0.4.11;
 
 import "./Market.sol";
-import "./KioskMarketToken.sol";
+import "./Kiosk.sol";
 
 /**
 *  This is the Decentralized Identification Number (DIN) registry.
 */
 contract DINRegistry {
-    // The Kiosk Market Token contract.
-    KioskMarketToken public KMT;
+    // The Kiosk contract.
+    Kiosk public kiosk;
 
     struct Record {
         address owner; // Address that owns the DIN.
@@ -35,8 +35,8 @@ contract DINRegistry {
     }
 
     // Constructor
-    function DINRegistry(KioskMarketToken _KMT, uint256 _genesis) {
-        KMT = _KMT;
+    function DINRegistry(Kiosk _kiosk, uint256 _genesis) {
+        kiosk = _kiosk;
         genesis = _genesis;
 
         // Register the genesis DIN to Kiosk. This represents a DIN product.
@@ -98,10 +98,10 @@ contract DINRegistry {
         NewRegistration(DIN, owner);
     }
 
-    // Update Kiosk protocol contracts if they change on Kiosk Market Token
+    // Update Kiosk protocol contracts if they change on Kiosk
     function updateKiosk() {
         // Update DIN Registrar
-        registrarAddr = KMT.registrar();
+        registrarAddr = kiosk.registrar();
     }
 
 }

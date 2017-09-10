@@ -1,11 +1,11 @@
 pragma solidity ^0.4.11;
 
-import "./KioskMarketToken.sol";
+import "./Kiosk.sol";
 import "./OrderUtils.sol";
 
 contract OrderStore {
-	// The Kiosk Market Token contract.
-    KioskMarketToken public KMT;
+	// The Kiosk contract.
+    Kiosk public kiosk;
 
 	// Order ID => Order
 	mapping (uint256 => Order) public orders;
@@ -45,8 +45,8 @@ contract OrderStore {
 	}
 
 	// Constructor
-	function OrderStore(KioskMarketToken _KMT) {
-		KMT = _KMT;
+	function OrderStore(Kiosk _kiosk) {
+		kiosk = _kiosk;
 		updateKiosk();
 	}
 
@@ -96,10 +96,10 @@ contract OrderStore {
 		StatusChanged(orderID, status);
 	}
 
-    // Update Kiosk protocol contracts if they change on Kiosk Market Token
+    // Update Kiosk protocol contracts if they change on Kiosk
 	function updateKiosk() {
 		// Update OrderMaker
-		orderMakerAddr = KMT.orderMaker();
+		orderMakerAddr = kiosk.orderMaker();
 	}
 
 	/**

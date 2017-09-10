@@ -1,15 +1,12 @@
 pragma solidity ^0.4.11;
 
-import "./KioskMarketToken.sol";
+import "./Kiosk.sol";
 import "./OrderStore.sol";
 import "./OrderUtils.sol";
 
 contract OrderMaker {
-	// The Kiosk Market Token contract.
-	KioskMarketToken public KMT;
-
-	// The address of the Buyer contract.
-	address public buyerAddr;
+	// The Kiosk contract.
+	Kiosk public kiosk;
 
 	// The OrderStore contract.
 	OrderStore public orderStore;
@@ -17,14 +14,14 @@ contract OrderMaker {
 	// The current order ID.
 	uint256 public orderIndex = 0;
 
-	modifier only_buyer {
-		require (buyerAddr == msg.sender);
+	modifier only_buy {
+		require (kiosk.isValid(msg.sender) == true);
 		_;
 	}
 
 	// Constructor
-	function OrderMaker(KioskMarketToken _KMT) {
-		KMT = _KMT;
+	function OrderMaker(Kiosk _kiosk) {
+		kiosk = _kiosk;
 		updateKiosk();
 	}
 
@@ -38,7 +35,7 @@ contract OrderMaker {
 		uint256 quantity,
 		uint256 timestamp
 	)
-		only_buyer
+		only_buy
 		returns (uint256) // Return the newly generated order ID.
 	{
 		// Increment the order index for a new order.
@@ -61,17 +58,14 @@ contract OrderMaker {
 	}
 
 	// Let the OrderMaker update the status of the order.
-	function setStatus(uint256 orderID, OrderUtils.Status status) only_buyer {
+	function setStatus(uint256 orderID, OrderUtils.Status status) only_buy {
 		orderStore.setStatus(orderID, status);
 	}
 
-    // Update Kiosk protocol contracts if they change on Kiosk Market Token
+    // Update Kiosk protocol contracts if they change on Kiosk
 	function updateKiosk() {
-		// Update Buyer
-		buyerAddr = KMT.buyer();
-
 		// Update OrderStore
-		address orderStoreAddr = KMT.orderStore();
+		address orderStoreAddr = kiosk.orderStore();
 		orderStore = OrderStore(orderStoreAddr);
 	}
 

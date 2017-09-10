@@ -1,8 +1,8 @@
 pragma solidity ^0.4.11;
 
+import "../Kiosk.sol";
 import "./ENS/AbstractENS.sol";
 import "../StandardMarket.sol";
-import "../KioskMarketToken.sol";
 import "../utils/strings.sol";
 import "../utils/StringUtils.sol";
 
@@ -42,7 +42,7 @@ contract ENSMarket is StandardMarket {
 	event LogError(uint8 indexed errorId);
 
 	// Constructor
-	function ENSMarket(KioskMarketToken _KMT, AbstractENS _ens) StandardMarket(_KMT) {
+	function ENSMarket(Kiosk _kiosk, AbstractENS _ens) StandardMarket(_kiosk) {
 		ens = _ens;
 	}
 
@@ -61,7 +61,7 @@ contract ENSMarket is StandardMarket {
 		address buyer,
 		bool approved
 	) 	
-		only_buyer 
+		only_buy
 		returns (bool) 
 	{
 		// Expect the buyer to own the domain at the end of the transaction.

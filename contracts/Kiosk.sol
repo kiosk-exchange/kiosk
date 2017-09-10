@@ -1,5 +1,6 @@
 pragma solidity ^0.4.11;
 
+// This contract is the source of truth for Kiosk protocol contracts
 contract Kiosk {
     /**
     *  ==============================
@@ -11,9 +12,15 @@ contract Kiosk {
     // While in beta, owner is the Kiosk developers.
     address public owner;
 
+    // The address of the Kiosk Market Token contract.
+    address public KMT;
+
     // Buy contract address => Valid 
     // This allows us to add functionality while still allowing older versions of Buy to function.
     mapping (address => bool) public validBuyAddresses;
+
+    // The address of the current Buy contract.
+    address public buy;
 
     // The address of the DINRegistry contract.
     address public registry;
@@ -39,7 +46,7 @@ contract Kiosk {
 
     // Kiosk Market Token will use this do determine whether to accept a transferFromBuy call
     function isValid(address _buy) constant returns (bool) {
-    	return validBuys[_buy];
+    	return validBuyAddresses[_buy];
     }
 
     /**
@@ -52,6 +59,11 @@ contract Kiosk {
         owner = _owner;
     }
 
+    function setKMT(address _KMT) only_owner {
+        KMT = _KMT;
+    }
+
+    // Allow multiple buy contracts to be valid.
     function setBuy(address _buy, bool _valid) only_owner {
     	validBuyAddresses[_buy] = _valid;
     }
