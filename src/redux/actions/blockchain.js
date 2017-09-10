@@ -77,7 +77,7 @@ const fetchProducts = filter => {
   return async (dispatch, getState) => {
     const web3 = getState().config.web3;
     const DINRegistry = getState().config.DINRegistry;
-    const BuyerContract = getState().config.BuyerContract;
+    const BuyContract = getState().config.BuyContract;
     const account = getState().config.account;
     const registry = Promise.promisifyAll(DINRegistry);
 
@@ -88,14 +88,14 @@ const fetchProducts = filter => {
         DINs = await getAllProductDINs(
           web3,
           DINRegistry,
-          BuyerContract,
+          BuyContract,
           account
         );
       } else if (filter === PRODUCT_FILTER.OWNER) {
         DINs = await getOwnerProductDINs(
           web3,
           DINRegistry,
-          BuyerContract,
+          BuyContract,
           account,
           account
         );
@@ -110,7 +110,7 @@ const fetchProducts = filter => {
           return getProduct(
             web3,
             registry,
-            BuyerContract,
+            BuyContract,
             account,
             DIN
           )
@@ -127,14 +127,14 @@ export const fetchProductsForMarket = market => {
   return async (dispatch, getState) => {
     const web3 = getState().config.web3;
     const DINRegistry = getState().config.DINRegistry;
-    const BuyerContract = getState().config.BuyerContract;
+    const BuyContract = getState().config.BuyContract;
     const account = getState().config.account;
 
     if (web3 && DINRegistry && account) {
       const DINs = await getMarketProductDINs(
         web3,
         DINRegistry,
-        BuyerContract,
+        BuyContract,
         account,
         market
       );
@@ -198,7 +198,7 @@ export const fetchDataForMenuItem = id => {
 export const getPriceAndAvailability = (product, quantity) => {
   return async (dispatch, getState) => {
     const web3 = getState().config.web3;
-    const BuyerContract = getState().config.BuyerContract;
+    const BuyContract = getState().config.BuyContract;
     const buyer = getState().config.account;
 
     dispatch(totalPriceIsCalculating(true));
@@ -206,7 +206,7 @@ export const getPriceAndAvailability = (product, quantity) => {
     try {
       const value = await getValue(
         web3,
-        BuyerContract,
+        BuyContract,
         product.DIN,
         quantity,
         buyer
@@ -219,7 +219,7 @@ export const getPriceAndAvailability = (product, quantity) => {
     try {
       const isAvailable = await getIsAvailable(
         web3,
-        BuyerContract,
+        BuyContract,
         product.DIN,
         quantity,
         buyer

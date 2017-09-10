@@ -66,6 +66,11 @@ contract Kiosk {
     // Allow multiple buy contracts to be valid.
     function setBuy(address _buy, bool _valid) only_owner {
     	validBuyAddresses[_buy] = _valid;
+
+        // Set the address of the current buy contract.
+        if (_valid == true) {
+            buy = _buy;
+        }
     }
 
     function setRegistry(address _registry) only_owner {

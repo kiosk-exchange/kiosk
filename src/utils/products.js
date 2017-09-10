@@ -57,9 +57,9 @@ export const getProductName = (web3, DIN, marketAddr) => {
   });
 };
 
-export const getValue = (web3, BuyerContract, DIN, quantity, buyerAcct) => {
+export const getValue = (web3, BuyContract, DIN, quantity, buyerAcct) => {
   return new Promise(async (resolve, reject) => {
-    const totalPriceAsync = Promise.promisify(BuyerContract.totalPrice);
+    const totalPriceAsync = Promise.promisify(BuyContract.totalPrice);
     try {
       const priceInKMTWei = await totalPriceAsync(DIN, quantity, buyerAcct);
       const formattedPrice = web3
@@ -75,13 +75,13 @@ export const getValue = (web3, BuyerContract, DIN, quantity, buyerAcct) => {
 
 export const getIsAvailable = (
   web3,
-  BuyerContract,
+  BuyContract,
   DIN,
   quantity,
   buyerAcct
 ) => {
   return new Promise(async (resolve, reject) => {
-    const availableAsync = Promise.promisify(BuyerContract.availableForSale);
+    const availableAsync = Promise.promisify(BuyContract.availableForSale);
     try {
       const available = await availableAsync(DIN, quantity, buyerAcct);
       resolve(available);
@@ -103,7 +103,7 @@ export const getIsAvailable = (
 export const getProduct = async (
   web3,
   registry,
-  BuyerContract,
+  BuyContract,
   buyerAcct,
   DIN
 ) => {
@@ -120,7 +120,7 @@ export const getProduct = async (
 
   try {
     const name = await getProductName(web3, DIN, market);
-    const value = await getValue(web3, BuyerContract, DIN, 1, buyerAcct);
+    const value = await getValue(web3, BuyContract, DIN, 1, buyerAcct);
     // const available = await getIsAvailable(
     //   web3,
     //   BuyerContract,
@@ -146,7 +146,7 @@ const getProducts = async (
   event,
   web3,
   DINRegistry,
-  BuyerContract,
+  BuyContract,
   buyerAcct
 ) => {
   const asyncEvent = Promise.promisifyAll(event);
@@ -163,7 +163,7 @@ const getProducts = async (
 export const getMarketProductDINs = async (
   web3,
   DINRegistry,
-  BuyerContract,
+  BuyContract,
   buyerAcct,
   marketAddr
 ) => {
@@ -171,14 +171,14 @@ export const getMarketProductDINs = async (
     { market: marketAddr },
     { fromBlock: 0, toBlock: "latest" }
   );
-  return getProducts(event, web3, DINRegistry, BuyerContract, buyerAcct);
+  return getProducts(event, web3, DINRegistry, BuyContract, buyerAcct);
 };
 
 // TODO: This should confirm that the owner has not changed
 export const getOwnerProductDINs = async (
   web3,
   DINRegistry,
-  BuyerContract,
+  BuyContract,
   owner,
   buyerAcct
 ) => {
@@ -186,18 +186,18 @@ export const getOwnerProductDINs = async (
     { owner: owner },
     { fromBlock: 0, toBlock: "latest" }
   );
-  return getProducts(event, web3, DINRegistry, BuyerContract, buyerAcct);
+  return getProducts(event, web3, DINRegistry, BuyContract, buyerAcct);
 };
 
 export const getAllProductDINs = async (
   web3,
   DINRegistry,
-  BuyerContract,
+  BuyContract,
   buyerAcct
 ) => {
   var event = DINRegistry.NewRegistration(
     {},
     { fromBlock: 0, toBlock: "latest" }
   );
-  return getProducts(event, web3, DINRegistry, BuyerContract, buyerAcct);
+  return getProducts(event, web3, DINRegistry, BuyContract, buyerAcct);
 };

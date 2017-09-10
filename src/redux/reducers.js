@@ -18,7 +18,7 @@ import {
 	NETWORK_ERROR,
 	NETWORK_SUCCESS,
 	KMT_CONTRACT,
-	BUYER_CONTRACT,
+	BUY_CONTRACT,
 	DIN_REGISTRY_CONTRACT,
 	ORDER_STORE_CONTRACT,
 	ETHER_MARKET_CONTRACT,
@@ -77,8 +77,8 @@ const network = (state = null, action) =>
 	reducer(state, action, NETWORK_SUCCESS);
 const KMTContract = (state = null, action) =>
 	reducer(state, action, KMT_CONTRACT);
-const BuyerContract = (state = null, action) =>
-	reducer(state, action, BUYER_CONTRACT);
+const BuyContract = (state = null, action) =>
+	reducer(state, action, BUY_CONTRACT);
 const DINRegistry = (state = null, action) =>
 	reducer(state, action, DIN_REGISTRY_CONTRACT);
 const OrderStore = (state = null, action) =>
@@ -267,7 +267,7 @@ export const config = combineReducers({
 	KMTBalance,
 	ETHBalance,
 	KMTContract,
-	BuyerContract,
+	BuyContract,
 	DINRegistry,
 	OrderStore,
 	EtherMarket

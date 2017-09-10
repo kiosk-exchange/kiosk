@@ -27,6 +27,8 @@ contract Buy {
     // The DIN to buy a DIN.
     uint256 public GENESIS_DIN = 1000000000;
 
+    string public version = "0.0.1";
+
     enum Errors {
         INSUFFICIENT_BALANCE,
         INCORRECT_PRICE,
@@ -40,6 +42,7 @@ contract Buy {
     }
 
     event LogError(uint8 indexed errorId);
+    event LogBuyDIN(uint256 DIN);
 
     // Constructor
     function Buy(Kiosk _kiosk) {
@@ -115,10 +118,12 @@ contract Buy {
 		// TODO:
     }
 
-    // Convenience method for buying a DIN. Return the DIN instead of the order ID.
-    function buyDIN(uint256 quantity) public returns (uint256 DIN) {
-    	 uint256 orderID = buy(GENESIS_DIN, quantity, 0);
-    	 return uint256(orderStore.metadata(orderID));
+    // Convenience method for buying a single DIN. Return the DIN instead of the order ID.
+    function buyDIN() public returns (uint256 DIN) {
+    	 uint256 orderID = buy(GENESIS_DIN, 1, 0);
+         uint256 registeredDIN = uint256(orderStore.metadata(orderID));
+         LogBuyDIN(registeredDIN);
+    	 return registeredDIN;
     }
 
     /**

@@ -23,10 +23,10 @@ contract EtherMarket is StandardMarket {
     // Constructor
     function EtherMarket(Kiosk _kiosk) StandardMarket(_kiosk) {
         // Register a DIN to this contract. 
-        ethDIN = buyContract.buyDIN(1);
+        // ethDIN = buyContract.buyDIN();
 
         // Set the market for the newly registered DIN to this contract.
-        registry.setMarket(ethDIN, this);
+        // registry.setMarket(ethDIN, this);
     }
 
     // Get KMT

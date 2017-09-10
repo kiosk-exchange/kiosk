@@ -6,7 +6,7 @@ import {
 } from "../../utils/kioskWeb3";
 import {
   getKioskMarketToken,
-  getBuyer,
+  getBuy,
   getDINRegistry,
   getOrderStore,
   getEtherMarket
@@ -22,7 +22,7 @@ export const ACCOUNT_SUCCESS = "ACCOUNT_SUCCESS";
 export const NETWORK_ERROR = "NETWORK_ERROR";
 export const NETWORK_SUCCESS = "NETWORK_SUCCESS";
 export const KMT_CONTRACT = "KMT_CONTRACT";
-export const BUYER_CONTRACT = "BUYER_CONTRACT";
+export const BUY_CONTRACT = "BUY_CONTRACT";
 export const DIN_REGISTRY_CONTRACT = "DIN_REGISTRY_CONTRACT";
 export const ORDER_STORE_CONTRACT = "ORDER_STORE_CONTRACT";
 export const ETHER_MARKET_CONTRACT = "ETHER_MARKET_CONTRACT";
@@ -43,7 +43,7 @@ export const accountSuccess = data => action(ACCOUNT_SUCCESS, { data });
 export const networkHasError = data => action(NETWORK_ERROR, { data });
 export const networkSuccess = data => action(NETWORK_SUCCESS, { data });
 export const KMTContract = data => action(KMT_CONTRACT, { data });
-export const BuyerContract = data => action(BUYER_CONTRACT, { data });
+export const BuyContract = data => action(BUY_CONTRACT, { data });
 export const DINRegistryContract = data =>
   action(DIN_REGISTRY_CONTRACT, { data });
 export const OrderStoreContract = data =>
@@ -98,13 +98,13 @@ const getContracts = dataType => {
 
     try {
       const KMT = await getKioskMarketToken(web3);
-      const Buyer = await getBuyer(web3);
+      const Buy = await getBuy(web3);
       const DINRegistry = await getDINRegistry(web3);
       const OrderStore = await getOrderStore(web3);
       const EtherMarket = await getEtherMarket(web3);
 
       dispatch(KMTContract(KMT));
-      dispatch(BuyerContract(Buyer));
+      dispatch(BuyContract(Buy));
       dispatch(DINRegistryContract(DINRegistry));
       dispatch(OrderStoreContract(OrderStore));
       dispatch(EtherMarketContract(EtherMarket));
