@@ -60,7 +60,8 @@ contract EtherMarket is StandardMarket {
 		uint256 DIN,
 		uint256 quantity,
 		uint256 value,
-		address buyer
+		address buyer,
+		bool approved
 	) 	only_buyer 
 		returns (bool) 
 	{

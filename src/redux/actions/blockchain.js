@@ -106,11 +106,18 @@ const fetchProducts = filter => {
       if (!DINs) {
         dispatch(requestLoading(false));
       } else {
-        Promise.each(DINs, DIN => {
-          return getProduct(web3, registry, BuyerContract, account, DIN).then(product => {
-            dispatch(receivedProduct(product))
-          })
+        const promises = DINs.map(DIN => {
+          return getProduct(
+            web3,
+            registry,
+            BuyerContract,
+            account,
+            DIN
+          )
         })
+
+        // console.log(promises)
+        // dispatch(receivedProduct(product))
       }
     }
   };

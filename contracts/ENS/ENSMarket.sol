@@ -58,9 +58,10 @@ contract ENSMarket is StandardMarket {
 		uint256 DIN, 
 		uint256 quantity, 
 		uint256 value, 
-		address buyer
+		address buyer,
+		bool approved
 	) 	
-		// only_buyer 
+		only_buyer 
 		returns (bool) 
 	{
 		// Expect the buyer to own the domain at the end of the transaction.
@@ -68,6 +69,11 @@ contract ENSMarket is StandardMarket {
 
 		// Each DIN represents a single domain.
 		require(quantity == 1);
+
+		// Verify that the price is correct, unless the Buy contract pre-approves the transaction.
+		if (approved == false) {
+			require(value == domains[DIN].price);
+		}
 
 		// Give ownership of the node to the buyer.
 		ens.setOwner(domains[DIN].node, buyer);

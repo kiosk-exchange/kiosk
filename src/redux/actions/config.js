@@ -108,9 +108,6 @@ const getContracts = dataType => {
       dispatch(DINRegistryContract(DINRegistry));
       dispatch(OrderStoreContract(OrderStore));
       dispatch(EtherMarketContract(EtherMarket));
-
-      dispatch(fetchDataForMenuItem(dataType));
-      dispatch(getBalances());
     } catch (err) {
       console.log("ERROR: GET CONTRACTS");
     }
@@ -122,18 +119,33 @@ const refreshNetwork = dataType => {
     const currentWeb3 = getState().config.web3;
     const KMT = getState().config.KMTContract;
     const network = getState().config.network;
+    const account = getState().config.account;
+    const products = getState().results.products;
 
+    // Refresh every second
     if (currentWeb3) {
-      // Refresh every second
+
       // Get account
       dispatch(getAccount());
       // Get network
       dispatch(getNetwork());
 
+      if (KMT && account) {
+        dispatch(getBalances());
+      }
+
+      if (KMT && products.length === 0) {
+        dispatch(fetchDataForMenuItem(1));
+        if (dataType !== 1) {
+          dispatch(fetchDataForMenuItem(dataType));
+        }
+      }
+
       if (!KMT && network && network.valid === true) {
         // Get contracts
         dispatch(getContracts(dataType));
       }
+
     } else {
       const web3 = await loadWeb3();
       if (web3) {

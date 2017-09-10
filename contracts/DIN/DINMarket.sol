@@ -20,7 +20,8 @@ contract DINMarket is StandardMarket {
 		uint256 DIN,
 		uint256 quantity,
 		uint256 value,
-		address buyer
+		address buyer,
+		bool approved
 	) returns (bool) {
 		// Expect the next DIN on the registrar to be registered.
 		expected[buyer] = registrar.index() + 1;
