@@ -163,7 +163,7 @@ const BuyKMTModal = ({
         </div>
         <div style={{ flex: "1" }}>
           <p style={{ ...textStyle, fontWeight: "bolder", color: theme.blue }}>
-            {etherContribution === 0 ? 0 : etherContribution * 300}
+            {etherContribution === 0 ? 0 : (etherContribution * 300).toLocaleString()}
           </p>
         </div>
         <div style={{ flex: "1" }}>

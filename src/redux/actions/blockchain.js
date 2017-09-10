@@ -302,14 +302,18 @@ export const buyKioskMarketToken = (amount) => {
     try {
       const web3 = getState().config.web3;
       const EtherMarket = getState().config.EtherMarket;
-      const value = web3.toWei(amount, "ether"); // Hardcode for now
+      const value = web3.toWei(amount, "ether");
       const account = getState().config.account;
 
-      const txId = await buyKMT(EtherMarket, value, account);
-      console.log(txId);
-      // Reload balances
+      dispatch(txSucceeded(false));
       dispatch(getBalances());
       dispatch(showBuyKMTModal(false))
+
+      buyKMT(EtherMarket, value, account).then((result) => {
+        dispatch(addPendingTx(result));
+        setInterval(() => dispatch(checkPendingTxs()), 1000);
+        dispatch(purchaseIsPending(false));
+      })
     } catch (err) {
       console.log("ERROR: BUY KMT");
     }
