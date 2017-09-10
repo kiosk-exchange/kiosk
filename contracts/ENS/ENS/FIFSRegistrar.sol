@@ -33,7 +33,7 @@ contract FIFSRegistrar {
      * @param subnode The hash of the label to register.
      * @param owner The address of the new owner.
      */
-    function register(bytes32 subnode, address owner) only_owner(subnode) {
+    function register(bytes32 subnode, address owner) {
         ens.setSubnodeOwner(rootNode, subnode, owner);
     }
 }

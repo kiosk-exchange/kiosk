@@ -32,6 +32,13 @@ contract KioskMarketToken is StandardToken {
 	// The address of the OrderMaker contract.
 	address public orderMaker;
 
+	event LogBuy(
+		uint256 indexed DIN, 
+		uint256 quantity, 
+		uint256 totalValue,
+		address indexed buyer
+	);
+
 	modifier only_owner {
 		require (owner == msg.sender);
 		_;
@@ -52,22 +59,8 @@ contract KioskMarketToken is StandardToken {
 	*/
 
 	function buy(uint256 DIN, uint256 quantity, uint256 totalValue) returns (uint256) {
+		LogBuy(DIN, quantity, totalValue, msg.sender);
 		return Buyer(buyer).buy(DIN, quantity, totalValue, msg.sender);
-	}
-
-	/**
-	*	==============================
-	*	        Kiosk Client
-	*	==============================
-	*/
-
-	function totalPrice(uint256 DIN, uint256 quantity) constant returns (uint256) {
-		return Buyer(buyer).totalPrice(DIN, quantity, msg.sender);
-	}
-
-	// Returns true if a given quantity of a product is available for purchase.
-	function availableForSale(uint256 DIN, uint256 quantity) constant returns (bool) {
-		return Buyer(buyer).availableForSale(DIN, quantity, msg.sender);
 	}
 
 	/**

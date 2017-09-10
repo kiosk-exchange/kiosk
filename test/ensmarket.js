@@ -1,155 +1,146 @@
-var ENSMarket = artifacts.require('./ENS/ENSMarket.sol')
-var ENS = artifacts.require('./ENS/ENS.sol')
-var DINRegistry = artifacts.require('./DINRegistry.sol')
-var DINMarket = artifacts.require('./DINMarket.sol')
-var PublicMarket = artifacts.require('./PublicMarket.sol')
-var ENSPublicProduct = artifacts.require('./ENSPublicProduct.sol')
-var OrderTracker = artifacts.require('./OrderTracker.sol')
+const KioskMarketTokenContract = artifacts.require("KioskMarketToken");
+const DINRegistryContract = artifacts.require("DINRegistry");
+const BuyerContract = artifacts.require("Buyer");
+const OrderStoreContract = artifacts.require("OrderStore");
+const ENSMarketContract = artifacts.require("ENSMarket");
+const ENSContract = artifacts.require("ENS");
+const TestRegistrarContract = artifacts.require("TestRegistrar");
+const EtherMarketContract = artifacts.require("EtherMarket");
+const namehash = require("../node_modules/eth-ens-namehash");
+const chai = require("chai"),
+	expect = chai.expect,
+	should = chai.should();
+const Promise = require("bluebird");
 
-contract('ENSPublicProduct', function(accounts) {
+contract("ENSMarket", accounts => {
+	// Use the second account because the first was used in deployment
+	const Alice = accounts[1]; // Seller
+	const Bob = accounts[2]; // Buyer
+	const genesis = 1000000000;
+	const quantity = 1;
 
-	it("should have a market", () => {
-		return ENSPublicProduct.deployed().then((instance) => {
-			return instance.market()
-		}).then((market) => {
-			assert.equal(market, ENSMarket.address, "ENSProduct does not have the correct market")
-		})
+	// Contracts
+	let ENSMarket;
+	let KMT;
+	let DINRegistry;
+	let Buy;
+	let Orders;
+	let ENS;
+	let TestRegistrar;
+	let EtherMarket;
+
+	before(async () => {
+		ENSMarket = await ENSMarketContract.deployed();
+		KMT = await KioskMarketTokenContract.deployed();
+		DINRegistry = await DINRegistryContract.deployed();
+		Buy = await BuyerContract.deployed();
+		Orders = await OrderStoreContract.deployed();
+		ENS = await ENSContract.deployed();
+		TestRegistrar = await TestRegistrarContract.deployed();
+		EtherMarket = await EtherMarketContract.deployed();
+
+		// Exchange 1 ether for KMT
+		const amount = web3.toWei(1, "ether");
+		await EtherMarket.contribute({ from: Bob, value: amount });
+	});
+
+	const aliceDomainName = "alice.eth";
+	const alicePrice = web3.toWei(0.1, "ether"); // (in KMT)
+	const aliceSubdomain = web3.sha3("alice");
+	const aliceDomainNode = namehash(aliceDomainName);
+	let aliceDIN;
+
+	const getDINFromOrderLog = async () => {
+		const orderEvent = Orders.NewOrder({ buyer: Alice });
+		const eventAsync = Promise.promisifyAll(orderEvent);
+		const logs = await eventAsync.getAsync();
+
+		// The metadata from the order contains the DIN
+		const DINMetadata = logs[0]["args"]["metadata"];
+		aliceDIN = parseInt(DINMetadata);
+	};
+
+	const addDomainToENSMarket = async () => {
+		await ENSMarket.setDomain(
+			aliceDIN,
+			aliceDomainName,
+			aliceDomainNode,
+			alicePrice,
+			true,
+			{ from: Alice }
+		);
+	};
+
+	const domainAvailable = async () => {
+		const available = await ENSMarket.availableForSale(
+			aliceDIN,
+			quantity,
+			Bob
+		);
+		return available;
+	}
+
+	it("should let sellers sell a domain", async () => {
+		// Alice wants to register and sell "alice.eth"
+
+		// Step 1. Register alice.eth on the deployed ENS Registrar (TestRegistrar)
+		await TestRegistrar.register(aliceSubdomain, Alice, {
+			from: Alice
+		});
+
+		const owner = await ENS.owner(aliceDomainNode);
+		expect(owner).to.equal(Alice);
+
+		// Step 2. Get a DIN that will uniquely identify the product on Kiosk
+
+		// Buy a DIN
+		const result = await KMT.buy(genesis, 1, 0, {
+			from: Alice
+		});
+
+		// From the event logs, get Alice's DIN
+		await getDINFromOrderLog();
+
+		// Step 3. Add product information for "alice.eth" to ENSMarket
+		await addDomainToENSMarket();
+
+		const name = await ENSMarket.nameOf(aliceDIN);
+		// Bob is a random third-party at this point (for price and availability)
+		const price = await ENSMarket.totalPrice(aliceDIN, quantity, Bob);
+		const priceInt = price.toNumber();
+
+		const available = await domainAvailable();
+		const metadata = await ENSMarket.metadata(aliceDIN);
+
+		expect(name).to.equal(aliceDomainName);
+		expect(priceInt).to.equal(parseInt(alicePrice));
+		// Alice hasn't transferred ownership of the domain yet, so it should not be available
+		expect(available).to.equal(false);
+		expect(metadata).to.equal(aliceDomainNode);
+
+		// Step 4. Transfer ownership of "alice.eth" to ENSMarket
+		await ENS.setOwner(aliceDomainNode, ENSMarket.address, { from: Alice });
+		const nowAvailable = await domainAvailable();
+		const newOwner = await ENS.owner(aliceDomainNode);
+		expect(newOwner).to.equal(ENSMarket.address);
+		expect(nowAvailable).to.equal(true);
+
+		// Step 5. Update the DINRegistry to point Alice's DIN to ENSMarket
+		await DINRegistry.setMarket(aliceDIN, ENSMarket.address, { from: Alice })
+	});
+
+	it("should let buyers buy a domain", async () => {
+		await KMT.buy(aliceDIN, quantity, alicePrice, { from: Bob });
+		const newOwner = await ENS.owner(aliceDomainNode);
+		expect(newOwner).to.equal(Bob);
+	});
+
+	it("should let sellers withdraw proceeds", async () => {
+		const beginBalance = await KMT.balanceOf(Alice);
+		expect(beginBalance.toNumber()).to.equal(0);
+		await ENSMarket.withdraw({ from: Alice });
+		const endBalance = await KMT.balanceOf(Alice);
+		expect(endBalance.toNumber()).to.equal(parseInt(alicePrice));
 	})
 
-})
-
-contract('ENSMarket', function(accounts) {
-
-	const account1 = accounts[0];
-	const account2 = accounts[1];
-	const DIN = 1000000001
-	const price = web3.toWei(2, 'ether')
-
-	it("should have a DIN Registry", () => {
-		return ENSMarket.deployed().then((instance) => {
-			return instance.dinRegistry()
-		}).then((dinRegistry) => {
-			assert.equal(dinRegistry, DINRegistry.address, "The ENSMarket DIN registry is not set to the deployed DIN registry")
-		})
-	})
-
-	it("should have an ENS Registry", () => {
-		return ENSMarket.deployed().then((instance) => {
-			return instance.ens()
-		}).then((ens) => {
-			assert.equal(ens, ENS.address, "The ENSMarket ENS registry is not set to the deployed ENS registry")
-		})
-	})
-
-	it("should set the owner of the ENS Registry top node", () => {
-		return ENS.deployed().then((instance) => {
-			return instance.owner(0)
-		}).then((owner) => {
-			assert.equal(owner, account1, "The ENS registry does not have the correct top node owner")
-		})
-	})
-
-	it("should let sellers add a domain", () => {
-		const quantity = 1
-		var ens
-			// Transfer ownership of the ENS node to the ENSProduct contract
-		ENS.deployed().then((instance) => {
-			ens = instance
-			return ens.setOwner(0, ENSProduct.address)
-		}).then(() => {
-			return ens.owner(0)
-		}).then((owner) => {
-			assert.equal(owner, ENSProduct.address, "The ENS node was not transferred to ENSProduct")
-			return ENSMarket.deployed()
-		}).then((instance) => {
-			return instance.price(DIN, quantity)
-		}).then((domainPrice) => {
-			assert.equal(domainPrice.toNumber(), price, "The price of the ENS node is incorrect")
-		})
-	})
-
-	it("should only allow ENS node products that are owned by their buy handler", () => {
-		var market
-		var ensNode
-		var ensOwner
-
-		return ENSMarket.deployed().then((instance) => {
-			market = instance
-			return market.ENSNode(DIN)
-		}).then((node) => {
-			ensNode = node
-			return ENS.deployed()
-		}).then((instance) => {
-			return instance.owner(ensNode)
-		}).then((owner) => {
-			ensOwner = owner
-			return market.buyHandler(DIN)
-		}).then((buyHandler) => {
-			assert.equal(ensOwner, buyHandler)
-		})
-
-	})
-
-	it("should let buyers buy a domain", () => {
-		const quantity = 1
-		var node
-		var market
-
-		return ENSMarket.deployed().then((instance) => {
-			// Buy the ENS node
-			market = instance
-			return market.ENSNode(DIN)
-		}).then((ensNode) => {
-			node = ensNode
-			return market.buy(DIN, 1, {value: price, from: account2})
-		}).then(() => {
-			return ENS.at(ENS.address).owner(node)
-		}).then((owner) => {
-			assert.equal(owner, account2, "The ENS node was not transferred to the buyer")
-		})
-	})
-
-	it("should have funds in escrow for seller", () => {
-		const expectedProceeds = web3.toWei(2, 'ether')
-		var orderIndex
-
-		// Get the most recent order ID
-		return OrderTracker.deployed().then((instance) => {
-			return instance.orderIndex()
-		}).then((index) => {
-			orderIndex = index.toNumber()
-			return ENSMarket.deployed()
-		}).then((instance) => {
-			return instance.pendingWithdrawals(orderIndex)
-		}).then((escrow) => {
-			assert.equal(escrow.toNumber(), expectedProceeds, "The escrow from the sale is incorrect")
-		})
-
-	})
-
-	it("should not let a random account withdraw", () => {
-		const orderID = 1
-
-		return ENSMarket.deployed().then((instance) => {
-			return instance.withdraw(orderID, { from: account2 })
-		}).then().catch((error) => {
-			assert.isDefined(error, "There was no error for withdrawing with a random account")
-		})
-
-	})
-
-	it("should increase the seller's balance after withdrawing", () => {
-		const beginBalance = web3.fromWei(web3.eth.getBalance(account1), 'ether').toNumber()
-		const orderID = 2
-		const expectedProceeds = 2
-		const gasAllowance = 0.1
-
-		return ENSMarket.deployed().then((instance) => {
-			return instance.withdraw(orderID, { from: account1 })
-		}).then(() => {
-			const endBalance = web3.fromWei(web3.eth.getBalance(account1), 'ether').toNumber()
-			assert.isAtLeast(endBalance, beginBalance + expectedProceeds - gasAllowance, "Withdrawing proceeds from sale did not work")
-		})
-	})
-
-})
+});
