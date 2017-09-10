@@ -1,7 +1,5 @@
 pragma solidity ^0.4.11;
 
-import "./KioskMarketToken.sol";
-
 contract Kiosk {
     /**
     *  ==============================
@@ -9,17 +7,16 @@ contract Kiosk {
 	*  ==============================
     */
 
-    // The address of the Kiosk Market Token contract.
-    address public KMT;
-
-    // Owner will be a DAO that manages Kiosk protocol contract upgrades based on KMT ownership.
+    // In production, owner will be a DAO that approves contract upgrades based on KMT ownership.
+    // While in beta, owner is the Kiosk developers.
     address public owner;
 
-    // The address of the Buy contract.
-    address public buy;
+    // Buy contract address => Valid 
+    // This allows us to add functionality while still allowing older versions of Buy to function.
+    mapping (address => bool) public validBuyAddresses;
 
     // The address of the DINRegistry contract.
-    address public registry;							
+    address public registry;
 
     // The address of DINRegistrar contract.
     address public registrar;
@@ -36,10 +33,14 @@ contract Kiosk {
     }
 
     // Constructor
-	function Kiosk(KioskMarketToken _KMT) {
-		KMT = _KMT;
+	function Kiosk() {
 		owner = msg.sender;
 	}
+
+    // Kiosk Market Token will use this do determine whether to accept a transferFromBuy call
+    function isValid(address _buy) constant returns (bool) {
+    	return validBuys[_buy];
+    }
 
     /**
     *  ==============================
@@ -47,16 +48,12 @@ contract Kiosk {
     *  ==============================
     */
 
-    function setKMT(address _KMT) only_owner {
-    	KMT = _KMT;
-    }
-
     function setOwner(address _owner) only_owner {
         owner = _owner;
     }
 
-    function setBuy(address _buy) only_owner {
-        buy = _buy;
+    function setBuy(address _buy, bool _valid) only_owner {
+    	validBuyAddresses[_buy] = _valid;
     }
 
     function setRegistry(address _registry) only_owner {
