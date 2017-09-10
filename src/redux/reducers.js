@@ -6,7 +6,8 @@ import {
 	SHOW_BUY_KMT_MODAL,
 	SELECTED_PRODUCT,
 	SELECTED_QUANTITY,
-	SELECTED_MARKET
+	SELECTED_MARKET,
+	CHANGED_ETHER_CONTRIBUTION_AMOUNT
 } from "./actions/actions";
 
 import {
@@ -93,7 +94,10 @@ const selectedMarket = (state = null, action) =>
 	reducer(state, action, SELECTED_MARKET);
 const purchaseIsPending = (state = false, action) =>
 	reducer(state, action, PURCHASE_IS_PENDING);
-const txSucceeded = (state = false, action) => reducer(state, action, TX_SUCCEEDED);
+const txSucceeded = (state = false, action) =>
+	reducer(state, action, TX_SUCCEEDED);
+const etherContribution = (state = 0, action) =>
+	reducer(state, action, CHANGED_ETHER_CONTRIBUTION_AMOUNT)
 
 const txsPending = (state = [], action) => {
 	switch (action.type) {
@@ -280,6 +284,7 @@ export const rootReducer = combineReducers({
 	purchaseIsPending,
 	buyModal,
 	showBuyKMTModal,
+	etherContribution,
 	txsPending,
 	txSucceeded,
 	routing: routerReducer

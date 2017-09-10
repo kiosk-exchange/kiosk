@@ -11,6 +11,7 @@ export const SHOW_BUY_KMT_MODAL = "SHOW_BUY_KMT_MODAL";
 export const SELECTED_PRODUCT = "SELECTED_PRODUCT";
 export const SELECTED_QUANTITY = "QUANTITY";
 export const SELECTED_MARKET = "SELECTED_MARKET";
+export const CHANGED_ETHER_CONTRIBUTION_AMOUNT = "CHANGED_ETHER_CONTRIBUTION_AMOUNT";
 
 // Helper function
 const action = (type, data) => ({
@@ -24,7 +25,7 @@ export const showBuyModal = data => action(SHOW_BUY_MODAL, { data });
 export const showBuyKMTModal = data => action(SHOW_BUY_KMT_MODAL, { data });
 export const selectedQuantity = data => action(SELECTED_QUANTITY, { data });
 export const selectedMarket = data => action(SELECTED_MARKET, { data });
-
+export const changedEtherContributionAmount = data => action(CHANGED_ETHER_CONTRIBUTION_AMOUNT, { data });
 export const selectMenuItem = id => {
   return async dispatch => {
     dispatch(selectedMarket(null));
@@ -79,5 +80,11 @@ export const changedQuantity = quantity => {
 
     dispatch(selectedQuantity(quantity));
     dispatch(getPriceAndAvailability(product, quantity));
+  };
+};
+
+export const changeEtherContributionAmount = value => {
+  return async (dispatch, getState) => {
+    dispatch(changedEtherContributionAmount(value))
   };
 };

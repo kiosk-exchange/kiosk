@@ -6,11 +6,13 @@ export const buyProduct = (KMT, DIN, quantity, value, buyer) => {
 };
 
 export const buyKMT = (EtherMarket, value, buyer) => {
-	EtherMarket.contribute({ from: buyer, value: value }, (error, result) => {
-		if (!error) {
-			console.log(result);
-		} else {
-			console.log(error);
-		}
-	});
+	return new Promise(function(resolve, reject) {
+		EtherMarket.contribute({ from: buyer, value: value }, (error, result) => {
+			if (!error) {
+				resolve(result);
+			} else {
+				reject(error)
+			}
+		});
+	})
 };

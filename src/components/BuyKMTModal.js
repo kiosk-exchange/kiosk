@@ -2,11 +2,14 @@ import React from "react";
 import Dialog from "material-ui/Dialog";
 import RaisedButton from "material-ui/RaisedButton";
 import Subheader from "material-ui/Subheader";
-import { showBuyKMTModal } from "../redux/actions/actions";
+import { showBuyKMTModal, changeEtherContributionAmount } from "../redux/actions/actions";
+import { buyKioskMarketToken } from "../redux/actions/blockchain";
+
 import { connect } from "react-redux";
 
 const mapStateToProps = state => ({
   totalPrice: 0,
+  etherContribution: state.etherContribution,
   ETHBalance: state.config.ETHBalance,
   isOpen: state.showBuyKMTModal,
   theme: state.config.theme
@@ -14,11 +17,14 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => {
   return {
-    onBuyNow: () => {
-      console.log("BUY KMT!");
+    onBuyNow: amount => {
+      dispatch(buyKioskMarketToken(amount))
     },
     onClose: () => {
       dispatch(showBuyKMTModal(false));
+    },
+    onEtherChange: value => {
+      dispatch(changeEtherContributionAmount(value))
     }
   };
 };
@@ -29,7 +35,9 @@ const BuyKMTModal = ({
   isOpen,
   theme,
   onBuyNow,
-  onClose
+  onClose,
+  onEtherChange,
+  etherContribution
 }) => {
   const contentStyle = {
     width: "50%",
@@ -41,11 +49,11 @@ const BuyKMTModal = ({
   const buyNow = (
     <RaisedButton
       label="Submit"
-      disabled={insufficientFunds}
+      disabled={insufficientFunds || !(etherContribution > 0)}
       backgroundColor={theme.blue}
       labelColor="#FFFFFF"
       fullWidth={true}
-      onClick={() => onBuyNow()}
+      onClick={() => onBuyNow(etherContribution)}
     />
   );
 
@@ -109,6 +117,18 @@ const BuyKMTModal = ({
     outline: "none"
   };
 
+  const handleInputChange = (event) => {
+    onEtherChange(event.target.value);
+  }
+
+  const handleKeyPress = (event) => {
+    const keyCode = event.keyCode || event.which;
+    const keyValue = String.fromCharCode(keyCode);
+    if (!(/^\d+$/.test(keyValue))) {
+      event.preventDefault();
+    }
+  }
+
   return (
     <Dialog
       actions={actions}
@@ -126,7 +146,7 @@ const BuyKMTModal = ({
       <div style={{ display: "flex", width: "100%" }}>
         <div style={{ flex: "2" }}>
           <form>
-            <input style={inputStyle} type="text" autoFocus={true} />
+            <input style={inputStyle} type="text" autoFocus={true} onKeyPress={handleKeyPress} onChange={handleInputChange} />
           </form>
         </div>
         <div style={{ flex: "1" }}>
@@ -143,7 +163,7 @@ const BuyKMTModal = ({
         </div>
         <div style={{ flex: "1" }}>
           <p style={{ ...textStyle, fontWeight: "bolder", color: theme.blue }}>
-            3,000
+            {etherContribution === 0 ? 0 : (etherContribution * 300).toLocaleString()}
           </p>
         </div>
         <div style={{ flex: "1" }}>
