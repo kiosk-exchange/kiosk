@@ -102,59 +102,59 @@ contract Buy {
         public
         returns (uint256 orderID)
     {
-		
+		// TODO:
     }
 
-	function executeOrder(
-		uint256 DIN, 
-		uint256 quantity, 
-		uint256 totalValue,
-		address buyer, 
-		Market market,
-		bool approved
-	) 
-		private
-		returns (uint256 orderID)
-	{
-		// Add the order to the order tracker and get the order ID.
-		uint256 orderID = orderMaker.addOrder(
-			buyer,
-			registry.owner(DIN), // Seller
-			market,
-			DIN,
-			market.metadata(DIN),
-			totalValue,
-			quantity,
-			block.timestamp
-		);
+    function executeOrder(
+        uint256 DIN, 
+        uint256 quantity, 
+        uint256 totalValue,
+        address buyer, 
+        Market market,
+        bool approved
+    ) 
+        private
+        returns (uint256 orderID)
+    {
+        // Add the order to the order tracker and get the order ID.
+        uint256 orderID = orderMaker.addOrder(
+            buyer,
+            registry.owner(DIN), // Seller
+            market,
+            DIN,
+            market.metadata(DIN),
+            totalValue,
+            quantity,
+            block.timestamp
+        );
 
-		// Tell the market to execute the order.
-		market.buy(
-			DIN, 
-			quantity, 
-			totalValue,
-			buyer, 
-			approved
-		);
+        // Tell the market to execute the order.
+        market.buy(
+            DIN, 
+            quantity, 
+            totalValue,
+            buyer, 
+            approved
+        );
 
-		// Throw if the market doesn't fill the order immediately.
-		// Kiosk only supports synchronous transactions at the moment.
-		require (market.isFulfilled(orderID) == true);
+        // Throw if the market doesn't fill the order immediately.
+        // Kiosk only supports synchronous transactions at the moment.
+        require (market.isFulfilled(orderID) == true);
 
-		// Transfer the value of the order from the buyer to the market.
-		if (totalValue > 0) {
-			KMT.transferFrom(buyer, market, totalValue);
-		}
+        // Transfer the value of the order from the buyer to the market.
+        if (totalValue > 0) {
+            KMT.transferFrom(buyer, market, totalValue);
+        }
 
-		// Mark the order fulfilled.
-		orderMaker.setStatus(orderID, OrderUtils.Status.Fulfilled);
+        // Mark the order fulfilled.
+        orderMaker.setStatus(orderID, OrderUtils.Status.Fulfilled);
 
-		// Return the order ID.
-		return orderID;
-	}
+        // Return the order ID.
+        return orderID;
+    }
 
-	/**
-	/* @dev Verifies that an order signature is valid.
+    /**
+    /* @dev Verifies that an order signature is valid.
     /* @param signer address of signer.
     /* @param hash Signed Keccak-256 hash.
     /* @param v ECDSA signature parameter v.
@@ -181,47 +181,47 @@ contract Buy {
         );
     }
 
-	/**
-	*	==============================
-	*	         Kiosk Client
-	*	==============================
-	*/
+    /**
+    *  ==============================
+    *	         Kiosk Client
+    *  ==============================
+    */
 
-	// To get the name of the product or market, you have to go to the market directly.
-	// This is a Solidity limitation with strings.
+    // To get the name of the product or market, you have to go to the market directly.
+    // This is a Solidity limitation with strings.
 
-	function totalPrice(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256) {
-		Market market = getMarket(DIN);
-		return market.totalPrice(DIN, quantity, buyer);
-	}
+    function totalPrice(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256) {
+        Market market = getMarket(DIN);
+        return market.totalPrice(DIN, quantity, buyer);
+    }
 
-	// Returns true if a given quantity of a product is available for purchase.
-	function availableForSale(uint256 DIN, uint256 quantity, address buyer) constant returns (bool) {
-		Market market = getMarket(DIN);
-		return market.availableForSale(DIN, quantity, buyer);
-	}
+    // Returns true if a given quantity of a product is available for purchase.
+    function availableForSale(uint256 DIN, uint256 quantity, address buyer) constant returns (bool) {
+        Market market = getMarket(DIN);
+        return market.availableForSale(DIN, quantity, buyer);
+    }
 
-	// A hash representation of a product's metadata that is added to the order.
-	function metadata(uint256 DIN) constant returns (bytes32) {
-		Market market = getMarket(DIN);
-		return market.metadata(DIN);
-	}
+    // A hash representation of a product's metadata that is added to the order.
+    function metadata(uint256 DIN) constant returns (bytes32) {
+        Market market = getMarket(DIN);
+        return market.metadata(DIN);
+    }
 
-	// Convenience
-	function getMarket(uint256 DIN) private returns (Market) {
-		address marketAddr = registry.market(DIN);
-		return Market(marketAddr);
-	}
+    // Convenience
+    function getMarket(uint256 DIN) private returns (Market) {
+        address marketAddr = registry.market(DIN);
+        return Market(marketAddr);
+    }
 
     // Update Kiosk protocol contracts if they change on Kiosk Market Token
-	function updateKiosk() {
-		// Update DINRegistry
-		address registryAddr = KMT.registry();
-		registry = DINRegistry(registryAddr);
+    function updateKiosk() {
+        // Update DINRegistry
+        address registryAddr = KMT.registry();
+        registry = DINRegistry(registryAddr);
 
-		// Update OrderMaker
-		address orderMakerAddr = KMT.orderMaker();
-		orderMaker = OrderMaker(orderMakerAddr);
-	}
+        // Update OrderMaker
+        address orderMakerAddr = KMT.orderMaker();
+        orderMaker = OrderMaker(orderMakerAddr);
+    }
 
 }
