@@ -14,7 +14,7 @@ class ErrorMessage extends Component {
 				<div style={style}>
 					<div style={{ width: "100%" }}>
 						<h1 style={{ color: "#6E7E85" }}>
-							{this.props.message}
+							{this.props.title}
 						</h1>
 					</div>
 				</div>
