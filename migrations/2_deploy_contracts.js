@@ -19,12 +19,6 @@ const subnodeSHA3 = web3.sha3("example");
 const subnodeName = "example.eth";
 const subnodeNameHash = namehash(subnodeName);
 const subnodePrice = web3.toWei(0.02, "ether"); // Price in KMT, just using web3 for decimal conversion
-
-const offChainSHA3 = web3.sha3("offthechain");
-const offChainSubnodeName = "offthechain.eth";
-const offChainNameHash = namehash(offChainSubnodeName);
-const offChainPrice = web3.toWei(100, "ether");
-
 const initialSupply = web3.toWei(1000000, "ether"); // Initialize KMT with 1 million tokens
 const genesis = 1000000000; // The genesis DIN (used for DIN product)
 
@@ -112,12 +106,6 @@ const deployENS = async (deployer, network, accounts) => {
   // Register "example.eth" to a test account
   await TestRegistrar.at(TestRegistrar.address).register(subnodeSHA3, account1);
 
-  // Register "offthechain.eth" to a test account (demonstrate off-chain price changes).
-  await TestRegistrar.at(TestRegistrar.address).register(
-    offChainSHA3,
-    account1
-  );
-
   // Deploy ENS Market, where ENS domains can be bought and sold
   await deployer.deploy(strings);
   await deployer.deploy(StringUtils);
@@ -132,27 +120,14 @@ const deployENS = async (deployer, network, accounts) => {
     subnodePrice,
     true
   );
-  await ENSMarket.at(ENSMarket.address).setDomain(
-    1000000003,
-    offChainSubnodeName,
-    offChainNameHash,
-    offChainPrice,
-    true
-  );
 
   await DINRegistry.at(DINRegistry.address).setMarket(
     1000000002,
     ENSMarket.address
   );
 
-  await DINRegistry.at(DINRegistry.address).setMarket(
-    1000000003,
-    ENSMarket.address
-  );
-
-  // Transfer ownership of "example.eth" to the ENSPublicProduct
+  // Transfer ownership of "example.eth" to the ENSMarket
   await ENS.at(ENS.address).setOwner(subnodeNameHash, ENSMarket.address);
-  await ENS.at(ENS.address).setOwner(offChainNameHash, ENSMarket.address);
 };
 
 module.exports = async (deployer, network, accounts) => {
