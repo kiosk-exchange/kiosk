@@ -16,7 +16,7 @@ const rootNode = getRootNodeFromTLD(tld);
 const subnodeSHA3 = web3.sha3("example");
 const subnodeName = "example.eth";
 const subnodeNameHash = namehash(subnodeName);
-const subnodePrice = web3.toWei(2, "ether"); // Price in KMT, just using web3 for decimal conversion
+const subnodePrice = web3.toWei(0.02, "ether"); // Price in KMT, just using web3 for decimal conversion
 
 const offChainSHA3 = web3.sha3("offthechain");
 const offChainSubnodeName = "offthechain.eth";

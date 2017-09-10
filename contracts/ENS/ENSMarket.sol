@@ -47,7 +47,7 @@ contract ENSMarket is StandardMarket {
 		uint256 value, 
 		address buyer
 	) 	
-		only_buyer 
+		// only_buyer 
 		returns (bool) 
 	{
 		// Expect the buyer to own the domain at the end of the transaction.
@@ -90,14 +90,19 @@ contract ENSMarket is StandardMarket {
 	}
 
 	function availableForSale(uint256 DIN, uint256 quantity, address buyer) constant returns (bool) {
+		if (quantity != 1) {
+			return false;
+		}
+
 		// The owner of the domain must be able to transfer it during a purchase.
 		// This means the market must hold the domain for the transaction to succeed.
-		// bytes32 node = domains[DIN].node;
+		bytes32 node = domains[DIN].node;
 
-		// // Verify that ENSMarket is the owner of the domain.
-		// if (ens.owner(node) != address(this)) {
-		// 	return false;
-		// }
+		// Verify that ENSMarket is the owner of the domain.
+		if (ens.owner(node) != address(this)) {
+			return false;
+		}
+
 		return domains[DIN].available;
 	}
 
@@ -107,7 +112,7 @@ contract ENSMarket is StandardMarket {
 		bytes32 node,
 		uint256 price,
 		bool available
-	) 
+	)
 		only_owner(DIN) 
 	{
 		// TODO: Add validation that the node matches the namehash of the name.

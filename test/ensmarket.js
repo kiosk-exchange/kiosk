@@ -1,102 +1,145 @@
-const KioskMarketToken = artifacts.require("KioskMarketToken");
-const OrderStore = artifacts.require("OrderStore");
-const ENSMarket = artifacts.require("ENSMarket");
-const ENSRegistry = artifacts.require("ENS");
-const TestRegistrar = artifacts.require("TestRegistrar");
-const EtherMarket = artifacts.require("EtherMarket");
+const KioskMarketTokenContract = artifacts.require("KioskMarketToken");
+const DINRegistryContract = artifacts.require("DINRegistry");
+const BuyerContract = artifacts.require("Buyer");
+const OrderStoreContract = artifacts.require("OrderStore");
+const ENSMarketContract = artifacts.require("ENSMarket");
+const ENSContract = artifacts.require("ENS");
+const TestRegistrarContract = artifacts.require("TestRegistrar");
+const EtherMarketContract = artifacts.require("EtherMarket");
 const namehash = require("../node_modules/eth-ens-namehash");
 const chai = require("chai"),
 	expect = chai.expect,
 	should = chai.should();
+const Promise = require("bluebird");
 
 contract("ENSMarket", accounts => {
-	const seller = accounts[0];
-	const buyer = accounts[1];
-	const Alice = accounts[2];
-
-	// Test domain name
+	// Use the second account because the first was used in deployment
+	const Alice = accounts[1]; // Seller
+	const Bob = accounts[2]; // Buyer
 	const genesis = 1000000000;
-	const DIN = 1000000002;
-	const domainName = "example.eth";
-	const domainPrice = parseInt(web3.toWei(2, "ether"));
-	const domainNode = namehash(domainName);
-
-	// Contracts
-	let Market;
-	let KMT;
-	let Buy;
-	let ENS;
-	let Registrar;
-	let EthMarket;
-
-	before(async () => {
-		Market = await ENSMarket.deployed();
-		KMT = await KioskMarketToken.deployed();
-		Orders = await OrderStore.deployed();
-		ENS = await ENSRegistry.deployed();
-		Registrar = await TestRegistrar.deployed();
-		EthMarket = await EtherMarket.deployed();
-
-		// Exchange 10 ether for KMT
-		const amount = web3.toWei(10, "ether");
-		await EthMarket.contribute({ from: buyer, value: amount });
-	});
-
 	const quantity = 1;
 
-	it("should have the correct product details", async () => {
-		const name = await Market.nameOf(DIN);
-		const price = await Market.totalPrice(DIN, quantity, buyer);
-		const priceInt = price.toNumber();
-		const available = await Market.availableForSale(DIN, quantity, buyer);
+	// Contracts
+	let ENSMarket;
+	let KMT;
+	let DINRegistry;
+	let Buy;
+	let Orders;
+	let ENS;
+	let TestRegistrar;
+	let EtherMarket;
 
-		expect(name).to.equal(domainName);
-		expect(priceInt).to.equal(domainPrice);
-		expect(available).to.equal(true);
+	before(async () => {
+		ENSMarket = await ENSMarketContract.deployed();
+		KMT = await KioskMarketTokenContract.deployed();
+		DINRegistry = await DINRegistryContract.deployed();
+		Buy = await BuyerContract.deployed();
+		Orders = await OrderStoreContract.deployed();
+		ENS = await ENSContract.deployed();
+		TestRegistrar = await TestRegistrarContract.deployed();
+		EtherMarket = await EtherMarketContract.deployed();
+
+		// Exchange 1 ether for KMT
+		const amount = web3.toWei(1, "ether");
+		await EtherMarket.contribute({ from: Bob, value: amount });
 	});
 
-	it("should have the correct metadata", async () => {
-		const metadata = await Market.metadata(DIN);
-		// Use ENS namehash function to convert the domain to bytes32 "node"
-		expect(metadata).to.equal(domainNode);
-	});
+	const aliceDomainName = "alice.eth";
+	const alicePrice = web3.toWei(0.1, "ether"); // (in KMT)
+	const aliceSubdomain = web3.sha3("alice");
+	const aliceDomainNode = namehash(aliceDomainName);
+	let aliceDIN;
 
-	it("should let buyers buy a domain", async () => {
-		const owner = await ENS.owner(domainNode);
-		expect(owner).should.not.equal(buyer);
+	const getDINFromOrderLog = async () => {
+		const orderEvent = Orders.NewOrder({ buyer: Alice });
+		const eventAsync = Promise.promisifyAll(orderEvent);
+		const logs = await eventAsync.getAsync();
 
-		KMT.buy(DIN, 1, domainPrice, { from: buyer });
-		const newOwner = await ENS.owner(domainNode);
-		expect(newOwner).to.equal(buyer);
-	});
+		// The metadata from the order contains the DIN
+		const DINMetadata = logs[0]["args"]["metadata"];
+		aliceDIN = parseInt(DINMetadata);
+	};
+
+	const addDomainToENSMarket = async () => {
+		await ENSMarket.setDomain(
+			aliceDIN,
+			aliceDomainName,
+			aliceDomainNode,
+			alicePrice,
+			true,
+			{ from: Alice }
+		);
+	};
+
+	const domainAvailable = async () => {
+		const available = await ENSMarket.availableForSale(
+			aliceDIN,
+			quantity,
+			Bob
+		);
+		return available;
+	}
 
 	it("should let sellers sell a domain", async () => {
 		// Alice wants to register and sell "alice.eth"
-		// Step 1. Register alice.eth on the ENS Registrar (TestRegistrar)
-		const aliceDomainNode = web3.sha3("alice");
-		await Registrar.register(aliceDomainNode, Alice, {
-			from: Alice,
-			gas: 4700000
-		});
-		const aliceDomainNameHash = namehash("alice.eth");
 
-		const owner = await ENS.owner(aliceDomainNameHash);
+		// Step 1. Register alice.eth on the deployed ENS Registrar (TestRegistrar)
+		await TestRegistrar.register(aliceSubdomain, Alice, {
+			from: Alice
+		});
+
+		const owner = await ENS.owner(aliceDomainNode);
 		expect(owner).to.equal(Alice);
 
 		// Step 2. Get a DIN that will uniquely identify the product on Kiosk
-		await KMT.buy(genesis, 1, 0, {
-			from: Alice,
-			gas: 4700000
+
+		// Buy a DIN
+		const result = await KMT.buy(genesis, 1, 0, {
+			from: Alice
 		});
 
-		// TODO: Get the DIN from the event
+		// From the event logs, get Alice's DIN
+		await getDINFromOrderLog();
 
-		// const DIN = await Orders.metadata(orderId);
-		// console.log(DIN.toNumber());
+		// Step 3. Add product information for "alice.eth" to ENSMarket
+		await addDomainToENSMarket();
 
-		// console.log(DIN.toNumber());
+		const name = await ENSMarket.nameOf(aliceDIN);
+		// Bob is a random third-party at this point (for price and availability)
+		const price = await ENSMarket.totalPrice(aliceDIN, quantity, Bob);
+		const priceInt = price.toNumber();
+
+		const available = await domainAvailable();
+		const metadata = await ENSMarket.metadata(aliceDIN);
+
+		expect(name).to.equal(aliceDomainName);
+		expect(priceInt).to.equal(parseInt(alicePrice));
+		// Alice hasn't transferred ownership of the domain yet, so it should not be available
+		expect(available).to.equal(false);
+		expect(metadata).to.equal(aliceDomainNode);
+
+		// Step 4. Transfer ownership of "alice.eth" to ENSMarket
+		await ENS.setOwner(aliceDomainNode, ENSMarket.address, { from: Alice });
+		const nowAvailable = await domainAvailable();
+		const newOwner = await ENS.owner(aliceDomainNode);
+		expect(newOwner).to.equal(ENSMarket.address);
+		expect(nowAvailable).to.equal(true);
+
+		// Step 5. Update the DINRegistry to point Alice's DIN to ENSMarket
+		await DINRegistry.setMarket(aliceDIN, ENSMarket.address, { from: Alice })
 	});
 
-	// It should let sellers add a domain
-	// It should let sellers withdraw proceeds
+	it("should let buyers buy a domain", async () => {
+		await KMT.buy(aliceDIN, quantity, alicePrice, { from: Bob });
+		const newOwner = await ENS.owner(aliceDomainNode);
+		expect(newOwner).to.equal(Bob);
+	});
+
+	it("should let sellers withdraw proceeds", async () => {
+		const beginBalance = await KMT.balanceOf(Alice);
+		expect(beginBalance.toNumber()).to.equal(0);
+		await ENSMarket.withdraw({ from: Alice });
+		const endBalance = await KMT.balanceOf(Alice);
+		expect(endBalance.toNumber()).to.equal(parseInt(alicePrice));
+	})
 });

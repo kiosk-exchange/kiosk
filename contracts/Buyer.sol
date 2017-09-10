@@ -17,10 +17,18 @@ contract Buyer {
 	// The Order Maker contract.
 	OrderMaker public orderMaker;
 
+	enum Errors {
+		INSUFFICIENT_BALANCE,
+		PRODUCT_NOT_AVAILABLE,
+		NOT_FULFILLED
+	}
+
 	modifier only_KMT {
 		require (KMT == msg.sender);
 		_;
 	}
+
+	event LogError(uint8 indexed errorId);
 
 	// Constructor
 	function Buyer(KioskMarketToken _KMT) {
@@ -49,10 +57,16 @@ contract Buyer {
 		Market market = Market(marketAddr);
 
 		// The buyer must have enough tokens for the purchase.
-		require (KMT.balanceOf(buyer) >= totalValue);
+		if (KMT.balanceOf(buyer) < totalValue) {
+			LogError(uint8(Errors.INSUFFICIENT_BALANCE));
+			return 0;
+		}
 
 		// The requested quantity must be available for sale.
-		require(market.availableForSale(DIN, quantity, buyer) == true);
+		if (market.availableForSale(DIN, quantity, buyer) == false) {
+			LogError(uint8(Errors.PRODUCT_NOT_AVAILABLE));
+			return 0;
+		}
 
 		// If conditions are met, call the private buyProduct method to complete the transaction.
 		return buyProduct(DIN, quantity, totalValue, buyer, market);
@@ -85,7 +99,10 @@ contract Buyer {
 
 		// Throw if the market does not fulfill the order.
 		// Right now, Buyer only supports transactions that can be settled immediately (i.e., instant delivery).
-		require(market.isFulfilled(orderID) == true);
+		if (market.isFulfilled(orderID) == false) {
+			LogError(uint8(Errors.NOT_FULFILLED));
+			return 0;
+		}
 			
 		// Transfer the value of the order from the buyer to the market.
 		if (totalValue > 0) {
