@@ -10,6 +10,8 @@ const EtherMarket = artifacts.require("ether/EtherMarket.sol");
 const ENSMarket = artifacts.require("ENS/ENSMarket.sol");
 const ENS = artifacts.require("ENS/ENS/ENS.sol");
 const TestRegistrar = artifacts.require("ENS/ENS/TestRegistrar.sol");
+const strings = artifacts.require("utils/strings.sol");
+const StringUtils = artifacts.require("utils/StringUtils.sol");
 const namehash = require("../node_modules/eth-ens-namehash");
 const tld = "eth";
 const rootNode = getRootNodeFromTLD(tld);
@@ -117,6 +119,10 @@ const deployENS = async (deployer, network, accounts) => {
   );
 
   // Deploy ENS Market, where ENS domains can be bought and sold
+  await deployer.deploy(strings);
+  await deployer.deploy(StringUtils);
+  await deployer.link(strings, ENSMarket);
+  await deployer.link(StringUtils, ENSMarket);
   await deployer.deploy(ENSMarket, KioskMarketToken.address, ENS.address);
 
   await ENSMarket.at(ENSMarket.address).setDomain(

@@ -3,8 +3,12 @@ pragma solidity ^0.4.11;
 import "./ENS/AbstractENS.sol";
 import "../StandardMarket.sol";
 import "../KioskMarketToken.sol";
+import "../utils/strings.sol";
+import "../utils/StringUtils.sol";
 
 contract ENSMarket is StandardMarket {
+	using strings for *;
+	using StringUtils for *;
 
 	string public name = "ENS Market";
 
@@ -27,6 +31,15 @@ contract ENSMarket is StandardMarket {
 
 	// Seller => Aggregate value of sales (in KMT)
 	mapping(address => uint256) public pendingWithdrawals;
+
+	enum Errors {
+		INCORRECT_OWNER,
+		INCORRECT_TLD,
+		INCORRECT_NAMEHASH,
+		DOMAIN_NOT_TRANSFERRED
+	}
+
+	event LogError(uint8 indexed errorId);
 
 	// Constructor
 	function ENSMarket(KioskMarketToken _KMT, AbstractENS _ens) StandardMarket(_KMT) {
@@ -113,10 +126,29 @@ contract ENSMarket is StandardMarket {
 		uint256 price,
 		bool available
 	)
-		only_owner(DIN) 
+		only_owner(DIN)
 	{
-		// TODO: Add validation that the node matches the namehash of the name.
-		// TODO: Add validation that the node is not already "claimed" by another seller.
+		if (ens.owner(node) != msg.sender) {
+			LogError(uint8(Errors.INCORRECT_OWNER));
+			return;
+		}
+
+		if (node != namehash(name)) {
+			LogError(uint8(Errors.INCORRECT_NAMEHASH));
+			return;
+		}
+
+		// https://github.com/Arachnid/solidity-stringutils#extracting-the-middle-part-of-a-string
+		var s = name.toSlice();
+		strings.slice memory part;
+		string memory domain = s.split(".".toSlice(), part).toString();
+		string memory tld = s.split(".".toSlice(), part).toString();
+
+		if (tld.equal("eth") == false) {
+			LogError(uint8(Errors.INCORRECT_TLD));
+			return;
+		}
+
 		domains[DIN].seller = msg.sender;
 		domains[DIN].name = name;
 		domains[DIN].node = node;
@@ -124,18 +156,8 @@ contract ENSMarket is StandardMarket {
 		domains[DIN].available = available;
 	}
 
-	function setName(uint256 DIN, string name) only_owner(DIN) {
-		// TODO: Add validation
-		domains[DIN].name = name;
-	}
-
 	function getNode(uint256 DIN) constant returns (bytes32) {
 		return domains[DIN].node;
-	}
-
-	function setNode(uint256 DIN, bytes32 node) only_owner(DIN) {
-		// TODO: Add validation
-		domains[DIN].node = node;
 	}
 
 	function setPrice(uint256 DIN, uint256 price) only_owner(DIN) {
@@ -149,5 +171,16 @@ contract ENSMarket is StandardMarket {
 	function pendingWihdrawal(address seller) constant returns (uint256) {
 		return pendingWithdrawals[seller];
 	}
+
+	function namehash(string name) constant returns(bytes32) {
+        var s = name.toSlice();
+
+        if (s.len() == 0) {
+            return bytes32(0);
+        }
+
+        var label = s.split(".".toSlice()).toString();
+        return keccak256(namehash(s.toString()), keccak256(label));
+    }
 
 }

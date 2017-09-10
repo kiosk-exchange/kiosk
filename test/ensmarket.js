@@ -142,4 +142,9 @@ contract("ENSMarket", accounts => {
 		const endBalance = await KMT.balanceOf(Alice);
 		expect(endBalance.toNumber()).to.equal(parseInt(alicePrice));
 	})
+
+	it("should only a seller to sell a domain they own", async () => {
+
+	})
+
 });

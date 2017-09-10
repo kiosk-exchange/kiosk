@@ -97,8 +97,8 @@ contract Buyer {
 		// Tell the market to execute the order.
 		market.buy(DIN, quantity, totalValue, buyer);
 
-		// Throw if the market does not fulfill the order.
-		// Right now, Buyer only supports transactions that can be settled immediately (i.e., instant delivery).
+		// Log an error if the market does not fulfill the order.
+		// Right now, Buyer only supports transactions that can be settled immediately (i.e. instant delivery).
 		if (market.isFulfilled(orderID) == false) {
 			LogError(uint8(Errors.NOT_FULFILLED));
 			return 0;
