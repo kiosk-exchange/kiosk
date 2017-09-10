@@ -49,7 +49,7 @@ const BuyKMTModal = ({
   const buyNow = (
     <RaisedButton
       label="Submit"
-      disabled={insufficientFunds}
+      disabled={insufficientFunds || !(etherContribution > 0)}
       backgroundColor={theme.blue}
       labelColor="#FFFFFF"
       fullWidth={true}
@@ -121,6 +121,14 @@ const BuyKMTModal = ({
     onEtherChange(event.target.value);
   }
 
+  const handleKeyPress = (event) => {
+    const keyCode = event.keyCode || event.which;
+    const keyValue = String.fromCharCode(keyCode);
+    if (!(/^\d+$/.test(keyValue))) {
+      event.preventDefault();
+    }
+  }
+
   return (
     <Dialog
       actions={actions}
@@ -138,7 +146,7 @@ const BuyKMTModal = ({
       <div style={{ display: "flex", width: "100%" }}>
         <div style={{ flex: "2" }}>
           <form>
-            <input style={inputStyle} type="text" autoFocus={true} onChange={handleInputChange} />
+            <input style={inputStyle} type="text" autoFocus={true} onKeyPress={handleKeyPress} onChange={handleInputChange} />
           </form>
         </div>
         <div style={{ flex: "1" }}>
