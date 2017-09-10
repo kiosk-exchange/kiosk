@@ -306,10 +306,9 @@ export const buyKioskMarketToken = (amount) => {
       const account = getState().config.account;
 
       dispatch(txSucceeded(false));
-      dispatch(getBalances());
       dispatch(showBuyKMTModal(false))
-
       buyKMT(EtherMarket, value, account).then((result) => {
+        dispatch(getBalances());
         dispatch(addPendingTx(result));
         setInterval(() => dispatch(checkPendingTxs()), 1000);
         dispatch(purchaseIsPending(false));
