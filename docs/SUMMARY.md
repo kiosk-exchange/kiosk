@@ -2,8 +2,8 @@
 
 * [Introduction](./README.md)
 * How it Works
-	* [Kiosk Market Token](intro/kiosk_market_token.md)
 	* [DIN](intro/din.md)
+	* [Kiosk Market Token](intro/kiosk_market_token.md)
 	* [Market](./placeholder.md)
 	* [Order](./placeholder.md)
 * Basics
