@@ -1,7 +1,7 @@
 {
   "contract_name": "strings",
   "abi": [],
-  "unlinked_binary": "0x60606040523415600b57fe5b5b60338060196000396000f30060606040525bfe00a165627a7a7230582079272b02a3d52c2bb3aa734fb1b4707140c941d25c0dd38a0c12074525465a7f0029",
+  "unlinked_binary": "0x60606040523415600b57fe5b5b60338060196000396000f30060606040525bfe00a165627a7a723058200edad95189aa6d48d8322c73bb5491ea9707806fa2d6277325b8d7aaf223ff660029",
   "networks": {
     "1505082547585": {
       "events": {},
@@ -12,10 +12,16 @@
     "1505087889685": {
       "events": {},
       "links": {},
-      "address": "0x26347d6c648cc347221dea33ddfff50cf829c7b8",
-      "updated_at": 1505091356985
+      "address": "0x9e2af29f177d700649633fe7204c680941eafec0",
+      "updated_at": 1505092973251
+    },
+    "1505095105622": {
+      "events": {},
+      "links": {},
+      "address": "0xe4745fdd269e6f2efe2505ba29869b43b9a6931e",
+      "updated_at": 1505095299627
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1505091356985
+  "updated_at": 1505095299627
 }

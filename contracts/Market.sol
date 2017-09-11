@@ -9,10 +9,10 @@ contract Market {
 
 	// Buy a product. Returns true if the transaction was successful.
 	function buy(
-		uint256 DIN, 
-		uint256 quantity, 
-		uint256 value, 
-		address buyer, 
+		uint256 DIN,
+		uint256 quantity,
+		uint256 value,
+		address buyer,
 		bool approved
 	) returns (bool);
 

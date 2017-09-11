@@ -71,9 +71,9 @@ contract ENSMarket is StandardMarket {
 		require(quantity == 1);
 
 		// Verify that the price is correct, unless the Buy contract pre-approves the transaction.
-		// if (approved == false) {
-		// 	require(value == domains[DIN].price);
-		// }
+		if (approved == false) {
+			require(value == domains[DIN].price);
+		}
 
 		// Give ownership of the node to the buyer.
 		ens.setOwner(domains[DIN].node, buyer);

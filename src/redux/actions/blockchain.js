@@ -258,19 +258,21 @@ export const checkPendingTxs = () => {
 export const buyNow = product => {
   return async (dispatch, getState) => {
     const web3 = getState().config.web3;
-    const KMTContract = getState().config.KMTContract;
+    const Buy = getState().config.BuyContract;
     const account = getState().config.account;
     const DIN = product.DIN;
     const quantity = getState().buyModal.quantity;
     const value = getState().buyModal.totalPrice;
     const valueInKMTWei = web3.toWei(value, "ether");
 
+    console.log(Buy)
+
     // Reset
     dispatch(purchaseIsPending(true));
     dispatch(showBuyModal(false));
     try {
       const txId = await buyProduct(
-        KMTContract,
+        Buy,
         DIN,
         quantity,
         valueInKMTWei,
