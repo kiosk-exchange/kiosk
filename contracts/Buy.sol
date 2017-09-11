@@ -173,7 +173,7 @@ contract Buy {
 
         // Transfer the value of the order from the buyer to the market.
         if (totalValue > 0) {
-            KMT.transferFrom(buyer, market, totalValue);
+            KMT.transferFromBuy(buyer, market, totalValue);
         }
 
         // Mark the order fulfilled.

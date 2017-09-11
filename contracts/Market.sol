@@ -3,7 +3,7 @@ pragma solidity ^0.4.11;
 /**
 *  This is the interface for a Market.
 */
-interface Market {
+contract Market {
 	// The name of the market.
 	string public name;
 

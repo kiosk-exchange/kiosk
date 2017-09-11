@@ -576,12 +576,12 @@
         }
       },
       "links": {
-        "StringUtils": "0xa9e7fa320f48d823eaea4ad0a98321ce3c368882"
+        "StringUtils": "0xc784f629ebc0781985ecf8884ee5339468f1985d"
       },
-      "address": "0xc33b935026a4ce4f9f0d2b38417b583e67fd961f",
-      "updated_at": 1505088197705
+      "address": "0x9ea89284e5cd1092a4b2977b387f8f05e422fef7",
+      "updated_at": 1505091356985
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1505088197705
+  "updated_at": 1505091356985
 }

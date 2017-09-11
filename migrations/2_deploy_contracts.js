@@ -75,12 +75,6 @@ const deployEtherMarket = async (deployer, network, accounts) => {
   // Deploy Ether Market contract (KMT crowdsale / ETH product)
   await deployer.deploy(EtherMarket, Kiosk.address);
 
-  const event = EtherMarket.at(EtherMarket.address).LogEtherDIN({});
-  const eventAsync = Promise.promisifyAll(event)
-  const logs = await eventAsync.getAsync();
-  const DIN = logs[0]["args"]["DIN"];
-  console.log(DIN);
-
   // Transfer the entire KMT balance to EtherMarket.
   await KioskMarketToken.at(KioskMarketToken.address).transfer(
     EtherMarket.address,
