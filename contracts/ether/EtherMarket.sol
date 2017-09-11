@@ -20,10 +20,14 @@ contract EtherMarket is StandardMarket {
     // Order ID => Initial ETH balance of buyer
     mapping (uint256 => uint256) public initialBalances;
 
+    // event LogEtherDIN(uint256 DIN);
+
     // Constructor
     function EtherMarket(Kiosk _kiosk) StandardMarket(_kiosk) {
         // Register a DIN to this contract. 
         // ethDIN = buyContract.buyDIN();
+
+        // LogEtherDIN(ethDIN);
 
         // Set the market for the newly registered DIN to this contract.
         // registry.setMarket(ethDIN, this);

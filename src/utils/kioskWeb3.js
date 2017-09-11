@@ -46,8 +46,6 @@ export const getETHBalanceAsync = async (web3, account) => {
 
 export const loadWeb3 = () => {
   return new Promise(async (resolve, reject) => {
-    console.log("LOAD WEB 3")
-
     if (process.env.REACT_APP_TESTRPC) {
       const web3 = new Web3(
         new Web3.providers.HttpProvider("http://localhost:8545")

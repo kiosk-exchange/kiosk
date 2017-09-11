@@ -107,8 +107,6 @@ export const getProduct = async (
   buyerAcct,
   DIN
 ) => {
-  console.log(registry)
-
   const owner = await registry.ownerAsync(DIN);
   const market = await registry.marketAsync(DIN);
 
@@ -121,20 +119,20 @@ export const getProduct = async (
   try {
     const name = await getProductName(web3, DIN, market);
     const value = await getValue(web3, BuyContract, DIN, 1, buyerAcct);
-    // const available = await getIsAvailable(
-    //   web3,
-    //   BuyerContract,
-    //   DIN,
-    //   buyerAcct,
-    //   1
-    // );
-    // const marketName = await getMarketName(web3, market);
+    const available = await getIsAvailable(
+      web3,
+      BuyContract,
+      DIN,
+      buyerAcct,
+      1
+    );
+    const marketName = await getMarketName(web3, market);
     const fullProduct = {
       ...product,
       name,
       value,
-      // available,
-      // marketName
+      available,
+      marketName
     };
     return fullProduct;
   } catch (err) {
@@ -150,7 +148,6 @@ const getProducts = async (
   buyerAcct
 ) => {
   const asyncEvent = Promise.promisifyAll(event);
-  console.log(asyncEvent)
   const logs = await asyncEvent.getAsync();
   const DINs = logs.map(log => {
     return parseInt(log["args"]["DIN"]["c"][0], 10);

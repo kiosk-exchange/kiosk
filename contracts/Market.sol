@@ -3,12 +3,18 @@ pragma solidity ^0.4.11;
 /**
 *  This is the interface for a Market.
 */
-contract Market {
+interface Market {
 	// The name of the market.
 	string public name;
 
 	// Buy a product. Returns true if the transaction was successful.
-	function buy(uint256 DIN, uint256 quantity, uint256 value, address buyer, bool approved) returns (bool);
+	function buy(
+		uint256 DIN, 
+		uint256 quantity, 
+		uint256 value, 
+		address buyer, 
+		bool approved
+	) returns (bool);
 
 	// Returns true if the seller has fulfilled the order.
 	function isFulfilled(uint256 orderID) constant returns (bool);

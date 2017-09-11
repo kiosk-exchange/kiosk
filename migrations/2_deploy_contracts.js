@@ -22,6 +22,7 @@ const subnodeNameHash = namehash(subnodeName);
 const subnodePrice = web3.toWei(0.02, "ether"); // Price in KMT, just using web3 for decimal conversion
 const initialSupply = web3.toWei(1000000, "ether"); // Initialize KMT with 1 million tokens
 const genesis = 1000000000; // The genesis DIN (used for DIN product)
+const Promise = require("bluebird");
 
 /**
  * Calculate root node hashes given the top level domain(tld)
@@ -74,6 +75,12 @@ const deployEtherMarket = async (deployer, network, accounts) => {
   // Deploy Ether Market contract (KMT crowdsale / ETH product)
   await deployer.deploy(EtherMarket, Kiosk.address);
 
+  const event = EtherMarket.at(EtherMarket.address).LogEtherDIN({});
+  const eventAsync = Promise.promisifyAll(event)
+  const logs = await eventAsync.getAsync();
+  const DIN = logs[0]["args"]["DIN"];
+  console.log(DIN);
+
   // Transfer the entire KMT balance to EtherMarket.
   await KioskMarketToken.at(KioskMarketToken.address).transfer(
     EtherMarket.address,
@@ -99,6 +106,11 @@ const deployENS = async (deployer, network, accounts) => {
   // Register a DIN.
   await Buy.at(Buy.address).buyDIN();
 
+  const event = Buy.at(Buy.address).LogBuyDIN({});
+  const eventAsync = Promise.promisifyAll(event)
+  const logs = await eventAsync.getAsync();
+  const DIN = logs[0]["args"]["DIN"];
+
   // Register "example.eth" to a test account
   await TestRegistrar.at(TestRegistrar.address).register(subnodeSHA3, account1);
 
@@ -109,21 +121,21 @@ const deployENS = async (deployer, network, accounts) => {
   await deployer.link(StringUtils, ENSMarket);
   await deployer.deploy(ENSMarket, Kiosk.address, ENS.address);
 
-  // await ENSMarket.at(ENSMarket.address).setDomain(
-  //   1000000002,
-  //   subnodeName,
-  //   subnodeNameHash,
-  //   subnodePrice,
-  //   true
-  // );
+  await ENSMarket.at(ENSMarket.address).setDomain(
+    DIN,
+    subnodeName,
+    subnodeNameHash,
+    subnodePrice,
+    true
+  );
 
-  // await DINRegistry.at(DINRegistry.address).setMarket(
-  //   1000000002,
-  //   ENSMarket.address
-  // );
+  await DINRegistry.at(DINRegistry.address).setMarket(
+    DIN,
+    ENSMarket.address
+  );
 
   // Transfer ownership of "example.eth" to the ENSMarket
-  // await ENS.at(ENS.address).setOwner(subnodeNameHash, ENSMarket.address);
+  await ENS.at(ENS.address).setOwner(subnodeNameHash, ENSMarket.address);
 };
 
 module.exports = async (deployer, network, accounts) => {

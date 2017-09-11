@@ -85,12 +85,7 @@ const fetchProducts = filter => {
       let DINs;
 
       if (filter === PRODUCT_FILTER.ALL) {
-        DINs = await getAllProductDINs(
-          web3,
-          DINRegistry,
-          BuyContract,
-          account
-        );
+        DINs = await getAllProductDINs(web3, DINRegistry, BuyContract, account);
       } else if (filter === PRODUCT_FILTER.OWNER) {
         DINs = await getOwnerProductDINs(
           web3,
@@ -106,15 +101,17 @@ const fetchProducts = filter => {
       if (!DINs) {
         dispatch(requestLoading(false));
       } else {
-        const promises = DINs.map(DIN => {
+        Promise.each(DINs, DIN => {
           return getProduct(
             web3,
             registry,
             BuyContract,
             account,
             DIN
-          )
-        })
+          ).then(product => {
+            dispatch(receivedProduct(product));
+          });
+        });
 
         // console.log(promises)
         // dispatch(receivedProduct(product))
