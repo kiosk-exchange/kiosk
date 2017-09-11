@@ -1,6 +1,6 @@
 const KioskMarketTokenContract = artifacts.require("KioskMarketToken");
 const DINRegistryContract = artifacts.require("DINRegistry");
-const BuyerContract = artifacts.require("Buyer");
+const BuyContract = artifacts.require("Buy");
 const OrderStoreContract = artifacts.require("OrderStore");
 const ENSMarketContract = artifacts.require("ENSMarket");
 const ENSContract = artifacts.require("ENS");
@@ -33,7 +33,7 @@ contract("ENSMarket", accounts => {
 		ENSMarket = await ENSMarketContract.deployed();
 		KMT = await KioskMarketTokenContract.deployed();
 		DINRegistry = await DINRegistryContract.deployed();
-		Buy = await BuyerContract.deployed();
+		Buy = await BuyContract.deployed();
 		Orders = await OrderStoreContract.deployed();
 		ENS = await ENSContract.deployed();
 		TestRegistrar = await TestRegistrarContract.deployed();
@@ -94,7 +94,7 @@ contract("ENSMarket", accounts => {
 		// Step 2. Get a DIN that will uniquely identify the product on Kiosk
 
 		// Buy a DIN
-		const result = await KMT.buy(genesis, 1, 0, {
+		const result = await Buy.buy(genesis, 1, 0, {
 			from: Alice
 		});
 
@@ -130,7 +130,7 @@ contract("ENSMarket", accounts => {
 	});
 
 	it("should let buyers buy a domain", async () => {
-		await KMT.buy(aliceDIN, quantity, alicePrice, { from: Bob });
+		await Buy.buy(aliceDIN, quantity, alicePrice, { from: Bob });
 		const newOwner = await ENS.owner(aliceDomainNode);
 		expect(newOwner).to.equal(Bob);
 	});

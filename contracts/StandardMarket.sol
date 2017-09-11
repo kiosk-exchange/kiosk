@@ -1,24 +1,30 @@
 pragma solidity ^0.4.11;
 
+import "./Kiosk.sol";
 import "./KioskMarketToken.sol";
-import "./Buyer.sol";
+import "./Buy.sol";
 import "./DINRegistry.sol";
 import "./DINRegistrar.sol";
 import "./OrderMaker.sol";
 import "./OrderStore.sol";
 import "./Market.sol";
+import "zeppelin-solidity/contracts/math/SafeMath.sol";
 
 /**
 *  This is a base implementation of a Market that is used by Kiosk's market contracts (DINMarket, EtherMarket, ENSMarket, etc.).
 *  Subclasses must implement name, nameOf, isFulfilled, and metadata.
 */
 contract StandardMarket is Market {
+    using SafeMath for uint256;
+
+    // The Kiosk contract.
+    Kiosk public kiosk;
 
     // The Kiosk Market Token contract.
     KioskMarketToken public KMT;
 
-    // The Buyer contract from the Kiosk protocol.
-    Buyer public buyer;
+    // The Buy contract from the Kiosk protocol.
+    Buy public buyContract;
 
     // The DINRegistry contract from the Kiosk protocol.
     DINRegistry public registry;
@@ -32,9 +38,9 @@ contract StandardMarket is Market {
     // The OrderStore contract from the Kiosk protocl.
     OrderStore public orderStore;
 
-    // Only let the Buyer contract call "buy"
-    modifier only_buyer {
-        require (buyer == msg.sender);
+    // Only let the Buy contract call "buy"
+    modifier only_buy {
+        require (kiosk.isValid(msg.sender) == true);
         _;
     }
 
@@ -49,30 +55,34 @@ contract StandardMarket is Market {
     }
 
     // Constructor
-    function StandardMarket(KioskMarketToken _KMT) {
-        KMT = _KMT;
+    function StandardMarket(Kiosk _kiosk) {
+        kiosk = _kiosk;
         updateKiosk();
     }
 
     // Update Kiosk protocol contracts if they change on Kiosk Market Token
     function updateKiosk() {
-        // Update Buyer
-        address buyerAddr = KMT.buyer();
-        buyer = Buyer(buyerAddr);
+        // Update Kiosk Market Token
+        address kmtAddr = kiosk.KMT();
+        KMT = KioskMarketToken(kmtAddr);
+
+        // Update Buy
+        address buyAddr = kiosk.buy();
+        buyContract = Buy(buyAddr);
 
         // Update DINRegistry
-        address registryAddr = KMT.registry();
+        address registryAddr = kiosk.registry();
         registry = DINRegistry(registryAddr);
 
         // Update DINRegistrar
-        address registrarAddr = KMT.registrar();
+        address registrarAddr = kiosk.registrar();
         registrar = DINRegistrar(registrarAddr);
 
         // Update OrderMaker
-        address orderMakerAddr = KMT.orderMaker();
+        address orderMakerAddr = kiosk.orderMaker();
         orderMaker = OrderMaker(orderMakerAddr);
 
-        address orderStoreAddr = KMT.orderStore();
+        address orderStoreAddr = kiosk.orderStore();
         orderStore = OrderStore(orderStoreAddr);
     }
 

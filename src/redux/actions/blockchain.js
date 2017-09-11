@@ -28,6 +28,7 @@ export const PRODUCT_AVAILABILITY = "PRODUCT_AVAILABILITY";
 export const TX_PENDING_ADDED = "TX_PENDING_ADDED";
 export const TX_PENDING_REMOVED = "TX_PENDING_REMOVED";
 export const TX_SUCCEEDED = "TX_SUCCEEDED";
+export const SHOW_TX_SUCCEEDED = "SHOW_TX_SUCCEEDED";
 
 export const DATA_TYPE = {
   ALL_PRODUCTS: 1,
@@ -68,16 +69,16 @@ export const totalPriceIsCalculating = data =>
 export const totalPrice = data => action(TOTAL_PRICE, { data });
 export const productAvailability = data =>
   action(PRODUCT_AVAILABILITY, { data });
-export const purchaseIsPending = data => action(PURCHASE_IS_PENDING, { data });
 export const addPendingTx = data => action(TX_PENDING_ADDED, { data });
 export const removePendingTx = data => action(TX_PENDING_REMOVED, { data });
 export const txSucceeded = data => action(TX_SUCCEEDED, { data });
+export const showTxSucceeded = data => action(SHOW_TX_SUCCEEDED, { data });
 
 const fetchProducts = filter => {
   return async (dispatch, getState) => {
     const web3 = getState().config.web3;
     const DINRegistry = getState().config.DINRegistry;
-    const BuyerContract = getState().config.BuyerContract;
+    const BuyContract = getState().config.BuyContract;
     const account = getState().config.account;
     const registry = Promise.promisifyAll(DINRegistry);
 
@@ -85,17 +86,12 @@ const fetchProducts = filter => {
       let DINs;
 
       if (filter === PRODUCT_FILTER.ALL) {
-        DINs = await getAllProductDINs(
-          web3,
-          DINRegistry,
-          BuyerContract,
-          account
-        );
+        DINs = await getAllProductDINs(web3, DINRegistry, BuyContract, account);
       } else if (filter === PRODUCT_FILTER.OWNER) {
         DINs = await getOwnerProductDINs(
           web3,
           DINRegistry,
-          BuyerContract,
+          BuyContract,
           account,
           account
         );
@@ -107,10 +103,16 @@ const fetchProducts = filter => {
         dispatch(requestLoading(false));
       } else {
         Promise.each(DINs, DIN => {
-          return getProduct(web3, registry, BuyerContract, account, DIN).then(product => {
-            dispatch(receivedProduct(product))
-          })
-        })
+          return getProduct(
+            web3,
+            registry,
+            BuyContract,
+            account,
+            DIN
+          ).then(product => {
+            dispatch(receivedProduct(product));
+          });
+        });
       }
     }
   };
@@ -120,14 +122,14 @@ export const fetchProductsForMarket = market => {
   return async (dispatch, getState) => {
     const web3 = getState().config.web3;
     const DINRegistry = getState().config.DINRegistry;
-    const BuyerContract = getState().config.BuyerContract;
+    const BuyContract = getState().config.BuyContract;
     const account = getState().config.account;
 
     if (web3 && DINRegistry && account) {
       const DINs = await getMarketProductDINs(
         web3,
         DINRegistry,
-        BuyerContract,
+        BuyContract,
         account,
         market
       );
@@ -191,7 +193,7 @@ export const fetchDataForMenuItem = id => {
 export const getPriceAndAvailability = (product, quantity) => {
   return async (dispatch, getState) => {
     const web3 = getState().config.web3;
-    const BuyerContract = getState().config.BuyerContract;
+    const BuyContract = getState().config.BuyContract;
     const buyer = getState().config.account;
 
     dispatch(totalPriceIsCalculating(true));
@@ -199,7 +201,7 @@ export const getPriceAndAvailability = (product, quantity) => {
     try {
       const value = await getValue(
         web3,
-        BuyerContract,
+        BuyContract,
         product.DIN,
         quantity,
         buyer
@@ -212,7 +214,7 @@ export const getPriceAndAvailability = (product, quantity) => {
     try {
       const isAvailable = await getIsAvailable(
         web3,
-        BuyerContract,
+        BuyContract,
         product.DIN,
         quantity,
         buyer
@@ -230,7 +232,7 @@ export const checkPendingTxs = () => {
   return async (dispatch, getState) => {
     try {
       const web3 = getState().config.web3;
-      const pendTxs = getState().txsPending;
+      const pendTxs = getState().transactions.pending;
       const getTxAsync = Promise.promisify(web3.eth.getTransaction);
 
       // TODO: stop polling if pendTxs.length < 1
@@ -246,7 +248,7 @@ export const checkPendingTxs = () => {
         }
       });
     } catch (err) {
-      console.log("Can't fetch pending transactions");
+      console.log("ERROR: PENDING TRANSACTIONS");
     }
   };
 };
@@ -254,7 +256,7 @@ export const checkPendingTxs = () => {
 export const buyNow = product => {
   return async (dispatch, getState) => {
     const web3 = getState().config.web3;
-    const KMTContract = getState().config.KMTContract;
+    const Buy = getState().config.BuyContract;
     const account = getState().config.account;
     const DIN = product.DIN;
     const quantity = getState().buyModal.quantity;
@@ -262,26 +264,22 @@ export const buyNow = product => {
     const valueInKMTWei = web3.toWei(value, "ether");
 
     // Reset
-    dispatch(purchaseIsPending(true));
     dispatch(showBuyModal(false));
     try {
       const txId = await buyProduct(
-        KMTContract,
+        Buy,
         DIN,
         quantity,
         valueInKMTWei,
         account
       );
       console.log(txId);
-      dispatch(txSucceeded(false)); // Reset
       dispatch(addPendingTx(txId));
-      setInterval(() => dispatch(checkPendingTxs()), 1000);
-      dispatch(purchaseIsPending(false));
+      // setInterval(() => dispatch(checkPendingTxs()), 5000);
       dispatch(reloadAfterPurchase());
     } catch (err) {
       console.log(err);
       console.log("ERROR: BUY PRODUCT " + product.DIN);
-      dispatch(purchaseIsPending(false));
     }
   };
 };

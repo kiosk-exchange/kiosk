@@ -30,7 +30,7 @@ class App extends Component {
   }
 
   render() {
-    const { web3, network, error, selectedMenuItem } = this.props;
+    const { web3, network, error, dataType } = this.props;
 
     const hContainerStyle = {
       display: "flex",
@@ -82,7 +82,7 @@ class App extends Component {
       <MuiThemeProvider>
         <div style={hContainerStyle}>
           <div style={sideMenuStyle}>
-            <SideMenu value={selectedMenuItem} />
+            <SideMenu value={dataType} />
           </div>
           <div style={rightContainerStyle}>
             <div>

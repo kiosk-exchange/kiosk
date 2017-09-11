@@ -1,8 +1,8 @@
 pragma solidity ^0.4.11;
 
+import "../Kiosk.sol";
 import "./ENS/AbstractENS.sol";
 import "../StandardMarket.sol";
-import "../KioskMarketToken.sol";
 import "../utils/strings.sol";
 import "../utils/StringUtils.sol";
 
@@ -42,7 +42,7 @@ contract ENSMarket is StandardMarket {
 	event LogError(uint8 indexed errorId);
 
 	// Constructor
-	function ENSMarket(KioskMarketToken _KMT, AbstractENS _ens) StandardMarket(_KMT) {
+	function ENSMarket(Kiosk _kiosk, AbstractENS _ens) StandardMarket(_kiosk) {
 		ens = _ens;
 	}
 
@@ -54,20 +54,26 @@ contract ENSMarket is StandardMarket {
 		return (ens.owner(node) == buyer);
 	}
 
-	function buy(
-		uint256 DIN, 
-		uint256 quantity, 
-		uint256 value, 
-		address buyer
-	) 	
-		// only_buyer 
-		returns (bool) 
-	{
-		// Expect the buyer to own the domain at the end of the transaction.
-		expected[buyer] = domains[DIN].node;
+    function buy(
+        uint256 DIN, 
+        uint256 quantity, 
+        uint256 value, 
+        address buyer,
+        bool approved
+    ) 	
+        // only_buy
+        returns (bool) 
+    {
+        // Expect the buyer to own the domain at the end of the transaction.
+        expected[buyer] = domains[DIN].node;
 
 		// Each DIN represents a single domain.
 		require(quantity == 1);
+
+		// Verify that the price is correct, unless the Buy contract pre-approves the transaction.
+		if (approved == false) {
+			require(value == domains[DIN].price);
+		}
 
 		// Give ownership of the node to the buyer.
 		ens.setOwner(domains[DIN].node, buyer);

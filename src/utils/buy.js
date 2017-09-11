@@ -1,7 +1,7 @@
 const Promise = require("bluebird");
 
-export const buyProduct = (KMT, DIN, quantity, value, buyer) => {
-	const buyAsync = Promise.promisify(KMT.buy);
+export const buyProduct = (Buy, DIN, quantity, value, buyer) => {
+	const buyAsync = Promise.promisify(Buy.buy);
 	return buyAsync(DIN, quantity, value, { from: buyer, gas: 4700000 });
 };
 

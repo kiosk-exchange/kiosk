@@ -1,6 +1,6 @@
 pragma solidity ^0.4.11;
 
-import "./KioskMarketToken.sol";
+import "./Kiosk.sol";
 import "./DINRegistry.sol";
 import "./Market.sol";
 
@@ -8,8 +8,8 @@ import "./Market.sol";
 *  This contract manages new DIN registrations. It is invoked by DINMarket and changes DINRegistry.
 */
 contract DINRegistrar {
-    // The Kiosk Market Token contract.
-    KioskMarketToken public KMT;
+    // The Kiosk contract.
+    Kiosk public kiosk;
 
     // The DIN Registry contract
     DINRegistry registry;
@@ -26,10 +26,10 @@ contract DINRegistrar {
     }
 
     // Constructor
-    function DINRegistrar(KioskMarketToken _KMT) {
-        KMT = _KMT;
+    function DINRegistrar(Kiosk _kiosk) {
+        kiosk = _kiosk;
 
-        address registryAddr = KMT.registry();
+        address registryAddr = kiosk.registry();
         registry = DINRegistry(registryAddr);
         index = registry.genesis();
     }
@@ -70,7 +70,7 @@ contract DINRegistrar {
     // Update Kiosk protocol contracts if they change on Kiosk Market Token
     function updateKiosk() {
         // Update DINRegistry
-        address registryAddr = KMT.registry();
+        address registryAddr = kiosk.registry();
         registry = DINRegistry(registryAddr);
 
         // Update DINMarket

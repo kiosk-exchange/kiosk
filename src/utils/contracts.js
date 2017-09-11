@@ -1,5 +1,5 @@
 import KioskMarketTokenJSON from "../../build/contracts/KioskMarketToken.json";
-import BuyerJSON from "../../build/contracts/Buyer.json";
+import BuyJSON from "../../build/contracts/Buy.json";
 import DINRegistryJSON from "../../build/contracts/DINRegistry.json";
 import OrderStoreJSON from "../../build/contracts/OrderStore.json";
 import EtherMarketJSON from "../../build/contracts/EtherMarket.json";
@@ -23,8 +23,8 @@ const getContract = (web3, json) =>
 export const getKioskMarketToken = web3 => {
 	return getContract(web3, KioskMarketTokenJSON);
 };
-export const getBuyer = web3 => {
-	return getContract(web3, BuyerJSON);
+export const getBuy = web3 => {
+	return getContract(web3, BuyJSON);
 };
 export const getDINRegistry = web3 => {
 	return getContract(web3, DINRegistryJSON);

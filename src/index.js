@@ -60,15 +60,3 @@ render(
 	</Provider>,
 	document.getElementById("root")
 );
-
-// <Route path="/marketplace" component={MarketplaceTable} />
-// <Route path="/products" component={ProductsTable} />
-// <Route path="/purchases" component={PurchasesTable} />
-// <Route path="/sales" component={SalesTable} />
-// <Route path="markets" component={MarketTable} />
-// <DevTools />;
-
-// TODO: Figure out hot reloading with React Router
-// if (module.hot) {
-// 	module.hot.accept();
-// }
