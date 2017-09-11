@@ -1,27 +1,15 @@
 {
   "contract_name": "strings",
   "abi": [],
-  "unlinked_binary": "0x60606040523415600b57fe5b5b60338060196000396000f30060606040525bfe00a165627a7a723058200edad95189aa6d48d8322c73bb5491ea9707806fa2d6277325b8d7aaf223ff660029",
+  "unlinked_binary": "0x60606040523415600b57fe5b5b60338060196000396000f30060606040525bfe00a165627a7a7230582007b867291eab5e2a18361c75eb5d754b482756d61b1892d031cbe78b8afe6f4a0029",
   "networks": {
-    "1505082547585": {
+    "42": {
       "events": {},
       "links": {},
-      "address": "0x43068a04ab79b1ec7a0091a41c6b10e74d21f280",
-      "updated_at": 1505087253734
-    },
-    "1505087889685": {
-      "events": {},
-      "links": {},
-      "address": "0x9e2af29f177d700649633fe7204c680941eafec0",
-      "updated_at": 1505092973251
-    },
-    "1505095105622": {
-      "events": {},
-      "links": {},
-      "address": "0xe4745fdd269e6f2efe2505ba29869b43b9a6931e",
-      "updated_at": 1505095299627
+      "address": "0x52956e13b0e9375b0acd45382fb5cbc97a77acb2",
+      "updated_at": 1505058497112
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1505095299627
+  "updated_at": 1505058497112
 }
