@@ -91,3 +91,4 @@ class PendingTxSnackbar extends Component {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(PendingTxSnackbar);
+

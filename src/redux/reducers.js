@@ -6,7 +6,8 @@ import {
 	SHOW_BUY_KMT_MODAL,
 	SELECTED_PRODUCT,
 	SELECTED_QUANTITY,
-	SELECTED_MARKET
+	SELECTED_MARKET,
+	CHANGED_ETHER_CONTRIBUTION_AMOUNT
 } from "./actions/actions";
 
 import {
@@ -91,6 +92,8 @@ const ETHBalance = (state = null, action) =>
 	reducer(state, action, ETH_BALANCE);
 const selectedMarket = (state = null, action) =>
 	reducer(state, action, SELECTED_MARKET);
+const etherContribution = (state = 0, action) =>
+	reducer(state, action, CHANGED_ETHER_CONTRIBUTION_AMOUNT)
 
 const txDefaultState = {
 	pending: [],
@@ -300,5 +303,6 @@ export const rootReducer = combineReducers({
 	selectedMarket,
 	buyModal,
 	showBuyKMTModal,
+	etherContribution,
 	routing: routerReducer
 });
