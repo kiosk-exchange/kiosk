@@ -1,8 +1,6 @@
-pragma solidity ^0.4.11;
+**`DINMarket.sol`**
 
-import "../Kiosk.sol";
-import "../StandardMarket.sol";
-
+```cs
 contract DINMarket is StandardMarket {
 
 	string public name = "DIN Market";
@@ -62,5 +60,5 @@ contract DINMarket is StandardMarket {
 		return true;
 	}
 
-
 }
+```

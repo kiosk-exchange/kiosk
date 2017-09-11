@@ -1,10 +1,6 @@
-pragma solidity ^0.4.11;
+**`EtherMarket.sol`**
 
-import "../StandardMarket.sol";
-import "../Kiosk.sol";
-import "../Buy.sol";
-import "../OrderStore.sol";
-
+```cs
 /**
 *  EtherMarket exchanges ETH for KMT. It also sells ETH as a Kiosk Product.
 */
@@ -14,7 +10,7 @@ contract EtherMarket is StandardMarket {
     // The DIN for ETH
     uint256 public ethDIN;
 
-    // How many KMT a buyer gets per wei.
+    // How many KMT a buyer gets per ETH.
     uint256 public rate = 300;
 
     // Order ID => Initial ETH balance of buyer
@@ -97,3 +93,4 @@ contract EtherMarket is StandardMarket {
     }
 
 }
+```
