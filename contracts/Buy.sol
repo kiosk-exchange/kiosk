@@ -9,19 +9,11 @@ import "./Market.sol";
 import "./OrderUtils.sol";
 
 contract Buy {
-    // The Kiosk contract.
+    // Kiosk protocol
     Kiosk public kiosk;
-
-    // The Kiosk Market Token contract.
     KioskMarketToken public KMT;
-
-    // The DIN Registry contract.
     DINRegistry public registry;
-
-    // The OrderMaker contract.
     OrderMaker public orderMaker;
-
-    // The OrderStore contract.
     OrderStore public orderStore;
 
     // The DIN to buy a DIN.
