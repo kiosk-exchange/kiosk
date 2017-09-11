@@ -14,9 +14,10 @@ export const PurchasesTable = ({ purchases }) => {
 		"Value (KMT)",
 		"Seller",
 		"Quantity",
+		"Metadata",
 		"Date"
 	];
-	const values = ["orderID", "DIN", "value", "seller", "quantity", "date"];
+	const values = ["orderID", "DIN", "value", "seller", "quantity", "metadata", "date"];
 	const emptyStateMessage = "You have no purchases";
 
 	return (

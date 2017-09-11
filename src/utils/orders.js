@@ -23,6 +23,11 @@ const orderFromLog = (result, web3) => {
   const quantity = result["args"]["quantity"]["c"][0];
   const timestamp = parseInt(result["args"]["timestamp"], 10);
 
+  let metadata = result["args"]["metadata"];
+  if (DIN === 1000000000) {
+    metadata = parseInt(metadata, 16)
+  }
+
   const order = {
     orderID: orderID,
     buyer: buyer,
@@ -32,6 +37,7 @@ const orderFromLog = (result, web3) => {
     info: info,
     value: value,
     quantity: quantity,
+    metadata: metadata,
     date: date(timestamp)
   };
 
