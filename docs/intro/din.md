@@ -1,8 +1,8 @@
 # DIN
 
-A Decentralized Identification Number (DIN) is a unique 10-digit product identifier, similar to a [UPC](https://en.wikipedia.org/wiki/Universal_Product_Code) or [ISBN](https://en.wikipedia.org/wiki/International_Standard_Book_Number). The key difference is that DINs are not distributed by a centralized entity like [GS1](https://en.wikipedia.org/wiki/GS1). Instead, DINs are registered via a smart contract (see DINMarket), which was not possible before the blockchain.
+Each product on Kiosk is identified by a unique, 10-digit product code called a Decentralized Identification Number (DIN). Buyers use this number to indicate the product they would like to buy.
 
-The DINRegistry is a global contract that keeps a record of each registered DIN, along with its corresponding owner and market.
+The DINRegistry is a smart contract that keeps a record of each registered DIN, along with its corresponding owner and market.
 
 **`DINRegistry.sol`**
 ```cs
@@ -15,6 +15,10 @@ function market(uint256 DIN) constant returns (address) {
 }
 ```
 
+To register a DIN, you buy it just like all other products that use the Kiosk protocol. That's right, a DIN has a DIN! Specifically, it is represented by the genesis DIN of `1000000000`. It is free (besides [Ethereum gas costs](https://www.ethereum.org/ether)) to register a DIN.
+
+On [kioskprotocol.com](http://www.kioskprotocol.com), you can buy a DIN and then check the metadata of your order in the Purchases tab of the side menu to find out what DIN you registered. DINs are registered sequentially, beginning with the genesis DIN.
+
 ## Next Steps
 
-Now you'll learn how a DIN is used by a [Market](intro/market.md) to execute a transaction.
+Now that you know what a DIN is and how to get one, you'll learn to [buy](../intro/buy.md) a product based on its DIN.
