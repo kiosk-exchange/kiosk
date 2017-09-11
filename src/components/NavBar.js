@@ -1,8 +1,7 @@
 import React from "react";
 import { Toolbar, ToolbarGroup, ToolbarTitle } from "material-ui/Toolbar";
 import RaisedButton from "material-ui/RaisedButton";
-// import { showBuyKMTModal } from "../redux/actions/actions";
-import { buyKioskMarketToken } from "../redux/actions/blockchain";
+import { showBuyKMTModal } from "../redux/actions/actions";
 import { connect } from "react-redux";
 
 const mapStateToProps = state => ({
@@ -12,7 +11,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
 	onBuyClick: () => {
-		dispatch(buyKioskMarketToken())
+		dispatch(showBuyKMTModal(true))
 	}
 })
 
