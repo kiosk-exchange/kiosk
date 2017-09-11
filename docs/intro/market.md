@@ -12,3 +12,4 @@ function metadata(uint256 DIN) constant returns (bytes32);
 function totalPrice(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256);
 function availableForSale(uint256 DIN, uint256 quantity, address buyer) constant returns (bool);
 ```
+

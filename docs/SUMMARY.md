@@ -6,11 +6,12 @@
 	* [Buy](intro/buy.md)
 	* [Kiosk Market Token](intro/kiosk-market-token.md)
 	* [Market](intro/market.md)
-* Basics
+	* [Order](./placeholder.md)
+* [Basics](headers/basics.md)
 	* [Buying a Product](basics/buy-product.md)
 	* [Selling a Product](./placeholder.md)
 	* [Creating a Market](./placeholder.md)
 * Example Markets
-	* [DIN](./placeholder.md)
-	* [Ether](./placeholder.md)
-	* [Ethereum Name Service (ENS)](./placeholder.md)
+	* [DIN Market](markets/din-market.md)
+	* [Ether Market](markets/ether-market.md)
+	* [Ethereum Name Service (ENS)](markets/ens-market.md)

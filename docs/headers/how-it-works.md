@@ -1,6 +1,6 @@
 # How It Works
 
-In this section, you'll learn how the Kiosk protocol connects buyers and sellers to execute a transaction.
+In this section, you'll learn the inner workings of the Kiosk protocol and see how it connects buyers and sellers to execute a transaction.
 
 * [Decentralized Identification Number (DIN)](../intro/din.md)
 * [Buy](../intro/buy.md)

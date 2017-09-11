@@ -168,19 +168,32 @@
             
         </li>
     
+        <li class="chapter " data-level="1.2.5" data-path="../placeholder.html">
+            
+                <a href="../placeholder.html">
+            
+                    
+                    Order
+            
+                </a>
+            
+
+            
+        </li>
+    
 
             </ul>
             
         </li>
     
-        <li class="chapter " data-level="1.3" >
+        <li class="chapter " data-level="1.3" data-path="../headers/basics.html">
             
-                <span>
+                <a href="../headers/basics.html">
             
                     
                     Basics
             
-                </span>
+                </a>
             
 
             
@@ -245,12 +258,12 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.4.1" data-path="../placeholder.html">
+        <li class="chapter " data-level="1.4.1" data-path="../markets/din-market.html">
             
-                <a href="../placeholder.html">
+                <a href="../markets/din-market.html">
             
                     
-                    DIN
+                    DIN Market
             
                 </a>
             
@@ -258,12 +271,12 @@
             
         </li>
     
-        <li class="chapter " data-level="1.4.2" data-path="../placeholder.html">
+        <li class="chapter " data-level="1.4.2" data-path="../markets/ether-market.html">
             
-                <a href="../placeholder.html">
+                <a href="../markets/ether-market.html">
             
                     
-                    Ether
+                    Ether Market
             
                 </a>
             
@@ -271,9 +284,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.4.3" data-path="../placeholder.html">
+        <li class="chapter " data-level="1.4.3" data-path="../markets/ens-market.html">
             
-                <a href="../placeholder.html">
+                <a href="../markets/ens-market.html">
             
                     
                     Ethereum Name Service (ENS)
@@ -339,10 +352,10 @@
 <p><strong><code>KioskMarketToken.sol</code></strong></p>
 <pre><code class="lang-cs"><span class="hljs-function">function <span class="hljs-title">transferFromBuy</span>(<span class="hljs-params">address _from, address _to, uint256 _value</span>) <span class="hljs-title">returns</span> (<span class="hljs-params"><span class="hljs-keyword">bool</span></span>)
 </span></code></pre>
-<p>The ERC20 standard lets token holders approve smart contracts to spend tokens on their behalf. This approval process works on an <em>individual level</em>. <code>Kiosk Market Token</code> gives <code>Buy</code> the ability to spend the user&apos;s tokens at the <em>protocol level</em>. This gives a <code>Market</code> certainty that the buyer will always fulfill his or her end of the transaction, which in turn gives developers a greater incentive to build markets on top of the Kiosk protocol. By holding <code>Kiosk Market Token</code>, you are implicity buying into the Kiosk protocol. You believe that the <code>Buy</code> smart contract works fairly on your behalf.</p>
-<p>On the test network version of Kiosk, one of the first products available is Ether (ETH). This means you can effectively convert your <code>Kiosk Market Token</code> back to Ether whenever you want. We plan to do something similar when we launch on the main network to give holders confidence that this new token has an implicit value.</p>
+<p>The ERC20 standard lets token holders approve smart contracts to spend tokens on their behalf. This approval process works on an <em>individual level</em>. <code>Kiosk Market Token</code> gives <code>Buy</code> the ability to spend a user&apos;s tokens at the <em>protocol level</em>. This gives a <code>Market</code> certainty that the buyer will always fulfill his or her end of the transaction, which in turn gives developers a greater incentive to build markets on top of the Kiosk protocol. By holding <code>Kiosk Market Token</code>, you are implicity buying into the Kiosk protocol. You believe that the <code>Buy</code> smart contract operates fairly on your behalf.</p>
+<p>On the test network version of Kiosk, one of the first products available is Ether (ETH). This means you can effectively convert your <code>Kiosk Market Token</code> back to Ether whenever you want. We plan to do something similar when we launch on the main network to give holders confidence that this new token has a <a href="https://en.wikipedia.org/wiki/Book_value" target="_blank">book value</a>.</p>
 <p>In the future, holders of <code>Kiosk Market Token</code> will be able to vote on upgrades to the Kiosk protocol using some form of <a href="https://en.wikipedia.org/wiki/Decentralized_autonomous_organization" target="_blank">decentralized governance</a>.</p>
-<p><code>Kiosk Market Token</code> will have a fixed supply to benefit early adopters and the Kiosk developers. This also ensures that Kiosk can exist as an open-source protocol that charges no transaction fee. With the blockchain, the monetary nature of the protocol <em>is the business model</em>.</p>
+<p><code>Kiosk Market Token</code> will have a fixed supply to benefit early adopters and the Kiosk developers through price appreciation. This also ensures that Kiosk can exist as an open-source protocol that charges no transaction fee. With the blockchain, the monetary nature of the protocol <em>is the business model</em>.</p>
 
                                 
                                 </section>
@@ -386,7 +399,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Kiosk Market Token","level":"1.2.3","depth":2,"next":{"title":"Market","level":"1.2.4","depth":2,"path":"intro/market.md","ref":"intro/market.md","articles":[]},"previous":{"title":"Buy","level":"1.2.2","depth":2,"path":"intro/buy.md","ref":"intro/buy.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"intro/kiosk-market-token.md","mtime":"2017-09-11T20:38:31.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2017-09-11T16:29:03.239Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Kiosk Market Token","level":"1.2.3","depth":2,"next":{"title":"Market","level":"1.2.4","depth":2,"path":"intro/market.md","ref":"intro/market.md","articles":[]},"previous":{"title":"Buy","level":"1.2.2","depth":2,"path":"intro/buy.md","ref":"intro/buy.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"intro/kiosk-market-token.md","mtime":"2017-09-11T21:11:51.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2017-09-11T16:29:03.239Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

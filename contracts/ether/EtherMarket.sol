@@ -6,7 +6,7 @@ import "../Buy.sol";
 import "../OrderStore.sol";
 
 /**
-*  EtherMarket exchanges KMT for ETH. It also sells ETH as a Kiosk Product.
+*  EtherMarket exchanges ETH for KMT. It also sells ETH as a Kiosk Product.
 */
 contract EtherMarket is StandardMarket {
     string public name = "Ether Market";

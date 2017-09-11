@@ -55,7 +55,9 @@ contract DINMarket is StandardMarket {
 	}
 
 	function availableForSale(uint256 DIN, uint256 quantity, address buyer) constant returns (bool) {
-		require(DIN == genesisDIN);
+		if (DIN != genesisDIN || quantity > 10) {
+			return false;
+		}
 
 		return true;
 	}
