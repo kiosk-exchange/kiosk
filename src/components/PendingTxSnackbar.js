@@ -6,10 +6,6 @@ import { showTxSucceeded } from "../redux/actions/blockchain";
 const mapStateToProps = (state, ownProps) => {
   let message = "";
 
-  console.log(state.transactions.pending)
-  console.log(state.transactions.success)
-  console.log(state.transactions.showSuccess)
-
   switch (state.transactions.pending.length) {
     case 0:
       break;

@@ -114,8 +114,16 @@
           "type": "uint256"
         },
         {
+          "name": "value",
+          "type": "uint256"
+        },
+        {
           "name": "buyer",
           "type": "address"
+        },
+        {
+          "name": "approved",
+          "type": "bool"
         }
       ],
       "name": "buy",
@@ -150,5 +158,5 @@
   "unlinked_binary": "0x",
   "networks": {},
   "schema_version": "0.0.5",
-  "updated_at": 1504659584179
+  "updated_at": 1505106182200
 }

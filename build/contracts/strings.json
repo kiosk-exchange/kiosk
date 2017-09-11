@@ -1,15 +1,15 @@
 {
   "contract_name": "strings",
   "abi": [],
-  "unlinked_binary": "0x60606040523415600b57fe5b5b60338060196000396000f30060606040525bfe00a165627a7a7230582007b867291eab5e2a18361c75eb5d754b482756d61b1892d031cbe78b8afe6f4a0029",
+  "unlinked_binary": "0x60606040523415600b57fe5b5b60338060196000396000f30060606040525bfe00a165627a7a723058209db8406c11aaaa6d6885ead39b70f2aa79e456ed2f27968b409c331514bc33b80029",
   "networks": {
     "42": {
       "events": {},
       "links": {},
-      "address": "0x52956e13b0e9375b0acd45382fb5cbc97a77acb2",
-      "updated_at": 1505058497112
+      "address": "0x00725954de33d08c85d2d9af7d9c57b755e84b14",
+      "updated_at": 1505106496301
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1505058497112
+  "updated_at": 1505106496301
 }
