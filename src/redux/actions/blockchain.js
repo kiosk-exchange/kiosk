@@ -23,7 +23,6 @@ export const RECEIVED_PURCHASES = "RECEIVED_PURCHASES";
 export const RECEIVED_SALES = "RECEIVED_SALES";
 export const TOTAL_PRICE_CALCULATING = "TOTAL_PRICE_CALCULATING";
 export const TOTAL_PRICE = "TOTAL_PRICE";
-export const PURCHASE_IS_PENDING = "PURCHASE_IS_PENDING";
 export const PRODUCT_AVAILABILITY = "PRODUCT_AVAILABILITY";
 export const TX_PENDING_ADDED = "TX_PENDING_ADDED";
 export const TX_PENDING_REMOVED = "TX_PENDING_REMOVED";
@@ -298,7 +297,6 @@ export const buyKioskMarketToken = (amount) => {
         dispatch(getBalances());
         dispatch(addPendingTx(result));
         setInterval(() => dispatch(checkPendingTxs()), 1000);
-        dispatch(purchaseIsPending(false));
       })
     } catch (err) {
       console.log("ERROR: BUY KMT");
