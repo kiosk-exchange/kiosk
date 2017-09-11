@@ -28,6 +28,7 @@ export const PRODUCT_AVAILABILITY = "PRODUCT_AVAILABILITY";
 export const TX_PENDING_ADDED = "TX_PENDING_ADDED";
 export const TX_PENDING_REMOVED = "TX_PENDING_REMOVED";
 export const TX_SUCCEEDED = "TX_SUCCEEDED";
+export const SHOW_TX_SUCCEEDED = "SHOW_TX_SUCCEEDED";
 
 export const DATA_TYPE = {
   ALL_PRODUCTS: 1,
@@ -68,10 +69,10 @@ export const totalPriceIsCalculating = data =>
 export const totalPrice = data => action(TOTAL_PRICE, { data });
 export const productAvailability = data =>
   action(PRODUCT_AVAILABILITY, { data });
-export const purchaseIsPending = data => action(PURCHASE_IS_PENDING, { data });
 export const addPendingTx = data => action(TX_PENDING_ADDED, { data });
 export const removePendingTx = data => action(TX_PENDING_REMOVED, { data });
 export const txSucceeded = data => action(TX_SUCCEEDED, { data });
+export const showTxSucceeded = data => action(SHOW_TX_SUCCEEDED, { data });
 
 const fetchProducts = filter => {
   return async (dispatch, getState) => {
@@ -112,9 +113,6 @@ const fetchProducts = filter => {
             dispatch(receivedProduct(product));
           });
         });
-
-        // console.log(promises)
-        // dispatch(receivedProduct(product))
       }
     }
   };
@@ -234,7 +232,7 @@ export const checkPendingTxs = () => {
   return async (dispatch, getState) => {
     try {
       const web3 = getState().config.web3;
-      const pendTxs = getState().txsPending;
+      const pendTxs = getState().transactions.pending;
       const getTxAsync = Promise.promisify(web3.eth.getTransaction);
 
       // TODO: stop polling if pendTxs.length < 1
@@ -250,7 +248,7 @@ export const checkPendingTxs = () => {
         }
       });
     } catch (err) {
-      console.log("Can't fetch pending transactions");
+      console.log("ERROR: PENDING TRANSACTIONS");
     }
   };
 };
@@ -265,10 +263,7 @@ export const buyNow = product => {
     const value = getState().buyModal.totalPrice;
     const valueInKMTWei = web3.toWei(value, "ether");
 
-    console.log(Buy)
-
     // Reset
-    dispatch(purchaseIsPending(true));
     dispatch(showBuyModal(false));
     try {
       const txId = await buyProduct(
@@ -279,15 +274,12 @@ export const buyNow = product => {
         account
       );
       console.log(txId);
-      dispatch(txSucceeded(false)); // Reset
       dispatch(addPendingTx(txId));
-      setInterval(() => dispatch(checkPendingTxs()), 1000);
-      dispatch(purchaseIsPending(false));
+      // setInterval(() => dispatch(checkPendingTxs()), 5000);
       dispatch(reloadAfterPurchase());
     } catch (err) {
       console.log(err);
       console.log("ERROR: BUY PRODUCT " + product.DIN);
-      dispatch(purchaseIsPending(false));
     }
   };
 };

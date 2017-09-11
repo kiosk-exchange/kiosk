@@ -34,10 +34,10 @@ import {
 	RECEIVED_MARKET_DINS,
 	RECEIVED_PURCHASES,
 	RECEIVED_SALES,
-	PURCHASE_IS_PENDING,
 	TX_PENDING_ADDED,
 	TX_PENDING_REMOVED,
 	TX_SUCCEEDED,
+	SHOW_TX_SUCCEEDED,
 	TOTAL_PRICE_CALCULATING,
 	TOTAL_PRICE,
 	PRODUCT_AVAILABILITY
@@ -91,24 +91,44 @@ const ETHBalance = (state = null, action) =>
 	reducer(state, action, ETH_BALANCE);
 const selectedMarket = (state = null, action) =>
 	reducer(state, action, SELECTED_MARKET);
-const purchaseIsPending = (state = false, action) =>
-	reducer(state, action, PURCHASE_IS_PENDING);
-const txSucceeded = (state = false, action) => reducer(state, action, TX_SUCCEEDED);
 
-const txsPending = (state = [], action) => {
+const txDefaultState = {
+	pending: [],
+	success: false,
+	showSuccess: false
+};
+
+const transactions = (state = txDefaultState, action) => {
 	switch (action.type) {
 		case TX_PENDING_ADDED:
-			return state.concat(action.data)
+			return {
+				...state,
+				pending: state.pending.concat(action.data)
+			};
 		case TX_PENDING_REMOVED:
-			const index = state.indexOf(action.data);
-			return [
-				...state.slice(0, index),
-				...state.slice(index + 1)
-			]
+			const index = state.pending.indexOf(action.data);
+			return {
+				...state,
+				pending: [
+					...state.pending.slice(0, index),
+					...state.pending.slice(index + 1)
+				]
+			};
+		case TX_SUCCEEDED:
+			return {
+				...state,
+				success: true
+			};
+		case SHOW_TX_SUCCEEDED:
+			return {
+				...state,
+				showSuccess: true,
+				success: false // Reset
+			};
 		default:
 			return state;
 	}
-}
+};
 
 const buyModalDefaultState = {
 	product: null,
@@ -276,11 +296,9 @@ export const config = combineReducers({
 export const rootReducer = combineReducers({
 	config,
 	results,
+	transactions,
 	selectedMarket,
-	purchaseIsPending,
 	buyModal,
 	showBuyKMTModal,
-	txsPending,
-	txSucceeded,
 	routing: routerReducer
 });

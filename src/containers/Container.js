@@ -8,7 +8,7 @@ import MarketTable from "../components/tables/MarketTable";
 
 export const Marketplace = () => {
 	return (
-		<App selectedMenuItem={1}>
+		<App dataType={1}>
 			<MarketplaceTable />
 		</App>
 	);
@@ -16,7 +16,7 @@ export const Marketplace = () => {
 
 export const Purchases = () => {
 	return (
-		<App selectedMenuItem={2}>
+		<App dataType={2}>
 			<PurchasesTable />
 		</App>
 	);
@@ -24,7 +24,7 @@ export const Purchases = () => {
 
 export const Products = () => {
 	return (
-		<App selectedMenuItem={3}>
+		<App dataType={3}>
 			<ProductsTable />
 		</App>
 	);
@@ -32,7 +32,7 @@ export const Products = () => {
 
 export const Sales = () => {
 	return (
-		<App selectedMenuItem={4}>
+		<App dataType={4}>
 			<SalesTable />
 		</App>
 	);
@@ -40,7 +40,7 @@ export const Sales = () => {
 
 export const Market = ({ match }) => {
 	return (
-		<App selectedMenuItem={1}>
+		<App dataType={5}>
 			<MarketTable address={match.params.market} />
 		</App>
 	);
