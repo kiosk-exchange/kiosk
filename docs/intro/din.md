@@ -15,7 +15,7 @@ function market(uint256 DIN) constant returns (address) {
 }
 ```
 
-To register a DIN, you buy it just like all other products that use the Kiosk protocol. That's right, a DIN has a DIN! Specifically, it is represented by the genesis DIN of `1000000000`. It is free (besides [Ethereum gas costs](https://www.ethereum.org/ether)) to register a DIN, which can then be used to sell a product.
+To register a DIN, you can buy one just like all other products that use the Kiosk protocol. A DIN as a product is represented by the genesis DIN of `1000000000`. It is free (besides [Ethereum gas costs](https://www.ethereum.org/ether)) to register a DIN, which can then be used to sell a product. DINs are distributed sequentially, beginning with the genesis DIN.
 
 ## Next Steps
 

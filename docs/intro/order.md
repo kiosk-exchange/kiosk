@@ -1,6 +1,6 @@
 # Order
 
-When a transaction is successful, `Buy` will create an `Order`, which is simply a record of the transaction that is stored in the `OrderStore` contract.
+When a transaction succeeds, `Buy` will create an `Order`, which is simply a record of the transaction. The order is given a unique `Order ID` and is stored in the global `OrderStore` contract.
 
 **`OrderStore.sol`**
 ```
@@ -20,4 +20,10 @@ struct Order {
 mapping (uint256 => Order) public orders;
 ```
 
-With a global record of orders that is stored directly on the blockchain (instead of in the event logs which are not accessible to smart contracts), we can create and encourage third-party developers to create decentralized reputation systems with which buyers can rate individual markets based on previous orders.
+This immutable record that is stored on the blockchain allows us to create a decentralized reputation system, in which buyers can rate individual products and markets based on past purchases. That way, future buyers can have a good estimate of whether the market is trustworthy without having to read through the smart contract code. The reputation system will be implemented in a future release.
+
+## Next Steps
+
+That concludes the introduction to the Kiosk protocol! To summarize, each product has a unique DIN. A DIN points to a `Market`. The `Market` specifies a product's name, price, availability and other information. The `Buy` contract sends `Kiosk Market Tokens` to a `Market` in exchange for the product being sold. `Orders` are recorded in the `OrderStore` contract. The Kiosk protocol is designed this way to condense the buying process of decentralized markets into a single action — *buy* — regardless of the product or market.
+
+Now that you understand the motivation behind the Kiosk protocol, you'll learn [how it can be used in practice](../headers/basics.md).

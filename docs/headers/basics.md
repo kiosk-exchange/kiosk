@@ -4,6 +4,6 @@ If you read the first section, hopefully you now have at least a basic understan
 
 But how do you actually use it? That's what you'll learn in this section.
 
-* [Buy a Product](../basics/buy-product.md)
-* [Sell a Product](../placeholder.md)
-* [Create a Market](../placeholder.md)
+* [Buying a Product](../basics/buy-product.md)
+* [Selling a Product](../placeholder.md)
+* [Creating a Market](../placeholder.md)
