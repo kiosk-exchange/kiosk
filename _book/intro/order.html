@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>DIN Market · GitBook</title>
+        <title>Order · GitBook</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.3">
@@ -57,8 +57,10 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="ether-market.html" />
+    <link rel="next" href="../headers/basics.html" />
     
+    
+    <link rel="prev" href="market.html" />
     
 
     </head>
@@ -114,9 +116,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.2.1" data-path="../intro/din.html">
+        <li class="chapter " data-level="1.2.1" data-path="din.html">
             
-                <a href="../intro/din.html">
+                <a href="din.html">
             
                     
                     DIN
@@ -127,9 +129,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.2.2" data-path="../intro/buy.html">
+        <li class="chapter " data-level="1.2.2" data-path="buy.html">
             
-                <a href="../intro/buy.html">
+                <a href="buy.html">
             
                     
                     Buy
@@ -140,9 +142,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.2.3" data-path="../intro/kiosk-market-token.html">
+        <li class="chapter " data-level="1.2.3" data-path="kiosk-market-token.html">
             
-                <a href="../intro/kiosk-market-token.html">
+                <a href="kiosk-market-token.html">
             
                     
                     Kiosk Market Token
@@ -153,9 +155,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.2.4" data-path="../intro/market.html">
+        <li class="chapter " data-level="1.2.4" data-path="market.html">
             
-                <a href="../intro/market.html">
+                <a href="market.html">
             
                     
                     Market
@@ -166,9 +168,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.2.5" data-path="../intro/order.html">
+        <li class="chapter active" data-level="1.2.5" data-path="order.html">
             
-                <a href="../intro/order.html">
+                <a href="order.html">
             
                     
                     Order
@@ -256,9 +258,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter active" data-level="1.4.1" data-path="din-market.html">
+        <li class="chapter " data-level="1.4.1" data-path="../markets/din-market.html">
             
-                <a href="din-market.html">
+                <a href="../markets/din-market.html">
             
                     
                     DIN Market
@@ -269,9 +271,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.4.2" data-path="ether-market.html">
+        <li class="chapter " data-level="1.4.2" data-path="../markets/ether-market.html">
             
-                <a href="ether-market.html">
+                <a href="../markets/ether-market.html">
             
                     
                     Ether Market
@@ -282,9 +284,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.4.3" data-path="ens-market.html">
+        <li class="chapter " data-level="1.4.3" data-path="../markets/ens-market.html">
             
-                <a href="ens-market.html">
+                <a href="../markets/ens-market.html">
             
                     
                     Ethereum Name Service (ENS)
@@ -330,7 +332,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >DIN Market</a>
+        <a href=".." >Order</a>
     </h1>
 </div>
 
@@ -345,68 +347,24 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <p><strong><code>DINMarket.sol</code></strong></p>
-<pre><code class="lang-cs">contract DINMarket <span class="hljs-keyword">is</span> StandardMarket {
-
-    <span class="hljs-keyword">string</span> <span class="hljs-keyword">public</span> name = <span class="hljs-string">&quot;DIN Market&quot;</span>;
-
-    <span class="hljs-comment">// Buyer =&gt; Expected DIN to be registered.</span>
-    mapping (address =&gt; uint256) <span class="hljs-keyword">public</span> expected;
-
-    uint256 <span class="hljs-keyword">public</span> genesisDIN;
-
-    <span class="hljs-function">function <span class="hljs-title">DINMarket</span>(<span class="hljs-params">Kiosk _kiosk</span>) <span class="hljs-title">StandardMarket</span>(<span class="hljs-params">_kiosk</span>) </span>{
-        genesisDIN = registry.genesis();
-    }
-
-    <span class="hljs-function">function <span class="hljs-title">buy</span>(<span class="hljs-params">
-        uint256 DIN,
-        uint256 quantity,
-        uint256 <span class="hljs-keyword">value</span>,
-        address buyer,
-        <span class="hljs-keyword">bool</span> approved
-    </span>) <span class="hljs-title">returns</span> (<span class="hljs-params"><span class="hljs-keyword">bool</span></span>) </span>{
-        <span class="hljs-comment">// Expect the next sequential DIN on the registrar to be registered.</span>
-        expected[buyer] = registrar.index() + <span class="hljs-number">1</span>;
-        registrar.registerDINsForOwner(buyer, quantity);
-    }
-
-    <span class="hljs-function">function <span class="hljs-title">isFulfilled</span>(<span class="hljs-params">uint256 orderID</span>) constant <span class="hljs-title">returns</span> (<span class="hljs-params"><span class="hljs-keyword">bool</span></span>) </span>{
-        address buyer = orderStore.buyer(orderID);
-        uint256 expectedDIN = expected[buyer];
-
-        <span class="hljs-keyword">return</span> (registry.owner(expectedDIN) == buyer);
-    }
-
-    <span class="hljs-function">function <span class="hljs-title">nameOf</span>(<span class="hljs-params">uint256 DIN</span>) constant <span class="hljs-title">returns</span> (<span class="hljs-params"><span class="hljs-keyword">string</span></span>) </span>{
-        require(DIN == genesisDIN);
-
-        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;Decentralized Identification Number (DIN)&quot;</span>;
-    }
-
-    <span class="hljs-function">function <span class="hljs-title">metadata</span>(<span class="hljs-params">uint256 DIN</span>) constant <span class="hljs-title">returns</span> (<span class="hljs-params">bytes32</span>) </span>{
-        require(DIN == genesisDIN);
-
-        uint256 nextDIN = registrar.index() + <span class="hljs-number">1</span>;
-        <span class="hljs-keyword">return</span> bytes32(nextDIN);
-    }
-
-    <span class="hljs-function">function <span class="hljs-title">totalPrice</span>(<span class="hljs-params">uint256 DIN, uint256 quantity, address buyer</span>) constant <span class="hljs-title">returns</span> (<span class="hljs-params">uint256</span>) </span>{
-        require(DIN == genesisDIN);
-
-        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
-    }
-
-    <span class="hljs-function">function <span class="hljs-title">availableForSale</span>(<span class="hljs-params">uint256 DIN, uint256 quantity, address buyer</span>) constant <span class="hljs-title">returns</span> (<span class="hljs-params"><span class="hljs-keyword">bool</span></span>) </span>{
-        <span class="hljs-keyword">if</span> (DIN != genesisDIN || quantity &gt; <span class="hljs-number">10</span>) {
-            <span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;
-        }
-
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
-    }
-
+                                <h1 id="order">Order</h1>
+<p>When a transaction is successful, <code>Buy</code> will create an <code>Order</code>, which is simply a record of the transaction that is stored in the <code>OrderStore</code> contract.</p>
+<p><strong><code>OrderStore.sol</code></strong></p>
+<pre><code>struct Order {
+    address buyer;
+    address seller;
+    address market;
+    uint256 DIN;
+    bytes32 metadata;
+    uint256 value;                          
+    uint256 quantity;
+    uint256 timestamp;
+    OrderUtils.Status status;
 }
-</code></pre>
+
+// Order ID =&gt; Order
+mapping (uint256 =&gt; Order) public orders;
+</code></pre><p>With a global record of orders that is stored directly on the blockchain (instead of in the event logs which are not accessible to smart contracts), we can create and encourage third-party developers to create decentralized reputation systems with which buyers can rate individual markets based on previous orders.</p>
 
                                 
                                 </section>
@@ -434,8 +392,12 @@
 
             
                 
+                <a href="market.html" class="navigation navigation-prev " aria-label="Previous page: Market">
+                    <i class="fa fa-angle-left"></i>
+                </a>
                 
-                <a href="ether-market.html" class="navigation navigation-next navigation-unique" aria-label="Next page: Ether Market">
+                
+                <a href="../headers/basics.html" class="navigation navigation-next " aria-label="Next page: Basics">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -446,7 +408,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"DIN Market","level":"1.4.1","depth":2,"next":{"title":"Ether Market","level":"1.4.2","depth":2,"path":"markets/ether-market.md","ref":"markets/ether-market.md","articles":[]},"previous":{"title":"Example Markets","level":"1.4","depth":1,"ref":"","articles":[{"title":"DIN Market","level":"1.4.1","depth":2,"path":"markets/din-market.md","ref":"markets/din-market.md","articles":[]},{"title":"Ether Market","level":"1.4.2","depth":2,"path":"markets/ether-market.md","ref":"markets/ether-market.md","articles":[]},{"title":"Ethereum Name Service (ENS)","level":"1.4.3","depth":2,"path":"markets/ens-market.md","ref":"markets/ens-market.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["livereload"],"root":"./docs","styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"gitbook":"*"},"file":{"path":"markets/din-market.md","mtime":"2017-09-11T21:42:01.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2017-09-12T01:12:52.991Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Order","level":"1.2.5","depth":2,"next":{"title":"Basics","level":"1.3","depth":1,"path":"headers/basics.md","ref":"headers/basics.md","articles":[{"title":"Buying a Product","level":"1.3.1","depth":2,"path":"basics/buy-product.md","ref":"basics/buy-product.md","articles":[]},{"title":"Selling a Product","level":"1.3.2","depth":2,"path":"placeholder.md","ref":"./placeholder.md","articles":[]},{"title":"Creating a Market","level":"1.3.3","depth":2,"path":"placeholder.md","ref":"./placeholder.md","articles":[]}]},"previous":{"title":"Market","level":"1.2.4","depth":2,"path":"intro/market.md","ref":"intro/market.md","articles":[]},"dir":"ltr"},"config":{"plugins":["livereload"],"root":"./docs","styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"gitbook":"*"},"file":{"path":"intro/order.md","mtime":"2017-09-12T01:22:13.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2017-09-12T01:12:52.991Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

@@ -6,7 +6,7 @@
 	* [Buy](intro/buy.md)
 	* [Kiosk Market Token](intro/kiosk-market-token.md)
 	* [Market](intro/market.md)
-	* [Order](./placeholder.md)
+	* [Order](intro/order.md)
 * [Basics](headers/basics.md)
 	* [Buying a Product](basics/buy-product.md)
 	* [Selling a Product](./placeholder.md)
