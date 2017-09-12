@@ -8,9 +8,9 @@ To interact with the website, you must use Google Chrome with either the [MetaMa
 
 While using the website is the simplest way to buy a product, it might be useful to try to use the Kiosk protocol from the command line for custom use cases or to solidify your understanding of how the blockchain works.
 
-The following intructions require a bit of technical knowledge. The Ethereum blockchain has an API for interacting with smart contracts. On today's Internet, we are familiar with APIs that *transmit information* . The Ethereum API allows you to *transmit value*.
+The following intructions require a bit of technical knowledge. The Ethereum blockchain has an API for interacting with smart contracts. On today's Internet, we are familiar with APIs that _transmit information_. The Ethereum API allows you to _transmit value_.
 
-First, you need the [Application Binary Interface (ABI)](https://github.com/ethereum/wiki/wiki/Ethereum-Contract-ABI) of the `Buy` smart contract and its address on the blockchain. Its ABI and address on Kovan are below:
+First, you need the [Application Binary Interface \(ABI\)](https://github.com/ethereum/wiki/wiki/Ethereum-Contract-ABI) of the `Buy` smart contract and its address on the blockchain. Its ABI and address on Kovan are below:
 
 ```json
 Address: 0xb309f6b255302c4e069c95072f4388e53bd981e4
@@ -36,17 +36,20 @@ $ node
 
 If you want to sync the Kovan blockchain on your own, you can use Parity.
 
-1) Install Parity
+1\) Install Parity
+
 ```
 $ bash <(curl https://get.parity.io -L)
 ```
 
-2) Sync the Kovan Test Network blockchain
+2\) Sync the Kovan Test Network blockchain
+
 ```
 $ parity ui --chain kovan
 ```
 
-3) Initialize the web3 object.
+3\) Initialize the web3 object.
+
 ```js
 $ node
 > Web3 = require("web3")
@@ -88,11 +91,11 @@ Then you can buy the product from the command line.
 > buyContract.buy(1000000001, 1, 300000000000000000000, { from: "YOUR_ETHEREUM_ACCOUNT" })
 ```
 
-This should prompt a transaction that you will need to confirm using Parity's UI at http://127.0.0.1:8180/. If all goes well your Ether balance will increase by 1 and your Kiosk Market Token balance will decrease by 300. You can check your purchases and balances at [kioskprotocol.com](http://www.kioskprotocol.com/).
-
+This should prompt a transaction that you will need to confirm using Parity's UI at [http://127.0.0.1:8180/](http://127.0.0.1:8180/). If all goes well your Ether balance will increase by 1 and your Kiosk Market Token balance will decrease by 300. You can check your purchases and balances at [kioskprotocol.com](http://www.kioskprotocol.com/).
 
 ## The Big Picture
 
-The point to get across here is that Kiosk is a *protocol* for buying products. In order to buy a product on Amazon, you need to go to https://www.amazon.com/. To buy a product with Kiosk, you can use any interface you choose as long as it can communicate with the public Ethereum blockchain. That is a fundamental shift from how Internet works today.
+The point to get across here is that Kiosk is a _protocol_ for buying products. In order to buy a product on Amazon, you need to go to [https://www.amazon.com/](https://www.amazon.com/). To buy a product with Kiosk, you can use any interface you choose as long as it can communicate with the public Ethereum blockchain. That is a fundamental shift from how Internet works today.
 
 If the process of installing a Chrome extension and syncing the blockchain seems clunky to you, that's because it is. We are still at the earliest stages of blockchain technology. Kiosk is trying to create a global product registry and an API for buying those products. We think those are big ideas, so we're willing to work through the high set-up costs at this stage and we believe there are a passionate set of developers and early adopters who feel the same way.
+
