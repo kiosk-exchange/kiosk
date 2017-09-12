@@ -24,6 +24,6 @@ This immutable record that is stored on the blockchain allows us to create a dec
 
 ## Next Steps
 
-That concludes the introduction to the Kiosk protocol! To summarize, each product has a unique DIN. A DIN points to a `Market`. The `Market` specifies a product's name, price, availability and other information. The `Buy` contract sends `Kiosk Market Tokens` to a `Market` in exchange for the product being sold. `Orders` are recorded in the `OrderStore` contract. The Kiosk protocol is designed this way to condense the buying process on decentralized markets into a single action — *buy* — regardless of the product or market.
+That concludes the introduction to the Kiosk protocol! To summarize, each product has a unique DIN. A DIN points to a `Market`. The `Market` specifies a product's name, price, availability and other information. The `Buy` contract sends `Kiosk Market Tokens` to a `Market` in exchange for the product being sold. `Orders` are recorded in the `OrderStore` contract. The Kiosk protocol is designed this way to condense the buying process of decentralized markets into a single action — *buy* — regardless of the product or market.
 
 Now that you understand the motivation behind the Kiosk protocol, you'll learn [how it can be used in practice](../headers/basics.md).
