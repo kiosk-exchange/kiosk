@@ -16,7 +16,7 @@ The ERC20 standard lets token holders approve smart contracts to spend tokens on
 function approve(address _spender, uint _value) returns (bool success)
 ```
 
-This approval process works on an _individual level_.
+This approval process works on an _individual basis_.
 
 `Kiosk Market Token` gives `Buy` the ability to spend a user's tokens at the _protocol level_. The `Buy` contract calls `transferFromBuy` which gives it special access to spend from of the buyer's balance. This gives a `Market` certainty that the buyer will always fulfill his or her end of the transaction, which in turn gives developers a greater incentive to build markets on top of the Kiosk protocol.
 
