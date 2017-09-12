@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>DIN · GitBook</title>
+        <title>Buy · GitBook</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.3">
@@ -57,10 +57,10 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="buy.html" />
+    <link rel="next" href="kiosk-market-token.html" />
     
     
-    <link rel="prev" href="../headers/how-it-works.html" />
+    <link rel="prev" href="din.html" />
     
 
     </head>
@@ -116,7 +116,7 @@
             <ul class="articles">
                 
     
-        <li class="chapter active" data-level="1.2.1" data-path="din.html">
+        <li class="chapter " data-level="1.2.1" data-path="din.html">
             
                 <a href="din.html">
             
@@ -129,7 +129,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.2.2" data-path="buy.html">
+        <li class="chapter active" data-level="1.2.2" data-path="buy.html">
             
                 <a href="buy.html">
             
@@ -332,7 +332,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >DIN</a>
+        <a href=".." >Buy</a>
     </h1>
 </div>
 
@@ -347,22 +347,28 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="din">DIN</h1>
-<p>Each product on Kiosk is identified by a unique, 10-digit product code called a Decentralized Identification Number (DIN). Buyers use this number to indicate the product they would like to buy.</p>
-<p>The DINRegistry is a smart contract that keeps a record of each registered DIN, along with its corresponding owner and market.</p>
+                                <h1 id="buy">Buy</h1>
+<p>A buyer can purchase a product by interacting with a smart contract called <code>Buy</code>.</p>
+<p><strong><code>Buy.sol</code></strong></p>
+<pre><code class="lang-cs"><span class="hljs-function">function <span class="hljs-title">buy</span>(<span class="hljs-params">uint256 DIN, uint256 quantity, uint256 totalValue</span>) <span class="hljs-keyword">public</span> <span class="hljs-title">returns</span> (<span class="hljs-params">uint256 orderID</span>)
+</span></code></pre>
+<p>When a buyer calls this method, the <code>Buy</code> contract uses the global <code>DINRegistry</code> to find the address of the <code>Market</code> for the given <code>DIN</code>.</p>
 <p><strong><code>DINRegistry.sol</code></strong></p>
-<pre><code class="lang-cs"><span class="hljs-function">function <span class="hljs-title">owner</span>(<span class="hljs-params">uint256 DIN</span>) constant <span class="hljs-title">returns</span> (<span class="hljs-params">address</span>) </span>{
-    <span class="hljs-keyword">return</span> records[DIN].owner;
-}
-
-<span class="hljs-function">function <span class="hljs-title">market</span>(<span class="hljs-params">uint256 DIN</span>) constant <span class="hljs-title">returns</span> (<span class="hljs-params">address</span>) </span>{
-    <span class="hljs-keyword">return</span> records[DIN].market;
-}
-</code></pre>
-<p>To register a DIN, you buy it just like all other products that use the Kiosk protocol. That&apos;s right, a DIN has a DIN! Specifically, it is represented by the genesis DIN of <code>1000000000</code>. It is free (besides <a href="https://www.ethereum.org/ether" target="_blank">Ethereum gas costs</a>) to register a DIN, which can then be used to sell a product.</p>
-<p>On <a href="http://www.kioskprotocol.com" target="_blank">kioskprotocol.com</a>, you can buy a DIN and then check the metadata of your order in the Purchases tab of the side menu to find out what DIN you registered. DINs are distributed sequentially, beginning with the genesis DIN.</p>
+<pre><code class="lang-cs"><span class="hljs-function">function <span class="hljs-title">market</span>(<span class="hljs-params">uint256 DIN</span>) constant <span class="hljs-title">returns</span> (<span class="hljs-params">address</span>)
+</span></code></pre>
+<p><code>Buy</code> will then verify with the relevant <code>Market</code> that the buyer has entered the correct price and that the specified quantity of that product is available. If everything checks out, the price of the transaction will be transferred from the buyer to the <code>Market</code> and the product will be sent from the <code>Market</code> to the buyer.</p>
+<p>To keep things simple, <code>Buy</code> only supports <em>synchronous</em> transactions at the moment. This means only products that can provide instant delivery, such as Ethereum assets and other digital goods are supported. In the future, <code>Buy</code> will support <em>asynchronous</em> transactions which will allow for sales involving physical goods that require delivery. These transactions will depend on an escrow smart contract to hold funds in the interim.</p>
+<p>In upcoming releases, <code>Buy</code> will also have more functionality to support different use cases:</p>
+<p><strong><code>Buy.sol</code></strong></p>
+<pre><code class="lang-cs"><span class="hljs-function">function <span class="hljs-title">buyCart</span>(<span class="hljs-params">uint256[] DINs, uint256[] quantities, uint256[] subtotalValues</span>)
+function <span class="hljs-title">buyWithPromoCode</span>(<span class="hljs-params">uint256 DIN, uint256 quantity, uint256 totalValue, uint8 v, bytes32 r, bytes32 s</span>)
+</span></code></pre>
+<ul>
+<li><code>buyCart</code> will allow buyers to purchase multiple products at once in an all-or-nothing transaction. This will effectively allow for a <em>universal shopping cart</em>.</li>
+<li><code>buyWithPromoCode</code> will allow sellers to update the price of a product off-chain by signing a transaction and giving the buyer the cryptographic parameters of the signature, presented as a &quot;promo code.&quot; <code>Buy</code> can then verify the off-chain price update and execute the transaction. Without this, the seller will have to pay a small transaction fee every time they want to update the price of a product on the blockchain.</li>
+</ul>
 <h2 id="next-steps">Next Steps</h2>
-<p>Now that you know what a DIN is and how to get one, you&apos;ll learn to <a href="buy.html">buy</a> a product based on its DIN.</p>
+<p>Now you&apos;ll find out what the <code>totalValue</code> parameter of <code>buy</code> means, and why it requires <a href="kiosk-market-token.html">Kiosk Market Token</a>.</p>
 
                                 
                                 </section>
@@ -390,12 +396,12 @@
 
             
                 
-                <a href="../headers/how-it-works.html" class="navigation navigation-prev " aria-label="Previous page: How it Works">
+                <a href="din.html" class="navigation navigation-prev " aria-label="Previous page: DIN">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
                 
-                <a href="buy.html" class="navigation navigation-next " aria-label="Next page: Buy">
+                <a href="kiosk-market-token.html" class="navigation navigation-next " aria-label="Next page: Kiosk Market Token">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -406,7 +412,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"DIN","level":"1.2.1","depth":2,"next":{"title":"Buy","level":"1.2.2","depth":2,"path":"intro/buy.md","ref":"intro/buy.md","articles":[]},"previous":{"title":"How it Works","level":"1.2","depth":1,"path":"headers/how-it-works.md","ref":"headers/how-it-works.md","articles":[{"title":"DIN","level":"1.2.1","depth":2,"path":"intro/din.md","ref":"intro/din.md","articles":[]},{"title":"Buy","level":"1.2.2","depth":2,"path":"intro/buy.md","ref":"intro/buy.md","articles":[]},{"title":"Kiosk Market Token","level":"1.2.3","depth":2,"path":"intro/kiosk-market-token.md","ref":"intro/kiosk-market-token.md","articles":[]},{"title":"Market","level":"1.2.4","depth":2,"path":"intro/market.md","ref":"intro/market.md","articles":[]},{"title":"Order","level":"1.2.5","depth":2,"path":"placeholder.md","ref":"./placeholder.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"intro/din.md","mtime":"2017-09-11T21:07:57.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2017-09-11T16:29:03.239Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Buy","level":"1.2.2","depth":2,"next":{"title":"Kiosk Market Token","level":"1.2.3","depth":2,"path":"intro/kiosk-market-token.md","ref":"intro/kiosk-market-token.md","articles":[]},"previous":{"title":"DIN","level":"1.2.1","depth":2,"path":"intro/din.md","ref":"intro/din.md","articles":[]},"dir":"ltr"},"config":{"plugins":["livereload"],"root":"./docs","styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"gitbook":"*"},"file":{"path":"intro/buy.md","mtime":"2017-09-12T00:42:17.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2017-09-12T00:47:32.792Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

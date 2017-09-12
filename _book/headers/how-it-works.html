@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>Buy · GitBook</title>
+        <title>How it Works · GitBook</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.3">
@@ -57,10 +57,10 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="kiosk-market-token.html" />
+    <link rel="next" href="../intro/din.html" />
     
     
-    <link rel="prev" href="din.html" />
+    <link rel="prev" href="../" />
     
 
     </head>
@@ -102,9 +102,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.2" data-path="../headers/how-it-works.html">
+        <li class="chapter active" data-level="1.2" data-path="how-it-works.html">
             
-                <a href="../headers/how-it-works.html">
+                <a href="how-it-works.html">
             
                     
                     How it Works
@@ -116,9 +116,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.2.1" data-path="din.html">
+        <li class="chapter " data-level="1.2.1" data-path="../intro/din.html">
             
-                <a href="din.html">
+                <a href="../intro/din.html">
             
                     
                     DIN
@@ -129,9 +129,9 @@
             
         </li>
     
-        <li class="chapter active" data-level="1.2.2" data-path="buy.html">
+        <li class="chapter " data-level="1.2.2" data-path="../intro/buy.html">
             
-                <a href="buy.html">
+                <a href="../intro/buy.html">
             
                     
                     Buy
@@ -142,9 +142,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.2.3" data-path="kiosk-market-token.html">
+        <li class="chapter " data-level="1.2.3" data-path="../intro/kiosk-market-token.html">
             
-                <a href="kiosk-market-token.html">
+                <a href="../intro/kiosk-market-token.html">
             
                     
                     Kiosk Market Token
@@ -155,9 +155,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.2.4" data-path="market.html">
+        <li class="chapter " data-level="1.2.4" data-path="../intro/market.html">
             
-                <a href="market.html">
+                <a href="../intro/market.html">
             
                     
                     Market
@@ -186,9 +186,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3" data-path="../headers/basics.html">
+        <li class="chapter " data-level="1.3" data-path="basics.html">
             
-                <a href="../headers/basics.html">
+                <a href="basics.html">
             
                     
                     Basics
@@ -332,7 +332,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >Buy</a>
+        <a href=".." >How it Works</a>
     </h1>
 </div>
 
@@ -347,28 +347,15 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="buy">Buy</h1>
-<p>A buyer can purchase a product by interacting with a smart contract called <code>Buy</code>.</p>
-<p><strong><code>Buy.sol</code></strong></p>
-<pre><code class="lang-cs"><span class="hljs-function">function <span class="hljs-title">buy</span>(<span class="hljs-params">uint256 DIN, uint256 quantity, uint256 totalValue</span>) <span class="hljs-keyword">public</span> <span class="hljs-title">returns</span> (<span class="hljs-params">uint256 orderID</span>)
-</span></code></pre>
-<p>When a buyer calls this method, the <code>Buy</code> contract uses the global <code>DINRegistry</code> to find the address of the <code>Market</code> for the given <code>DIN</code>.</p>
-<p><strong><code>DINRegistry.sol</code></strong></p>
-<pre><code class="lang-cs"><span class="hljs-function">function <span class="hljs-title">market</span>(<span class="hljs-params">uint256 DIN</span>) constant <span class="hljs-title">returns</span> (<span class="hljs-params">address</span>)
-</span></code></pre>
-<p><code>Buy</code> will then verify with the relevant <code>Market</code> that the buyer has entered the correct price and that the specified quantity of that product is available. If everything checks out, the price of the transaction will be transferred from the buyer to the <code>Market</code> and the product will be sent from the <code>Market</code> to the buyer.</p>
-<p>In future releases, <code>Buy</code> will have more functionality to support different use cases:</p>
-<p><strong><code>Buy.sol</code></strong></p>
-<pre><code class="lang-cs"><span class="hljs-function">function <span class="hljs-title">buyCart</span>(<span class="hljs-params">uint256[] DINs, uint256[] quantities, uint256[] subtotalValues</span>)
-function <span class="hljs-title">buyWithPromoCode</span>(<span class="hljs-params">uint256 DIN, uint256 quantity, uint256 totalValue, uint8 v, bytes32 r, bytes32 s</span>)
-</span></code></pre>
+                                <h1 id="how-it-works">How It Works</h1>
+<p>This section explains the inner workings of the Kiosk protocol. You&apos;ll learn how it connects buyers and sellers to execute a transaction.</p>
 <ul>
-<li><code>buyCart</code> will allow buyers to purchase multiple products at once in an all-or-nothing transaction. This will effectively allow for a <em>universal shopping cart</em>.</li>
-<li><code>buyWithPromoCode</code> will allow sellers to update the price of a product off-chain by signing a transaction and giving the buyer the cryptographic parameters of the signature, presented as a &quot;promo code.&quot; <code>Buy</code> can then verify the off-chain price update and execute the transaction. Without this, the seller will have to pay a small transaction fee every time they want to update the price of a product on the blockchain.</li>
+<li><a href="../intro/din.html">Decentralized Identification Number (DIN)</a></li>
+<li><a href="../intro/buy.html">Buy</a></li>
+<li><a href="../intro/kiosk-market-token.html">Kiosk Market Token</a></li>
+<li><a href="../intro/market.html">Market</a></li>
+<li><a href="../intro/order.md">Order</a></li>
 </ul>
-<p>To keep things simple, <code>Buy</code> only supports <em>synchronous</em> transactions at the moment. This means only products that can provide instant delivery, such as Ethereum assets and other digital goods are supported. In the future, <code>Buy</code> will support <em>asynchronous</em> transactions which will allow for sales involving physical goods that require delivery. These transactions will depend on an escrow smart contract to hold funds in the interim.</p>
-<h2 id="next-steps">Next Steps</h2>
-<p>Now you&apos;ll find out what the <code>totalValue</code> parameter of <code>buy</code> means, and why it requires <a href="kiosk-market-token.html">Kiosk Market Token</a>.</p>
 
                                 
                                 </section>
@@ -396,12 +383,12 @@ function <span class="hljs-title">buyWithPromoCode</span>(<span class="hljs-para
 
             
                 
-                <a href="din.html" class="navigation navigation-prev " aria-label="Previous page: DIN">
+                <a href="../" class="navigation navigation-prev " aria-label="Previous page: Introduction">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
                 
-                <a href="kiosk-market-token.html" class="navigation navigation-next " aria-label="Next page: Kiosk Market Token">
+                <a href="../intro/din.html" class="navigation navigation-next " aria-label="Next page: DIN">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -412,7 +399,7 @@ function <span class="hljs-title">buyWithPromoCode</span>(<span class="hljs-para
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Buy","level":"1.2.2","depth":2,"next":{"title":"Kiosk Market Token","level":"1.2.3","depth":2,"path":"intro/kiosk-market-token.md","ref":"intro/kiosk-market-token.md","articles":[]},"previous":{"title":"DIN","level":"1.2.1","depth":2,"path":"intro/din.md","ref":"intro/din.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"intro/buy.md","mtime":"2017-09-11T21:10:02.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2017-09-11T16:29:03.239Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"How it Works","level":"1.2","depth":1,"next":{"title":"DIN","level":"1.2.1","depth":2,"path":"intro/din.md","ref":"intro/din.md","articles":[]},"previous":{"title":"Introduction","level":"1.1","depth":1,"path":"README.md","ref":"./README.md","articles":[]},"dir":"ltr"},"config":{"plugins":["livereload"],"root":"./docs","styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"gitbook":"*"},"file":{"path":"headers/how-it-works.md","mtime":"2017-09-12T00:48:52.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2017-09-12T00:47:32.792Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>Ether Market · GitBook</title>
+        <title>DIN Market · GitBook</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.3">
@@ -57,10 +57,8 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="ens-market.html" />
+    <link rel="next" href="ether-market.html" />
     
-    
-    <link rel="prev" href="din-market.html" />
     
 
     </head>
@@ -258,7 +256,7 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.4.1" data-path="din-market.html">
+        <li class="chapter active" data-level="1.4.1" data-path="din-market.html">
             
                 <a href="din-market.html">
             
@@ -271,7 +269,7 @@
             
         </li>
     
-        <li class="chapter active" data-level="1.4.2" data-path="ether-market.html">
+        <li class="chapter " data-level="1.4.2" data-path="ether-market.html">
             
                 <a href="ether-market.html">
             
@@ -332,7 +330,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >Ether Market</a>
+        <a href=".." >DIN Market</a>
     </h1>
 </div>
 
@@ -347,48 +345,19 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <p><strong><code>EtherMarket.sol</code></strong></p>
-<pre><code class="lang-cs"><span class="hljs-comment">/**
-*  EtherMarket exchanges ETH for KMT. It also sells ETH as a Kiosk Product.
-*/</span>
-contract EtherMarket <span class="hljs-keyword">is</span> StandardMarket {
-    <span class="hljs-keyword">string</span> <span class="hljs-keyword">public</span> name = <span class="hljs-string">&quot;Ether Market&quot;</span>;
+                                <p><strong><code>DINMarket.sol</code></strong></p>
+<pre><code class="lang-cs">contract DINMarket <span class="hljs-keyword">is</span> StandardMarket {
 
-    <span class="hljs-comment">// The DIN for ETH</span>
-    uint256 <span class="hljs-keyword">public</span> ethDIN;
+    <span class="hljs-keyword">string</span> <span class="hljs-keyword">public</span> name = <span class="hljs-string">&quot;DIN Market&quot;</span>;
 
-    <span class="hljs-comment">// How many KMT a buyer gets per ETH.</span>
-    uint256 <span class="hljs-keyword">public</span> rate = <span class="hljs-number">300</span>;
+    <span class="hljs-comment">// Buyer =&gt; Expected DIN to be registered.</span>
+    mapping (address =&gt; uint256) <span class="hljs-keyword">public</span> expected;
 
-    <span class="hljs-comment">// Order ID =&gt; Initial ETH balance of buyer</span>
-    mapping (uint256 =&gt; uint256) <span class="hljs-keyword">public</span> initialBalances;
+    uint256 <span class="hljs-keyword">public</span> genesisDIN;
 
-    <span class="hljs-comment">// Constructor</span>
-    <span class="hljs-function">function <span class="hljs-title">EtherMarket</span>(<span class="hljs-params">Kiosk _kiosk</span>) <span class="hljs-title">StandardMarket</span>(<span class="hljs-params">_kiosk</span>) </span>{
-        <span class="hljs-comment">// Register a DIN to this contract. </span>
-        ethDIN = buyContract.buyDIN();
-
-        <span class="hljs-comment">// Set the market for the newly registered DIN to this contract.</span>
-        registry.setMarket(ethDIN, <span class="hljs-keyword">this</span>);
+    <span class="hljs-function">function <span class="hljs-title">DINMarket</span>(<span class="hljs-params">Kiosk _kiosk</span>) <span class="hljs-title">StandardMarket</span>(<span class="hljs-params">_kiosk</span>) </span>{
+        genesisDIN = registry.genesis();
     }
-
-    <span class="hljs-comment">// Get KMT</span>
-    <span class="hljs-function">function <span class="hljs-title">contribute</span>(<span class="hljs-params"></span>) payable </span>{
-        <span class="hljs-comment">// KMT to issue</span>
-        uint256 issuableKMT = msg.<span class="hljs-keyword">value</span>.mul(rate);
-
-        <span class="hljs-comment">// Throw if this contract doesn&apos;t have enough KMT</span>
-        require(KMT.balanceOf(<span class="hljs-keyword">this</span>) &gt;= issuableKMT);
-
-        <span class="hljs-comment">// Transfer KMT to the buyer</span>
-        KMT.transfer(msg.sender, issuableKMT);
-    }
-
-    <span class="hljs-comment">/**
-    *  ==============================
-    *               Market
-    *  ==============================
-    */</span>
 
     <span class="hljs-function">function <span class="hljs-title">buy</span>(<span class="hljs-params">
         uint256 DIN,
@@ -396,47 +365,44 @@ contract EtherMarket <span class="hljs-keyword">is</span> StandardMarket {
         uint256 <span class="hljs-keyword">value</span>,
         address buyer,
         <span class="hljs-keyword">bool</span> approved
-    </span>)     
-        only_buy
-        <span class="hljs-title">returns</span> (<span class="hljs-params"><span class="hljs-keyword">bool</span></span>) 
-    </span>{
-        require (DIN == ethDIN);
-
-        uint256 etherQuantity = quantity.mul(<span class="hljs-number">10</span>**<span class="hljs-number">18</span>);
-
-        <span class="hljs-comment">// Throw if this contract doesn&apos;t have enough ETH</span>
-        require (<span class="hljs-keyword">this</span>.balance &gt;= etherQuantity);
-
-        <span class="hljs-comment">// Transfer ETH to the buyer</span>
-        buyer.transfer(etherQuantity);
-
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
-    }
-
-    <span class="hljs-function">function <span class="hljs-title">metadata</span>(<span class="hljs-params">uint256 DIN</span>) constant <span class="hljs-title">returns</span> (<span class="hljs-params">bytes32</span>) </span>{
-        require (DIN == ethDIN);
-
-        <span class="hljs-comment">// You&apos;re buying ether in this market.</span>
-        <span class="hljs-keyword">return</span> keccak256(nameOf(DIN));
+    </span>) <span class="hljs-title">returns</span> (<span class="hljs-params"><span class="hljs-keyword">bool</span></span>) </span>{
+        <span class="hljs-comment">// Expect the next sequential DIN on the registrar to be registered.</span>
+        expected[buyer] = registrar.index() + <span class="hljs-number">1</span>;
+        registrar.registerDINsForOwner(buyer, quantity);
     }
 
     <span class="hljs-function">function <span class="hljs-title">isFulfilled</span>(<span class="hljs-params">uint256 orderID</span>) constant <span class="hljs-title">returns</span> (<span class="hljs-params"><span class="hljs-keyword">bool</span></span>) </span>{
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
+        address buyer = orderStore.buyer(orderID);
+        uint256 expectedDIN = expected[buyer];
+
+        <span class="hljs-keyword">return</span> (registry.owner(expectedDIN) == buyer);
     }
 
     <span class="hljs-function">function <span class="hljs-title">nameOf</span>(<span class="hljs-params">uint256 DIN</span>) constant <span class="hljs-title">returns</span> (<span class="hljs-params"><span class="hljs-keyword">string</span></span>) </span>{
-        require(DIN == ethDIN);
-        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;1 Ether (ETH)&quot;</span>;
+        require(DIN == genesisDIN);
+
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;Decentralized Identification Number (DIN)&quot;</span>;
+    }
+
+    <span class="hljs-function">function <span class="hljs-title">metadata</span>(<span class="hljs-params">uint256 DIN</span>) constant <span class="hljs-title">returns</span> (<span class="hljs-params">bytes32</span>) </span>{
+        require(DIN == genesisDIN);
+
+        uint256 nextDIN = registrar.index() + <span class="hljs-number">1</span>;
+        <span class="hljs-keyword">return</span> bytes32(nextDIN);
     }
 
     <span class="hljs-function">function <span class="hljs-title">totalPrice</span>(<span class="hljs-params">uint256 DIN, uint256 quantity, address buyer</span>) constant <span class="hljs-title">returns</span> (<span class="hljs-params">uint256</span>) </span>{
-        require(DIN == ethDIN);
-        <span class="hljs-keyword">return</span> quantity.mul(rate).mul(<span class="hljs-number">10</span>**<span class="hljs-number">18</span>); <span class="hljs-comment">// 10^18 wei per ether</span>
+        require(DIN == genesisDIN);
+
+        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
     }
 
     <span class="hljs-function">function <span class="hljs-title">availableForSale</span>(<span class="hljs-params">uint256 DIN, uint256 quantity, address buyer</span>) constant <span class="hljs-title">returns</span> (<span class="hljs-params"><span class="hljs-keyword">bool</span></span>) </span>{
-        require(DIN == ethDIN);
-        <span class="hljs-keyword">return</span> (<span class="hljs-keyword">this</span>.balance &gt;= quantity);
+        <span class="hljs-keyword">if</span> (DIN != genesisDIN || quantity &gt; <span class="hljs-number">10</span>) {
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;
+        }
+
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
     }
 
 }
@@ -468,12 +434,8 @@ contract EtherMarket <span class="hljs-keyword">is</span> StandardMarket {
 
             
                 
-                <a href="din-market.html" class="navigation navigation-prev " aria-label="Previous page: DIN Market">
-                    <i class="fa fa-angle-left"></i>
-                </a>
                 
-                
-                <a href="ens-market.html" class="navigation navigation-next " aria-label="Next page: Ethereum Name Service (ENS)">
+                <a href="ether-market.html" class="navigation navigation-next navigation-unique" aria-label="Next page: Ether Market">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -484,7 +446,7 @@ contract EtherMarket <span class="hljs-keyword">is</span> StandardMarket {
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Ether Market","level":"1.4.2","depth":2,"next":{"title":"Ethereum Name Service (ENS)","level":"1.4.3","depth":2,"path":"markets/ens-market.md","ref":"markets/ens-market.md","articles":[]},"previous":{"title":"DIN Market","level":"1.4.1","depth":2,"path":"markets/din-market.md","ref":"markets/din-market.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"markets/ether-market.md","mtime":"2017-09-11T21:27:31.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2017-09-11T16:29:03.239Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"DIN Market","level":"1.4.1","depth":2,"next":{"title":"Ether Market","level":"1.4.2","depth":2,"path":"markets/ether-market.md","ref":"markets/ether-market.md","articles":[]},"previous":{"title":"Example Markets","level":"1.4","depth":1,"ref":"","articles":[{"title":"DIN Market","level":"1.4.1","depth":2,"path":"markets/din-market.md","ref":"markets/din-market.md","articles":[]},{"title":"Ether Market","level":"1.4.2","depth":2,"path":"markets/ether-market.md","ref":"markets/ether-market.md","articles":[]},{"title":"Ethereum Name Service (ENS)","level":"1.4.3","depth":2,"path":"markets/ens-market.md","ref":"markets/ens-market.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["livereload"],"root":"./docs","styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"gitbook":"*"},"file":{"path":"markets/din-market.md","mtime":"2017-09-11T21:42:01.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2017-09-12T00:47:32.792Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

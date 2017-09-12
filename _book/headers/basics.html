@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>Kiosk Market Token · GitBook</title>
+        <title>Basics · GitBook</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.3">
@@ -57,10 +57,10 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="market.html" />
+    <link rel="next" href="../basics/buy-product.html" />
     
     
-    <link rel="prev" href="buy.html" />
+    <link rel="prev" href="../placeholder.html" />
     
 
     </head>
@@ -102,9 +102,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.2" data-path="../headers/how-it-works.html">
+        <li class="chapter " data-level="1.2" data-path="how-it-works.html">
             
-                <a href="../headers/how-it-works.html">
+                <a href="how-it-works.html">
             
                     
                     How it Works
@@ -116,9 +116,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.2.1" data-path="din.html">
+        <li class="chapter " data-level="1.2.1" data-path="../intro/din.html">
             
-                <a href="din.html">
+                <a href="../intro/din.html">
             
                     
                     DIN
@@ -129,9 +129,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.2.2" data-path="buy.html">
+        <li class="chapter " data-level="1.2.2" data-path="../intro/buy.html">
             
-                <a href="buy.html">
+                <a href="../intro/buy.html">
             
                     
                     Buy
@@ -142,9 +142,9 @@
             
         </li>
     
-        <li class="chapter active" data-level="1.2.3" data-path="kiosk-market-token.html">
+        <li class="chapter " data-level="1.2.3" data-path="../intro/kiosk-market-token.html">
             
-                <a href="kiosk-market-token.html">
+                <a href="../intro/kiosk-market-token.html">
             
                     
                     Kiosk Market Token
@@ -155,9 +155,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.2.4" data-path="market.html">
+        <li class="chapter " data-level="1.2.4" data-path="../intro/market.html">
             
-                <a href="market.html">
+                <a href="../intro/market.html">
             
                     
                     Market
@@ -186,9 +186,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3" data-path="../headers/basics.html">
+        <li class="chapter active" data-level="1.3" data-path="basics.html">
             
-                <a href="../headers/basics.html">
+                <a href="basics.html">
             
                     
                     Basics
@@ -332,7 +332,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >Kiosk Market Token</a>
+        <a href=".." >Basics</a>
     </h1>
 </div>
 
@@ -347,15 +347,14 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="kiosk-market-token">Kiosk Market Token</h1>
-<p>The price of products using the Kiosk protocol is denominated in <code>Kiosk Market Token (KMT)</code>. <code>Kiosk Market Token</code> is a <a href="https://blog.0xproject.com/the-difference-between-app-coins-and-protocol-tokens-7281a428348c" target="_blank">protocol token</a> that implements the <a href="https://theethereum.wiki/w/index.php/ERC20_Token_Standard" target="_blank">ERC20 token standard</a> along with one additional method:</p>
-<p><strong><code>KioskMarketToken.sol</code></strong></p>
-<pre><code class="lang-cs"><span class="hljs-function">function <span class="hljs-title">transferFromBuy</span>(<span class="hljs-params">address _from, address _to, uint256 _value</span>) <span class="hljs-title">returns</span> (<span class="hljs-params"><span class="hljs-keyword">bool</span></span>)
-</span></code></pre>
-<p>The ERC20 standard lets token holders approve smart contracts to spend tokens on their behalf. This approval process works on an <em>individual level</em>. <code>Kiosk Market Token</code> gives <code>Buy</code> the ability to spend a user&apos;s tokens at the <em>protocol level</em>. This gives a <code>Market</code> certainty that the buyer will always fulfill his or her end of the transaction, which in turn gives developers a greater incentive to build markets on top of the Kiosk protocol. By holding <code>Kiosk Market Token</code>, you are implicity buying into the Kiosk protocol. You believe that the <code>Buy</code> smart contract operates fairly on your behalf.</p>
-<p>On the test network version of Kiosk, one of the first products available is Ether (ETH). This means you can effectively convert your <code>Kiosk Market Token</code> back to Ether whenever you want. We plan to do something similar when we launch on the main network to give holders confidence that this new token has a <a href="https://en.wikipedia.org/wiki/Book_value" target="_blank">book value</a>.</p>
-<p>In the future, holders of <code>Kiosk Market Token</code> will be able to vote on upgrades to the Kiosk protocol using some form of <a href="https://en.wikipedia.org/wiki/Decentralized_autonomous_organization" target="_blank">decentralized governance</a>.</p>
-<p><code>Kiosk Market Token</code> will have a fixed supply to benefit early adopters and the Kiosk developers through price appreciation. This also ensures that Kiosk can exist as an open-source protocol that charges no transaction fee. With the blockchain, the monetary nature of the protocol <em>is the business model</em>.</p>
+                                <h1 id="basics">Basics</h1>
+<p>If you read the first section, hopefully you now have at least a basic understanding of how the Kiosk protocol functions under the hood.</p>
+<p>But how do you actually use it? That&apos;s what you&apos;ll learn in this section.</p>
+<ul>
+<li><a href="../basics/buy-product.html">Buy a Product</a></li>
+<li><a href="../placeholder.html">Sell a Product</a></li>
+<li><a href="../placeholder.html">Create a Market</a></li>
+</ul>
 
                                 
                                 </section>
@@ -383,12 +382,12 @@
 
             
                 
-                <a href="buy.html" class="navigation navigation-prev " aria-label="Previous page: Buy">
+                <a href="../placeholder.html" class="navigation navigation-prev " aria-label="Previous page: Order">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
                 
-                <a href="market.html" class="navigation navigation-next " aria-label="Next page: Market">
+                <a href="../basics/buy-product.html" class="navigation navigation-next " aria-label="Next page: Buying a Product">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -399,7 +398,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Kiosk Market Token","level":"1.2.3","depth":2,"next":{"title":"Market","level":"1.2.4","depth":2,"path":"intro/market.md","ref":"intro/market.md","articles":[]},"previous":{"title":"Buy","level":"1.2.2","depth":2,"path":"intro/buy.md","ref":"intro/buy.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"intro/kiosk-market-token.md","mtime":"2017-09-11T21:11:51.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2017-09-11T16:29:03.239Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Basics","level":"1.3","depth":1,"next":{"title":"Buying a Product","level":"1.3.1","depth":2,"path":"basics/buy-product.md","ref":"basics/buy-product.md","articles":[]},"previous":{"title":"Order","level":"1.2.5","depth":2,"path":"placeholder.md","ref":"./placeholder.md","articles":[]},"dir":"ltr"},"config":{"plugins":["livereload"],"root":"./docs","styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"gitbook":"*"},"file":{"path":"headers/basics.md","mtime":"2017-09-12T00:58:59.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2017-09-12T00:47:32.792Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
