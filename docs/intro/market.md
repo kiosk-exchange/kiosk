@@ -3,7 +3,7 @@
 A market is an interface that Kiosk's `Buy` smart contract interacts with to complete a sale.
 
 **`Market.sol`**
-```
+```cs
 string public name;
 function buy(uint256 DIN, uint256 quantity, uint256 value, address buyer, bool approved) returns (bool);
 function isFulfilled(uint256 orderID) constant returns (bool);
