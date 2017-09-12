@@ -11,7 +11,7 @@ The ERC20 standard lets token holders approve smart contracts to spend tokens on
 
 On the test network version of Kiosk, one of the first products available is Ether (ETH). This means you can effectively convert your `Kiosk Market Token` back to Ether at any time. We plan to do something similar when we launch on the main network to give holders confidence that this new token has a [book value](https://en.wikipedia.org/wiki/Book_value).
 
-In the future, holders of `Kiosk Market Token` will be able to vote on upgrades to the Kiosk protocol contracts using some form of [decentralized governance](https://en.wikipedia.org/wiki/Decentralized_autonomous_organization).
+In a future release, holders of `Kiosk Market Token` will be able to vote on upgrades to the Kiosk protocol contracts using some form of [decentralized governance](https://en.wikipedia.org/wiki/Decentralized_autonomous_organization).
 
 `Kiosk Market Token` will have a fixed supply to benefit early adopters and the Kiosk developers through price appreciation. This also ensures that Kiosk can exist as an open-source protocol that charges no transaction fee. With the blockchain, the monetary nature of the protocol *is the business model*.
 

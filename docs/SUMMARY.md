@@ -11,7 +11,3 @@
 	* [Buying a Product](basics/buy-product.md)
 	* [Selling a Product](./placeholder.md)
 	* [Creating a Market](./placeholder.md)
-* Example Markets
-	* [DIN Market](markets/din-market.md)
-	* [Ether Market](markets/ether-market.md)
-	* [Ethereum Name Service (ENS)](markets/ens-market.md)
