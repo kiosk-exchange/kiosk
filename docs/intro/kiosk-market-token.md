@@ -18,7 +18,7 @@ function approve(address _spender, uint _value) returns (bool success)
 
 This approval process works on an _individual basis_.
 
-`Kiosk Market Token` gives `Buy` the ability to spend a user's tokens at the _protocol level_. The `Buy` contract calls `transferFromBuy` which gives it special access to spend from of the buyer's balance. This gives a `Market` certainty that the buyer will always fulfill his or her end of the transaction, which in turn gives developers a greater incentive to build markets on top of the Kiosk protocol.
+`Kiosk Market Token` gives `Buy` the ability to spend a user's tokens at the _protocol level_. During a transaction, the `Buy` contract calls `transferFromBuy` which gives it special access to spend from of the buyer's balance. This gives a `Market` certainty that the buyer will always fulfill his or her end of the transaction, which in turn gives developers a greater incentive to build markets on top of the Kiosk protocol.
 
 On the test network version of Kiosk, one of the first products available is Ether \(ETH\). This means you can effectively convert your `Kiosk Market Token` back to Ether at any time. We plan to do something similar when we launch on the main network to give holders confidence that this new token has a [book value](https://en.wikipedia.org/wiki/Book_value).
 
