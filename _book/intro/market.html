@@ -57,7 +57,7 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="../placeholder.html" />
+    <link rel="next" href="order.html" />
     
     
     <link rel="prev" href="kiosk-market-token.html" />
@@ -168,9 +168,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.2.5" data-path="../placeholder.html">
+        <li class="chapter " data-level="1.2.5" data-path="order.html">
             
-                <a href="../placeholder.html">
+                <a href="order.html">
             
                     
                     Order
@@ -350,14 +350,15 @@
                                 <h1 id="market">Market</h1>
 <p>A market is an interface that Kiosk&apos;s <code>Buy</code> smart contract interacts with to complete a sale.</p>
 <p><strong><code>Market.sol</code></strong></p>
-<pre><code>string public name;
-function buy(uint256 DIN, uint256 quantity, uint256 value, address buyer, bool approved) returns (bool);
-function isFulfilled(uint256 orderID) constant returns (bool);
-function nameOf(uint256 DIN) constant returns (string);
-function metadata(uint256 DIN) constant returns (bytes32);
-function totalPrice(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256);
-function availableForSale(uint256 DIN, uint256 quantity, address buyer) constant returns (bool);
-</code></pre><p>Each transaction follows the same sequence of events:</p>
+<pre><code class="lang-cs"><span class="hljs-keyword">string</span> <span class="hljs-keyword">public</span> name;
+<span class="hljs-function">function <span class="hljs-title">buy</span>(<span class="hljs-params">uint256 DIN, uint256 quantity, uint256 <span class="hljs-keyword">value</span>, address buyer, <span class="hljs-keyword">bool</span> approved</span>) <span class="hljs-title">returns</span> (<span class="hljs-params"><span class="hljs-keyword">bool</span></span>)</span>;
+<span class="hljs-function">function <span class="hljs-title">isFulfilled</span>(<span class="hljs-params">uint256 orderID</span>) constant <span class="hljs-title">returns</span> (<span class="hljs-params"><span class="hljs-keyword">bool</span></span>)</span>;
+<span class="hljs-function">function <span class="hljs-title">nameOf</span>(<span class="hljs-params">uint256 DIN</span>) constant <span class="hljs-title">returns</span> (<span class="hljs-params"><span class="hljs-keyword">string</span></span>)</span>;
+<span class="hljs-function">function <span class="hljs-title">metadata</span>(<span class="hljs-params">uint256 DIN</span>) constant <span class="hljs-title">returns</span> (<span class="hljs-params">bytes32</span>)</span>;
+<span class="hljs-function">function <span class="hljs-title">totalPrice</span>(<span class="hljs-params">uint256 DIN, uint256 quantity, address buyer</span>) constant <span class="hljs-title">returns</span> (<span class="hljs-params">uint256</span>)</span>;
+<span class="hljs-function">function <span class="hljs-title">availableForSale</span>(<span class="hljs-params">uint256 DIN, uint256 quantity, address buyer</span>) constant <span class="hljs-title">returns</span> (<span class="hljs-params"><span class="hljs-keyword">bool</span></span>)</span>;
+</code></pre>
+<p>Each transaction follows the same sequence of events:</p>
 <ul>
 <li><code>Buy</code> confirms that the <code>totalValue</code> of the purchase matches the market&apos;s <code>totalPrice</code> for the given product and quantity.</li>
 <li><code>Buy</code> confirms that the given quantity is <code>availableForSale</code>.</li>
@@ -369,7 +370,7 @@ function availableForSale(uint256 DIN, uint256 quantity, address buyer) constant
 <p>The <code>Market</code> interface is designed to be flexible for market developers and sellers. For example, pricing can be dynamic based on quantity or buyer. In addition, a <code>Market</code> can make calls to outside smart contracts in its <code>buy</code> implementation, with the safety of the <code>isFulfilled</code> check afterwards.</p>
 <p>There is no standard <code>withdraw</code> method on <code>Market</code>. A <code>Market</code> may offer payments in the currency of the seller&apos;s choosing as a competitive advantage. The <code>Market</code> owns the relationship with the seller.</p>
 <h2 id="next-steps">Next Steps</h2>
-<p>At this point, it is still trivial to create an unfair market. Now you&apos;ll see how a global record of <a href="order.md">Orders</a> can encourage good behavior.</p>
+<p>At this point, it is still trivial to create an unfair market. Now you&apos;ll see how a global record of <a href="order.html">Orders</a> can encourage good behavior.</p>
 
                                 
                                 </section>
@@ -402,7 +403,7 @@ function availableForSale(uint256 DIN, uint256 quantity, address buyer) constant
                 </a>
                 
                 
-                <a href="../placeholder.html" class="navigation navigation-next " aria-label="Next page: Order">
+                <a href="order.html" class="navigation navigation-next " aria-label="Next page: Order">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -413,7 +414,7 @@ function availableForSale(uint256 DIN, uint256 quantity, address buyer) constant
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Market","level":"1.2.4","depth":2,"next":{"title":"Order","level":"1.2.5","depth":2,"path":"placeholder.md","ref":"./placeholder.md","articles":[]},"previous":{"title":"Kiosk Market Token","level":"1.2.3","depth":2,"path":"intro/kiosk-market-token.md","ref":"intro/kiosk-market-token.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"root":"./docs","styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"gitbook":"*"},"file":{"path":"intro/market.md","mtime":"2017-09-12T00:54:31.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2017-09-12T01:01:48.695Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Market","level":"1.2.4","depth":2,"next":{"title":"Order","level":"1.2.5","depth":2,"path":"intro/order.md","ref":"intro/order.md","articles":[]},"previous":{"title":"Kiosk Market Token","level":"1.2.3","depth":2,"path":"intro/kiosk-market-token.md","ref":"intro/kiosk-market-token.md","articles":[]},"dir":"ltr"},"config":{"plugins":["livereload"],"root":"./docs","styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"gitbook":"*"},"file":{"path":"intro/market.md","mtime":"2017-09-12T01:10:41.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2017-09-12T01:12:52.991Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
@@ -421,6 +422,10 @@ function availableForSale(uint256 DIN, uint256 quantity, address buyer) constant
         
     <script src="../gitbook/gitbook.js"></script>
     <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-livereload/plugin.js"></script>
+        
     
         
         <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
