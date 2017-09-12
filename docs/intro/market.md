@@ -2,7 +2,8 @@
 
 A market is an interface that Kiosk's `Buy` smart contract interacts with to complete a sale.
 
-**`Market.sol`**
+`Market.sol`
+
 ```cs
 string public name;
 function buy(uint256 DIN, uint256 quantity, uint256 value, address buyer, bool approved) returns (bool);
@@ -14,6 +15,7 @@ function availableForSale(uint256 DIN, uint256 quantity, address buyer) constant
 ```
 
 Each transaction follows the same sequence of events:
+
 * `Buy` confirms that the `totalValue` of the purchase matches the market's `totalPrice` for the given product and quantity.
 * `Buy` confirms that the given quantity is `availableForSale`.
 * `Buy` calls the market's `buy` method, which should transfer the product to the buyer. For example, if the product is an [ENS domain](https://ens.domains/), the market should transfer ownership of the domain to the buyer at this point.
@@ -27,4 +29,5 @@ There is no standard `withdraw` method on `Market`. A `Market` may offer payment
 
 ## Next Steps
 
-At this point, it is still trivial to create an unfair market. Now you'll see how a global record of [Orders](../intro/order.md) can encourage good behavior.
+This framework allows for a wide range of markets, but how will you know if a market is fair? Now you'll see how a global record of [Orders](../intro/order.md) can encourage good behavior.
+
