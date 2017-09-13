@@ -1,6 +1,6 @@
 # Buying a Product
 
-To buy a product using Kiosk on the test network, you'll first need some test Ether that you can convert to Kiosk Market Token. The Kiosk protocol smart contracts are currently deployed to the [Kovan Test Network](https://kovan-testnet.github.io/website/). We chose Kovan because it offers the most developer-friendly options for getting test Ether through its [faucet](https://github.com/kovan-testnet/faucet). If you can't get it to work, feel free to ping us on [Slack](https://join.slack.com/t/kioskprotocol/shared_invite/MjI3NzAwMzMyMTYyLTE1MDI5MjYyNzItM2FiMjA1NWIxZg) and we'll send you some test Ether.
+To buy a product using Kiosk on the test network, you'll first need some test Ether that you can convert to Kiosk Market Tokens. The Kiosk protocol smart contracts are currently deployed to the [Kovan Test Network](https://kovan-testnet.github.io/website/). We chose Kovan because it offers the most developer-friendly options for getting test Ether through its [faucet](https://github.com/kovan-testnet/faucet). If you can't get it to work, feel free to ping us on [Slack](https://join.slack.com/t/kioskprotocol/shared_invite/MjI3NzAwMzMyMTYyLTE1MDI5MjYyNzItM2FiMjA1NWIxZg) and we'll send you some test Ether.
 
 The easiest way to buy a product is through the user interface hosted at [kioskprotocol.com](http://www.kioskprotocol.com/). The website is [open-source](https://github.com/kioskprotocol/kiosk) and simply reads and displays information that is stored on the blockchain.
 
@@ -76,7 +76,7 @@ This is the price of one Ether in the base unit of Kiosk Market Token. Like many
 > 300
 ```
 
-So the price is 300 KMT! Which is exactly what you will see on the website. Now, assuming you've gotten your hands on at least 300 KMT via the website, let's buy that product. If you don't have Kiosk Market Tokens, but you have Ether, try buying product `1000000000` which represents a new DIN and costs zero KMT.
+So the price is 300 KMT! Which is exactly what you will see on the website. Now, assuming you've gotten your hands on at least 300 KMT via the "Get Kiosk Market Tokens" button on [kioskprotocol.com](http://www.kioskprotocol.com/), let's buy that product. If you don't have Kiosk Market Tokens, but you have Ether, try buying product `1000000000` which represents a new DIN and costs zero KMT.
 
 Instead of counting out zeros, you can use a web3 shortcut for the price. Ether uses 18 decimals too and its smallest unit is called wei. The function below just multiplies the input by 10^18.
 

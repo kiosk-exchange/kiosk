@@ -61,7 +61,7 @@ contract ENSMarket is StandardMarket {
         address buyer,
         bool approved
     ) 	
-        // only_buy
+        only_buy
         returns (bool) 
     {
         // Expect the buyer to own the domain at the end of the transaction.
@@ -104,6 +104,11 @@ contract ENSMarket is StandardMarket {
 	function totalPrice(uint256 DIN, uint256 quantity, address buyer) constant returns (uint256) {
 		require (quantity == 1);
 		require (domains[DIN].available == true);
+
+		// Let a seller remove a domain from the market for free.
+		if (msg.sender == domains[DIN].seller) {
+			return 0;
+		}
 
 		return domains[DIN].price;
 	}

@@ -9,5 +9,5 @@
 	* [Order](intro/order.md)
 * [Basics](headers/basics.md)
 	* [Buying a Product](basics/buy-product.md)
-	* [Selling a Product](./placeholder.md)
-	* [Creating a Market](./placeholder.md)
+	* [Selling a Product](basics/sell-product.md)
+	* [Creating a Market](basics/create-market.md)
