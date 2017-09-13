@@ -2,7 +2,7 @@
 
 The price of products using the Kiosk protocol is denominated in `Kiosk Market Token (KMT)`. `Kiosk Market Token` is a [protocol token](https://blog.0xproject.com/the-difference-between-app-coins-and-protocol-tokens-7281a428348c) that implements the [ERC20 token standard](https://theethereum.wiki/w/index.php/ERC20_Token_Standard) along with one additional method:
 
-`KioskMarketToken.sol`
+**`KioskMarketToken.sol`**
 
 ```cs
 function transferFromBuy(address _from, address _to, uint256 _value) returns (bool)
@@ -10,9 +10,9 @@ function transferFromBuy(address _from, address _to, uint256 _value) returns (bo
 
 The ERC20 standard lets token holders approve smart contracts to spend tokens on their behalf.
 
-`ERC20.sol`
+**`ERC20.sol`**
 
-```
+```cs
 function approve(address _spender, uint _value) returns (bool success)
 ```
 

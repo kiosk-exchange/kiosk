@@ -29,5 +29,5 @@ There is no standard `withdraw` method on `Market`. A `Market` may offer payment
 
 ## Next Steps
 
-This framework allows for a wide range of markets, but how will you know if a market is fair? Now you'll see how a global record of [Orders](../intro/order.md) can encourage good behavior.
+This framework allows for a wide range of markets, but how will you know if a market is fair? Now you'll see how a global record of [orders](../intro/order.md) can encourage good behavior.
 
