@@ -8,6 +8,8 @@ import thunk from "redux-thunk";
 import { rootReducer } from "./redux/reducers";
 import { Router, Route, Switch } from "react-router";
 import createBrowserHistory from "history/createBrowserHistory";
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import Landing from "./containers/Landing";
 import {
 	Marketplace,
 	Purchases,
@@ -43,20 +45,26 @@ const store = createStore(rootReducer, initialState, enhancer);
 
 render(
 	<Provider store={store}>
-		<Router history={history}>
-			<Switch>
-				<Route exact={true} path="/" component={Marketplace} />
-				<Route
-					exact={true}
-					path="/marketplace"
-					component={Marketplace}
-				/>
-				<Route exact={true} path="/purchases" component={Purchases} />
-				<Route exact={true} path="/products" component={Products} />
-				<Route exact={true} path="/sales" component={Sales} />
-				<Route path="/market/:market" component={Market} />
- 			</Switch>
-		</Router>
+		<MuiThemeProvider>
+			<Router history={history}>
+				<Switch>
+					<Route exact={true} path="/" component={Landing} />
+					<Route
+						exact={true}
+						path="/marketplace"
+						component={Marketplace}
+					/>
+					<Route
+						exact={true}
+						path="/purchases"
+						component={Purchases}
+					/>
+					<Route exact={true} path="/products" component={Products} />
+					<Route exact={true} path="/sales" component={Sales} />
+					<Route path="/market/:market" component={Market} />
+				</Switch>
+			</Router>
+		</MuiThemeProvider>
 	</Provider>,
 	document.getElementById("root")
 );
