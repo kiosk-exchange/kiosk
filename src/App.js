@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import SideMenu from "./components/SideMenu";
 import NavBar from "./components/NavBar";
 import BuyModal from "./components/BuyModal";
@@ -79,22 +78,20 @@ class App extends Component {
     }
 
     return (
-      <MuiThemeProvider>
-        <div style={hContainerStyle}>
-          <div style={sideMenuStyle}>
-            <SideMenu value={dataType} />
-          </div>
-          <div style={rightContainerStyle}>
-            <div>
-              <NavBar />
-            </div>
-            <div style={tableStyle}>{content}</div>
-          </div>
-          <BuyModal />
-          <BuyKMTModal />
-          <PendingTxSnackbar />
+      <div style={hContainerStyle}>
+        <div style={sideMenuStyle}>
+          <SideMenu value={dataType} />
         </div>
-      </MuiThemeProvider>
+        <div style={rightContainerStyle}>
+          <div>
+            <NavBar />
+          </div>
+          <div style={tableStyle}>{content}</div>
+        </div>
+        <BuyModal />
+        <BuyKMTModal />
+        <PendingTxSnackbar />
+      </div>
     );
   }
 }
