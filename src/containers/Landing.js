@@ -57,7 +57,8 @@ class Landing extends Component {
 			borderRadius: 5,
 			border: "none",
 			fontWeight: "bold",
-			letterSpacing: "3px"
+			letterSpacing: "3px",
+			cursor: "pointer",
 		};
 
 		return (
@@ -154,7 +155,7 @@ class Landing extends Component {
 						Kiosk is a protocol for buying products using the
 						Ethereum blockchain.
 					</p>
-					<button style={buttonStyle} onClick={onButtonClick}>TRY ALPHA</button>
+					<button className="alpha" style={buttonStyle} onClick={onButtonClick}>TRY ALPHA</button>
 				</div>
 			</div>
 		);
