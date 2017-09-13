@@ -213,9 +213,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.2" data-path="../placeholder.html">
+        <li class="chapter " data-level="1.3.2" data-path="../basics/sell-product.html">
             
-                <a href="../placeholder.html">
+                <a href="../basics/sell-product.html">
             
                     
                     Selling a Product
@@ -226,9 +226,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.3" data-path="../placeholder.html">
+        <li class="chapter " data-level="1.3.3" data-path="../basics/create-market.html">
             
-                <a href="../placeholder.html">
+                <a href="../basics/create-market.html">
             
                     
                     Creating a Market
@@ -291,7 +291,7 @@
                                 
                                 <h1 id="market">Market</h1>
 <p>A market is an interface that Kiosk&apos;s <code>Buy</code> smart contract interacts with to complete a sale.</p>
-<p><strong><code>Market.sol</code></strong></p>
+<p><code>Market.sol</code></p>
 <pre><code class="lang-cs"><span class="hljs-keyword">string</span> <span class="hljs-keyword">public</span> name;
 <span class="hljs-function">function <span class="hljs-title">buy</span>(<span class="hljs-params">uint256 DIN, uint256 quantity, uint256 <span class="hljs-keyword">value</span>, address buyer, <span class="hljs-keyword">bool</span> approved</span>) <span class="hljs-title">returns</span> (<span class="hljs-params"><span class="hljs-keyword">bool</span></span>)</span>;
 <span class="hljs-function">function <span class="hljs-title">isFulfilled</span>(<span class="hljs-params">uint256 orderID</span>) constant <span class="hljs-title">returns</span> (<span class="hljs-params"><span class="hljs-keyword">bool</span></span>)</span>;
@@ -312,7 +312,7 @@
 <p>The <code>Market</code> interface is designed to be flexible for market developers and sellers. For example, pricing can be dynamic based on quantity or buyer. In addition, a <code>Market</code> can make calls to outside smart contracts in its <code>buy</code> implementation, with the safety of the <code>isFulfilled</code> check afterwards.</p>
 <p>There is no standard <code>withdraw</code> method on <code>Market</code>. A <code>Market</code> may offer payments in the currency of the seller&apos;s choosing as a competitive advantage. The <code>Market</code> owns the relationship with the seller.</p>
 <h2 id="next-steps">Next Steps</h2>
-<p>At this point, it is still trivial to create an unfair market. Now you&apos;ll see how a global record of <a href="order.html">Orders</a> can encourage good behavior.</p>
+<p>This framework allows for a wide range of markets, but how will you know if a market is fair? Now you&apos;ll see how a global record of <a href="order.html">Orders</a> can encourage good behavior.</p>
 
                                 
                                 </section>
@@ -356,7 +356,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Market","level":"1.2.4","depth":2,"next":{"title":"Order","level":"1.2.5","depth":2,"path":"intro/order.md","ref":"intro/order.md","articles":[]},"previous":{"title":"Kiosk Market Token","level":"1.2.3","depth":2,"path":"intro/kiosk-market-token.md","ref":"intro/kiosk-market-token.md","articles":[]},"dir":"ltr"},"config":{"plugins":["livereload"],"root":"./docs","styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"gitbook":"*"},"file":{"path":"intro/market.md","mtime":"2017-09-12T01:10:41.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2017-09-12T22:13:09.225Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Market","level":"1.2.4","depth":2,"next":{"title":"Order","level":"1.2.5","depth":2,"path":"intro/order.md","ref":"intro/order.md","articles":[]},"previous":{"title":"Kiosk Market Token","level":"1.2.3","depth":2,"path":"intro/kiosk-market-token.md","ref":"intro/kiosk-market-token.md","articles":[]},"dir":"ltr"},"config":{"plugins":["livereload"],"root":"./docs","styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"gitbook":"*"},"file":{"path":"intro/market.md","mtime":"2017-09-13T00:31:37.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2017-09-13T19:56:11.522Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

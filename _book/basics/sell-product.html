@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>Buy · GitBook</title>
+        <title>Selling a Product · GitBook</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.3">
@@ -57,10 +57,10 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="kiosk-market-token.html" />
+    <link rel="next" href="create-market.html" />
     
     
-    <link rel="prev" href="din.html" />
+    <link rel="prev" href="buy-product.html" />
     
 
     </head>
@@ -116,9 +116,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.2.1" data-path="din.html">
+        <li class="chapter " data-level="1.2.1" data-path="../intro/din.html">
             
-                <a href="din.html">
+                <a href="../intro/din.html">
             
                     
                     DIN
@@ -129,9 +129,9 @@
             
         </li>
     
-        <li class="chapter active" data-level="1.2.2" data-path="buy.html">
+        <li class="chapter " data-level="1.2.2" data-path="../intro/buy.html">
             
-                <a href="buy.html">
+                <a href="../intro/buy.html">
             
                     
                     Buy
@@ -142,9 +142,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.2.3" data-path="kiosk-market-token.html">
+        <li class="chapter " data-level="1.2.3" data-path="../intro/kiosk-market-token.html">
             
-                <a href="kiosk-market-token.html">
+                <a href="../intro/kiosk-market-token.html">
             
                     
                     Kiosk Market Token
@@ -155,9 +155,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.2.4" data-path="market.html">
+        <li class="chapter " data-level="1.2.4" data-path="../intro/market.html">
             
-                <a href="market.html">
+                <a href="../intro/market.html">
             
                     
                     Market
@@ -168,9 +168,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.2.5" data-path="order.html">
+        <li class="chapter " data-level="1.2.5" data-path="../intro/order.html">
             
-                <a href="order.html">
+                <a href="../intro/order.html">
             
                     
                     Order
@@ -200,9 +200,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.3.1" data-path="../basics/buy-product.html">
+        <li class="chapter " data-level="1.3.1" data-path="buy-product.html">
             
-                <a href="../basics/buy-product.html">
+                <a href="buy-product.html">
             
                     
                     Buying a Product
@@ -213,9 +213,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.2" data-path="../basics/sell-product.html">
+        <li class="chapter active" data-level="1.3.2" data-path="sell-product.html">
             
-                <a href="../basics/sell-product.html">
+                <a href="sell-product.html">
             
                     
                     Selling a Product
@@ -226,9 +226,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.3" data-path="../basics/create-market.html">
+        <li class="chapter " data-level="1.3.3" data-path="create-market.html">
             
-                <a href="../basics/create-market.html">
+                <a href="create-market.html">
             
                     
                     Creating a Market
@@ -274,7 +274,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >Buy</a>
+        <a href=".." >Selling a Product</a>
     </h1>
 </div>
 
@@ -289,28 +289,13 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="buy">Buy</h1>
-<p>A buyer can purchase a product by interacting with a smart contract called <code>Buy</code>.</p>
-<p><strong><code>Buy.sol</code></strong></p>
-<pre><code class="lang-cs"><span class="hljs-function">function <span class="hljs-title">buy</span>(<span class="hljs-params">uint256 DIN, uint256 quantity, uint256 totalValue</span>) <span class="hljs-keyword">public</span> <span class="hljs-title">returns</span> (<span class="hljs-params">uint256 orderID</span>)
-</span></code></pre>
-<p>When a buyer calls this method, the <code>Buy</code> contract uses the global <code>DINRegistry</code> to find the address of the <code>Market</code> for the given <code>DIN</code>.</p>
-<p><strong><code>DINRegistry.sol</code></strong></p>
-<pre><code class="lang-cs"><span class="hljs-function">function <span class="hljs-title">market</span>(<span class="hljs-params">uint256 DIN</span>) constant <span class="hljs-title">returns</span> (<span class="hljs-params">address</span>)
-</span></code></pre>
-<p><code>Buy</code> will then verify with the relevant <code>Market</code> that the buyer has entered the correct price and that the specified quantity of that product is available. If everything checks out, the price of the transaction will be transferred from the buyer to the <code>Market</code> and the product will be sent from the <code>Market</code> to the buyer.</p>
-<p>To keep things simple, <code>Buy</code> only supports <em>synchronous</em> transactions at the moment. This means only products that can provide instant delivery, such as Ethereum assets and other digital goods are supported. In the future, <code>Buy</code> will support <em>asynchronous</em> transactions which will allow for sales involving physical goods that require delivery. These transactions will depend on an escrow smart contract to hold funds in the interim.</p>
-<p>In upcoming releases, <code>Buy</code> will also have more functionality to support different use cases:</p>
-<p><strong><code>Buy.sol</code></strong></p>
-<pre><code class="lang-cs"><span class="hljs-function">function <span class="hljs-title">buyCart</span>(<span class="hljs-params">uint256[] DINs, uint256[] quantities, uint256[] subtotalValues</span>)
-function <span class="hljs-title">buyWithPromoCode</span>(<span class="hljs-params">uint256 DIN, uint256 quantity, uint256 totalValue, uint8 v, bytes32 r, bytes32 s</span>)
-</span></code></pre>
-<ul>
-<li><code>buyCart</code> will allow buyers to purchase multiple products at once in an all-or-nothing transaction. This will effectively allow for a <em>universal shopping cart</em>.</li>
-<li><code>buyWithPromoCode</code> will allow sellers to update the price of a product off-chain by signing a transaction and giving the buyer the cryptographic parameters of the signature, presented as a &quot;promo code.&quot; <code>Buy</code> can then verify the off-chain price update and execute the transaction. Without this, the seller will have to pay a small transaction fee every time they want to update the price of a product on the blockchain.</li>
-</ul>
-<h2 id="next-steps">Next Steps</h2>
-<p>Now you&apos;ll find out what the <code>totalValue</code> parameter of <code>buy</code> means, and why it requires <a href="kiosk-market-token.html">Kiosk Market Token</a>.</p>
+                                <h1 id="selling-a-product">Selling a Product</h1>
+<p>Since each market operates independently, there is no standard interface to sell a product like there is for buying one. Accepted practices may emerge in the future, but for now, we&apos;re leaving this entirely to the market developers to decide.</p>
+<p>At this point, you might still be wondering what types of products can be sold using Kiosk. Right now, Kiosk works best for products that allow for instant settlement and do not require exchange of personal information (email, shipping address, etc.). This means Ethereum assets like tokens, ENS domains, and <a href="https://www.larvalabs.com/cryptopunks" target="_blank">CryptoPunks</a> would work well. Other digital assets, like access to a news site or an online course could work too as long as you implement some way to identify the buyer&apos;s Ethereum address, such as by requiring them to <a href="https://github.com/ethereum/wiki/wiki/JavaScript-API#web3ethsign" target="_blank">cryptographically sign a message</a>. We eventually plan to layer in complexity by allowing for asynchronous delivery and buyer and seller identities, but we think it&apos;s best to start without these complications.</p>
+<p>Each <em>unique</em> product you sell should have a DIN. That means a product would be &quot;example.eth&quot; rather than &quot;ENS Domain.&quot; DINs can ultimately be thought of as being disposable. If you sell me &quot;example.eth&quot; with a DIN of 1000000079 and I resell it to someone else with a DIN of 1000000842, that&apos;s fine. If I then want to reuse 1000000842 to sell &quot;anotherdomain.eth,&quot; that&apos;s also fine because the order will capture the metadata of the product at the time it is sold. However, any reputation system built on top of Kiosk will likely reset the product&apos;s reputation whenever its metadata changes. </p>
+<p>Unlike other product identification standards, the 10-digit DIN does not encode eny product information itself. It&apos;s simply a pointer to a market. However, this allows for sellers to associate an unlimited amount of information with a DIN and common standards will emerge on how to store product information (image, description, color, manufacturer, etc.) on <a href="https://ipfs.io/" target="_blank">IPFS</a> or something similar so that Kiosk clients parse it. It would be too expensive to store all of this information directly on the public Ethereum blockchain.</p>
+<p>For ERC20 tokens, &quot;1 OmiseGo (OMG)&quot; or &quot;1,000 OmiseGo (OMG)&quot; would both be valid examples of products that would have a DIN. The token could be priced using an on-chain algorithm like <a href="https://www.bancor.network/" target="_blank">Bancor</a> or each individual order could be its own product. There are <a href="https://etherdelta.com" target="_blank">a</a> <a href="https://kyber.network/" target="_blank">lot</a> <a href="https://swap.tech/" target="_blank">of</a> <a href="https://0xproject.com/" target="_blank">projects</a> trying to come up with a decentralized mechanism for exchanging ERC20 tokens, so that is not our focus. If one or more of these projects finds a way to wrap their protocol with Kiosk&apos;s <em>buy</em> interface or wants to provide a way for markets to pay sellers in a token other than Kiosk Market Token, that would be great and we would love to help out.</p>
+<p>Below, we&apos;ll walk you through the process to sell an ENS domain on the <a href="">ENS Market</a></p>
 
                                 
                                 </section>
@@ -338,12 +323,12 @@ function <span class="hljs-title">buyWithPromoCode</span>(<span class="hljs-para
 
             
                 
-                <a href="din.html" class="navigation navigation-prev " aria-label="Previous page: DIN">
+                <a href="buy-product.html" class="navigation navigation-prev " aria-label="Previous page: Buying a Product">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
                 
-                <a href="kiosk-market-token.html" class="navigation navigation-next " aria-label="Next page: Kiosk Market Token">
+                <a href="create-market.html" class="navigation navigation-next " aria-label="Next page: Creating a Market">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -354,7 +339,7 @@ function <span class="hljs-title">buyWithPromoCode</span>(<span class="hljs-para
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Buy","level":"1.2.2","depth":2,"next":{"title":"Kiosk Market Token","level":"1.2.3","depth":2,"path":"intro/kiosk-market-token.md","ref":"intro/kiosk-market-token.md","articles":[]},"previous":{"title":"DIN","level":"1.2.1","depth":2,"path":"intro/din.md","ref":"intro/din.md","articles":[]},"dir":"ltr"},"config":{"plugins":["livereload"],"root":"./docs","styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"gitbook":"*"},"file":{"path":"intro/buy.md","mtime":"2017-09-12T00:42:17.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2017-09-13T19:56:11.522Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Selling a Product","level":"1.3.2","depth":2,"next":{"title":"Creating a Market","level":"1.3.3","depth":2,"path":"basics/create-market.md","ref":"basics/create-market.md","articles":[]},"previous":{"title":"Buying a Product","level":"1.3.1","depth":2,"path":"basics/buy-product.md","ref":"basics/buy-product.md","articles":[]},"dir":"ltr"},"config":{"plugins":["livereload"],"root":"./docs","styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"gitbook":"*"},"file":{"path":"basics/sell-product.md","mtime":"2017-09-13T20:44:08.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2017-09-13T19:56:11.522Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
