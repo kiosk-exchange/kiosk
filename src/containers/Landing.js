@@ -125,7 +125,7 @@ class Landing extends Component {
 				<div
 					style={{
 						textAlign: "center",
-						paddingTop: "50px",
+						padding: "50px",
 						maxWidth: "800px",
 						margin: "auto"
 					}}
@@ -136,8 +136,7 @@ class Landing extends Component {
 							fontSize: "48px",
 							fontWeight: "800",
 							fontFamily: "Interface, sans-serif",
-							letterSpacing: "1px",
-							lineHeight: "20%"
+							letterSpacing: "1px"
 						}}
 					>
 						Build decentralized marketplaces.
