@@ -58,12 +58,13 @@ class App extends Component {
 
     let content = null;
     if (web3 && network) {
+      console.log(network)
       if (network.valid === true) {
         content = this.props.children;
       } else {
         content = (
           <ErrorMessage
-            message="Kiosk is not deployed to this network. Please connect to Kovan Test Network"
+            title="Kiosk is not deployed to this network. Please connect to Kovan Test Network"
             showIcon={false}
           />
         );

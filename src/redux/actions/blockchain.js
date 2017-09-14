@@ -146,6 +146,7 @@ const fetchOrders = type => {
     if (OrderStore && web3 && account) {
       if (type === ORDER_TYPE.PURCHASES) {
         const purchases = await getPurchases(OrderStore, web3, account);
+        console.log("PURCHASES: " + purchases)
         dispatch(receivedPurchases(purchases));
       } else if (type === ORDER_TYPE.SALES) {
         const sales = await getSales(OrderStore, web3, account);

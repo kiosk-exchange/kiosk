@@ -257,11 +257,13 @@ export const results = (state = resultsDefaultState, action) => {
 		case RECEIVED_PURCHASES:
 			return {
 				...state,
+				isLoading: false,
 				purchases: action.data
 			};
 		case RECEIVED_SALES:
 			return {
 				...state,
+				isLoading: false,
 				sales: action.data
 			};
 		default:
