@@ -14,7 +14,7 @@ class CurrencyTextInput extends React.Component {
 
   onChange(e) {
     const re = /^(0|[1-9][0-9]*)(\.[0-9]*)?$/;
-    if (e.target.value == '' || re.test(e.target.value)) {
+    if (e.target.value === '' || re.test(e.target.value)) {
        this.setState({value: e.target.value})
        this.props.onChange(e.target.value)
     }

@@ -20,10 +20,8 @@ const mapStateToProps = (state, ownProps) => {
   return {
     open:
       state.transactions.pending > 0 && state.transactions.success === false,
-    success: state.txSucceeded,
     showSuccess:
-      state.transactions.success === true &&
-      state.transactions.showSuccess === true,
+      state.transactions.success === true,
     message: message,
     theme: state.config.theme
   };
@@ -31,8 +29,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onSuccess: () => {
-      dispatch(showTxSucceeded(true));
+    afterSuccess: () => {
+      dispatch(showTxSucceeded());
     }
   };
 };
@@ -41,9 +39,8 @@ class PendingTxSnackbar extends Component {
   render() {
     const {
       open,
-      success,
       showSuccess,
-      onSuccess,
+      afterSuccess,
       message,
       theme
     } = this.props;
@@ -67,15 +64,9 @@ class PendingTxSnackbar extends Component {
         open={showSuccess}
         message="Transaction succeeded"
         autoHideDuration={2000}
+        onRequestClose={afterSuccess}
       />
     );
-
-    // Wait for the pending snackbar to animate down before showing the success snackbar.
-    if (success === true) {
-      setTimeout(() => {
-        onSuccess();
-      }, 1500);
-    }
 
     return (
       <div>
@@ -87,4 +78,3 @@ class PendingTxSnackbar extends Component {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(PendingTxSnackbar);
-
