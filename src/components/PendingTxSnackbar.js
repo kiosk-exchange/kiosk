@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import Snackbar from "material-ui/Snackbar";
-import { txSucceeded, showTxSucceeded } from "../redux/actions/blockchain";
+import { showTxSucceeded } from "../redux/actions/blockchain";
 
 const mapStateToProps = (state, ownProps) => {
   let message = "";
@@ -39,7 +39,6 @@ class PendingTxSnackbar extends Component {
   render() {
     const {
       open,
-      success,
       showSuccess,
       afterSuccess,
       message,
