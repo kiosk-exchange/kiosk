@@ -58,7 +58,6 @@ class App extends Component {
 
     let content = null;
     if (web3 && network) {
-      console.log(network)
       if (network.valid === true) {
         content = this.props.children;
       } else {

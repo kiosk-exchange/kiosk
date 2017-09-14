@@ -82,7 +82,7 @@ const fetchProducts = filter => {
     const registry = Promise.promisifyAll(DINRegistry);
 
     if (web3 && DINRegistry && account) {
-      let DINs;
+      let DINs = [];
 
       if (filter === PRODUCT_FILTER.ALL) {
         DINs = await getAllProductDINs(web3, DINRegistry, BuyContract, account);
@@ -98,7 +98,7 @@ const fetchProducts = filter => {
       }
 
       // If no DINs, stop loading right away. Otherwise, do it in the reducer.
-      if (!DINs) {
+      if (DINs.length === 0) {
         dispatch(requestLoading(false));
       } else {
         Promise.each(DINs, DIN => {
@@ -146,7 +146,6 @@ const fetchOrders = type => {
     if (OrderStore && web3 && account) {
       if (type === ORDER_TYPE.PURCHASES) {
         const purchases = await getPurchases(OrderStore, web3, account);
-        console.log("PURCHASES: " + purchases)
         dispatch(receivedPurchases(purchases));
       } else if (type === ORDER_TYPE.SALES) {
         const sales = await getSales(OrderStore, web3, account);
