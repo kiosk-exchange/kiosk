@@ -275,7 +275,7 @@ export const buyNow = product => {
       );
       console.log(txId);
       dispatch(addPendingTx(txId));
-      // setInterval(() => dispatch(checkPendingTxs()), 5000);
+      setInterval(() => dispatch(checkPendingTxs()), 1000);
       dispatch(reloadAfterPurchase());
     } catch (err) {
       console.log(err);
@@ -292,7 +292,6 @@ export const buyKioskMarketToken = (amount) => {
       const value = web3.toWei(amount, "ether");
       const account = getState().config.account;
 
-      dispatch(txSucceeded(false));
       dispatch(showBuyKMTModal(false))
       buyKMT(EtherMarket, value, account).then((result) => {
         dispatch(getBalances());

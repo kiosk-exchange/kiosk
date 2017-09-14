@@ -125,7 +125,6 @@ const transactions = (state = txDefaultState, action) => {
 		case SHOW_TX_SUCCEEDED:
 			return {
 				...state,
-				showSuccess: true,
 				success: false // Reset
 			};
 		default:
