@@ -13,7 +13,6 @@ Kiosk is a framework for building decentralized marketplaces.
 The Kiosk protocol presents the end user with a single action — *buy* — regardless of whether the product being sold is an Ethereum asset, a digital good, or a physical product.
 
 ## Documentation
-* [Introduction](https://kioskprotocol.gitbooks.io/kiosk/content/)
 * [How It Works](https://kioskprotocol.gitbooks.io/kiosk/content/headers/how-it-works.html)
 * [Buying a Product](https://kioskprotocol.gitbooks.io/kiosk/content/basics/buy-product.html)
 * [Selling a Product](https://kioskprotocol.gitbooks.io/kiosk/content/basics/sell-product.html)
