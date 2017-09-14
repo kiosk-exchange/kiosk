@@ -20,7 +20,7 @@ struct Order {
 mapping (uint256 => Order) public orders;
 ```
 
-This immutable record that is stored on the blockchain allows us to create a decentralized reputation system, in which buyers can rate individual products and markets based on past purchases. That way, future buyers can have a good estimate of whether the market is trustworthy without having to read through the smart contract code. The reputation system will be implemented in a future release.
+This immutable record that is stored on the blockchain will allow us to create a decentralized reputation system, in which buyers can rate individual products and markets based on past purchases. That way, future buyers can have a good estimate of whether the market is trustworthy without having to read through the smart contract code. The reputation system will be implemented in a future release.
 
 ## Next Steps
 

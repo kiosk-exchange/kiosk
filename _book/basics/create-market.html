@@ -287,7 +287,45 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <p>// Coming soon!</p>
+                                <h1 id="creating-a-market">Creating a Market</h1>
+<p>To create a market on Kiosk, you must write a smart contract that implements the interface specified in <code>Market.sol</code>.</p>
+<pre><code class="lang-cs">contract Market {
+    <span class="hljs-comment">// The name of the market.</span>
+    <span class="hljs-keyword">string</span> <span class="hljs-keyword">public</span> name;
+
+    <span class="hljs-comment">// Buy a product. Returns true if the transaction was successful.</span>
+    <span class="hljs-function">function <span class="hljs-title">buy</span>(<span class="hljs-params">uint256 DIN, uint256 quantity, uint256 <span class="hljs-keyword">value</span>, address buyer, <span class="hljs-keyword">bool</span> approved</span>) <span class="hljs-title">returns</span> (<span class="hljs-params"><span class="hljs-keyword">bool</span></span>)</span>;
+
+    <span class="hljs-comment">// Returns true if the seller has fulfilled the order.</span>
+    <span class="hljs-function">function <span class="hljs-title">isFulfilled</span>(<span class="hljs-params">uint256 orderID</span>) constant <span class="hljs-title">returns</span> (<span class="hljs-params"><span class="hljs-keyword">bool</span></span>)</span>;
+
+    <span class="hljs-comment">// The name of a product.</span>
+    <span class="hljs-function">function <span class="hljs-title">nameOf</span>(<span class="hljs-params">uint256 DIN</span>) constant <span class="hljs-title">returns</span> (<span class="hljs-params"><span class="hljs-keyword">string</span></span>)</span>;
+
+    <span class="hljs-comment">// A hash representation of a product&apos;s metadata that is added to the order.</span>
+    <span class="hljs-function">function <span class="hljs-title">metadata</span>(<span class="hljs-params">uint256 DIN</span>) constant <span class="hljs-title">returns</span> (<span class="hljs-params">bytes32</span>)</span>;
+
+    <span class="hljs-comment">// The total price of a product for a given quantity and buyer.</span>
+    <span class="hljs-function">function <span class="hljs-title">totalPrice</span>(<span class="hljs-params">uint256 DIN, uint256 quantity, address buyer</span>) constant <span class="hljs-title">returns</span> (<span class="hljs-params">uint256</span>)</span>;
+
+    <span class="hljs-comment">// Returns true if a given quantity of a product is available for purchase.</span>
+    <span class="hljs-function">function <span class="hljs-title">availableForSale</span>(<span class="hljs-params">uint256 DIN, uint256 quantity, address buyer</span>) constant <span class="hljs-title">returns</span> (<span class="hljs-params"><span class="hljs-keyword">bool</span></span>)</span>;
+}
+</code></pre>
+<p>The markets that Kiosk has already created should serve as a good reference point for creating a new market:</p>
+<ul>
+<li><a href="https://github.com/kioskprotocol/kiosk/blob/master/contracts/DIN/DINMarket.sol" target="_blank">DINMarket</a></li>
+<li><a href="https://github.com/kioskprotocol/kiosk/blob/master/contracts/ether/EtherMarket.sol" target="_blank">EtherMarket</a></li>
+<li><a href="https://github.com/kioskprotocol/kiosk/blob/master/contracts/ENS/ENSMarket.sol" target="_blank">ENSMarket</a></li>
+</ul>
+<p>Things to consider:</p>
+<ul>
+<li>Make sure the <code>buy</code> method can only be called by Kiosk&apos;s <code>Buy</code> contract.</li>
+<li>Include a way for sellers to keep track of and withdraw proceeds from sales.</li>
+<li>A product should never get &quot;stuck&quot; on your market. One possible solution is to make the price zero if the buyer is the seller.</li>
+<li>Include a way to access the Kiosk protocol contracts stored on <code>Kiosk.sol</code>, so that if they are ever updated, your market will be able to update accordingly. The Kiosk markets all use <code>StandardMarket.sol</code> as a base class for this purpose.</li>
+</ul>
+<p>If you are considering creating a market, we would love to help out. Feel free to ask us questions on <a href="">Slack</a></p>
 
                                 
                                 </section>
@@ -327,7 +365,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Creating a Market","level":"1.3.3","depth":2,"previous":{"title":"Selling a Product","level":"1.3.2","depth":2,"path":"basics/sell-product.md","ref":"basics/sell-product.md","articles":[]},"dir":"ltr"},"config":{"plugins":["livereload"],"root":"./docs","styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"gitbook":"*"},"file":{"path":"basics/create-market.md","mtime":"2017-09-13T21:41:47.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2017-09-13T21:49:52.795Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Creating a Market","level":"1.3.3","depth":2,"previous":{"title":"Selling a Product","level":"1.3.2","depth":2,"path":"basics/sell-product.md","ref":"basics/sell-product.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"root":"./docs","styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"gitbook":"*"},"file":{"path":"basics/create-market.md","mtime":"2017-09-14T02:20:53.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2017-09-14T02:31:25.317Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
@@ -335,10 +373,6 @@
         
     <script src="../gitbook/gitbook.js"></script>
     <script src="../gitbook/theme.js"></script>
-    
-        
-        <script src="../gitbook/gitbook-plugin-livereload/plugin.js"></script>
-        
     
         
         <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
