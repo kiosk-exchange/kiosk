@@ -48,7 +48,7 @@ render(
 		<MuiThemeProvider>
 			<Router history={history}>
 				<Switch>
-					<Route exact={true} path="/" component={Landing} />
+					<Route exact={true} path="/" component={Marketplace} />
 					<Route
 						exact={true}
 						path="/marketplace"
