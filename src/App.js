@@ -90,11 +90,10 @@ class App extends Component {
         </div>
         <BuyModal />
         <BuyKMTModal />
+        <PendingTxSnackbar />
       </div>
     );
   }
 }
 
 export default connect(mapStateToProps)(App);
-
-// <PendingTxSnackbar />
