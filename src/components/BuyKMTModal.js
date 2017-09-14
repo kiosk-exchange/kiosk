@@ -5,6 +5,42 @@ import Subheader from "material-ui/Subheader";
 import { showBuyKMTModal, changeEtherContributionAmount } from "../redux/actions/actions";
 import { buyKioskMarketToken } from "../redux/actions/blockchain";
 
+class CurrencyTextInput extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {value: ''};
+    this.onChange = this.onChange.bind(this);
+  }
+
+  onChange(e) {
+    const re = /^(0|[1-9][0-9]*)(\.[0-9]*)?$/;
+    if (e.target.value == '' || re.test(e.target.value)) {
+       this.setState({value: e.target.value})
+       this.props.onChange(e.target.value)
+    }
+  }
+
+  render() {
+    const inputStyle = {
+      width: "90%",
+      height: "70px",
+      fontSize: "30px",
+      textAlign: "center",
+      padding: "5px",
+      marginTop: "9px",
+      marginRight: "5px",
+      borderRadius: "5px",
+      border: "2px solid",
+      backgroundColor: this.props.theme.white,
+      opacity: "10%",
+      borderColor: this.props.theme.blue,
+      outline: "none"
+    };
+
+    return <input value={this.state.value} style={inputStyle} type="text" autoFocus={true} onChange={this.onChange} />
+  }
+}
+
 import { connect } from "react-redux";
 
 const mapStateToProps = state => ({
@@ -101,34 +137,6 @@ const BuyKMTModal = ({
     letterSpacing: "1px"
   };
 
-  const inputStyle = {
-    width: "90%",
-    height: "70px",
-    fontSize: "30px",
-    textAlign: "center",
-    padding: "5px",
-    marginTop: "9px",
-    marginRight: "5px",
-    borderRadius: "5px",
-    border: "2px solid",
-    backgroundColor: theme.white,
-    opacity: "10%",
-    borderColor: theme.blue,
-    outline: "none"
-  };
-
-  const handleInputChange = (event) => {
-    onEtherChange(event.target.value);
-  }
-
-  const handleKeyPress = (event) => {
-    const keyCode = event.keyCode || event.which;
-    const keyValue = String.fromCharCode(keyCode);
-    if (!(/^\d+$/.test(keyValue))) {
-      event.preventDefault();
-    }
-  }
-
   return (
     <Dialog
       actions={actions}
@@ -146,7 +154,7 @@ const BuyKMTModal = ({
       <div style={{ display: "flex", width: "100%" }}>
         <div style={{ flex: "2" }}>
           <form>
-            <input style={inputStyle} type="text" autoFocus={true} onKeyPress={handleKeyPress} onChange={handleInputChange} />
+            <CurrencyTextInput theme={theme} onChange={onEtherChange}/>
           </form>
         </div>
         <div style={{ flex: "1" }}>
