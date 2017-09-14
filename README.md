@@ -9,6 +9,8 @@ Kiosk is a protocol for buying and selling products using the Ethereum blockchai
 * [Introduction](https://kioskprotocol.gitbooks.io/kiosk/content/)
 * [How It Works](https://kioskprotocol.gitbooks.io/kiosk/content/headers/how-it-works.html)
 * [Buying a Product](https://kioskprotocol.gitbooks.io/kiosk/content/basics/buy-product.html)
+* [Selling a Product](https://kioskprotocol.gitbooks.io/kiosk/content/basics/sell-product.html)
+* [Creating a Market](https://kioskprotocol.gitbooks.io/kiosk/content/basics/create-market.html)
 
 ## Contact Us
 
