@@ -2,7 +2,7 @@ pragma solidity ^0.4.11;
 
 import "zeppelin-solidity/contracts/token/StandardToken.sol";
 
-contract MarketToken is StandardToken {
+contract TestMarketToken is StandardToken {
     string public name = "Market Token";            // Set the name for display purposes.
     string public symbol = "MARK";                  // Set the symbol for display purposes.
     uint256 public decimals = 18;                   // Amount of decimals for display purposes.
@@ -27,7 +27,7 @@ contract MarketToken is StandardToken {
     event NewBuy(address indexed buy);
     
     // Constructor
-    function MarketToken(uint256 _totalSupply) {
+    function TestMarketToken(uint256 _totalSupply) {
         // Give the initial balance to the contract deployer.
         balances[msg.sender] = _totalSupply;
         totalSupply = _totalSupply;            

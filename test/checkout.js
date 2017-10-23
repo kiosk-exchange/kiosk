@@ -40,6 +40,8 @@ contract("Checkout", accounts => {
         registrar = await DINRegistrar.deployed();
         token = await MarketToken.deployed();
 
+        console.log(checkout);
+
         await registrar.registerDIN({ from: bob });
         DIN = await getDINFromLog();
 
@@ -56,16 +58,18 @@ contract("Checkout", accounts => {
         ecSignature.v = web3.toDecimal(v) + 27;
     });
 
-    it("should have the correct registry and token", async () => {
-        const buyRegistry = await buy.registry();
-        expect(buyRegistry).to.equal(registry.address);
+    it("should have the correct registry", async () => {
+        const checkoutRegistry = await checkout.registry();
+        expect(checkoutRegistry).to.equal(registry.address);
+    })
 
-        const buyToken = await buy.marketToken();
-        expect(buyToken).to.equal(token.address);
+    it("should have the correct token", async () => {
+        const checkoutToken = await checkout.marketToken();
+        expect(checkoutToken).to.equal(token.address);
     })
 
     it("should throw if the user does not have enough tokens for a purchase", async () => {
-        const result = await buy.buy(
+        const result = await checkout.buy(
             DIN,
             quantity,
             price,
@@ -79,7 +83,7 @@ contract("Checkout", accounts => {
     });
 
     it("should throw if the expired time has passed", async () => {
-        const result = await buy.buy(
+        const result = await checkout.buy(
             DIN,
             quantity,
             price,
@@ -93,7 +97,7 @@ contract("Checkout", accounts => {
     });
 
     it("should throw if the price is zero", async () => {
-        const result = await buy.buy(
+        const result = await checkout.buy(
             DIN,
             quantity,
             0,
@@ -107,7 +111,7 @@ contract("Checkout", accounts => {
     });
 
     it("should validate a signature", async () => {
-        const valid = await buy.isValidSignature(
+        const valid = await checkout.isValidSignature(
             bob,
             hash,
             ecSignature.v,
@@ -116,7 +120,7 @@ contract("Checkout", accounts => {
         );
         expect(valid).to.equal(true);
 
-        const invalid = await buy.isValidSignature(
+        const invalid = await checkout.isValidSignature(
             bob,
             hash,
             26,
@@ -127,13 +131,13 @@ contract("Checkout", accounts => {
     });
 
     it("should allow a purchase with valid parameters", async() => {
-        const orderIndex = await buy.orderIndex();
+        const orderIndex = await checkout.orderIndex();
         expect(orderIndex.toNumber()).to.equal(0);
 
         const owner = await registry.owner(DIN);
         expect(owner).to.equal(bob);
 
-        const result = await buy.buy(
+        const result = await checkout.buy(
             DIN,
             quantity,
             price,
@@ -144,7 +148,7 @@ contract("Checkout", accounts => {
             { from: alice }
         );
 
-        const newIndex = await buy.orderIndex();
+        const newIndex = await checkout.orderIndex();
         expect(newIndex.toNumber()).to.equal(1);
     });
 

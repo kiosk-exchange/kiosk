@@ -49,7 +49,7 @@ contract Checkout {
       * @param _token The Market Token contract address.
       * @param _registry The DIN Registry contract address.
       */
-    function Buy(MarketToken _token, DINRegistry _registry) {
+    function Checkout(MarketToken _token, DINRegistry _registry) {
         marketToken = _token;
         registry = _registry;
     }
@@ -138,26 +138,26 @@ contract Checkout {
             success = transferERC20(msg.sender, merchant, order.totalPrice, order.priceCurrency);
         }
 
-        if (success == false) {
-            LogError(uint8(Errors.INSUFFICIENT_BALANCE));
-            return 0;
+        if (success == true) {
+            // TODO: AFFILIATE FEES
+
+            // Increment the order index.
+            orderIndex++;
+
+            NewOrder(
+                orderIndex,     // Order ID
+                msg.sender,     // Buyer
+                merchant,
+                order.DIN,
+                order.quantity,
+                order.totalPrice,
+                order.priceCurrency,
+                block.timestamp
+            );
+
+            return orderIndex;
         }
 
-        // TODO: AFFILIATE FEES
-
-        NewOrder(
-            orderIndex,     // Order ID
-            msg.sender,     // Buyer
-            merchant,
-            order.DIN,
-            order.quantity,
-            order.totalPrice,
-            order.priceCurrency,
-            block.timestamp
-        );
-
-        // Increment the order index.
-        orderIndex++;
     }
 
     function transferMarketTokens(
@@ -168,12 +168,8 @@ contract Checkout {
         private
         returns (bool success)
     {
-        if (totalPrice > marketToken.balanceOf(msg.sender)) {
-            return false;
-        }
-        // Transfer Market Tokens (MARKs) from buyer to merchant.
-        marketToken.transferFromCheckout(buyer, merchant, totalPrice);
-        return true;
+        // Transfer Market Tokens (MARK) from buyer to merchant.
+        return marketToken.transferFromCheckout(buyer, merchant, totalPrice);
     }
 
     function transferEther(
@@ -184,7 +180,16 @@ contract Checkout {
         private
         returns (bool success) 
     {
-        // TODO:
+        // Transfer Ether (ETH) from buyer to merchant.
+        if (msg.value == totalPrice) {
+            merchant.transfer(msg.value);
+            return true;
+        } else {
+            // Return Ether to buyer and log error.
+            buyer.transfer(msg.value);
+            LogError(uint8(Errors.INVALID_PRICE));
+            return false;
+        }
     }
 
     function transferERC20(
