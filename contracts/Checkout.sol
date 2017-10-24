@@ -25,10 +25,6 @@ contract Checkout {
     // Logs Solidity errors
     event LogError(string error);
 
-    // TODO: DELETE (DEBUG)
-    // event LogHash(uint256 DIN, uint256 totalPrice, address priceCurrency, uint256 priceValidUntil, uint256 affiliateFee);
-    // event LogParams(address owner, bytes32 hash, uint8 v, bytes32 r, bytes32 s);
-
     // Logs new orders
     event NewOrder(
         uint256 orderID,
@@ -100,8 +96,6 @@ contract Checkout {
 
         // Calculate the hash of the parameters provided by the buyer.
         bytes32 hash = keccak256(order.DIN, unitPrice, order.priceCurrency, order.priceValidUntil, order.affiliateFee);
-        // TODO: DELETE (DEBUG)
-        // LogHash(order.DIN, unitPrice, order.priceCurrency, order.priceValidUntil, order.affiliateFee);
 
         // Get the resolver address from the DIN Registry.
         address resolverAddr = registry.resolver(order.DIN);
@@ -124,8 +118,6 @@ contract Checkout {
 
         // Verify that the DIN owner has signed the parameters provided by the buyer.
         bool isValid = isValidSignature(owner, hash, v, r, s);
-        // TODO: DELETE (DEBUG)
-        // LogParams(owner, hash, v, r, s);
 
         if (isValid == false) {
             LogError("Invalid signature");
@@ -144,11 +136,14 @@ contract Checkout {
         }
 
         if (success == true) {
-            // TODO: AFFILIATE FEES
-
             if (order.affiliate == msg.sender) {
                 LogError("Invalid affiliate");
                 return 0;
+            }
+
+            if (order.affiliateFee > 0) {
+                // Transfer affiliate fee from DIN owner to affiliate.
+                marketToken.transferFromCheckout(owner, order.affiliate, order.affiliateFee);
             }
 
             // Increment the order index.
@@ -166,9 +161,10 @@ contract Checkout {
             );
 
             return orderIndex;
+        } else {
+            LogError("Transferring tokens failed");
+            return 0;
         }
-
-        return 0;
     }
 
     function transferMarketTokens(

@@ -8,7 +8,6 @@ const chai = require("chai"),
     expect = chai.expect,
     should = chai.should();
 const utils = require("web3-utils");
-const BigNumber = require("bignumber.js");
 
 contract("Checkout", accounts => {
     const IS_DEBUG = false; // Set to true for additional logging
@@ -29,8 +28,8 @@ contract("Checkout", accounts => {
     const ERROR_INVALID_PRICE = "Invalid price";
     const ERROR_INVALID_RESOLVER = "Invalid resolver";
     const ERROR_INVALID_MERCHANT = "Invalid merchant";
-    const ERROR_INSUFFICIENT_BALANCE = "Insufficient balance";
     const ERROR_INVALID_SIGNATURE = "Invalid signature";
+    const ERROR_INVALID_AFFILIATE = "Invalid affiliate";
 
     // Tokens
     let MARKET_TOKEN_ADDRESS;
@@ -51,9 +50,10 @@ contract("Checkout", accounts => {
     // Price
     const PRICE_ETHER = 5 * Math.pow(10, 17); // 0.5 ETH
     const PRICE_MARKET_TOKENS = 1 * Math.pow(10, 18); // 1 MARK
+    const PRICE_TOO_HIGH = 500 * Math.pow(10, 18); // 5,000 ETH
 
     // Affiliate Fee
-    const FEE = 1 * Math.pow(10, 18); // 1 MARK
+    const AFFILIATE_FEE = 1 * Math.pow(10, 18); // 1 MARK
     const NO_FEE = 0;
 
     // Quantity
@@ -61,7 +61,8 @@ contract("Checkout", accounts => {
     const QUANTITY_MANY = 17;
 
     // Constants
-    const GAS_PRICE = web3.toWei(5, "gwei");
+    // NOTE: Setting a positive gas price will cause a couple of the tests to be off by a very small margin of error.
+    const GAS_PRICE = web3.toWei(0, "gwei");
 
     const getDINFromLog = async () => {
         const registrationEvent = registry.NewRegistration({ owner: bob });
@@ -165,6 +166,9 @@ contract("Checkout", accounts => {
 
         // Set the merchant for the first DIN. Bob is the DIN owner and merchant.
         await resolver.setMerchant(DIN, bob, { from: bob });
+
+        // Give Bob some Market Tokens so he can promote his product by offering affiliate rewards.
+        await marketToken.transfer(bob, AFFILIATE_FEE * 5, { from: alice });
     });
 
     it("should have the correct registry", async () => {
@@ -307,7 +311,7 @@ contract("Checkout", accounts => {
         const endBalanceMerchant = await web3.eth.getBalance(bob);
 
         const expectedBuyer =
-            beginBalanceBuyer.toNumber() - gasUsed * GAS_PRICE - PRICE_ETHER;
+            beginBalanceBuyer.toNumber() - PRICE_ETHER - (gasUsed * GAS_PRICE);
         const expectedMerchant = beginBalanceMerchant.toNumber() + PRICE_ETHER;
 
         expect(endBalanceBuyer.toNumber()).to.equal(expectedBuyer);
@@ -343,5 +347,65 @@ contract("Checkout", accounts => {
         expect(endBalanceMerchant.toNumber()).to.equal(expectedMerchant);
     });
 
-    // Throw if not enough tokens
+    it("should not allow a buyer to set herself as the affiliate", async () => {
+        const values = [DIN, QUANTITY_ONE, PRICE_ETHER, FUTURE_DATE, NO_FEE];
+        const addresses = [ETHER_ADDRESS, alice];
+
+        const result = await getBuyResult(values, addresses);
+        expect(result.logs[0].args.error).to.equal(ERROR_INVALID_AFFILIATE);
+    });
+
+    it("should reward a valid affiliate", async () => {
+        // Bob will offer 1 MARK to any affiliate that sells his product for 5 ETH. 
+        // Carol is an affiliate who gets Alice to purchase the product on her website.
+        const values = [DIN, QUANTITY_ONE, PRICE_ETHER, FUTURE_DATE, AFFILIATE_FEE];
+        const addresses = [ETHER_ADDRESS, carol];
+
+        // Ether beginning balances
+        const beginBalanceBuyerETH = await web3.eth.getBalance(alice);
+        const beginBalanceMerchantETH = await web3.eth.getBalance(bob);
+
+        // Market Token beginning balances
+        const beginBalanceMerchantMARK = await marketToken.balanceOf(bob);
+        const beginBalanceAffiliateMARK = await marketToken.balanceOf(carol);
+
+        const result = await getBuyResult(values, addresses);
+        const gasUsed = result.receipt.gasUsed;
+
+        // Ether ending balances
+        const endBalanceBuyerETH = await web3.eth.getBalance(alice);
+        const endBalanceMerchantETH = await web3.eth.getBalance(bob);
+
+        // Market Token beginning balances
+        const endBalanceMerchantMARK = await marketToken.balanceOf(bob);
+        const endBalanceAffiliateMARK = await marketToken.balanceOf(carol);
+
+        // Expected values
+        const expectedEndBalanceBuyerETH = beginBalanceBuyerETH.toNumber() - PRICE_ETHER - (gasUsed * GAS_PRICE);
+        const expectedEndBalanceMerchantETH = beginBalanceMerchantETH.toNumber() + PRICE_ETHER;
+        const expectedEndBalanceMerchantMARK = beginBalanceMerchantMARK.toNumber() - AFFILIATE_FEE;
+        const expectedEndBalanceAffiliateMARK = beginBalanceAffiliateMARK.toNumber() + AFFILIATE_FEE;
+
+        expect(endBalanceBuyerETH.toNumber()).to.equal(expectedEndBalanceBuyerETH);
+        expect(endBalanceMerchantETH.toNumber()).to.equal(expectedEndBalanceMerchantETH);
+        expect(endBalanceMerchantMARK.toNumber()).to.equal(expectedEndBalanceMerchantMARK);
+        expect(endBalanceAffiliateMARK.toNumber()).to.equal(expectedEndBalanceAffiliateMARK);
+
+    });
+
+    it("should throw if the buyer does not have enough tokens", async () => {
+        const values = [DIN, QUANTITY_ONE, PRICE_TOO_HIGH, FUTURE_DATE, NO_FEE];
+        const addresses = [MARKET_TOKEN_ADDRESS, NO_AFFILIATE];
+
+        try {
+            await getBuyResult(values, addresses);
+        } catch (error) {
+            assert.include(
+                error.message,
+                "invalid opcode",
+                "Buying a product without enough tokens should throw an error."
+            );
+        }
+    });
+
 });
