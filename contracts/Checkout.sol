@@ -22,16 +22,8 @@ contract Checkout {
         address affiliate;
     }
 
-    enum Errors {
-        OFFER_EXPIRED,
-        INVALID_PRICE,
-        INSUFFICIENT_BALANCE,
-        INVALID_SIGNATURE,
-        INVALID_MERCHANT
-    }
-
     // Logs Solidity errors
-    event LogError(uint8 indexed errorId);
+    event LogError(string error);
 
     // Logs new orders
     event NewOrder(
@@ -79,85 +71,90 @@ contract Checkout {
         public
         returns (uint256 orderID)
     {
-        // Order memory order = Order({
-        //     DIN: orderValues[0],
-        //     quantity: orderValues[1],
-        //     totalPrice: orderValues[2],
-        //     priceCurrency: orderAddresses[0],
-        //     priceValidUntil: orderValues[3],
-        //     affiliateFee: orderValues[4],
-        //     affiliate: orderAddresses[1]
-        // });
+        Order memory order = Order({
+            DIN: orderValues[0],
+            quantity: orderValues[1],
+            totalPrice: orderValues[2],
+            priceCurrency: orderAddresses[0],
+            priceValidUntil: orderValues[3],
+            affiliateFee: orderValues[4],
+            affiliate: orderAddresses[1]
+        });
 
-        // if (block.timestamp > order.priceValidUntil) {
-        //     LogError(uint8(Errors.OFFER_EXPIRED));
-        //     return 0;
-        // }
+        if (block.timestamp > order.priceValidUntil) {
+            LogError("Offer expired");
+            return 0;
+        }
 
-        // if (order.totalPrice == 0) {
-        //     LogError(uint8(Errors.INVALID_PRICE));
-        //     return 0;
-        // }
+        if (order.totalPrice == 0) {
+            LogError("Invalid price");
+            return 0;
+        }
 
-        // uint256 unitPrice = order.totalPrice / order.quantity;
+        uint256 unitPrice = order.totalPrice / order.quantity;
 
-        // // Calculate the hash of the parameters provided by the buyer.
-        // bytes32 hash = keccak256(order.DIN, unitPrice, order.priceCurrency, order.priceValidUntil, order.affiliateFee);
+        // Calculate the hash of the parameters provided by the buyer.
+        bytes32 hash = keccak256(order.DIN, unitPrice, order.priceCurrency, order.priceValidUntil, order.affiliateFee);
 
-        // // Get the owner address from the DIN registry.
-        // address owner = registry.owner(order.DIN);
+        // Get the resolver address from the DIN Registry.
+        address resolverAddr = registry.resolver(order.DIN);
 
-        // // Get the resolver address from the DIN Registry.
-        // address resolverAddr = registry.resolver(order.DIN);
+        if (resolverAddr == address(0x0)) {
+            LogError("Invalid resolver");
+            return 0;
+        }
 
-        // // TODO: DANGER ZONE. OUTSIDE CALL.
-        // address merchant = Resolver(resolverAddr).merchant(order.DIN);
+        // TODO: DANGER ZONE. OUTSIDE CALL.
+        address merchant = Resolver(resolverAddr).merchant(order.DIN);
 
-        // if (merchant == address(0x0)) {
-        //     LogError(uint8(Errors.INVALID_MERCHANT));
-        //     return 0;
-        // }
+        if (merchant == address(0x0)) {
+            LogError("Invalid merchant");
+            return 0;
+        }
 
-        // // Verify that the DIN owner has signed the parameters provided by the buyer.
-        // bool isValid = isValidSignature(owner, hash, v, r, s);
+        // Get the owner address from the DIN registry.
+        address owner = registry.owner(order.DIN);
 
-        // if (isValid == false) {
-        //     LogError(uint8(Errors.INVALID_SIGNATURE));
-        //     return 0;
-        // }
+        // Verify that the DIN owner has signed the parameters provided by the buyer.
+        bool isValid = isValidSignature(owner, hash, v, r, s);
 
-        // // Transaction is valid. Transfer tokens from buyer to merchant.
-        // bool success;
+        if (isValid == false) {
+            LogError("Invalid signature");
+            return 0;
+        }
 
-        // if (order.priceCurrency == address(marketToken)) {
-        //     success = transferMarketTokens(msg.sender, merchant, order.totalPrice);
-        // } else if (order.priceCurrency == address(0x0)) {
-        //     success = transferEther(msg.sender, merchant, order.totalPrice);
-        // } else {
-        //     success = transferERC20(msg.sender, merchant, order.totalPrice, order.priceCurrency);
-        // }
+        // Transaction is valid. Transfer tokens from buyer to merchant.
+        bool success;
 
-        // if (success == true) {
-        //     // TODO: AFFILIATE FEES
+        if (order.priceCurrency == address(marketToken)) {
+            success = transferMarketTokens(msg.sender, merchant, order.totalPrice);
+        } else if (order.priceCurrency == address(0x0)) {
+            success = transferEther(msg.sender, merchant, order.totalPrice);
+        } else {
+            success = transferERC20(msg.sender, merchant, order.totalPrice, order.priceCurrency);
+        }
 
-        //     // Increment the order index.
-        //     orderIndex++;
+        if (success == true) {
+            // TODO: AFFILIATE FEES
 
-        //     NewOrder(
-        //         orderIndex,     // Order ID
-        //         msg.sender,     // Buyer
-        //         merchant,
-        //         order.DIN,
-        //         order.quantity,
-        //         order.totalPrice,
-        //         order.priceCurrency,
-        //         block.timestamp
-        //     );
+            // Increment the order index.
+            orderIndex++;
 
-        //     return orderIndex;
-        // }
+            NewOrder(
+                orderIndex,     // Order ID
+                msg.sender,     // Buyer
+                merchant,
+                order.DIN,
+                order.quantity,
+                order.totalPrice,
+                order.priceCurrency,
+                block.timestamp
+            );
 
-        // return 0;
+            return orderIndex;
+        }
+
+        return 0;
     }
 
     function transferMarketTokens(
@@ -187,7 +184,7 @@ contract Checkout {
         } else {
             // Return Ether to buyer and log error.
             buyer.transfer(msg.value);
-            LogError(uint8(Errors.INVALID_PRICE));
+            LogError("Invalid price");
             return false;
         }
     }
