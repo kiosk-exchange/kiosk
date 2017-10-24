@@ -11,7 +11,6 @@ const utils = require("web3-utils");
 const BigNumber = require("bignumber.js");
 
 contract("Checkout", accounts => {
-
     const IS_DEBUG = false; // Set to true for additional logging
 
     // Contracts
@@ -23,6 +22,7 @@ contract("Checkout", accounts => {
     // Accounts
     const alice = accounts[0]; // Buyer
     const bob = accounts[1]; // Seller
+    const carol = accounts[2]; // Affiliate
 
     // Errors
     const ERROR_OFFER_EXPIRED = "Offer expired";
@@ -33,8 +33,8 @@ contract("Checkout", accounts => {
     const ERROR_INVALID_SIGNATURE = "Invalid signature";
 
     // Tokens
-    let MARKET_TOKEN;
-    const ETHER = "0x0000000000000000000000000000000000000000";
+    let MARKET_TOKEN_ADDRESS;
+    const ETHER_ADDRESS = "0x0000000000000000000000000000000000000000";
 
     // Addresses
     const NO_AFFILIATE = "0x0000000000000000000000000000000000000000";
@@ -50,6 +50,7 @@ contract("Checkout", accounts => {
 
     // Price
     const PRICE_ETHER = 5 * Math.pow(10, 17); // 0.5 ETH
+    const PRICE_MARKET_TOKENS = 1 * Math.pow(10, 18); // 1 MARK
 
     // Affiliate Fee
     const FEE = 1 * Math.pow(10, 18); // 1 MARK
@@ -113,12 +114,18 @@ contract("Checkout", accounts => {
         buyer = alice
     ) => {
         // DIN, price, priceCurrency, priceValidUntil, affiliateFee
-        const hashValues = [values[0], values[2], addresses[0], values[3], values[4]];
+        const hashValues = [
+            values[0],
+            values[2],
+            addresses[0],
+            values[3],
+            values[4]
+        ];
         const signature = getSignature(hashValues, owner);
 
         let value = 0;
 
-        if (addresses[0] === ETHER) {
+        if (addresses[0] === ETHER_ADDRESS) {
             value = values[2]; // Price
         }
 
@@ -145,6 +152,8 @@ contract("Checkout", accounts => {
         marketToken = await MarketToken.deployed();
         resolver = await PublicURLResolver.deployed();
 
+        MARKET_TOKEN_ADDRESS = marketToken.address;
+
         // Register 3 DINs.
         await registrar.registerDINs(3, { from: bob });
 
@@ -170,7 +179,7 @@ contract("Checkout", accounts => {
 
     it("should log an error if the expiration time has passed", async () => {
         const values = [DIN, QUANTITY_ONE, PRICE_ETHER, EXPIRED_DATE, NO_FEE];
-        const addresses = [ETHER, NO_AFFILIATE];
+        const addresses = [ETHER_ADDRESS, NO_AFFILIATE];
 
         const result = await getBuyResult(values, addresses);
         expect(result.logs[0].args.error).to.equal(ERROR_OFFER_EXPIRED);
@@ -178,23 +187,35 @@ contract("Checkout", accounts => {
 
     it("should log an error if the price is zero", async () => {
         const values = [DIN, QUANTITY_ONE, 0, FUTURE_DATE, NO_FEE];
-        const addresses = [ETHER, NO_AFFILIATE];
+        const addresses = [ETHER_ADDRESS, NO_AFFILIATE];
 
         const result = await getBuyResult(values, addresses);
         expect(result.logs[0].args.error).to.equal(ERROR_INVALID_PRICE);
     });
 
     it("should log an error if the resolver is not set", async () => {
-        const values = [DIN_NO_RESOLVER, QUANTITY_ONE, PRICE_ETHER, FUTURE_DATE, NO_FEE];
-        const addresses = [ETHER, NO_AFFILIATE];
+        const values = [
+            DIN_NO_RESOLVER,
+            QUANTITY_ONE,
+            PRICE_ETHER,
+            FUTURE_DATE,
+            NO_FEE
+        ];
+        const addresses = [ETHER_ADDRESS, NO_AFFILIATE];
 
         const result = await getBuyResult(values, addresses);
         expect(result.logs[0].args.error).to.equal(ERROR_INVALID_RESOLVER);
     });
 
     it("should log an error if the merchant is not set", async () => {
-        const values = [DIN_NO_MERCHANT, QUANTITY_ONE, PRICE_ETHER, FUTURE_DATE, NO_FEE];
-        const addresses = [ETHER, NO_AFFILIATE];
+        const values = [
+            DIN_NO_MERCHANT,
+            QUANTITY_ONE,
+            PRICE_ETHER,
+            FUTURE_DATE,
+            NO_FEE
+        ];
+        const addresses = [ETHER_ADDRESS, NO_AFFILIATE];
 
         const result = await getBuyResult(values, addresses);
         expect(result.logs[0].args.error).to.equal(ERROR_INVALID_MERCHANT);
@@ -202,7 +223,7 @@ contract("Checkout", accounts => {
 
     it("should log an error if the signature is invalid", async () => {
         const values = [DIN, QUANTITY_ONE, PRICE_ETHER, FUTURE_DATE, NO_FEE];
-        const addresses = [ETHER, NO_AFFILIATE];
+        const addresses = [ETHER_ADDRESS, NO_AFFILIATE];
 
         const result = await checkout.buy(
             values,
@@ -216,7 +237,7 @@ contract("Checkout", accounts => {
 
     it("should log an error if the price does not match the signed price", async () => {
         const values = [DIN, QUANTITY_ONE, PRICE_ETHER, FUTURE_DATE, NO_FEE];
-        const addresses = [ETHER, NO_AFFILIATE];
+        const addresses = [ETHER_ADDRESS, NO_AFFILIATE];
 
         const signature = getSignature(values, bob);
 
@@ -235,8 +256,14 @@ contract("Checkout", accounts => {
 
     it("should validate a signature", async () => {
         const values = [DIN, QUANTITY_ONE, PRICE_ETHER, FUTURE_DATE, NO_FEE];
-        const address = [ETHER, NO_AFFILIATE];
-        const hashValues = [DIN, PRICE_ETHER, ETHER, FUTURE_DATE, NO_FEE];
+        const address = [ETHER_ADDRESS, NO_AFFILIATE];
+        const hashValues = [
+            DIN,
+            PRICE_ETHER,
+            ETHER_ADDRESS,
+            FUTURE_DATE,
+            NO_FEE
+        ];
 
         const signature = getSignature(hashValues);
         const hash = getHash(hashValues);
@@ -250,7 +277,7 @@ contract("Checkout", accounts => {
         );
         expect(result).to.equal(true);
 
-        const fakeValues = [DIN, 1, ETHER, FUTURE_DATE, NO_FEE];
+        const fakeValues = [DIN, 1, ETHER_ADDRESS, FUTURE_DATE, NO_FEE];
         const fakeHash = getHash(fakeValues);
         const fakeResult = await checkout.isValidSignature(
             bob,
@@ -260,25 +287,60 @@ contract("Checkout", accounts => {
             signature.s
         );
         expect(fakeResult).to.equal(false);
-    })
+    });
 
     it("should process a valid purchase with Ether", async () => {
         const values = [DIN, QUANTITY_ONE, PRICE_ETHER, FUTURE_DATE, NO_FEE];
-        const addresses = [ETHER, NO_AFFILIATE];
+        const addresses = [ETHER_ADDRESS, NO_AFFILIATE];
 
-        const orderIndex = await checkout.orderIndex();
-        const beginBalance = await web3.eth.getBalance(alice);
+        const beginIndex = await checkout.orderIndex();
+        const beginBalanceBuyer = await web3.eth.getBalance(alice);
+        const beginBalanceMerchant = await web3.eth.getBalance(bob);
 
         const result = await getBuyResult(values, addresses);
         const gasUsed = result.receipt.gasUsed;
 
-        const newIndex = await checkout.orderIndex();
-        expect(newIndex.toNumber()).to.equal(orderIndex.toNumber() + 1);
+        const endIndex = await checkout.orderIndex();
+        expect(endIndex.toNumber()).to.equal(beginIndex.toNumber() + 1);
 
-        const endBalance = await web3.eth.getBalance(alice);
-        const expected = beginBalance.toNumber() - (gasUsed * GAS_PRICE) - PRICE_ETHER;
+        const endBalanceBuyer = await web3.eth.getBalance(alice);
+        const endBalanceMerchant = await web3.eth.getBalance(bob);
 
-        expect(endBalance.toNumber()).to.equal(expected);
+        const expectedBuyer =
+            beginBalanceBuyer.toNumber() - gasUsed * GAS_PRICE - PRICE_ETHER;
+        const expectedMerchant = beginBalanceMerchant.toNumber() + PRICE_ETHER;
+
+        expect(endBalanceBuyer.toNumber()).to.equal(expectedBuyer);
+        expect(endBalanceMerchant.toNumber()).to.equal(expectedMerchant);
+    });
+
+    it("should process a valid purchase with Market Tokens", async () => {
+        const values = [
+            DIN,
+            QUANTITY_ONE,
+            PRICE_MARKET_TOKENS,
+            FUTURE_DATE,
+            NO_FEE
+        ];
+        const addresses = [MARKET_TOKEN_ADDRESS, NO_AFFILIATE];
+
+        const beginIndex = await checkout.orderIndex();
+        const beginBalanceBuyer = await marketToken.balanceOf(alice);
+        const beginBalanceMerchant = await marketToken.balanceOf(bob);
+
+        const result = await getBuyResult(values, addresses);
+
+        const endIndex = await checkout.orderIndex();
+        expect(endIndex.toNumber()).to.equal(beginIndex.toNumber() + 1);
+
+        const endBalanceBuyer = await marketToken.balanceOf(alice);
+        const endBalanceMerchant = await marketToken.balanceOf(bob);
+
+        const expectedBuyer = beginBalanceBuyer.toNumber() - PRICE_MARKET_TOKENS;
+        const expectedMerchant = beginBalanceMerchant.toNumber() + PRICE_MARKET_TOKENS;
+
+        expect(endBalanceBuyer.toNumber()).to.equal(expectedBuyer);
+        expect(endBalanceMerchant.toNumber()).to.equal(expectedMerchant);
     });
 
     // Throw if not enough tokens
