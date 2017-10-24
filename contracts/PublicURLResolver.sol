@@ -10,6 +10,7 @@ contract PublicURLResolver is URLResolver {
 
     // DIN => Product URL
     mapping (uint256 => string) productURLs;
+    mapping (uint256 => address) merchants;
 
     DINRegistry registry;
 
@@ -36,6 +37,14 @@ contract PublicURLResolver is URLResolver {
 
     function setProductURL(uint256 DIN, string URL) public only_owner(DIN) {
         productURLs[DIN] = URL;
+    }
+
+    function merchant(uint256 DIN) public constant returns (address) {
+        return merchants[DIN];
+    }
+
+    function setMerchant(uint256 DIN, address merchant) only_owner(DIN) {
+        merchants[DIN] = merchant;
     }
 
 }
