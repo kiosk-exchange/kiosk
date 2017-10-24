@@ -11,10 +11,13 @@ const utils = require("web3-utils");
 const BigNumber = require("bignumber.js");
 
 contract("Checkout", accounts => {
+    // Contracts
     let checkout;
     let registry;
     let registrar;
     let resolver;
+
+    // Accounts
     const alice = accounts[0];
     const bob = accounts[1];
 
@@ -31,7 +34,7 @@ contract("Checkout", accounts => {
     const ETHER = "0x0000000000000000000000000000000000000000";
 
     // Addresses
-    const noAffliliate = "0x0000000000000000000000000000000000000000";
+    const NO_AFFILIATE = "0x0000000000000000000000000000000000000000";
 
     // DINs
     const DIN = 1000000001;
@@ -42,12 +45,15 @@ contract("Checkout", accounts => {
     const FUTURE_DATE = 1577836800; // 1/1/2020
     const EXPIRED_DATE = 1483228800; // 1/1/2017
 
-    // Affiliate Fee
-    const ZERO_FEE = 0;
+    // Price
+    const PRICE = 5 * Math.pow(10, 18);
 
-    // Product details
-    const quantity = 1;
-    const price = 5 * Math.pow(10, 18); // The price of Bob's product is 5 MARKs
+    // Affiliate Fee
+    const NO_FEE = 0;
+
+    // Quantity
+    const QUANTITY_ONE = 1;
+    const QUANTITY_MANY = 17;
 
     let hash;
     let ecSignature = {};
@@ -92,22 +98,30 @@ contract("Checkout", accounts => {
         return signature;
     };
 
-    const getBuyResult = async (values, addresses) => {
+    const getSignatureFromValues = (values, owner) => {
         const signature = getSignature(
             values[0], // DIN
             values[1], // Quantity
             values[2], // Price
             values[3], // Expiration
             values[4], // Affiliate fee
-            alice
+            owner 
         );
+        return signature;
+    }
+
+    const getBuyResult = async (values, addresses, owner = bob, buyer = alice) => {
+        const signature = getSignatureFromValues(values, owner);
+
+        // console.log(signature);
         
         const result = await checkout.buy(
             values,
             addresses,
             signature.v,
             signature.r,
-            signature.s
+            signature.s,
+            { from: buyer }
         );
 
         return result;
@@ -124,11 +138,11 @@ contract("Checkout", accounts => {
         await registrar.registerDINs(3, { from: bob });
 
         // Set the resolver for the first two DINs.
-        await registry.setResolver(1000000001, resolver.address, { from: bob });
-        await registry.setResolver(1000000002, resolver.address, { from: bob });
+        await registry.setResolver(DIN, resolver.address, { from: bob });
+        await registry.setResolver(DIN_NO_MERCHANT, resolver.address, { from: bob });
 
         // Set the merchant for the first DIN. Bob is the DIN owner and merchant.
-        await resolver.setMerchant(1000000001, bob, { from: bob });
+        await resolver.setMerchant(DIN, bob, { from: bob });
     });
 
     it("should have the correct registry", async () => {
@@ -142,35 +156,76 @@ contract("Checkout", accounts => {
     });
 
     it("should log an error if the expiration time has passed", async () => {
-        const values = [DIN, quantity, new BigNumber(price), EXPIRED_DATE, ZERO_FEE];
-        const addresses = [ETHER, noAffliliate];
+        const values = [DIN, QUANTITY_ONE, PRICE, EXPIRED_DATE, NO_FEE];
+        const addresses = [ETHER, NO_AFFILIATE];
 
         const result = await getBuyResult(values, addresses);
         expect(result.logs[0].args.error).to.equal(ERROR_OFFER_EXPIRED);
     });
 
-    it("should log an error if the price is zero", async () => {
-        const values = [DIN, quantity, 0, FUTURE_DATE, ZERO_FEE];
-        const addresses = [ETHER, noAffliliate];
+    it("should log an error if the price is NO", async () => {
+        const values = [DIN, QUANTITY_ONE, 0, FUTURE_DATE, NO_FEE];
+        const addresses = [ETHER, NO_AFFILIATE];
 
         const result = await getBuyResult(values, addresses);
         expect(result.logs[0].args.error).to.equal(ERROR_INVALID_PRICE);        
     });
 
     it("should log an error if the resolver is not set", async () => {
-        const values = [DIN_NO_RESOLVER, quantity, price, FUTURE_DATE, ZERO_FEE];
-        const addresses = [ETHER, noAffliliate];
+        const values = [DIN_NO_RESOLVER, QUANTITY_ONE, PRICE, FUTURE_DATE, NO_FEE];
+        const addresses = [ETHER, NO_AFFILIATE];
 
         const result = await getBuyResult(values, addresses);
         expect(result.logs[0].args.error).to.equal(ERROR_INVALID_RESOLVER);  
     });
 
     it("should log an error if the merchant is not set", async () => {
-        const values = [DIN_NO_MERCHANT, quantity, price, FUTURE_DATE, ZERO_FEE];
-        const addresses = [ETHER, noAffliliate];
+        const values = [DIN_NO_MERCHANT, QUANTITY_ONE, PRICE, FUTURE_DATE, NO_FEE];
+        const addresses = [ETHER, NO_AFFILIATE];
 
         const result = await getBuyResult(values, addresses);
         expect(result.logs[0].args.error).to.equal(ERROR_INVALID_MERCHANT);        
+    });
+
+    it("should log an error if the signature is invalid", async () => {
+        const values = [DIN, QUANTITY_ONE, PRICE, FUTURE_DATE, NO_FEE];
+        const addresses = [ETHER, NO_AFFILIATE];
+
+        const result = await checkout.buy(
+            values,
+            addresses,
+            27,
+            "0x0000000000000000000000000000000000000000",
+            "0x0000000000000000000000000000000000000000"
+        );
+        expect(result.logs[0].args.error).to.equal(ERROR_INVALID_SIGNATURE);        
+    });
+
+    it("should log an error if the price does not match the signed price", async () => {
+        const values = [DIN, QUANTITY_ONE, PRICE, FUTURE_DATE, NO_FEE];
+        const addresses = [ETHER, NO_AFFILIATE];
+
+        const signature = getSignatureFromValues(values, bob);
+
+        // Set the price low to try to get the item for less
+        const fakeValues = [DIN, QUANTITY_ONE, 1, FUTURE_DATE, NO_FEE];
+
+        const result = await checkout.buy(
+            fakeValues,
+            addresses,
+            signature.v,
+            signature.r,
+            signature.s
+        );
+        expect(result.logs[0].args.error).to.equal(ERROR_INVALID_SIGNATURE);   
+    });
+
+    it("should process a valid purchase with Ether", async () => {
+        const values = [DIN, QUANTITY_ONE, PRICE, FUTURE_DATE, NO_FEE];
+        const addresses = [ETHER, NO_AFFILIATE];
+
+        const result = await getBuyResult(values, addresses);
+        console.log(result.logs[0].args);
     });
 
     // it("should throw if the user does not have enough tokens for a purchase", async () => {
@@ -182,7 +237,7 @@ contract("Checkout", accounts => {
     //         ecSignature.v,
     //         ecSignature.r,
     //         ecSignature.s,
-    //         { from: bob } // Bob has zero Market Tokens
+    //         { from: bob } // Bob has NO Market Tokens
     //     );
     //     expect(result.logs[0].args.errorId.s).to.equal(1);
     // });
@@ -201,7 +256,7 @@ contract("Checkout", accounts => {
     //     expect(result.logs[0].event).to.equal("LogError");
     // });
 
-    // it("should throw if the price is zero", async () => {
+    // it("should throw if the price is NO", async () => {
     //     const result = await checkout.buy(
     //         DIN,
     //         quantity,
