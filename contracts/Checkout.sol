@@ -208,7 +208,8 @@ contract Checkout {
         private
         returns (bool success)
     {
-        // TODO:
+        LogError("Coming soon!");
+        return false;
     }
 
     /**

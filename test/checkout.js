@@ -30,10 +30,12 @@ contract("Checkout", accounts => {
     const ERROR_INVALID_MERCHANT = "Invalid merchant";
     const ERROR_INVALID_SIGNATURE = "Invalid signature";
     const ERROR_INVALID_AFFILIATE = "Invalid affiliate";
+    const ERROR_COMING_SOON = "Coming soon!";
 
     // Tokens
     let MARKET_TOKEN_ADDRESS;
     const ETHER_ADDRESS = "0x0000000000000000000000000000000000000000";
+    const JESUS_COIN_ADDRESS = "0x0a1524bfbb8905de0a3b15bdf8d678e7fb9c8c68";
 
     // Addresses
     const NO_AFFILIATE = "0x0000000000000000000000000000000000000000";
@@ -406,6 +408,14 @@ contract("Checkout", accounts => {
                 "Buying a product without enough tokens should throw an error."
             );
         }
+    });
+
+    it("should log an error for a currency besides Ether or Market Tokens", async () => {
+        const values = [DIN, QUANTITY_ONE, PRICE_ETHER, FUTURE_DATE, NO_FEE];
+        const addresses = [JESUS_COIN_ADDRESS, NO_AFFILIATE];
+
+        const result = await getBuyResult(values, addresses);
+        expect(result.logs[0].args.error).to.equal(ERROR_COMING_SOON);
     });
 
 });
