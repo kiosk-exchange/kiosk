@@ -25,6 +25,10 @@ contract Checkout {
     // Logs Solidity errors
     event LogError(string error);
 
+    // TODO: DELETE (DEBUG)
+    // event LogHash(uint256 DIN, uint256 totalPrice, address priceCurrency, uint256 priceValidUntil, uint256 affiliateFee);
+    // event LogParams(address owner, bytes32 hash, uint8 v, bytes32 r, bytes32 s);
+
     // Logs new orders
     event NewOrder(
         uint256 orderID,
@@ -54,7 +58,7 @@ contract Checkout {
         [3] priceValidUntil Expiration time (Unix timestamp).
         [4] affiliateFee Affiliate reward (optional), denominated in base units of Market Token (MARK).
       * param orderAddresses:
-        [0] priceCurrency Address of the ERC20 token used for pricing. Ether (ETH) is represented by the null address (0x0...).
+        [0] priceCurrency Address of the token used for pricing. Ether (ETH) is represented by the null address (0x0...).
         [1] affiliate Address of the affiliate.  
       * @param v ECDSA signature parameter v.
       * @param r ECDSA signature parameter r.
@@ -68,6 +72,7 @@ contract Checkout {
         bytes32 r,
         bytes32 s
     )
+        payable
         public
         returns (uint256 orderID)
     {
@@ -95,6 +100,8 @@ contract Checkout {
 
         // Calculate the hash of the parameters provided by the buyer.
         bytes32 hash = keccak256(order.DIN, unitPrice, order.priceCurrency, order.priceValidUntil, order.affiliateFee);
+        // TODO: DELETE (DEBUG)
+        // LogHash(order.DIN, unitPrice, order.priceCurrency, order.priceValidUntil, order.affiliateFee);
 
         // Get the resolver address from the DIN Registry.
         address resolverAddr = registry.resolver(order.DIN);
@@ -117,6 +124,8 @@ contract Checkout {
 
         // Verify that the DIN owner has signed the parameters provided by the buyer.
         bool isValid = isValidSignature(owner, hash, v, r, s);
+        // TODO: DELETE (DEBUG)
+        // LogParams(owner, hash, v, r, s);
 
         if (isValid == false) {
             LogError("Invalid signature");
@@ -136,6 +145,11 @@ contract Checkout {
 
         if (success == true) {
             // TODO: AFFILIATE FEES
+
+            if (order.affiliate == msg.sender) {
+                LogError("Invalid affiliate");
+                return 0;
+            }
 
             // Increment the order index.
             orderIndex++;
