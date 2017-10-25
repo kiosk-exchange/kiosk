@@ -27,10 +27,10 @@ contract Checkout {
 
     // Logs new orders
     event NewOrder(
-        uint256 orderID,
+        uint256 indexed orderID,
         address indexed buyer,
         address indexed merchant,
-        uint256 indexed DIN,
+        uint256 DIN,
         uint256 quantity,
         uint256 totalPrice,
         address priceCurrency,
