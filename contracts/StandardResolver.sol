@@ -12,8 +12,15 @@ contract StandardResolver is Resolver {
     DINRegistry public registry;
     string public productURL;
     address public merchant;
+    address public owner;
 
-    function StandardResolver(DINRegistry _registry, string _productURL, address _merchant) {
+    modifier only_owner {
+        require(owner == msg.sender);
+        _;
+    }
+
+    function StandardResolver(DINRegistry _registry, address _owner, string _productURL, address _merchant) {
+        owner = _owner;
         registry = _registry;
         productURL = _productURL;
         merchant = _merchant;
@@ -21,14 +28,15 @@ contract StandardResolver is Resolver {
 
     function supportsInterface(bytes4 interfaceID) public constant returns (bool) {
         return interfaceID == INTERFACE_META_ID ||
-               interfaceID == PRODUCT_URL_INTERFACE_ID;
+               interfaceID == PRODUCT_URL_INTERFACE_ID ||
+               interfaceID == MERCHANT_INTERFACE_ID;
     }
 
     function productURL(uint256 DIN) public constant returns (string) {
         return productURL;
     }
 
-    function setProductURL(string _productURL) public only_owner(DIN) {
+    function setProductURL(string _productURL) public only_owner {
         productURL = _productURL;
     }
 
@@ -36,7 +44,7 @@ contract StandardResolver is Resolver {
         return merchant;
     }
 
-    function setMerchant(address _merchant) public only_owner(DIN) {
+    function setMerchant(address _merchant) public only_owner {
         merchant = _merchant;
     }
 
