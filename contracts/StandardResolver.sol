@@ -19,7 +19,14 @@ contract StandardResolver is Resolver {
         _;
     }
 
-    function StandardResolver(DINRegistry _registry, address _owner, string _productURL, address _merchant) {
+    function StandardResolver(
+        DINRegistry _registry,
+        address _owner,
+        string _productURL,
+        address _merchant
+    ) 
+        public
+    {
         owner = _owner;
         registry = _registry;
         productURL = _productURL;
