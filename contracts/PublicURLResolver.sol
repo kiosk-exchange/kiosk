@@ -5,8 +5,9 @@ import "./DINRegistry.sol";
 
 /** @title Resolver contract that specifies an API endpoint where product information can be retrieved */
 contract PublicURLResolver is URLResolver {
-    bytes4 constant INTERFACE_META_ID = 0x01ffc9a7;         // bytes4(sha3("supportsInterface(bytes4)"))
-    bytes4 constant PRODUCT_URL_INTERFACE_ID = 0xaf655719;  // bytes4(sha3("productURL(uint256)"))
+    bytes4 constant INTERFACE_META_ID = 0x01ffc9a7;         // bytes4(keccak256("supportsInterface(bytes4)"))
+    bytes4 constant PRODUCT_URL_INTERFACE_ID = 0xaf655719;  // bytes4(keccak256("productURL(uint256)"))
+    bytes4 constant MERCHANT_INTERFACE_ID = 0x90a9f8b8;     // bytes4(keccak256("merchant(uint256)"))
 
     // DIN => Product URL
     mapping (uint256 => string) productURLs;
@@ -43,7 +44,7 @@ contract PublicURLResolver is URLResolver {
         return merchants[DIN];
     }
 
-    function setMerchant(uint256 DIN, address merchant) only_owner(DIN) {
+    function setMerchant(uint256 DIN, address merchant) public only_owner(DIN) {
         merchants[DIN] = merchant;
     }
 
